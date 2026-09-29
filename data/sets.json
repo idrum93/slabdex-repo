@@ -1,0 +1,27 @@
+{
+  "_comment": "Sets scanned by scripts/discover.mjs. 'names' are tried in order against the provider's set list. Add pins as {\"set\": \"Base Set\", \"number\": \"4\"} to force a card into its basket.",
+  "perSet": 3,
+  "primaryGrade": "psa9",
+  "grades": ["psa9", "psa10"],
+  "minSales": { "psa9": 8, "psa10": 3 },
+  "sets": [
+    { "label": "Base Set",             "names": ["Base Set"],                              "era": "WOTC Vintage" },
+    { "label": "Base Set Shadowless",  "names": ["Base Set (Shadowless)", "Base Set Shadowless"], "era": "WOTC Vintage", "optional": true },
+    { "label": "Jungle",               "names": ["Jungle"],                                "era": "WOTC Vintage" },
+    { "label": "Fossil",               "names": ["Fossil"],                                "era": "WOTC Vintage" },
+    { "label": "Base Set 2",           "names": ["Base Set 2"],                            "era": "WOTC Vintage" },
+    { "label": "Team Rocket",          "names": ["Team Rocket"],                           "era": "WOTC Vintage" },
+    { "label": "Gym Heroes",           "names": ["Gym Heroes"],                            "era": "WOTC Vintage" },
+    { "label": "Gym Challenge",        "names": ["Gym Challenge"],                         "era": "WOTC Vintage" },
+    { "label": "Neo Genesis",          "names": ["Neo Genesis"],                           "era": "WOTC Neo & e-Card" },
+    { "label": "Neo Discovery",        "names": ["Neo Discovery"],                         "era": "WOTC Neo & e-Card" },
+    { "label": "Neo Revelation",       "names": ["Neo Revelation"],                        "era": "WOTC Neo & e-Card" },
+    { "label": "Neo Destiny",          "names": ["Neo Destiny"],                           "era": "WOTC Neo & e-Card" },
+    { "label": "Legendary Collection", "names": ["Legendary Collection"],                  "era": "WOTC Neo & e-Card" },
+    { "label": "Expedition",           "names": ["Expedition Base Set", "Expedition"],     "era": "WOTC Neo & e-Card" },
+    { "label": "Aquapolis",            "names": ["Aquapolis"],                             "era": "WOTC Neo & e-Card" },
+    { "label": "Skyridge",             "names": ["Skyridge"],                              "era": "WOTC Neo & e-Card" },
+    { "label": "WOTC Black Star Promos", "names": ["WoTC Promo", "Wizards Black Star Promos", "WOTC Black Star Promos"], "era": "WOTC Promo", "allRarities": true }
+  ],
+  "pins": []
+}

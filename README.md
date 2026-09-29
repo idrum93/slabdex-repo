@@ -24,7 +24,7 @@ Because free history is only 3 days, the strategy is **snapshot, don't query his
 
 ### Credit budget
 
-- 26 tracked cards × 2 credits ≈ **52/day** in steady state.
+- After discovery: 17 daily + 34 every-2-days cards ≈ **64 credits/day**.
 - First runs also resolve each card's `tcgPlayerId` once (≤3 credits each, then cached in `watchlist.json`). The budget cap (90) means resolution spills over 2 days, which is fine.
 - `tier: "daily"` cards snapshot every run; `tier: "rotate"` cards refresh when older than 3 days, oldest first, with leftover credits.
 - The fetcher reads `X-RateLimit-Daily-Remaining` and stops with a 5-credit reserve. Nothing ever retries into a daily-limit wall.
@@ -43,6 +43,16 @@ Because free history is only 3 days, the strategy is **snapshot, don't query his
 6. **Run it**: Actions → *Daily price snapshot* → Run workflow. After that it runs daily at 11:17 UTC.
 
 The repo ships with **demo series** (clearly flagged in the UI) so the terminal works on day one. Each card's demo data is replaced automatically the first time a real snapshot lands.
+
+## WOTC discovery + backfill (run once on a paid plan)
+
+`data/sets.json` lists the sets in scope (all WOTC-era sets from Base Set through Skyridge, plus Black Star Promos). With a paid key in `PPT_API_KEY`, run **Actions → Discover WOTC baskets + backfill**:
+
+1. Optional: tick *sets only* first (about 20 credits) to confirm every set name resolves.
+2. Full run: pulls every card in each set with eBay graded data, keeps chase rarities with a real graded market (min lifetime sales: PSA 9 ≥ 8 or PSA 10 ≥ 3), takes the **top 3 per set by PSA 9 price**, then backfills up to 180 days of history for those cards. Roughly 3–4k credits for all 17 sets.
+3. It rewrites `data/watchlist.json` (old one kept as `watchlist.previous.json`) and writes `data/discovery/report.md` (also shown on the run's summary page), `candidates.json` and raw `sample-card.json` for checking field names.
+
+Each set's top card refreshes daily and the other two every 2 days, about 64 credits/day, so the free tier maintains it after the paid plan ends. To change baskets later without spending credits, edit `sets.json` (pins, per-set count, sales minimums) and run `node scripts/discover.mjs --from-candidates`.
 
 ## Local use
 

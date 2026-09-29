@@ -5,7 +5,8 @@
   const I = window.Ind;
 
   const state = { key: null, grade: 'psa10', vs: 'index', range: 365, res: 'D', ind: { sma20: 1, sma50: 1, bb: 0, vol: 1, rs: 1, rsi: 1, macd: 1 }, sort: 'score', dir: -1 };
-  try { Object.assign(state, JSON.parse(localStorage.getItem('slabdex') || '{}')); } catch (e) {}
+  let hadSaved = false;
+  try { const sv = JSON.parse(localStorage.getItem('slabdex') || 'null'); if (sv) { Object.assign(state, sv); hadSaved = true; } } catch (e) {}
   const save = () => { try { localStorage.setItem('slabdex', JSON.stringify(state)); } catch (e) {} };
 
   let WL = null, SERIES = {}, STATUS = null, chart = null, model = null;
@@ -291,6 +292,7 @@
     chart = new TerminalChart($('chart'), theme());
     try { await load(); } catch (e) { $('status').textContent = 'Could not load data/ — ' + e.message; return; }
     if (!WL || !Object.keys(SERIES).length) { $('status').textContent = 'NO DATA · run scripts/seed-demo.mjs or the fetch workflow'; return; }
+    if (!hadSaved && WL.primaryGrade) state.grade = WL.primaryGrade; // vintage baskets default to PSA 9
     bind(); rebuild();
   }
   start();
