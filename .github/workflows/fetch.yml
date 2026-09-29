@@ -1,0 +1,39 @@
+name: Daily price snapshot
+
+on:
+  schedule:
+    - cron: '17 11 * * *'   # 11:17 UTC daily — after the provider's 06:00 UTC refresh
+  workflow_dispatch:
+    inputs:
+      budget:
+        description: 'Max credits for this run (free tier = 100/day)'
+        default: '90'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: fetch
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Fetch snapshots
+        env:
+          PPT_API_KEY: ${{ secrets.PPT_API_KEY }}
+          PPT_BUDGET: ${{ github.event.inputs.budget || '90' }}
+        run: node scripts/fetch.mjs
+      - name: Commit data
+        run: |
+          git config user.name  "slabdex-bot"
+          git config user.email "slabdex-bot@users.noreply.github.com"
+          git add data
+          git diff --cached --quiet && echo "no changes" && exit 0
+          git commit -m "data: snapshot $(date -u +%F)"
+          git push
