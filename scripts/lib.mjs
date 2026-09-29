@@ -60,20 +60,36 @@ export function pickPrice(g) {
   return num(smp?.price) ?? num(smp?.value) ?? num(smp) ?? num(g.medianPrice) ?? num(g.averagePrice) ?? num(g.avg) ?? num(g.marketPrice7Day);
 }
 export const salesOf = (g) => num(g?.salesCount) ?? num(g?.count) ?? 0;
-export function historyPoints(g) {
-  // Accept {date: price}, {date: {average|median|price}}, or [{date, price}] shapes.
-  const h = g?.priceHistory || g?.history;
+
+// Sale-day history. PokemonPriceTracker puts it at card.ebay.priceHistory[grade] as
+// { "YYYY-MM-DD": { average, count, sevenDayAverage, ... } } — one entry per day with sales.
+// Older/other shapes (inside the grade block, or arrays) are still accepted.
+export function historyPoints(card, grade) {
+  const e = card?.ebay || {};
+  const h = e.priceHistory?.[grade] ?? gradeBlock(card, grade)?.priceHistory ?? gradeBlock(card, grade)?.history;
   if (!h) return [];
   const out = [];
   const push = (d, v) => {
-    const p = num(v) ?? num(v?.smartMarketPrice) ?? num(v?.median) ?? num(v?.medianPrice) ?? num(v?.average) ?? num(v?.averagePrice) ?? num(v?.price);
+    const p = num(v?.average) ?? num(v?.averagePrice) ?? num(v?.median) ?? num(v?.medianPrice) ?? num(v?.price) ?? num(v);
     const t = String(d).slice(0, 10);
-    if (p != null && /^\d{4}-\d{2}-\d{2}$/.test(t)) out.push({ t, p: round(p), n: num(v?.count) ?? num(v?.salesCount) ?? null });
+    if (p != null && p > 0 && /^\d{4}-\d{2}-\d{2}$/.test(t)) out.push({ t, p: round(p), n: num(v?.count) ?? 1 });
   };
   if (Array.isArray(h)) h.forEach((x) => push(x.date ?? x.t ?? x.day, x));
   else Object.entries(h).forEach(([d, v]) => push(d, v));
   return out;
 }
+
+// Flag sale days far from the card's typical price (x: 1). For WOTC sets where 1st Edition and
+// Unlimited share one record, this drops the rare high-priced 1st Ed prints (and junk/mismatched
+// sales) so the line follows the dominant market. Flags are recomputed on every merge.
+export function flagOutliers(arr, band = 2.5) {
+  const ps = arr.map((x) => x.p).sort((a, b) => a - b);
+  if (ps.length < 3) { arr.forEach((x) => delete x.x); return; }
+  const m = ps[Math.floor(ps.length / 2)];
+  arr.forEach((x) => { if (x.p > m * band || x.p < m / band) x.x = 1; else delete x.x; });
+}
+export const cleanPts = (arr) => (arr || []).filter((x) => !x.x);
+export function medianOf(arr) { const ps = arr.map((x) => x.p).sort((a, b) => a - b); return ps.length ? ps[Math.floor(ps.length / 2)] : null; }
 
 // ---- price files ----
 export async function loadSeries(key) {
@@ -90,21 +106,27 @@ export function upsert(arr, pt) {
   arr.sort((a, b) => (a.t < b.t ? -1 : 1));
 }
 
-// Merge one API card record into a series: history points (never overwriting a snapshot) + today's snapshot.
+// Merge one API card record into a series.
+//  grades[g]: actual sale days {t, p (avg sale price), n (sales that day), x (outlier flag)} — what the chart draws.
+//  snap[g]:   the provider's daily market read {t, sm (smart price), conf, med, cnt (lifetime), v7} — context only.
 export function mergeCard(s, c, grades, today) {
   if (s.source === 'demo') { s.grades = {}; s.source = 'pokemonpricetracker'; }
+  s.snap ||= {};
   let wrote = 0;
   for (const g of grades) {
+    const arr = (s.grades[g] ||= []).filter((x) => x.n != null && x.v7 === undefined); // drop legacy snapshot points
+    for (const hp of historyPoints(c, g)) { upsert(arr, hp); wrote++; }
+    flagOutliers(arr);
+    s.grades[g] = arr;
     const blk = gradeBlock(c, g);
-    const arr = (s.grades[g] ||= []);
-    for (const hp of historyPoints(blk)) if (!arr.some((x) => x.t === hp.t)) upsert(arr, hp);
-    const p = pickPrice(blk);
-    if (p == null) continue;
-    upsert(arr, { t: today, p: round(p), n: num(blk.salesCount) ?? num(blk.count) ?? null, v7: num(blk.dailyVolume7Day) });
-    wrote++;
+    if (blk) {
+      const sn = (s.snap[g] ||= []);
+      upsert(sn, { t: today, sm: num(blk.smartMarketPrice?.price) ?? null, conf: blk.smartMarketPrice?.confidence ?? null, med: num(blk.medianPrice), cnt: salesOf(blk), v7: num(blk.dailyVolume7Day) });
+    }
   }
   s.updated = new Date().toISOString();
   s.tcgPlayerId = String(c.tcgPlayerId ?? s.tcgPlayerId ?? '');
-  s.tcgMarket = num(c.prices?.market) ?? num(c.marketPrice) ?? s.tcgMarket ?? null;
+  s.printings = c.printingsAvailable || (c.variants ? Object.keys(c.variants) : s.printings || null);
+  s.tcgMarket = num(c.prices?.market) ?? s.tcgMarket ?? null;
   return wrote;
 }

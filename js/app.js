@@ -25,14 +25,15 @@
   function buildModel(grade) {
     const dates = new Set();
     const cards = WL.cards.filter((c) => SERIES[c.key]?.grades?.[grade]?.length);
-    cards.forEach((c) => SERIES[c.key].grades[grade].forEach((p) => dates.add(p.t)));
+    cards.forEach((c) => SERIES[c.key].grades[grade].forEach((p) => { if (!p.x) dates.add(p.t); }));
     const axis = fillDays([...dates].sort());
     const pos = new Map(axis.map((d, i) => [d, i]));
     const by = {};
     cards.forEach((c) => {
       const raw = new Array(axis.length).fill(null), vol = new Array(axis.length).fill(null);
-      SERIES[c.key].grades[grade].forEach((p) => { const i = pos.get(p.t); raw[i] = p.p; vol[i] = p.v7 ?? null; });
+      SERIES[c.key].grades[grade].forEach((p) => { if (p.x) return; const i = pos.get(p.t); raw[i] = p.p; vol[i] = p.n ?? p.v7 ?? null; });
       const first = I.firstIdx(raw);
+      if (!SERIES[c.key].source?.startsWith('demo')) for (let i = Math.max(0, first); i < vol.length; i++) if (vol[i] == null) vol[i] = 0; // no sale that day
       const close = I.ffill(raw).map((v, i) => (i < first ? null : v));
       by[c.key] = { card: c, close, vol, demo: SERIES[c.key].source === 'demo' };
     });
@@ -95,7 +96,8 @@
     if (vol) {
       const vv = vol.slice(Math.max(0, n - 29), n + 1).filter(I.isN);
       const now = vol.slice(Math.max(0, n - 6), n + 1).filter(I.isN);
-      out.volRatio = vv.length >= 10 && now.length ? now.reduce((a, b) => a + b, 0) / now.length / (vv.reduce((a, b) => a + b, 0) / vv.length || 1) : null;
+      const sum30 = vv.reduce((a, b) => a + b, 0);
+      out.volRatio = vv.length >= 10 && now.length && sum30 > 0 ? now.reduce((a, b) => a + b, 0) / now.length / (sum30 / vv.length) : null;
     }
     // Composite 0–100. Components missing data drop out and the weights renormalise.
     const clamp = (x) => Math.max(0, Math.min(1, x));
@@ -152,7 +154,7 @@
     if (bench) main.push({ type: 'line', data: bench, color: T.cmp, width: 1.5, label: vsSeries.name, tag: true });
     if (state.ind.sma20) main.push({ type: 'line', data: I.sma(close, f.s1), color: T.sma20, width: 1, label: state.res === 'W' ? 'SMA4W' : 'SMA20', rebaseWith: close });
     if (state.ind.sma50) main.push({ type: 'line', data: I.sma(close, f.s2), color: T.sma50, width: 1, label: state.res === 'W' ? 'SMA10W' : 'SMA50', rebaseWith: close });
-    if (state.ind.vol && vol.some(I.isN)) main.push({ type: 'hist', data: vol, ownScale: true, heightFrac: 0.16, color: alpha(T.muted, 0.35), label: state.res === 'W' ? 'SALES/WK' : 'SALES/D' });
+    if (state.ind.vol && vol.some(I.isN)) main.push({ type: 'hist', data: vol, ownScale: true, heightFrac: 0.16, color: alpha(T.muted, 0.45), label: state.res === 'W' ? 'SALES/WK' : 'SALES/D' });
 
     const panes = [{ id: 'main', ratio: 5, percent, title: `${cur.card.name}  ${cur.card.set} #${cur.card.number}`, series: main }];
     if (state.ind.rs && bench) {
@@ -218,7 +220,7 @@
     $('wlBody').innerHTML = rows.map((r) => {
       const cls = r.score == null ? 'na' : r.tag[1];
       return `<tr class="row${r.key === state.key ? ' sel' : ''}${r.key === state.vs ? ' cmp' : ''}" data-k="${r.key}" tabindex="0">
-        <td><span class="nm">${r.card.name}</span><span class="st">${r.card.set} #${r.card.number} · ${r.card.era}</span></td>
+        <td><span class="nm">${r.card.name}</span><span class="st">${r.card.set} #${r.card.number}${r.card.pooled ? ' · 1st+Unl' : ''}</span></td>
         <td class="n">${r.last != null ? money(r.last) : '—'}</td>
         <td class="n">${fmtP(r.c30, 0)}</td>
         <td class="n"><span class="pill ${cls}" title="${r.tag?.[0] || ''}">${r.score ?? '··'}</span></td>
