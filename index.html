@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SlabDex</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<div class="dex" id="dex">
+  <header class="dex-top">
+    <div class="lens" aria-hidden="true"><span></span></div>
+    <div class="leds" aria-hidden="true"><i class="r"></i><i class="y"></i><i class="g"></i></div>
+    <h1 class="brand">SLABDEX<small>graded card terminal</small></h1>
+    <div class="status" id="status" role="status">LOADING…</div>
+  </header>
+
+  <nav class="toolbar" aria-label="Chart controls">
+    <label class="sym">
+      <span class="lbl">CARD</span>
+      <select id="sym"></select>
+    </label>
+    <div class="seg" id="grade" role="group" aria-label="Grade">
+      <button data-v="psa10" class="on">PSA 10</button><button data-v="psa9">PSA 9</button>
+    </div>
+    <label class="sym vs">
+      <span class="lbl">VS</span>
+      <select id="vs"></select>
+    </label>
+    <div class="seg" id="range" role="group" aria-label="Range">
+      <button data-v="30">1M</button><button data-v="90">3M</button><button data-v="180">6M</button><button data-v="365" class="on">1Y</button><button data-v="0">ALL</button>
+    </div>
+    <div class="seg" id="res" role="group" aria-label="Resolution">
+      <button data-v="D" class="on" title="Daily line">D</button><button data-v="W" title="Weekly candles">W</button>
+    </div>
+    <div class="seg ind" id="ind" role="group" aria-label="Indicators">
+      <button data-v="sma20" class="on">SMA20</button><button data-v="sma50" class="on">SMA50</button><button data-v="bb">BB</button><button data-v="vol" class="on">VOL</button><button data-v="rs" class="on">RS</button><button data-v="rsi" class="on">RSI</button><button data-v="macd" class="on">MACD</button>
+    </div>
+  </nav>
+
+  <main class="body">
+    <section class="screen" aria-label="Price chart">
+      <div id="chart" class="chart"></div>
+      <div class="demo-flag" id="demoFlag" hidden>DEMO DATA · simulated series until the daily fetcher has run</div>
+    </section>
+    <aside class="side">
+      <section class="panel sig" aria-labelledby="sigH">
+        <h2 id="sigH">SIGNAL <span id="sigName"></span></h2>
+        <div class="score">
+          <div class="meter"><div id="scoreBar"></div></div>
+          <div class="score-row"><b id="scoreVal">—</b><span id="scoreTag" class="tag">—</span></div>
+        </div>
+        <dl class="metrics" id="metrics"></dl>
+        <p class="fine">Heuristic read of trend, momentum and relative strength. Not financial advice.</p>
+      </section>
+      <section class="panel wl" aria-labelledby="wlH">
+        <h2 id="wlH">WATCHLIST <span class="hint">score vs TCG index · ⇄ sets VS</span></h2>
+        <div class="wl-scroll">
+          <table>
+            <thead><tr><th data-sort="name">Card</th><th data-sort="last" class="n">Last</th><th data-sort="c30" class="n">30D</th><th data-sort="score" class="n">Sig</th><th></th></tr></thead>
+            <tbody id="wlBody"></tbody>
+          </table>
+        </div>
+      </section>
+    </aside>
+  </main>
+</div>
+<script src="js/indicators.js"></script>
+<script src="js/chart.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
