@@ -1,0 +1,154 @@
+{
+  "id": "696f681067063f37df823b9a",
+  "tcgPlayerId": "42440",
+  "setId": 604,
+  "setName": "Base Set",
+  "name": "Double Colorless Energy",
+  "cardNumber": "096/102",
+  "totalSetNumber": null,
+  "rarity": "Uncommon",
+  "cardType": "Energy",
+  "pokedexNumbers": null,
+  "hp": null,
+  "stage": null,
+  "attacks": null,
+  "weakness": null,
+  "resistance": null,
+  "retreatCost": null,
+  "artist": "Keiji Kinebuchi",
+  "pokemonType": "Special Energy",
+  "energyType": null,
+  "flavorText": null,
+  "tcgPlayerUrl": "https://www.tcgplayer.com/product/42440",
+  "prices": {
+    "market": 6.17,
+    "low": 0.5,
+    "sellers": 347,
+    "listings": 438,
+    "recentSales": 0,
+    "primaryPrinting": "Normal",
+    "lastUpdated": "2026-09-28T12:10:36.651Z",
+    "variants": {
+      "Normal": {
+        "Near Mint": {
+          "price": 6.17,
+          "listings": null,
+          "priceString": "$6.17",
+          "lastUpdated": "2026-09-28T12:10:36.651Z"
+        }
+      }
+    }
+  },
+  "imageCdnUrl": "https://tcgplayer-cdn.tcgplayer.com/product/42440_in_800x800.jpg",
+  "imageCdnUrl200": "https://tcgplayer-cdn.tcgplayer.com/product/42440_in_200x200.jpg",
+  "imageCdnUrl400": "https://tcgplayer-cdn.tcgplayer.com/product/42440_in_400x400.jpg",
+  "imageCdnUrl800": "https://tcgplayer-cdn.tcgplayer.com/product/42440_in_800x800.jpg",
+  "imageUrl": "https://tcgplayer-cdn.tcgplayer.com/product/42440_in_200x200.jpg",
+  "needsDetailedScrape": false,
+  "dataCompleteness": "complete",
+  "lastScrapedAt": "2026-09-28T12:10:36.651Z",
+  "createdAt": "2026-01-20T11:33:36.116Z",
+  "updatedAt": "2026-09-28T12:21:03.719Z",
+  "variants": {
+    "Normal": {
+      "printing": "Normal",
+      "marketPrice": 6.17,
+      "lowPrice": 0.5,
+      "conditionUsed": "Near Mint"
+    }
+  },
+  "printingsAvailable": [
+    "Normal"
+  ],
+  "externalCatalogId": "base1-96",
+  "ebay": {
+    "updatedAt": "2026-09-21T19:03:30.948Z",
+    "lastScrapedDate": "2026-09-21T19:03:30.948Z",
+    "lastEbayCheck": "2026-09-21T19:03:30.948Z",
+    "salesByGrade": {
+      "psa8": {
+        "count": 2,
+        "totalValue": 17.54,
+        "averagePrice": 8.77,
+        "medianPrice": 8.77,
+        "minPrice": 1.04,
+        "maxPrice": 16.5,
+        "marketPrice7Day": null,
+        "marketPriceMedian7Day": null,
+        "dailyVolume7Day": 0,
+        "marketTrend": null,
+        "lastMarketUpdate": "2026-09-21T19:03:30.948Z",
+        "lastSaleDate": "2026-08-11T00:00:00.000Z",
+        "smartMarketPrice": {
+          "price": 16.5,
+          "confidence": "low",
+          "method": "all_filtered_weighted",
+          "daysUsed": 358
+        }
+      },
+      "ungraded": {
+        "count": 2,
+        "totalValue": 17,
+        "averagePrice": 8.5,
+        "medianPrice": 8.5,
+        "minPrice": 5,
+        "maxPrice": 12,
+        "marketPrice7Day": null,
+        "marketPriceMedian7Day": null,
+        "dailyVolume7Day": 0,
+        "marketTrend": null,
+        "lastMarketUpdate": "2026-09-21T19:03:30.948Z",
+        "lastSaleDate": "2026-06-24T00:00:00.000Z",
+        "smartMarketPrice": {
+          "price": 8.5,
+          "confidence": "low",
+          "method": "all_filtered_weighted",
+          "daysUsed": 153
+        }
+      },
+      "cgc8_5": {
+        "count": 1,
+        "totalValue": 13.99,
+        "averagePrice": 13.99,
+        "medianPrice": 13.99,
+        "minPrice": 13.99,
+        "maxPrice": 13.99,
+        "marketPrice7Day": null,
+        "marketPriceMedian7Day": null,
+        "dailyVolume7Day": 0,
+        "marketTrend": null,
+        "lastMarketUpdate": "2026-09-21T19:03:30.948Z",
+        "lastSaleDate": "2026-07-03T00:00:00.000Z",
+        "smartMarketPrice": {
+          "price": 13.99,
+          "confidence": "low",
+          "method": "all_filtered_weighted",
+          "daysUsed": 80
+        }
+      }
+    },
+    "smartPriceOutlierByGrade": {
+      "psa8": false,
+      "ungraded": false,
+      "cgc8_5": false
+    },
+    "salesVelocity": {
+      "dailyAverage": 0,
+      "weeklyAverage": 0,
+      "monthlyTotal": 0
+    },
+    "priceHistory": {
+      "psa8": {},
+      "cgc8_5": {}
+    },
+    "totalSales": 5,
+    "totalValue": 48.53,
+    "gradesTracked": [
+      "psa8",
+      "ungraded",
+      "cgc8_5"
+    ],
+    "dateRangeStart": "2026-06-24T00:00:00.000Z",
+    "dateRangeEnd": "2026-08-11T00:00:00.000Z"
+  }
+}

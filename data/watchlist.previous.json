@@ -1,0 +1,32 @@
+{
+  "_comment": "Tracked cards. tcgPlayerId is resolved automatically by scripts/fetch.mjs on first run (costs credits once, then cached here). tier: 'daily' = snapshot every run, 'rotate' = refreshed when stale, oldest first, with leftover credits.",
+  "grades": ["psa10", "psa9"],
+  "cards": [
+    { "key": "base-charizard-4",        "name": "Charizard",            "set": "Base Set",             "number": "4",   "era": "WOTC", "query": "Charizard Base Set 4/102",           "tier": "daily", "tcgPlayerId": null },
+    { "key": "base-blastoise-2",        "name": "Blastoise",            "set": "Base Set",             "number": "2",   "era": "WOTC", "query": "Blastoise Base Set 2/102",           "tier": "daily", "tcgPlayerId": null },
+    { "key": "base-venusaur-15",        "name": "Venusaur",             "set": "Base Set",             "number": "15",  "era": "WOTC", "query": "Venusaur Base Set 15/102",           "tier": "daily", "tcgPlayerId": null },
+    { "key": "neo-lugia-9",             "name": "Lugia",                "set": "Neo Genesis",          "number": "9",   "era": "WOTC", "query": "Lugia Neo Genesis 9/111",            "tier": "daily", "tcgPlayerId": null },
+    { "key": "fossil-gengar-5",         "name": "Gengar",               "set": "Fossil",               "number": "5",   "era": "WOTC", "query": "Gengar Fossil 5/62",                 "tier": "rotate", "tcgPlayerId": null },
+    { "key": "tr-dark-charizard-4",     "name": "Dark Charizard",       "set": "Team Rocket",          "number": "4",   "era": "WOTC", "query": "Dark Charizard Team Rocket 4/82",    "tier": "daily", "tcgPlayerId": null },
+    { "key": "neodisc-umbreon-13",      "name": "Umbreon",              "set": "Neo Discovery",        "number": "13",  "era": "WOTC", "query": "Umbreon Neo Discovery 13/75",        "tier": "rotate", "tcgPlayerId": null },
+    { "key": "deoxys-rayquaza-gs-107",  "name": "Rayquaza Gold Star",   "set": "EX Deoxys",            "number": "107", "era": "EX",   "query": "Rayquaza Gold Star Deoxys 107",      "tier": "rotate", "tcgPlayerId": null },
+    { "key": "pop5-umbreon-gs-17",      "name": "Umbreon Gold Star",    "set": "POP Series 5",         "number": "17",  "era": "EX",   "query": "Umbreon Gold Star POP Series 5 17",  "tier": "rotate", "tcgPlayerId": null },
+    { "key": "evo-charizard-11",        "name": "Charizard",            "set": "Evolutions",           "number": "11",  "era": "XY",   "query": "Charizard Evolutions 11/108",        "tier": "rotate", "tcgPlayerId": null },
+    { "key": "evs-umbreon-vmax-215",    "name": "Umbreon VMAX (Alt)",   "set": "Evolving Skies",       "number": "215", "era": "SWSH", "query": "Umbreon VMAX 215 Evolving Skies",    "tier": "daily", "tcgPlayerId": null },
+    { "key": "evs-rayquaza-vmax-218",   "name": "Rayquaza VMAX (Alt)",  "set": "Evolving Skies",       "number": "218", "era": "SWSH", "query": "Rayquaza VMAX 218 Evolving Skies",   "tier": "daily", "tcgPlayerId": null },
+    { "key": "evs-espeon-vmax-270",     "name": "Espeon VMAX (Alt)",    "set": "Evolving Skies",       "number": "270", "era": "SWSH", "query": "Espeon VMAX 270 Evolving Skies",     "tier": "daily", "tcgPlayerId": null },
+    { "key": "evs-sylveon-vmax-212",    "name": "Sylveon VMAX (Alt)",   "set": "Evolving Skies",       "number": "212", "era": "SWSH", "query": "Sylveon VMAX 212 Evolving Skies",    "tier": "rotate", "tcgPlayerId": null },
+    { "key": "brs-charizard-v-154",     "name": "Charizard V (Alt)",    "set": "Brilliant Stars",      "number": "154", "era": "SWSH", "query": "Charizard V 154 Brilliant Stars",    "tier": "daily", "tcgPlayerId": null },
+    { "key": "fst-gengar-vmax-271",     "name": "Gengar VMAX (Alt)",    "set": "Fusion Strike",        "number": "271", "era": "SWSH", "query": "Gengar VMAX 271 Fusion Strike",      "tier": "daily", "tcgPlayerId": null },
+    { "key": "lor-giratina-v-186",      "name": "Giratina V (Alt)",     "set": "Lost Origin",          "number": "186", "era": "SWSH", "query": "Giratina V 186 Lost Origin",         "tier": "daily", "tcgPlayerId": null },
+    { "key": "sit-lugia-v-186",         "name": "Lugia V (Alt)",        "set": "Silver Tempest",       "number": "186", "era": "SWSH", "query": "Lugia V 186 Silver Tempest",         "tier": "daily", "tcgPlayerId": null },
+    { "key": "viv-pikachu-vmax-188",    "name": "Pikachu VMAX (Rainbow)","set": "Vivid Voltage",       "number": "188", "era": "SWSH", "query": "Pikachu VMAX 188 Vivid Voltage",     "tier": "rotate", "tcgPlayerId": null },
+    { "key": "mew-charizard-ex-199",    "name": "Charizard ex (SIR)",   "set": "151",                  "number": "199", "era": "SV",   "query": "Charizard ex 199 151",               "tier": "daily", "tcgPlayerId": null },
+    { "key": "mew-mew-ex-193",          "name": "Mew ex (SIR)",         "set": "151",                  "number": "193", "era": "SV",   "query": "Mew ex 193 151",                     "tier": "daily", "tcgPlayerId": null },
+    { "key": "obf-charizard-ex-223",    "name": "Charizard ex (SIR)",   "set": "Obsidian Flames",      "number": "223", "era": "SV",   "query": "Charizard ex 223 Obsidian Flames",   "tier": "daily", "tcgPlayerId": null },
+    { "key": "pal-iono-269",            "name": "Iono (SIR)",           "set": "Paldea Evolved",       "number": "269", "era": "SV",   "query": "Iono 269 Paldea Evolved",            "tier": "rotate", "tcgPlayerId": null },
+    { "key": "paf-charizard-ex-234",    "name": "Charizard ex (SIR)",   "set": "Paldean Fates",        "number": "234", "era": "SV",   "query": "Charizard ex 234 Paldean Fates",     "tier": "daily", "tcgPlayerId": null },
+    { "key": "ssp-pikachu-ex-238",      "name": "Pikachu ex (SIR)",     "set": "Surging Sparks",       "number": "238", "era": "SV",   "query": "Pikachu ex 238 Surging Sparks",      "tier": "daily", "tcgPlayerId": null },
+    { "key": "pre-umbreon-ex-161",      "name": "Umbreon ex (SIR)",     "set": "Prismatic Evolutions", "number": "161", "era": "SV",   "query": "Umbreon ex 161 Prismatic Evolutions","tier": "daily", "tcgPlayerId": null }
+  ]
+}
