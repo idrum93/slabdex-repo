@@ -29,6 +29,8 @@ jobs:
           PPT_API_KEY: ${{ secrets.PPT_API_KEY }}
           PPT_BUDGET: ${{ github.event.inputs.budget || '90' }}
         run: node scripts/fetch.mjs
+      - name: Write market brief
+        run: node scripts/brief.mjs
       - name: Commit data
         run: |
           git config user.name  "slabdex-bot"
