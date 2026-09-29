@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-29T16:52:58.488Z",
+  "generated": "2026-09-29T22:05:56.533Z",
   "briefs": [
     {
       "asOf": "2026-09-28",
@@ -13,7 +13,7 @@
           "items": [
             {
               "k": "idx:all",
-              "text": "All tracked 113 · +13% 30D · +14% 90D",
+              "text": "All tracked 113 · +15% 30D · +17% 90D",
               "tone": "good"
             }
           ]
@@ -33,7 +33,7 @@
           "items": [
             {
               "k": "idx:set:neo-genesis",
-              "text": "Neo Genesis 94",
+              "text": "Neo Genesis 100",
               "tone": "good"
             },
             {
@@ -42,8 +42,8 @@
               "tone": "good"
             },
             {
-              "k": "idx:set:legendary-collection",
-              "text": "Legendary Collection 76",
+              "k": "idx:set:gym-heroes",
+              "text": "Gym Heroes 75",
               "tone": "good"
             }
           ]
@@ -52,13 +52,13 @@
           "label": "Ramping up",
           "items": [
             {
-              "k": "idx:set:gym-heroes",
-              "text": "Gym Heroes (30D +51%, +90 pts faster than prior 30D)",
+              "k": "idx:set:jungle",
+              "text": "Jungle (30D +51%, +102 pts faster than prior 30D)",
               "tone": "good"
             },
             {
-              "k": "idx:set:jungle",
-              "text": "Jungle (30D +39%, +90 pts faster than prior 30D)",
+              "k": "idx:set:gym-heroes",
+              "text": "Gym Heroes (30D +51%, +90 pts faster than prior 30D)",
               "tone": "good"
             }
           ]
@@ -82,13 +82,13 @@
               "tone": "bad"
             },
             {
-              "k": "idx:set:fossil",
-              "text": "Fossil 17",
+              "k": "idx:set:base-set-2",
+              "text": "Base Set 2 20",
               "tone": "bad"
             },
             {
-              "k": "idx:set:neo-destiny",
-              "text": "Neo Destiny -6% 30D",
+              "k": "idx:set:gym-challenge",
+              "text": "Gym Challenge -2% 30D",
               "tone": "bad"
             }
           ]
@@ -98,12 +98,12 @@
           "items": [
             {
               "k": "idx:era:wotc-vintage",
-              "text": "WOTC Vintage +15%",
+              "text": "WOTC Vintage +20%",
               "tone": "good"
             },
             {
               "k": "idx:era:wotc-neo-e-card",
-              "text": "WOTC Neo & e-Card +13%",
+              "text": "WOTC Neo & e-Card +14%",
               "tone": "good"
             },
             {
@@ -118,7 +118,7 @@
           "items": [
             {
               "k": "neo-genesis-typhlosion-17-17",
-              "text": "Typhlosion (17) 1st Ed (Neo Genesis): extended, +161% 30D, +92% vs its set, sales picking up",
+              "text": "Typhlosion (17) 1st Ed (Neo Genesis): extended, +161% 30D, +95% vs its set, sales picking up",
               "tone": "warn"
             },
             {
@@ -131,7 +131,7 @@
       ]
     },
     {
-      "asOf": "2026-09-28",
+      "asOf": "2026-09-29",
       "grade": "raw",
       "gradeLabel": "RAW NM",
       "cards": 47,
@@ -161,18 +161,18 @@
           "label": "Strongest signals",
           "items": [
             {
-              "k": "idx:set:neo-genesis",
-              "text": "Neo Genesis 72",
-              "tone": "good"
-            },
-            {
               "k": "idx:set:team-rocket",
-              "text": "Team Rocket 65",
+              "text": "Team Rocket 71",
               "tone": "good"
             },
             {
-              "k": "idx:set:neo-destiny",
-              "text": "Neo Destiny 56",
+              "k": "idx:set:neo-genesis",
+              "text": "Neo Genesis 71",
+              "tone": "good"
+            },
+            {
+              "k": "idx:set:fossil",
+              "text": "Fossil 63",
               "tone": "good"
             }
           ]
@@ -217,7 +217,7 @@
             },
             {
               "k": "idx:set:jungle",
-              "text": "Jungle 22",
+              "text": "Jungle 20",
               "tone": "bad"
             }
           ]
@@ -232,7 +232,7 @@
             },
             {
               "k": "idx:era:wotc-vintage",
-              "text": "WOTC Vintage +2%",
+              "text": "WOTC Vintage +3%",
               "tone": "good"
             },
             {
@@ -246,13 +246,13 @@
           "label": "Cards to note",
           "items": [
             {
-              "k": "jungle-vaporeon-12-12~alt",
-              "text": "Vaporeon (12) 1st Ed (Jungle): extended, +68% 30D, +74% vs its set, sales picking up",
+              "k": "fossil-lapras-10-10~alt",
+              "text": "Lapras (10) 1st Ed (Fossil): extended, +96% 30D, +84% vs its set",
               "tone": "warn"
             },
             {
-              "k": "fossil-zapdos-15-15~alt",
-              "text": "Zapdos (15) 1st Ed (Fossil): extended, +14% 30D, +13% vs its set, sales picking up",
+              "k": "jungle-vaporeon-12-12~alt",
+              "text": "Vaporeon (12) 1st Ed (Jungle): extended, +68% 30D, +73% vs its set, sales picking up",
               "tone": "warn"
             }
           ]
@@ -271,7 +271,7 @@
           "items": [
             {
               "k": "idx:all",
-              "text": "All tracked 160 · -3% 30D · +6% 90D",
+              "text": "All tracked 163 · -1% 30D · +8% 90D",
               "tone": "bad"
             }
           ]
@@ -290,18 +290,18 @@
           "label": "Strongest signals",
           "items": [
             {
-              "k": "idx:set:legendary-collection",
-              "text": "Legendary Collection 76",
-              "tone": "good"
-            },
-            {
               "k": "idx:set:base-set",
               "text": "Base Set 74",
               "tone": "good"
             },
             {
+              "k": "idx:set:legendary-collection",
+              "text": "Legendary Collection 73",
+              "tone": "good"
+            },
+            {
               "k": "idx:set:neo-destiny",
-              "text": "Neo Destiny 69",
+              "text": "Neo Destiny 72",
               "tone": "good"
             }
           ]
@@ -310,13 +310,13 @@
           "label": "Ramping up",
           "items": [
             {
-              "k": "idx:set:base-set",
-              "text": "Base Set (30D +21%, +14 pts faster than prior 30D)",
+              "k": "idx:set:neo-discovery",
+              "text": "Neo Discovery (30D +1%, +16 pts faster than prior 30D)",
               "tone": "good"
             },
             {
-              "k": "idx:set:neo-genesis",
-              "text": "Neo Genesis (30D +11%, +11 pts faster than prior 30D)",
+              "k": "idx:set:base-set",
+              "text": "Base Set (30D +21%, +14 pts faster than prior 30D)",
               "tone": "good"
             }
           ]
@@ -335,18 +335,18 @@
           "label": "Lagging",
           "items": [
             {
-              "k": "idx:set:jungle",
-              "text": "Jungle 18",
+              "k": "idx:set:neo-revelation",
+              "text": "Neo Revelation 19",
               "tone": "bad"
             },
             {
-              "k": "idx:set:neo-revelation",
-              "text": "Neo Revelation 21",
+              "k": "idx:set:jungle",
+              "text": "Jungle 21",
               "tone": "bad"
             },
             {
               "k": "idx:set:fossil",
-              "text": "Fossil -36% 30D",
+              "text": "Fossil -21% 30D",
               "tone": "bad"
             }
           ]
@@ -361,12 +361,12 @@
             },
             {
               "k": "idx:era:wotc-neo-e-card",
-              "text": "WOTC Neo & e-Card +0%",
+              "text": "WOTC Neo & e-Card +1%",
               "tone": "good"
             },
             {
               "k": "idx:era:wotc-vintage",
-              "text": "WOTC Vintage -8%",
+              "text": "WOTC Vintage -5%",
               "tone": "bad"
             }
           ]
@@ -375,9 +375,9 @@
           "label": "Cards to note",
           "items": [
             {
-              "k": "neo-discovery-umbreon-13-13~alt",
-              "text": "Umbreon (13) 1st Ed (Neo Discovery): early strength, +17% 30D, +23% vs its set, sales picking up",
-              "tone": "good"
+              "k": "neo-revelation-suicune-14-14~alt",
+              "text": "Suicune (14) 1st Ed (Neo Revelation): extended, +33% 30D, +45% vs its set, sales picking up",
+              "tone": "warn"
             },
             {
               "k": "skyridge-ho-oh-149",
@@ -394,7 +394,7 @@
       ]
     },
     {
-      "asOf": "2026-09-28",
+      "asOf": "2026-09-29",
       "grade": "psa9",
       "gradeLabel": "PSA 9",
       "cards": 48,
@@ -405,7 +405,7 @@
           "items": [
             {
               "k": "idx:all",
-              "text": "All tracked 119 · +8% 30D · +13% 90D",
+              "text": "All tracked 121 · +13% 30D · +15% 90D",
               "tone": "good"
             }
           ]
@@ -414,8 +414,8 @@
           "label": "Leading set",
           "items": [
             {
-              "k": "idx:set:neo-discovery",
-              "text": "Neo Discovery 206, +34% in 30D",
+              "k": "idx:set:jungle",
+              "text": "Jungle 135, +64% in 30D",
               "tone": "good"
             }
           ]
@@ -424,18 +424,18 @@
           "label": "Strongest signals",
           "items": [
             {
-              "k": "idx:set:jungle",
-              "text": "Jungle 90",
+              "k": "idx:set:neo-destiny",
+              "text": "Neo Destiny 91",
               "tone": "good"
             },
             {
-              "k": "idx:set:neo-discovery",
-              "text": "Neo Discovery 83",
+              "k": "idx:set:jungle",
+              "text": "Jungle 83",
               "tone": "good"
             },
             {
               "k": "idx:set:fossil",
-              "text": "Fossil 81",
+              "text": "Fossil 80",
               "tone": "good"
             }
           ]
@@ -444,13 +444,13 @@
           "label": "Ramping up",
           "items": [
             {
-              "k": "idx:set:neo-discovery",
-              "text": "Neo Discovery (30D +34%, +57 pts faster than prior 30D)",
+              "k": "idx:set:jungle",
+              "text": "Jungle (30D +64%, +76 pts faster than prior 30D)",
               "tone": "good"
             },
             {
-              "k": "idx:set:neo-revelation",
-              "text": "Neo Revelation (30D +30%, +29 pts faster than prior 30D)",
+              "k": "idx:set:neo-discovery",
+              "text": "Neo Discovery (30D +34%, +57 pts faster than prior 30D)",
               "tone": "good"
             }
           ]
@@ -462,11 +462,6 @@
               "k": "idx:set:neo-genesis",
               "text": "Neo Genesis (30D volatility 1.6× its 90D)",
               "tone": "warn"
-            },
-            {
-              "k": "idx:set:neo-destiny",
-              "text": "Neo Destiny (30D volatility 1.4× its 90D)",
-              "tone": "warn"
             }
           ]
         },
@@ -474,13 +469,13 @@
           "label": "Lagging",
           "items": [
             {
-              "k": "idx:set:wotc-black-star-promos",
-              "text": "WOTC Black Star Promos 14",
+              "k": "idx:set:gym-challenge",
+              "text": "Gym Challenge 10",
               "tone": "bad"
             },
             {
-              "k": "idx:set:gym-challenge",
-              "text": "Gym Challenge 25",
+              "k": "idx:set:wotc-black-star-promos",
+              "text": "WOTC Black Star Promos 24",
               "tone": "bad"
             },
             {
@@ -495,12 +490,12 @@
           "items": [
             {
               "k": "idx:era:wotc-neo-e-card",
-              "text": "WOTC Neo & e-Card +15%",
+              "text": "WOTC Neo & e-Card +19%",
               "tone": "good"
             },
             {
               "k": "idx:era:wotc-vintage",
-              "text": "WOTC Vintage +3%",
+              "text": "WOTC Vintage +9%",
               "tone": "good"
             },
             {
@@ -519,11 +514,6 @@
               "tone": "warn"
             },
             {
-              "k": "gym-challenge-rocket-s-mewtwo-14",
-              "text": "Rocket's Mewtwo 1st Ed (Gym Challenge): extended, +11% 30D, +21% vs its set, sales picking up",
-              "tone": "warn"
-            },
-            {
               "k": "neo-revelation-suicune-14-14",
               "text": "Suicune (14) 1st Ed (Neo Revelation): momentum turning up on rising sales (not yet extended)",
               "tone": "good"
@@ -533,7 +523,7 @@
       ]
     },
     {
-      "asOf": "2026-09-25",
+      "asOf": "2026-09-28",
       "grade": "psa10",
       "gradeLabel": "PSA 10",
       "cards": 35,
