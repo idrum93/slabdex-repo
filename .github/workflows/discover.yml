@@ -45,9 +45,14 @@ jobs:
           else
             node scripts/discover.mjs --per-set "${{ github.event.inputs.per_set }}"
           fi
+      - name: Write market brief
+        if: always()
+        run: node scripts/brief.mjs || true
       - name: Show report
         if: always()
-        run: cat data/discovery/report.md >> "$GITHUB_STEP_SUMMARY" || true
+        run: |
+          cat data/brief.md >> "$GITHUB_STEP_SUMMARY" || true
+          cat data/discovery/report.md >> "$GITHUB_STEP_SUMMARY" || true
       - name: Commit data
         run: |
           git config user.name  "slabdex-bot"
