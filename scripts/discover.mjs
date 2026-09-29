@@ -202,7 +202,7 @@ async function main() {
   for (const x of short) {
     const key = keyOf(x);
     let s = await loadSeries(key);
-    const fresh = s.backfill?.v === 3 && (s.backfill?.grades || []).join() === GRADES.join(); // v3 = all grades + raw by printing
+    const fresh = s.backfill?.v === 3 && (s.backfill?.grades || []).join() === GRADES.join() && (s.backfill?.days ?? 0) >= DAYS; // v3 = all grades + raw by printing; a longer --days refetches
     if (!FROM_CANDIDATES && !fresh) {
       try {
         const j = await api.get('/cards', { tcgPlayerId: x.tcgPlayerId, includeEbay: true, includeHistory: true, days: DAYS }, 3);
@@ -226,6 +226,12 @@ async function main() {
     x.outShare = total ? r.out.length / total : 0; x.split = r.split; x.kind = kind; x.altDays = r.alt.length;
     note(`  ${key}: ${PRIMARY} ${x.days} clean days${r.split ? ` (${r.split.mainLabel}; +${r.alt.length} ${r.split.altLabel})` : ''}${r.out.length ? `, ${r.out.length} junk` : ''}, median ${x.med ?? '—'}`);
   }
+
+  // How far back did the provider actually go? (Plan caps show up as a hard common start date.)
+  const firsts = [];
+  for (const x of short) { const s = await loadSeries(keyOf(x)); for (const a of [...Object.values(s.grades || {}), ...Object.values(s.raw || {})]) if (a?.length) firsts.push(a[0].t); }
+  firsts.sort();
+  if (firsts.length) { const span = Math.round((Date.parse(TODAY) - Date.parse(firsts[0])) / 864e5); note(`History reach: earliest point ${firsts[0]} (${span} days back; requested ${DAYS})`); variantNotes.push(`History reach: earliest stored point ${firsts[0]}, ${span} days back (requested ${DAYS}).`); }
 
   // 5. final pick
   const chosen = finalPick(short);
