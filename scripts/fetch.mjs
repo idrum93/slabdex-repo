@@ -3,7 +3,8 @@
 //
 // Strategy: the free tier only returns ~3 days of history, so we take ONE snapshot per card
 // per day and accumulate our own history in data/prices/<key>.json. Git is the database.
-// Cost: 2 credits per card (1 base + 1 eBay graded). Long history comes from discover.mjs.
+// Cost: 3 credits per card (base + eBay graded + raw price history), each card every 2 days
+// → 48 cards ≈ 72 credits/day on the free tier. Long history comes from discover.mjs.
 //
 // Usage:
 //   PPT_API_KEY=xxx node scripts/fetch.mjs              # normal daily run
@@ -26,7 +27,7 @@ const DRY = flag('--dry-run');
 const ONLY = opt('--only', null);
 const PROBE = opt('--probe', null);
 const TODAY = new Date().toISOString().slice(0, 10);
-const STALE_DAYS_ROTATE = 2;
+const STALE_DAYS = 2; // every card every 2 days; the 3-day history window means no sale or price day is missed
 
 const log = [];
 const note = (m) => { console.log(m); log.push(m); };
@@ -45,7 +46,7 @@ async function resolveId(card) {
 }
 
 async function snapshot(card, grades) {
-  const j = await api.get('/cards', { tcgPlayerId: card.tcgPlayerId, includeEbay: true, days: 3 }, 2);
+  const j = await api.get('/cards', { tcgPlayerId: card.tcgPlayerId, includeEbay: true, includeHistory: true, days: 3 }, 3);
   const c = asList(j)[0];
   if (!c) { note(`  ✗ ${card.key}: empty response`); return false; }
   const s = await loadSeries(card.key);
@@ -73,11 +74,11 @@ async function main() {
     const s = await loadSeries(c.key);
     const lastReal = s.source === 'demo' ? null : s.updated?.slice(0, 10) ?? null;
     const age = lastReal ? (Date.parse(TODAY) - Date.parse(lastReal)) / 864e5 : Infinity;
-    if (!ONLY && (age < 1 || (c.tier === 'rotate' && age < STALE_DAYS_ROTATE))) continue;
+    if (!ONLY && age < (c.tier === 'daily' ? 1 : STALE_DAYS)) continue;
     due.push({ c, age });
   }
   due.sort((a, b) => (a.c.tier === b.c.tier ? b.age - a.age : a.c.tier === 'daily' ? -1 : 1));
-  const est = due.reduce((n, m) => n + 2 + (m.c.tcgPlayerId ? 0 : 3), 0);
+  const est = due.reduce((n, m) => n + 3 + (m.c.tcgPlayerId ? 0 : 3), 0);
   note(`SlabDex fetch ${TODAY}: ${due.length} cards due, est ${est} credits, budget ${BUDGET}`);
   if (DRY) { due.forEach((m) => note(`  · ${m.c.key} [${m.c.tier}]${m.c.tcgPlayerId ? '' : ' (needs id)'}`)); return; }
   if (!KEY) throw new Error('PPT_API_KEY not set (add it as a GitHub Actions secret)');

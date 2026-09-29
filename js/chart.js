@@ -264,6 +264,15 @@
         }
         return;
       }
+      if (s.type === 'dots') {
+        ctx.fillStyle = s.color;
+        for (let i = a; i <= z; i++) {
+          const v = s.data[i]; if (!isN(v)) continue;
+          const vv = tf(v); if (!isN(vv)) continue;
+          ctx.beginPath(); ctx.arc(this.xOf(i), y(vv), Math.max(1.8, Math.min(3, this.barW * 0.4)), 0, Math.PI * 2); ctx.fill();
+        }
+        return;
+      }
       if (s.type === 'band') {
         ctx.beginPath(); let started = false; const back = [];
         for (let i = a; i <= z; i++) {

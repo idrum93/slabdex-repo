@@ -3,8 +3,9 @@
   "perSet": 3,
   "shortlist": 6,
   "minSaleDays": 4,
+  "maxOutlierShare": 0.35,
   "primaryGrade": "psa9",
-  "grades": ["psa9", "psa10"],
+  "grades": ["psa7", "psa8", "psa9", "psa10"],
   "minSales": { "psa9": 8, "psa10": 3 },
   "sets": [
     { "label": "Base Set",             "names": ["Base Set"],                              "era": "WOTC Vintage" },
@@ -25,5 +26,10 @@
     { "label": "Skyridge",             "names": ["Skyridge"],                              "era": "WOTC Neo & e-Card" },
     { "label": "WOTC Black Star Promos", "names": ["WoTC Promo", "Wizards Black Star Promos", "WOTC Black Star Promos"], "era": "WOTC Promo", "allRarities": true }
   ],
-  "pins": []
+  "pins": [
+    { "set": "Base Set", "number": "4", "name": "Charizard" }
+  ],
+  "exclude": [
+    { "set": "Skyridge", "number": "146", "name": "Charizard" }
+  ]
 }

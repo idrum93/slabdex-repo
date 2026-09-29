@@ -124,6 +124,20 @@ export function mergeCard(s, c, grades, today) {
       upsert(sn, { t: today, sm: num(blk.smartMarketPrice?.price) ?? null, conf: blk.smartMarketPrice?.confidence ?? null, med: num(blk.medianPrice), cnt: salesOf(blk), v7: num(blk.dailyVolume7Day) });
     }
   }
+  // Raw Near Mint price history per printing (TCGplayer). Exact 1st Ed / Unlimited separation.
+  const variants = c.priceHistory?.variants;
+  if (variants && typeof variants === 'object') {
+    s.raw ||= {};
+    for (const [printing, conds] of Object.entries(variants)) {
+      const h = conds?.['Near Mint']?.history;
+      if (!Array.isArray(h)) continue;
+      const arr = (s.raw[printing] ||= []);
+      for (const x of h) {
+        const t = String(x.date || '').slice(0, 10), p = num(x.market);
+        if (p != null && p > 0 && /^\d{4}-\d{2}-\d{2}$/.test(t)) upsert(arr, { t, p: round(p), n: num(x.volume) });
+      }
+    }
+  }
   s.updated = new Date().toISOString();
   s.tcgPlayerId = String(c.tcgPlayerId ?? s.tcgPlayerId ?? '');
   s.printings = c.printingsAvailable || (c.variants ? Object.keys(c.variants) : s.printings || null);

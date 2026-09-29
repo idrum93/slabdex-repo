@@ -106,5 +106,6 @@
     return Math.sqrt(r.reduce((s, x) => s + (x - m) ** 2, 0) / r.length) * Math.sqrt(365) * 100;
   }
 
-  window.Ind = { sma, ema, stdev, bollinger, rsi, macd, roc, ffill, lastN, lastIdx, firstIdx, chg, volatility, isN };
+  const api = { sma, ema, stdev, bollinger, rsi, macd, roc, ffill, lastN, lastIdx, firstIdx, chg, volatility, isN };
+  if (typeof module !== "undefined" && module.exports) module.exports = api; else window.Ind = api;
 })();

@@ -1,15 +1,18 @@
-// SlabDex app: loads watchlist + price series, builds the chart panes, signals and watchlist.
+// SlabDex app: loads watchlist + price series, cleans sales, builds card lines and set/era indexes,
+// then drives the chart panes, signal panel and watchlist.
 (function () {
   const $ = (id) => document.getElementById(id);
   const { money, pct } = TerminalChart.fmt;
   const I = window.Ind;
+  const C = window.Clean;
 
-  const state = { key: null, grade: 'psa10', vs: 'index', range: 365, res: 'D', ind: { sma20: 1, sma50: 1, bb: 0, vol: 1, rs: 1, rsi: 1, macd: 1 }, sort: 'score', dir: -1 };
+  const state = { v: 3, key: null, grade: 'psa9', vs: 'idx:all', range: 365, res: 'D', ind: { sma20: 1, sma50: 1, bb: 0, vol: 1, rs: 1, rsi: 1, macd: 1 }, sort: 'score', dir: -1, wlView: 'cards' };
   let hadSaved = false;
-  try { const sv = JSON.parse(localStorage.getItem('slabdex') || 'null'); if (sv) { Object.assign(state, sv); hadSaved = true; } } catch (e) {}
+  try { const sv = JSON.parse(localStorage.getItem('slabdex') || 'null'); if (sv && sv.v === 3) { Object.assign(state, sv); hadSaved = true; } } catch (e) {} // older saved layouts are ignored
   const save = () => { try { localStorage.setItem('slabdex', JSON.stringify(state)); } catch (e) {} };
 
   let WL = null, SERIES = {}, STATUS = null, chart = null, model = null;
+  const slug = (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 
   // ---------- data loading (static JSON from the repo, or an inlined bundle) ----------
   async function load() {
@@ -21,40 +24,31 @@
     WL.cards.forEach((c, i) => { if (res[i]) SERIES[c.key] = res[i]; });
   }
 
-  // ---------- model: one shared daily axis, forward-filled closes, chain-linked index ----------
-  function buildModel(grade) {
-    const dates = new Set();
-    const cards = WL.cards.filter((c) => SERIES[c.key]?.grades?.[grade]?.length);
-    cards.forEach((c) => SERIES[c.key].grades[grade].forEach((p) => { if (!p.x) dates.add(p.t); }));
-    const axis = fillDays([...dates].sort());
-    const pos = new Map(axis.map((d, i) => [d, i]));
-    const by = {};
-    cards.forEach((c) => {
-      const raw = new Array(axis.length).fill(null), vol = new Array(axis.length).fill(null);
-      SERIES[c.key].grades[grade].forEach((p) => { if (p.x) return; const i = pos.get(p.t); raw[i] = p.p; vol[i] = p.n ?? p.v7 ?? null; });
-      const first = I.firstIdx(raw);
-      if (!SERIES[c.key].source?.startsWith('demo')) for (let i = Math.max(0, first); i < vol.length; i++) if (vol[i] == null) vol[i] = 0; // no sale that day
-      const close = I.ffill(raw).map((v, i) => (i < first ? null : v));
-      by[c.key] = { card: c, close, vol, demo: SERIES[c.key].source === 'demo' };
-    });
-    // Equal-weight, chain-linked index (base 100). Cards can join late without distorting it.
-    const idx = new Array(axis.length).fill(null);
-    let level = 100;
-    for (let i = 0; i < axis.length; i++) {
-      let s = 0, k = 0;
-      for (const key in by) { const a = by[key].close; if (i > 0 && I.isN(a[i]) && I.isN(a[i - 1]) && a[i - 1] > 0) { s += a[i] / a[i - 1]; k++; } }
-      if (k) level *= s / k;
-      const any = Object.values(by).some((b) => I.isN(b.close[i]));
-      idx[i] = any ? level : null;
+  const buildModel = (grade) => Model.buildModel(WL, SERIES, grade);
+  const signals = (close, vol, bench) => Model.signals(close, vol, bench, { dense: model?.dense });
+
+  // Resolve a symbol id to a drawable series. 'set' / 'era' are relative to the main symbol.
+  function resolve(id, rel) {
+    if (!id || id === 'none') return null;
+    if (id === 'set' || id === 'era') {
+      const m = model.by[rel] ? model.by[rel].card : null;
+      const mi = model.idx[rel];
+      let tid = null;
+      if (m) tid = id === 'set' ? 'idx:set:' + (m.basket || slug(m.set)) : 'idx:era:' + slug(m.era);
+      else if (mi) tid = id === 'era' && mi.era ? 'idx:era:' + slug(mi.era) : 'idx:all';
+      if (!tid || tid === rel || !model.idx[tid]) tid = rel === 'idx:all' ? null : 'idx:all';
+      return tid ? resolve(tid) : null;
     }
-    return { axis, by, index: idx };
+    const b = model.by[id];
+    if (b) return { id, isIndex: false, name: b.card.name, card: b.card, close: b.close, sales: b.sales, vol: b.vol, demo: b.demo, saleN: b.saleN };
+    const x = model.idx[id];
+    if (x) return { id, isIndex: true, name: x.name, index: x, close: x.close, vol: x.vol };
+    return null;
   }
-  function fillDays(sorted) { // continuous calendar days so gaps in sales don't compress time
-    if (!sorted.length) return [];
-    const out = [], end = Date.parse(sorted[sorted.length - 1]);
-    for (let t = Date.parse(sorted[0]); t <= end; t += 864e5) out.push(new Date(t).toISOString().slice(0, 10));
-    return out;
-  }
+  const lineTag = (c) => (c.line ? ` · ${c.line}${c.est ? ' (est.)' : ''}` : '');
+  const cardLabel = (c) => `${c.name}${lineTag(c)} — ${c.set} #${c.number}`;
+  const idxLabel = (x) => `${x.kind === 'all' ? 'All tracked' : x.name} index (${x.members.length})`;
+  const symName = (r) => (r.isIndex ? `${r.index.kind === 'all' ? 'ALL' : r.name.toUpperCase()} IDX` : r.name + (r.card.line ? ` ${r.card.line}` : ''));
 
   function weekly(axis, close, vol) {
     const W = [], C = [], V = [];
@@ -68,54 +62,6 @@
       if (vol && I.isN(vol[i])) { cur.v += vol[i]; cur.vn++; }
     });
     return { dates: W, ohlc: C.map((x) => (x.o == null ? null : { o: x.o, h: x.h, l: x.l, c: x.c })), close: C.map((x) => x.c), vol: C.map((x) => (x.vn ? (x.v / x.vn) * 7 : null)) };
-  }
-
-  // ---------- signals ----------
-  function signals(close, vol, bench) {
-    const n = I.lastIdx(close);
-    const hist = n + 1 - I.firstIdx(close);
-    const out = { days: hist };
-    if (n < 0) return out;
-    const s20 = I.sma(close, 20), s50 = I.sma(close, 50), r = I.rsi(close, 14), m = I.macd(close);
-    const last = close[n];
-    out.last = last;
-    out.c7 = I.chg(close, 7); out.c30 = I.chg(close, 30); out.c90 = I.chg(close, 90); out.c365 = I.chg(close, 365);
-    out.rsi = r[n];
-    out.macdH = m.hist[n]; out.macdRising = I.isN(m.hist[n]) && I.isN(m.hist[n - 3]) ? m.hist[n] > m.hist[n - 3] : null;
-    out.distS50 = I.isN(s50[n]) ? (last / s50[n] - 1) * 100 : null;
-    out.trendUp = I.isN(s20[n]) && I.isN(s50[n]) ? s20[n] > s50[n] : null;
-    const prior = close.slice(0, n + 1).slice(-365).filter(I.isN);
-    out.dd = prior.length ? (last / Math.max(...prior) - 1) * 100 : null;
-    out.vol30 = I.volatility(close, 30);
-    const c30p = n >= 60 && I.isN(close[n - 30]) && I.isN(close[n - 60]) ? (close[n - 30] / close[n - 60] - 1) * 100 : null;
-    out.accel = I.isN(out.c30) && I.isN(c30p) ? out.c30 - c30p : null;
-    if (bench) {
-      const rs = close.map((v, i) => (I.isN(v) && I.isN(bench[i]) && bench[i] ? v / bench[i] : null));
-      out.rs30 = I.chg(rs, 30); out.rs90 = I.chg(rs, 90);
-    }
-    if (vol) {
-      const vv = vol.slice(Math.max(0, n - 29), n + 1).filter(I.isN);
-      const now = vol.slice(Math.max(0, n - 6), n + 1).filter(I.isN);
-      const sum30 = vv.reduce((a, b) => a + b, 0);
-      out.volRatio = vv.length >= 10 && now.length && sum30 > 0 ? now.reduce((a, b) => a + b, 0) / now.length / (sum30 / vv.length) : null;
-    }
-    // Composite 0–100. Components missing data drop out and the weights renormalise.
-    const clamp = (x) => Math.max(0, Math.min(1, x));
-    const parts = [
-      [15, out.trendUp == null || out.distS50 == null ? null : (out.distS50 > 0 ? 0.6 : 0) + (out.trendUp ? 0.4 : 0)],
-      [15, out.c30 == null ? null : clamp(0.5 + out.c30 / 40) * 0.6 + (out.accel > 0 ? 0.4 : 0)],
-      [15, out.macdH == null ? null : (out.macdH > 0 ? 0.5 : 0) + (out.macdRising ? 0.5 : 0)],
-      [15, out.rsi == null ? null : out.rsi > 78 ? 0 : out.rsi > 68 ? 0.4 : out.rsi >= 50 ? 1 : out.rsi >= 40 ? 0.5 : 0.1],
-      [25, out.rs30 == null ? null : clamp(0.5 + out.rs30 / 20)],
-      [15, out.volRatio == null ? null : clamp((out.volRatio - 0.8) / 0.8)],
-    ];
-    const have = parts.filter((p) => p[1] != null);
-    if (hist < 60 || have.length < 3) { out.score = null; out.tag = ['NEED ' + Math.max(0, 60 - hist) + 'D HISTORY', 'mid']; return out; }
-    const w = have.reduce((s, p) => s + p[0], 0);
-    out.score = Math.round((have.reduce((s, p) => s + p[0] * p[1], 0) / w) * 100);
-    const ext = (out.distS50 ?? 0) > 25 || (out.rsi ?? 0) > 78;
-    out.tag = out.score >= 68 ? (ext ? ['EXTENDED', 'warn'] : ['EARLY STRENGTH', 'good']) : out.score >= 55 ? ['IMPROVING', 'good'] : out.score >= 40 ? ['NEUTRAL', 'mid'] : ['WEAK', 'bad'];
-    return out;
   }
 
   // ---------- theme for the canvas, read from CSS tokens ----------
@@ -132,41 +78,43 @@
   const alpha = (hex, a) => { const h = hex.replace('#', ''); const n = parseInt(h.length === 3 ? h.replace(/./g, '$&$&') : h, 16); return `rgba(${n >> 16 & 255},${n >> 8 & 255},${n & 255},${a})`; };
 
   // ---------- render ----------
-  function label(c) { return `${c.name} · ${c.set} #${c.number}`; }
-
   function draw({ keepView = false } = {}) {
     const T = theme();
-    const cur = model.by[state.key];
+    const cur = resolve(state.key);
     if (!cur) { chart.setData([], []); return; }
-    const vsSeries = state.vs === 'none' ? null : state.vs === 'index' ? { close: model.index, name: 'TCG INDEX' } : model.by[state.vs] ? { close: model.by[state.vs].close, name: model.by[state.vs].card.name } : null;
+    const vsSeries = state.vs === 'none' ? null : resolve(state.vs, state.key);
+    const bench0 = vsSeries && vsSeries.id !== cur.id ? vsSeries : null;
 
-    let dates = model.axis, close = cur.close, vol = cur.vol, ohlc = null, bench = vsSeries?.close || null;
+    let dates = model.axis, close = cur.close, vol = cur.vol, ohlc = null, bench = bench0?.close || null;
     if (state.res === 'W') {
       const w = weekly(dates, close, vol); dates = w.dates; close = w.close; vol = w.vol; ohlc = w.ohlc;
       if (bench) bench = weekly(model.axis, bench).close;
     }
     const f = state.res === 'W' ? { s1: 4, s2: 10, bb: 10 } : { s1: 20, s2: 50, bb: 20 }; // weekly ≈ same calendar span
     const percent = !!bench;
+    const lvl = (v) => v.toFixed(1);
     const main = [];
     if (state.ind.bb) { const b = I.bollinger(close, f.bb); main.push({ type: 'band', data: b.up.map((u, i) => ({ up: u, lo: b.lo[i] })), fill: alpha(T.cmp, 0.08), rebaseWith: close, label: 'BB', color: alpha(T.cmp, 0.5) }); }
     if (ohlc) main.push({ type: 'candle', data: ohlc, label: '', tag: true, color: T.accent });
-    else main.push({ type: 'area', data: close, color: T.accent, width: 2, fillTop: alpha(T.accent, 0.18), fillBottom: alpha(T.accent, 0), label: state.grade.toUpperCase().replace('PSA', 'PSA '), tag: true });
-    if (bench) main.push({ type: 'line', data: bench, color: T.cmp, width: 1.5, label: vsSeries.name, tag: true });
+    else main.push({ type: 'area', data: close, color: T.accent, width: 2, fillTop: alpha(T.accent, 0.18), fillBottom: alpha(T.accent, 0), label: cur.isIndex ? 'LEVEL' : `${Model.GRADE_LABEL[state.grade]}${model.dense ? '' : ' MKT'}`, tag: true });
+    if (!cur.isIndex && !ohlc && cur.sales) main.push({ type: 'dots', data: cur.sales, color: T.fg || T.text, rebaseWith: close, label: 'SALE' });
+    if (bench) main.push({ type: 'line', data: bench, color: T.cmp, width: 1.5, label: symName(bench0), tag: true });
     if (state.ind.sma20) main.push({ type: 'line', data: I.sma(close, f.s1), color: T.sma20, width: 1, label: state.res === 'W' ? 'SMA4W' : 'SMA20', rebaseWith: close });
     if (state.ind.sma50) main.push({ type: 'line', data: I.sma(close, f.s2), color: T.sma50, width: 1, label: state.res === 'W' ? 'SMA10W' : 'SMA50', rebaseWith: close });
-    if (state.ind.vol && vol.some(I.isN)) main.push({ type: 'hist', data: vol, ownScale: true, heightFrac: 0.16, color: alpha(T.muted, 0.45), label: state.res === 'W' ? 'SALES/WK' : 'SALES/D' });
+    if (state.ind.vol && vol.some(I.isN)) main.push({ type: 'hist', data: vol, ownScale: true, heightFrac: 0.16, color: alpha(T.muted, 0.45), label: model.dense ? (state.res === 'W' ? 'VOL/WK' : 'VOL/D') : state.res === 'W' ? 'SALES/WK' : 'SALES/D' });
 
-    const panes = [{ id: 'main', ratio: 5, percent, title: `${cur.card.name}  ${cur.card.set} #${cur.card.number}`, series: main }];
+    const title = cur.isIndex ? `${idxLabel(cur.index)} · base 100` : `${cur.card.name}${lineTag(cur.card)}  ${cur.card.set} #${cur.card.number}`;
+    const panes = [{ id: 'main', ratio: 5, percent, fmt: cur.isIndex ? lvl : money, title, series: main }];
     if (state.ind.rs && bench) {
       const rs = close.map((v, i) => (I.isN(v) && I.isN(bench[i]) && bench[i] ? v / bench[i] : null));
       const f0 = I.firstIdx(rs); const b0 = f0 >= 0 ? rs[f0] : 1;
       const rsn = rs.map((v) => (I.isN(v) ? (v / b0) * 100 : null));
-      panes.push({ id: 'rs', ratio: 1.3, title: `RS vs ${vsSeries.name}`, fmt: (v) => v.toFixed(1), levels: [100], series: [
+      panes.push({ id: 'rs', ratio: 1.3, title: `RS vs ${symName(bench0)}`, fmt: lvl, levels: [100], series: [
         { type: 'line', data: rsn, color: T.cmp, width: 1.5, label: 'RS' },
-        { type: 'line', data: I.sma(rsn, f.s1), color: T.sma20, width: 1, label: 'MA', fmt: (v) => v.toFixed(1) },
+        { type: 'line', data: I.sma(rsn, f.s1), color: T.sma20, width: 1, label: 'MA', fmt: lvl },
       ] });
     }
-    if (state.ind.rsi) panes.push({ id: 'rsi', ratio: 1.2, title: 'RSI 14', range: [0, 100], levels: [30, 50, 70], fmt: (v) => v.toFixed(0), series: [{ type: 'line', data: I.rsi(close, 14), color: T.sma20, width: 1.3, label: 'RSI', fmt: (v) => v.toFixed(1) }] });
+    if (state.ind.rsi) panes.push({ id: 'rsi', ratio: 1.2, title: 'RSI 14', range: [0, 100], levels: [30, 50, 70], fmt: (v) => v.toFixed(0), series: [{ type: 'line', data: I.rsi(close, 14), color: T.sma20, width: 1.3, label: 'RSI', fmt: lvl }] });
     if (state.ind.macd) {
       const m = I.macd(close);
       panes.push({ id: 'macd', ratio: 1.3, title: 'MACD 12 26 9', zeroCenter: true, fmt: (v) => v.toFixed(Math.abs(v) < 10 ? 1 : 0), series: [
@@ -176,28 +124,28 @@
       ] });
     }
     chart.theme = T;
-    const bars = state.range ? Math.ceil(state.range / (state.res === 'W' ? 7 : 1)) : dates.length;
-    chart.defaultBars = bars;
+    chart.defaultBars = state.range ? Math.ceil(state.range / (state.res === 'W' ? 7 : 1)) : dates.length;
     chart.setData(dates, panes, { keepView });
-    $('demoFlag').hidden = !cur.demo && !(state.vs !== 'none' && state.vs !== 'index' && model.by[state.vs]?.demo);
-    renderSignal(cur, vsSeries);
+    $('demoFlag').hidden = !(cur.demo || bench0?.demo);
+    renderSignal(cur, bench0);
   }
 
   function fmtP(v, d = 1) { return v == null ? '<span class="dim">—</span>' : `<span class="${v >= 0 ? 'pos' : 'neg'}">${v >= 0 ? '+' : ''}${v.toFixed(d)}%</span>`; }
 
-  function renderSignal(cur, vsSeries) {
-    const s = signals(cur.close, cur.vol, vsSeries?.close || model.index);
-    $('sigName').textContent = `${cur.card.name} · ${state.grade.toUpperCase()}`;
+  function renderSignal(cur, bench0) {
+    const bench = bench0?.close || (cur.id === 'idx:all' ? null : model.index);
+    const s = signals(cur.close, cur.vol, bench);
+    const benchName = bench0 ? symName(bench0) : cur.id === 'idx:all' ? '—' : 'ALL IDX';
+    $('sigName').textContent = `${cur.isIndex ? idxLabel(cur.index) : cur.card.name + lineTag(cur.card)} · ${Model.GRADE_LABEL[state.grade]}`;
     $('scoreVal').textContent = s.score == null ? '—' : s.score;
     $('scoreBar').style.width = (s.score ?? 0) + '%';
     const tag = $('scoreTag'); tag.textContent = s.tag?.[0] || '—'; tag.className = 'tag ' + (s.tag?.[1] || 'mid');
-    const rsName = vsSeries?.name || 'TCG INDEX';
     const rows = [
-      ['Last', s.last != null ? money(s.last) : '—'],
+      [cur.isIndex ? 'Level' : 'Last', s.last != null ? (cur.isIndex ? s.last.toFixed(1) : money(s.last)) : '—'],
       ['7D / 30D', `${fmtP(s.c7)} / ${fmtP(s.c30)}`],
       ['90D / 1Y', `${fmtP(s.c90)} / ${fmtP(s.c365)}`],
       ['Momentum accel.', s.accel == null ? '—' : `<span class="${s.accel >= 0 ? 'pos' : 'neg'}">${s.accel >= 0 ? '+' : ''}${s.accel.toFixed(1)} pts</span>`],
-      [`RS 30D vs ${rsName.length > 12 ? 'VS' : rsName}`, fmtP(s.rs30)],
+      [`RS 30D vs ${benchName}`, fmtP(s.rs30)],
       ['RS 90D', fmtP(s.rs90)],
       ['RSI 14', s.rsi == null ? '—' : `<span class="${s.rsi > 70 ? 'neg' : s.rsi >= 50 ? 'pos' : 'dim'}">${s.rsi.toFixed(0)}</span>`],
       ['MACD hist', s.macdH == null ? '—' : `<span class="${s.macdH >= 0 ? 'pos' : 'neg'}">${s.macdH >= 0 ? 'above 0' : 'below 0'} · ${s.macdRising ? 'rising' : 'falling'}</span>`],
@@ -205,35 +153,57 @@
       ['Sales pace 7D/30D', s.volRatio == null ? '—' : `<span class="${s.volRatio >= 1.2 ? 'pos' : s.volRatio < 0.8 ? 'neg' : ''}">${s.volRatio.toFixed(2)}×</span>`],
       ['Drawdown from 1Y high', fmtP(s.dd)],
       ['Volatility 30D (ann.)', s.vol30 == null ? '—' : s.vol30.toFixed(0) + '%'],
+      [cur.isIndex ? 'Members' : model.dense ? 'Price days' : 'Clean sale days', cur.isIndex ? String(cur.index.members.length) : String(cur.saleN)],
+      ...(model.dense ? [] : [['Sale days, last 90D', s.saleDays90 == null ? '—' : `<span class="${s.saleDays90 < Model.MIN_SALE_DAYS_90 ? 'neg' : ''}">${s.saleDays90}</span>`]]),
       ['History', `${s.days} days`],
     ];
     $('metrics').innerHTML = rows.map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join('');
   }
 
   function renderWatchlist() {
-    const rows = Object.values(model.by).map((b) => {
-      const s = signals(b.close, b.vol, model.index);
-      return { key: b.card.key, card: b.card, last: s.last, c30: s.c30, score: s.score, tag: s.tag, name: b.card.name };
-    });
+    const sets = state.wlView === 'sets';
+    document.querySelectorAll('#wlTabs button').forEach((b) => b.classList.toggle('on', b.dataset.v === state.wlView));
+    $('wlFirstCol').textContent = sets ? 'Index' : 'Card';
+    $('wlLastCol').textContent = sets ? 'Level' : 'Last';
+    let rows;
+    if (sets) {
+      const order = { all: 0, era: 1, set: 2 };
+      rows = Object.values(model.idx).map((x) => {
+        const s = signals(x.close, x.vol, x.id === 'idx:all' ? null : model.index);
+        return { key: x.id, name: x.name, sub: x.kind === 'all' ? `${x.members.length} cards` : x.kind === 'era' ? `era · ${x.members.length} cards` : `${x.era} · ${x.members.length} cards`, last: s.last, lastTxt: s.last != null ? s.last.toFixed(1) : '—', c30: s.c30, score: s.score, tag: s.tag, grp: order[x.kind] };
+      });
+      if (state.sort === 'score' || state.sort === 'c30' || state.sort === 'last' || state.sort === 'name') { /* sort below */ }
+    } else {
+      rows = Object.values(model.by).map((b) => {
+        const s = signals(b.close, b.vol, model.index);
+        const c = b.card;
+        return { key: c.key, name: c.name, sub: `${c.set} #${c.number}${c.line ? ' · ' + c.line + (c.est ? ' est.' : '') : ''}`, last: s.last, lastTxt: s.last != null ? money(s.last) : '—', c30: s.c30, score: s.score, tag: s.tag };
+      });
+    }
     const k = state.sort, dir = state.dir;
-    rows.sort((a, b) => { const x = a[k], y = b[k]; if (x == null) return 1; if (y == null) return -1; return (x < y ? -1 : x > y ? 1 : 0) * dir; });
+    rows.sort((a, b) => (sets ? (a.grp ?? 0) - (b.grp ?? 0) : 0) || (() => { const x = a[k], y = b[k]; if (x == null) return 1; if (y == null) return -1; return (x < y ? -1 : x > y ? 1 : 0) * dir; })());
     $('wlBody').innerHTML = rows.map((r) => {
       const cls = r.score == null ? 'na' : r.tag[1];
       return `<tr class="row${r.key === state.key ? ' sel' : ''}${r.key === state.vs ? ' cmp' : ''}" data-k="${r.key}" tabindex="0">
-        <td><span class="nm">${r.card.name}</span><span class="st">${r.card.set} #${r.card.number}${r.card.pooled ? ' · 1st+Unl' : ''}</span></td>
-        <td class="n">${r.last != null ? money(r.last) : '—'}</td>
+        <td><span class="nm">${r.name}</span><span class="st">${r.sub}</span></td>
+        <td class="n">${r.lastTxt}</td>
         <td class="n">${fmtP(r.c30, 0)}</td>
         <td class="n"><span class="pill ${cls}" title="${r.tag?.[0] || ''}">${r.score ?? '··'}</span></td>
-        <td><button class="sw${r.key === state.vs ? ' on' : ''}" data-vs="${r.key}" title="Compare against this card" aria-label="Compare against ${r.card.name}">⇄</button></td></tr>`;
+        <td><button class="sw${r.key === state.vs ? ' on' : ''}" data-vs="${r.key}" title="Compare against this" aria-label="Compare against ${r.name}">⇄</button></td></tr>`;
     }).join('');
   }
 
   function renderSelects() {
-    const cards = Object.values(model.by).map((b) => b.card);
-    $('sym').innerHTML = cards.map((c) => `<option value="${c.key}"${c.key === state.key ? ' selected' : ''}>${label(c)}</option>`).join('');
-    $('vs').innerHTML = `<option value="none">None</option><option value="index">TCG Index (all tracked)</option>` +
-      cards.filter((c) => c.key !== state.key).map((c) => `<option value="${c.key}">${label(c)}</option>`).join('');
-    $('vs').value = model.by[state.vs] || state.vs === 'index' || state.vs === 'none' ? state.vs : 'index';
+    const idxs = Object.values(model.idx);
+    const groups = (kind) => idxs.filter((x) => x.kind === kind).map((x) => `<option value="${x.id}">${idxLabel(x)}</option>`).join('');
+    const idxOpts = `<optgroup label="Indexes">${groups('all')}${groups('era')}${groups('set')}</optgroup>`;
+    const cardOpts = (skip) => `<optgroup label="Cards">${Object.values(model.by).filter((b) => b.card.key !== skip).map((b) => `<option value="${b.card.key}">${cardLabel(b.card)}</option>`).join('')}</optgroup>`;
+    $('sym').innerHTML = idxOpts + cardOpts(null);
+    $('sym').value = state.key;
+    $('vs').innerHTML = `<option value="none">None</option><option value="set">Own set index</option><option value="era">Own era index</option>` + idxOpts + cardOpts(state.key);
+    const valid = ['none', 'set', 'era'].includes(state.vs) || model.by[state.vs] || model.idx[state.vs];
+    if (!valid || state.vs === state.key) state.vs = state.key === 'idx:all' ? 'none' : 'idx:all';
+    $('vs').value = state.vs;
   }
 
   function syncButtons() {
@@ -243,20 +213,34 @@
   }
 
   function renderStatus() {
-    const anyDemo = Object.values(model.by).some((b) => b.demo);
-    const real = Object.values(model.by).filter((b) => !b.demo).length;
+    const all = Object.values(model.by).filter((b) => !b.card.virtual);
+    const anyDemo = all.some((b) => b.demo);
     const last = STATUS?.lastRun ? new Date(STATUS.lastRun).toISOString().slice(0, 16).replace('T', ' ') + ' UTC' : null;
+    const nSets = Object.values(model.idx).filter((x) => x.kind === 'set').length;
     $('status').textContent = anyDemo
-      ? `DEMO · ${real}/${Object.keys(model.by).length} cards live${last ? ' · last fetch ' + last : ''}`
-      : `LIVE · ${real} cards · ${last || 'no fetch log'}${STATUS?.dailyRemaining != null ? ' · ' + STATUS.dailyRemaining + ' credits left' : ''}`;
+      ? `DEMO · ${all.filter((b) => !b.demo).length}/${all.length} cards live${last ? ' · last fetch ' + last : ''}`
+      : `LIVE · ${all.length} cards · ${nSets} sets · ${last || 'no fetch log'}${STATUS?.dailyRemaining != null ? ' · ' + STATUS.dailyRemaining + ' credits left' : ''}`;
+  }
+
+  function renderBrief() {
+    const b = Model.brief(model);
+    const esc = (t) => String(t).replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+    $('briefHead').textContent = `BRIEF · ${b.gradeLabel} · ${b.asOf || '—'} · ${b.scoredCards}/${b.cards} cards scoreable`;
+    $('briefBody').innerHTML = b.lines.map((l) => `<div class="bl"><span class="bk">${l.label}</span>${l.items.map((i) => `<button class="bi ${i.tone || ''}" data-k="${i.k}">${esc(i.text)}</button>`).join('<span class="sep">·</span>')}</div>`).join('');
   }
 
   function refresh(opts) { save(); syncButtons(); renderWatchlist(); draw(opts); }
 
   function rebuild() {
     model = buildModel(state.grade);
-    if (!model.by[state.key]) state.key = Object.keys(model.by)[0] || null;
-    renderSelects(); renderStatus(); refresh();
+    if (!model.by[state.key] && !model.idx[state.key]) state.key = Object.keys(model.by)[0] || 'idx:all';
+    renderSelects(); renderStatus(); renderBrief(); refresh();
+  }
+
+  function select(key) {
+    state.key = key;
+    if (state.vs === key) state.vs = 'idx:all';
+    renderSelects(); refresh();
   }
 
   // ---------- events ----------
@@ -266,14 +250,15 @@
     seg('range', (v) => { state.range = +v; refresh(); });
     seg('res', (v) => { state.res = v; refresh(); });
     seg('ind', (v) => { state.ind[v] = state.ind[v] ? 0 : 1; refresh({ keepView: true }); });
-    $('sym').addEventListener('change', (e) => { state.key = e.target.value; if (state.vs === state.key) state.vs = 'index'; renderSelects(); refresh(); });
+    seg('wlTabs', (v) => { state.wlView = v; renderWatchlist(); save(); });
+    $('sym').addEventListener('change', (e) => select(e.target.value));
     $('vs').addEventListener('change', (e) => { state.vs = e.target.value; refresh({ keepView: true }); });
     $('wlBody').addEventListener('click', (e) => {
       const sw = e.target.closest('[data-vs]');
-      if (sw) { e.stopPropagation(); state.vs = state.vs === sw.dataset.vs ? 'index' : sw.dataset.vs; if (state.vs === state.key) state.vs = 'index'; renderSelects(); refresh({ keepView: true }); return; }
-      const tr = e.target.closest('tr[data-k]'); if (!tr) return;
-      state.key = tr.dataset.k; if (state.vs === state.key) state.vs = 'index'; renderSelects(); refresh();
+      if (sw) { e.stopPropagation(); state.vs = state.vs === sw.dataset.vs ? 'idx:all' : sw.dataset.vs; if (state.vs === state.key) state.vs = 'idx:all'; renderSelects(); refresh({ keepView: true }); return; }
+      const tr = e.target.closest('tr[data-k]'); if (tr) select(tr.dataset.k);
     });
+    $('briefBody').addEventListener('click', (e) => { const b = e.target.closest('[data-k]'); if (b) select(b.dataset.k); });
     $('wlBody').addEventListener('keydown', (e) => { if (e.key === 'Enter' && e.target.matches('tr[data-k]')) e.target.click(); });
     document.querySelector('.wl thead').addEventListener('click', (e) => {
       const th = e.target.closest('th[data-sort]'); if (!th) return;
@@ -281,7 +266,7 @@
     });
     matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => draw({ keepView: true }));
     new MutationObserver(() => draw({ keepView: true })).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
-    window.addEventListener('keydown', (e) => { // TradingView-ish: arrows step through watchlist
+    window.addEventListener('keydown', (e) => { // ↑/↓ step through the watchlist
       if (e.target.matches('select, input')) return;
       if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
       const rows = [...document.querySelectorAll('#wlBody tr[data-k]')]; const i = rows.findIndex((r) => r.dataset.k === state.key);
@@ -293,7 +278,7 @@
   async function start() {
     chart = new TerminalChart($('chart'), theme());
     try { await load(); } catch (e) { $('status').textContent = 'Could not load data/ — ' + e.message; return; }
-    if (!WL || !Object.keys(SERIES).length) { $('status').textContent = 'NO DATA · run scripts/seed-demo.mjs or the fetch workflow'; return; }
+    if (!WL || !Object.keys(SERIES).length) { $('status').textContent = 'NO DATA · run the discovery or fetch workflow'; return; }
     if (!hadSaved && WL.primaryGrade) state.grade = WL.primaryGrade; // vintage baskets default to PSA 9
     bind(); rebuild();
   }

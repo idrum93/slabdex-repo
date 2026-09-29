@@ -20,7 +20,9 @@
 import { readFile, writeFile, mkdir, unlink, readdir } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import path from 'node:path';
+import { createRequire } from 'node:module';
 import { DATA, PRICES, BudgetError, client, asList, num, slug, gradeBlock, pickPrice, salesOf, loadSeries, saveSeries, mergeCard, cleanPts, medianOf } from './lib.mjs';
+const Clean = createRequire(import.meta.url)('../js/clean.js'); // same cleaning the terminal uses
 
 const args = process.argv.slice(2);
 const flag = (n) => args.includes(n);
@@ -43,6 +45,7 @@ const cfg = JSON.parse(await readFile(path.join(DATA, 'sets.json'), 'utf8'));
 const PER_SET = Number(opt('--per-set', cfg.perSet || 3));
 const SHORTLIST = Number(cfg.shortlist || 6);
 const MIN_DAYS = Number(cfg.minSaleDays || 4);
+const MAX_OUT = Number(cfg.maxOutlierShare ?? 0.35); // clean-sales rule: drop cards whose sales are mostly junk
 const PRIMARY = cfg.primaryGrade || 'psa9';
 const GRADES = cfg.grades || ['psa9', 'psa10'];
 const norm = (s) => String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
@@ -99,8 +102,10 @@ function shortlist(candidates) {
   const out = [];
   for (const def of cfg.sets) {
     const pool = candidates.filter((x) => x.set === def.label);
-    const pinned = pool.filter((x) => cfg.pins.some((p) => p.set === def.label && String(p.number) === x.number));
-    const rest = pool.filter((x) => x.pass && !pinned.includes(x)).sort((a, b) => rankVal(b) - rankVal(a));
+    const hit = (p, x) => p.set === def.label && String(p.number) === x.number && (!p.name || norm(p.name) === norm(x.name));
+    const pinned = pool.filter((x) => (cfg.pins || []).some((p) => hit(p, x)));
+    const excluded = (x) => (cfg.exclude || []).some((p) => hit(p, x));
+    const rest = pool.filter((x) => x.pass && !pinned.includes(x) && !excluded(x)).sort((a, b) => rankVal(b) - rankVal(a));
     const seen = new Set(), list = [];
     for (const x of [...pinned.map((x) => ({ ...x, pinned: true })), ...rest]) {
       const k = `${norm(x.name)}#${x.number}`; if (seen.has(k)) continue; seen.add(k);
@@ -115,7 +120,7 @@ function finalPick(short) {
   const chosen = [];
   for (const def of cfg.sets) {
     const pool = short.filter((x) => x.set === def.label);
-    const ok = (x) => (x.days ?? 0) >= MIN_DAYS;
+    const ok = (x) => (x.days ?? 0) >= MIN_DAYS && (x.outShare ?? 0) <= MAX_OUT;
     const ranked = [...pool].sort((a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0) || (ok(b) ? 1 : 0) - (ok(a) ? 1 : 0) || (b.med ?? rankVal(b)) - (a.med ?? rankVal(a)));
     ranked.slice(0, Math.max(PER_SET, pool.filter((x) => x.pinned).length)).forEach((x, i) => chosen.push({ ...x, lead: i === 0 }));
   }
@@ -127,7 +132,7 @@ function toWatch(x) {
   return {
     key: keyOf(x), name: x.name, set: x.set, number: x.number, era: x.era, basket: slug(x.set),
     rarity: x.rarity, pooled: isPooled(x), query: `${x.name} ${x.set} ${x.number}`,
-    tier: x.lead ? 'daily' : 'rotate', // one card per set daily, the rest every 2 days → fits the free tier
+    tier: 'rotate', // every card every 2 days (3-day history window, so nothing is missed)
     tcgPlayerId: x.tcgPlayerId,
   };
 }
@@ -142,12 +147,13 @@ function report(sets, candidates, short, chosen, variantNotes) {
     const pool = candidates.filter((x) => x.set === def.label);
     L.push(`| ${def.label} | ${st.res ? `${st.res.name}${st.via ? ` (via \`${st.via}\`)` : ''}` : pool.length ? '(from saved scan)' : '**not found**'} | ${pool.length} | ${pool.filter((x) => x.pass).length} | ${short.filter((x) => x.set === def.label).length} |`);
   }
-  L.push('', '## Baskets', '', '| Set | Card | # | Median PSA 9 sale | PSA 9 sale days | PSA 10 sale days | Printings | Refresh |', '|---|---|---|---|---|---|---|---|');
-  for (const x of chosen) L.push(`| ${x.set} | ${x.name}${x.pinned ? ' 📌' : ''} | ${x.number} | ${fm(x.med)} | ${x.days ?? 0}${(x.days ?? 0) < MIN_DAYS ? ' ⚠' : ''} | ${x.days10 ?? 0} | ${isPooled(x) ? '1st + Unl pooled' : (x.variants || []).join(', ')} | ${x.lead ? 'daily' : '2 days'} |`);
+  const lineOf = (x) => (x.split ? `${x.split.mainLabel} (est.) + ${x.altDays} ${x.split.altLabel}` : x.kind === '1st' ? '1st+Unl mixed' : x.kind === 'rev' ? 'holo+rev mixed' : 'single');
+  L.push('', '## Baskets', '', '| Set | Card | # | Median PSA 9 (main line) | Clean sale days | Junk | Line | Refresh |', '|---|---|---|---|---|---|---|---|');
+  for (const x of chosen) L.push(`| ${x.set} | ${x.name}${x.pinned ? ' 📌' : ''} | ${x.number} | ${fm(x.med)} | ${x.days ?? 0}${(x.days ?? 0) < MIN_DAYS ? ' ⚠' : ''} | ${Math.round((x.outShare ?? 0) * 100)}% | ${lineOf(x)} | ${x.lead ? 'daily' : '2 days'} |`);
   const bench = short.filter((x) => !chosen.some((c) => keyOf(c) === keyOf(x)));
   if (bench.length) {
-    L.push('', '## Bench (backfilled, not tracked daily)', '', '| Set | Card | # | Median PSA 9 | PSA 9 sale days |', '|---|---|---|---|---|');
-    for (const x of bench) L.push(`| ${x.set} | ${x.name} | ${x.number} | ${fm(x.med)} | ${x.days ?? 0} |`);
+    L.push('', '## Bench (backfilled, not tracked daily)', '', '| Set | Card | # | Median PSA 9 | Clean days | Junk | Why not picked |', '|---|---|---|---|---|---|---|');
+    for (const x of bench) L.push(`| ${x.set} | ${x.name} | ${x.number} | ${fm(x.med)} | ${x.days ?? 0} | ${Math.round((x.outShare ?? 0) * 100)}% | ${(x.outShare ?? 0) > MAX_OUT ? 'too much junk' : (x.days ?? 0) < MIN_DAYS ? 'too few sales' : 'ranked lower'} |`);
   }
   L.push('', '## Notes', '', ...variantNotes.map((v) => `- ${v}`), '', '## Log', '', '```', ...log.slice(-150), '```', '');
   return L.join('\n');
@@ -196,40 +202,53 @@ async function main() {
   for (const x of short) {
     const key = keyOf(x);
     let s = await loadSeries(key);
-    const fresh = s.backfill?.date === TODAY && s.backfill?.v === 2;
+    const fresh = s.backfill?.v === 3 && (s.backfill?.grades || []).join() === GRADES.join(); // v3 = all grades + raw by printing
     if (!FROM_CANDIDATES && !fresh) {
       try {
-        const j = await api.get('/cards', { tcgPlayerId: x.tcgPlayerId, includeEbay: true, days: DAYS }, 3);
+        const j = await api.get('/cards', { tcgPlayerId: x.tcgPlayerId, includeEbay: true, includeHistory: true, days: DAYS }, 3);
         const c = asList(j)[0];
         if (!c) { note(`  ✗ ${key}: empty`); continue; }
         s = { key, source: 'pokemonpricetracker', grades: {}, snap: s.snap || {} };
         mergeCard(s, c, GRADES, TODAY);
-        s.backfill = { date: TODAY, days: DAYS, v: 2 };
+        s.backfill = { date: TODAY, days: DAYS, v: 3, grades: GRADES };
         await saveSeries(s);
       } catch (e) {
         if (e instanceof BudgetError) { note('Budget reached during backfill; rerun to finish.'); break; }
         note(`  ✗ ${key}: ${e.message}`); continue;
       }
     }
-    const c9 = cleanPts(s.grades?.[PRIMARY]);
-    x.days = c9.length; x.days10 = cleanPts(s.grades?.psa10).length; x.med = medianOf(c9);
-    const out = (s.grades?.[PRIMARY] || []).length - c9.length;
-    note(`  ${key}: ${PRIMARY} ${x.days} sale days${out ? ` (+${out} outliers)` : ''}, median ${x.med ?? '—'} · psa10 ${x.days10} days`);
+    const kind = Clean.pooledKind(s.printings || x.variants);
+    const r = Clean.classify(s.grades?.[PRIMARY], kind), r10 = Clean.classify(s.grades?.psa10, kind);
+    const cut = new Date(Date.parse(TODAY) - 90 * 864e5).toISOString().slice(0, 10);
+    x.gradeDays = Object.fromEntries(GRADES.map((g) => [g, Clean.classify(s.grades?.[g], kind).main.filter((p) => p.t >= cut).length])); // clean sale days, last 90D
+    const total = (s.grades?.[PRIMARY] || []).length;
+    x.days = r.main.length; x.days10 = r10.main.length; x.med = Clean.median(r.main.map((p) => p.p));
+    x.outShare = total ? r.out.length / total : 0; x.split = r.split; x.kind = kind; x.altDays = r.alt.length;
+    note(`  ${key}: ${PRIMARY} ${x.days} clean days${r.split ? ` (${r.split.mainLabel}; +${r.alt.length} ${r.split.altLabel})` : ''}${r.out.length ? `, ${r.out.length} junk` : ''}, median ${x.med ?? '—'}`);
   }
 
   // 5. final pick
   const chosen = finalPick(short);
   note(`Chose ${chosen.length} cards across ${new Set(chosen.map((x) => x.set)).size} sets.`);
-  const pooled = chosen.filter(isPooled).length;
-  variantNotes.push(`${pooled} of ${chosen.length} chosen cards come from records where 1st Edition and Unlimited graded sales are pooled (the API does not split them). Sale days more than 2.5× from the card's median are flagged as outliers and left off the chart, so these lines follow the dominant (mostly Unlimited) market.`);
-  variantNotes.push('Base Set, Base Set 2, Legendary Collection and Expedition records carry a single holo printing (Legendary/Expedition also list reverse holo in the same record).');
+  // Default grade = the one where the most basket cards have enough recent sales to score (≥ 8 sale days / 90D).
+  const gradeStats = GRADES.map((g) => ({ g, scorable: chosen.filter((x) => (x.gradeDays?.[g] ?? 0) >= 8).length, days: chosen.reduce((n, x) => n + (x.gradeDays?.[g] ?? 0), 0) }));
+  const top = Math.max(0, ...gradeStats.map((x) => x.scorable));
+  // Highest grade that is nearly as deep as the deepest one (≥ 80% as many scoreable cards).
+  const pickG = [...gradeStats].reverse().find((x) => top && x.scorable >= top * 0.8);
+  const defaultGrade = pickG ? pickG.g : PRIMARY;
+  note(`Grade depth (cards scoreable / clean sale days, last 90D): ${gradeStats.map((x) => `${x.g} ${x.scorable}/${x.days}`).join(' · ')} → default ${defaultGrade}`);
+  variantNotes.push(`Grade depth over the last 90 days (cards with ≥ 8 clean sale days / total clean sale days): ${gradeStats.map((x) => `${x.g.toUpperCase()} ${x.scorable}/${x.days}`).join(', ')}. Terminal default: ${defaultGrade.toUpperCase()}.`);
+  const splitN = chosen.filter((x) => x.split).length, mixedN = chosen.filter((x) => x.kind && !x.split).length;
+  variantNotes.push(`${splitN} chosen cards had pooled printings that split cleanly into two price clusters; the larger cluster is the main line and the other is charted separately when it has 4+ sales. Labels (1st Ed / Unl) are estimates from price, not from listings.`);
+  variantNotes.push(`${mixedN} chosen cards are pooled but did not split (one continuous price range); their line may blend printings.`);
+  variantNotes.push(`Clean-sales rule: cards with more than ${Math.round(MAX_OUT * 100)}% junk sales are not picked unless pinned. Excluded in sets.json: ${(cfg.exclude || []).map((e) => `${e.set} #${e.number}`).join(', ') || 'none'}.`);
 
   // watchlist + cleanup
   const wlPath = path.join(DATA, 'watchlist.json');
   if (existsSync(wlPath)) await writeFile(path.join(DATA, 'watchlist.previous.json'), await readFile(wlPath, 'utf8'));
   const cards = chosen.map(toWatch);
   const bench = short.filter((x) => !cards.some((c) => c.key === keyOf(x))).map((x) => ({ ...toWatch(x), tier: 'bench' }));
-  await writeFile(wlPath, JSON.stringify({ _comment: 'Generated by scripts/discover.mjs from data/sets.json. basket = set index group. tier daily = every run, rotate = every 2 days. bench = backfilled runners-up, not fetched.', grades: GRADES, primaryGrade: PRIMARY, cards, bench }, null, 2) + '\n');
+  await writeFile(wlPath, JSON.stringify({ _comment: 'Generated by scripts/discover.mjs from data/sets.json. basket = set index group. tier daily = every run, rotate = every 2 days. bench = backfilled runners-up, not fetched.', grades: GRADES, primaryGrade: defaultGrade, selectionGrade: PRIMARY, cards, bench }, null, 2) + '\n');
   const keep = new Set([...cards, ...bench].map((c) => c.key));
   for (const f of await readdir(PRICES)) {
     const k = f.replace(/\.json$/, '');
