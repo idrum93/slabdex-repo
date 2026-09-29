@@ -1,0 +1,58 @@
+name: Discover WOTC baskets + backfill
+
+# One-off: run while a paid PokemonPriceTracker plan is active (needs a few thousand credits).
+on:
+  workflow_dispatch:
+    inputs:
+      days:
+        description: 'History to backfill (days; API plan allows up to 180)'
+        default: '180'
+      per_set:
+        description: 'Cards per set basket'
+        default: '3'
+      budget:
+        description: 'Max credits for this run'
+        default: '8000'
+      sets_only:
+        description: 'Only check set names (about 20 credits)'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: fetch
+  cancel-in-progress: false
+
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Discover and backfill
+        env:
+          PPT_API_KEY: ${{ secrets.PPT_API_KEY }}
+          PPT_BUDGET: ${{ github.event.inputs.budget }}
+          PPT_DAYS: ${{ github.event.inputs.days }}
+        run: |
+          if [ "${{ github.event.inputs.sets_only }}" = "true" ]; then
+            node scripts/discover.mjs --sets-only
+          else
+            node scripts/discover.mjs --per-set "${{ github.event.inputs.per_set }}"
+          fi
+      - name: Show report
+        if: always()
+        run: cat data/discovery/report.md >> "$GITHUB_STEP_SUMMARY" || true
+      - name: Commit data
+        run: |
+          git config user.name  "slabdex-bot"
+          git config user.email "slabdex-bot@users.noreply.github.com"
+          git add data
+          git diff --cached --quiet && echo "no changes" && exit 0
+          git commit -m "data: WOTC discovery + backfill $(date -u +%F)"
+          git push
