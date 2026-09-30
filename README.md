@@ -56,7 +56,7 @@ The repo ships with **demo series** (clearly flagged in the UI) so the terminal 
 
 WOTC is covered set by set. Later eras flip it: the era's best cards decide which sets appear, so the budget goes to the cards that matter instead of 27 more set baskets. The EX / DP shortlist gives tracked characters (groups.json) first claim before filling with the rest.
 
-Everything ranks by **PSA 8** (then PSA 9 × 0.6, then PSA 10 × 0.25), holo-or-better, with a real graded market (PSA 8 ≥ 8 or PSA 9 ≥ 8 or PSA 10 ≥ 3 lifetime sales) and clean sales.
+Everything ranks by **PSA 8** (then PSA 9 × 0.6, then PSA 10 × 0.25), holo-or-better, with a real graded market (PSA 8 ≥ 8 or PSA 9 ≥ 8 or PSA 10 ≥ 3 lifetime sales) and clean sales: at least 8 clean PSA 8 sale days in the backfilled history (`minSaleDays`), ≤ 35% junk.
 
 **Run order** — Actions → *Discover baskets + backfill*:
 
@@ -95,9 +95,10 @@ Run **Actions → Build character & theme indexes** after editing groups.json (d
 
 Only **confirmed** setups get top billing (first tile, ◆ in the card list, a box in the Signal panel, first in BRIEF). Otherwise the BRIEF tab says plainly that nothing has beaten chance yet. It was checked on simulated random prices (no false confirmations) and on planted effects (a +20% effect is usually found, +10% usually isn't yet — the history is still short). With ~180 days, expect "no edge yet" or a few promising setups at first; evidence firms up as history accumulates.
 
-## Sprites
+## Sprites and set symbols
 
-Character and theme indexes show Crystal sprites hotlinked from pokemondb.net (`spriteBase` + `sprite` in groups.json, applied the next time groups.mjs runs). If the images can't load they're simply hidden.
+- Character and theme indexes use transparent Crystal sprites from [PokeAPI/sprites](https://github.com/PokeAPI/sprites), stored in `img/sprites/` (groups.json: `spriteBase` + `sprite`). They show in the lists, the picker and as the Signal panel image.
+- Set indexes use set symbols from pokemontcg.io (`symbolBase` + each set's `code` in sets.json), written into the watchlist by discover. Missing images are simply hidden.
 
 ## Local use
 

@@ -32,6 +32,7 @@ const note = (m) => { console.log(m); log.push(m); };
 const api = DRY ? null : client({ key: process.env.PPT_API_KEY, budget: Number(process.env.PPT_BUDGET || 3000), reserve: 20, pauseMs: 1200, log: note });
 if (!DRY && !process.env.PPT_API_KEY) throw new Error('PPT_API_KEY not set');
 
+const MIN_DAYS = Number(sets.minSaleDays || 4); // same clean-sales bar as the set baskets
 const FAMS = cfg.families || { WOTC: { addCards: true } };
 const spriteOf = (d) => (d.sprite && cfg.spriteBase ? `${cfg.spriteBase}${d.sprite}.png` : null);
 const famLabel = (f) => sets.families?.[f]?.label || f;
@@ -47,7 +48,7 @@ const isPromo = (set) => /promo/i.test(set);
 const basketById = new Map(wl.cards.map((c) => [String(c.tcgPlayerId), c]));
 const prevExtra = new Map((wl.extra || []).map((c) => [String(c.tcgPlayerId), c]));
 
-// Clean-sales check on backfilled history: clean in PSA 8 or PSA 9 (≥ 4 clean sale days, ≤ 35% junk).
+// Clean-sales check on backfilled history: clean in PSA 8 or PSA 9 (≥ minSaleDays clean sale days, ≤ 35% junk).
 async function ensureAndCheck(x, allowFetch) {
   const inBasket = basketById.get(String(x.tcgPlayerId));
   const key = inBasket?.key || keyOf(x);
@@ -62,7 +63,7 @@ async function ensureAndCheck(x, allowFetch) {
     const tot = (s.grades?.[g] || []).length; if (!tot) continue;
     const r = Clean.classify(s.grades[g], kind), v = { days: r.main.length, junk: r.out.length / tot };
     if (v.days > most.days) most = v;
-    if (v.days >= 4 && v.junk <= 0.35 && (!best || v.days > best.days)) best = v;
+    if (v.days >= MIN_DAYS && v.junk <= 0.35 && (!best || v.days > best.days)) best = v;
   }
   const known = s.backfill?.v >= 3, pick = best || most;
   return { key, inBasket: !!inBasket, ok: known ? !!best : DRY && allowFetch, days: pick.days, junk: pick.junk };

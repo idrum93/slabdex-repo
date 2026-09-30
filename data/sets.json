@@ -1,8 +1,10 @@
 {
   "_comment": "Sets scanned by scripts/discover.mjs. 'names' are tried in order against the provider's set list ('exact' = only an exact name match). family decides how cards are picked: WOTC = every set gets a basket (perSet); later eras = one budget-capped basket of the era's best cards (top), where each tracked character gets first claim. Pins force a card in; exclude keeps one out.",
+  "_symbols": "Set symbols: symbolBase + code + '/symbol.png' (pokemontcg.io set ids). Change symbolBase to host your own copies, e.g. 'img/sets/' with files img/sets/<code>/symbol.png.",
+  "symbolBase": "https://images.pokemontcg.io/",
   "perSet": 3,
   "shortlist": 6,
-  "minSaleDays": 4,
+  "minSaleDays": 8,
   "maxOutlierShare": 0.35,
   "primaryGrade": "psa8",
   "grades": [
@@ -23,7 +25,8 @@
         "Base Set"
       ],
       "era": "WOTC Vintage",
-      "family": "WOTC"
+      "family": "WOTC",
+      "code": "base1"
     },
     {
       "label": "Base Set Shadowless",
@@ -33,7 +36,8 @@
       ],
       "era": "WOTC Vintage",
       "optional": true,
-      "family": "WOTC"
+      "family": "WOTC",
+      "code": "base1"
     },
     {
       "label": "Jungle",
@@ -41,7 +45,8 @@
         "Jungle"
       ],
       "era": "WOTC Vintage",
-      "family": "WOTC"
+      "family": "WOTC",
+      "code": "base2"
     },
     {
       "label": "Fossil",
@@ -49,7 +54,8 @@
         "Fossil"
       ],
       "era": "WOTC Vintage",
-      "family": "WOTC"
+      "family": "WOTC",
+      "code": "base3"
     },
     {
       "label": "Base Set 2",
@@ -57,7 +63,8 @@
         "Base Set 2"
       ],
       "era": "WOTC Vintage",
-      "family": "WOTC"
+      "family": "WOTC",
+      "code": "base4"
     },
     {
       "label": "Team Rocket",
@@ -65,7 +72,8 @@
         "Team Rocket"
       ],
       "era": "WOTC Vintage",
-      "family": "WOTC"
+      "family": "WOTC",
+      "code": "base5"
     },
     {
       "label": "Gym Heroes",
@@ -73,7 +81,8 @@
         "Gym Heroes"
       ],
       "era": "WOTC Vintage",
-      "family": "WOTC"
+      "family": "WOTC",
+      "code": "gym1"
     },
     {
       "label": "Gym Challenge",
@@ -81,7 +90,8 @@
         "Gym Challenge"
       ],
       "era": "WOTC Vintage",
-      "family": "WOTC"
+      "family": "WOTC",
+      "code": "gym2"
     },
     {
       "label": "Neo Genesis",
@@ -89,7 +99,8 @@
         "Neo Genesis"
       ],
       "era": "WOTC Neo & e-Card",
-      "family": "WOTC"
+      "family": "WOTC",
+      "code": "neo1"
     },
     {
       "label": "Neo Discovery",
@@ -97,7 +108,8 @@
         "Neo Discovery"
       ],
       "era": "WOTC Neo & e-Card",
-      "family": "WOTC"
+      "family": "WOTC",
+      "code": "neo2"
     },
     {
       "label": "Neo Revelation",
@@ -105,7 +117,8 @@
         "Neo Revelation"
       ],
       "era": "WOTC Neo & e-Card",
-      "family": "WOTC"
+      "family": "WOTC",
+      "code": "neo3"
     },
     {
       "label": "Neo Destiny",
@@ -113,7 +126,8 @@
         "Neo Destiny"
       ],
       "era": "WOTC Neo & e-Card",
-      "family": "WOTC"
+      "family": "WOTC",
+      "code": "neo4"
     },
     {
       "label": "Legendary Collection",
@@ -121,7 +135,8 @@
         "Legendary Collection"
       ],
       "era": "WOTC Neo & e-Card",
-      "family": "WOTC"
+      "family": "WOTC",
+      "code": "base6"
     },
     {
       "label": "Expedition",
@@ -130,7 +145,8 @@
         "Expedition"
       ],
       "era": "WOTC Neo & e-Card",
-      "family": "WOTC"
+      "family": "WOTC",
+      "code": "ecard1"
     },
     {
       "label": "Aquapolis",
@@ -138,7 +154,8 @@
         "Aquapolis"
       ],
       "era": "WOTC Neo & e-Card",
-      "family": "WOTC"
+      "family": "WOTC",
+      "code": "ecard2"
     },
     {
       "label": "Skyridge",
@@ -146,7 +163,8 @@
         "Skyridge"
       ],
       "era": "WOTC Neo & e-Card",
-      "family": "WOTC"
+      "family": "WOTC",
+      "code": "ecard3"
     },
     {
       "label": "WOTC Black Star Promos",
@@ -157,7 +175,8 @@
       ],
       "era": "WOTC Promo",
       "allRarities": true,
-      "family": "WOTC"
+      "family": "WOTC",
+      "code": "basep"
     },
     {
       "label": "Ruby & Sapphire",
@@ -168,7 +187,8 @@
         "EX Ruby and Sapphire"
       ],
       "era": "EX Series",
-      "family": "EX"
+      "family": "EX",
+      "code": "ex1"
     },
     {
       "label": "Sandstorm",
@@ -177,7 +197,8 @@
         "EX Sandstorm"
       ],
       "era": "EX Series",
-      "family": "EX"
+      "family": "EX",
+      "code": "ex2"
     },
     {
       "label": "Dragon",
@@ -187,7 +208,8 @@
       ],
       "era": "EX Series",
       "family": "EX",
-      "exact": true
+      "exact": true,
+      "code": "ex3"
     },
     {
       "label": "Team Magma vs Team Aqua",
@@ -197,7 +219,8 @@
         "Team Magma vs. Team Aqua"
       ],
       "era": "EX Series",
-      "family": "EX"
+      "family": "EX",
+      "code": "ex4"
     },
     {
       "label": "Hidden Legends",
@@ -206,7 +229,8 @@
         "EX Hidden Legends"
       ],
       "era": "EX Series",
-      "family": "EX"
+      "family": "EX",
+      "code": "ex5"
     },
     {
       "label": "FireRed & LeafGreen",
@@ -216,7 +240,8 @@
         "EX FireRed & LeafGreen"
       ],
       "era": "EX Series",
-      "family": "EX"
+      "family": "EX",
+      "code": "ex6"
     },
     {
       "label": "Team Rocket Returns",
@@ -225,7 +250,8 @@
         "EX Team Rocket Returns"
       ],
       "era": "EX Series",
-      "family": "EX"
+      "family": "EX",
+      "code": "ex7"
     },
     {
       "label": "Deoxys",
@@ -235,7 +261,8 @@
       ],
       "era": "EX Series",
       "family": "EX",
-      "exact": true
+      "exact": true,
+      "code": "ex8"
     },
     {
       "label": "Emerald",
@@ -245,7 +272,8 @@
       ],
       "era": "EX Series",
       "family": "EX",
-      "exact": true
+      "exact": true,
+      "code": "ex9"
     },
     {
       "label": "Unseen Forces",
@@ -254,7 +282,8 @@
         "EX Unseen Forces"
       ],
       "era": "EX Series",
-      "family": "EX"
+      "family": "EX",
+      "code": "ex10"
     },
     {
       "label": "Delta Species",
@@ -263,7 +292,8 @@
         "EX Delta Species"
       ],
       "era": "EX Series",
-      "family": "EX"
+      "family": "EX",
+      "code": "ex11"
     },
     {
       "label": "Legend Maker",
@@ -272,7 +302,8 @@
         "EX Legend Maker"
       ],
       "era": "EX Series",
-      "family": "EX"
+      "family": "EX",
+      "code": "ex12"
     },
     {
       "label": "Holon Phantoms",
@@ -281,7 +312,8 @@
         "EX Holon Phantoms"
       ],
       "era": "EX Series",
-      "family": "EX"
+      "family": "EX",
+      "code": "ex13"
     },
     {
       "label": "Crystal Guardians",
@@ -290,7 +322,8 @@
         "EX Crystal Guardians"
       ],
       "era": "EX Series",
-      "family": "EX"
+      "family": "EX",
+      "code": "ex14"
     },
     {
       "label": "Dragon Frontiers",
@@ -299,7 +332,8 @@
         "EX Dragon Frontiers"
       ],
       "era": "EX Series",
-      "family": "EX"
+      "family": "EX",
+      "code": "ex15"
     },
     {
       "label": "Power Keepers",
@@ -308,7 +342,8 @@
         "EX Power Keepers"
       ],
       "era": "EX Series",
-      "family": "EX"
+      "family": "EX",
+      "code": "ex16"
     },
     {
       "label": "Diamond & Pearl",
@@ -318,7 +353,8 @@
       ],
       "era": "DP & Platinum",
       "family": "DP",
-      "exact": true
+      "exact": true,
+      "code": "dp1"
     },
     {
       "label": "Mysterious Treasures",
@@ -326,7 +362,8 @@
         "Mysterious Treasures"
       ],
       "era": "DP & Platinum",
-      "family": "DP"
+      "family": "DP",
+      "code": "dp2"
     },
     {
       "label": "Secret Wonders",
@@ -334,7 +371,8 @@
         "Secret Wonders"
       ],
       "era": "DP & Platinum",
-      "family": "DP"
+      "family": "DP",
+      "code": "dp3"
     },
     {
       "label": "Great Encounters",
@@ -342,7 +380,8 @@
         "Great Encounters"
       ],
       "era": "DP & Platinum",
-      "family": "DP"
+      "family": "DP",
+      "code": "dp4"
     },
     {
       "label": "Majestic Dawn",
@@ -350,7 +389,8 @@
         "Majestic Dawn"
       ],
       "era": "DP & Platinum",
-      "family": "DP"
+      "family": "DP",
+      "code": "dp5"
     },
     {
       "label": "Legends Awakened",
@@ -358,7 +398,8 @@
         "Legends Awakened"
       ],
       "era": "DP & Platinum",
-      "family": "DP"
+      "family": "DP",
+      "code": "dp6"
     },
     {
       "label": "Stormfront",
@@ -366,7 +407,8 @@
         "Stormfront"
       ],
       "era": "DP & Platinum",
-      "family": "DP"
+      "family": "DP",
+      "code": "dp7"
     },
     {
       "label": "Platinum",
@@ -375,7 +417,8 @@
       ],
       "era": "DP & Platinum",
       "family": "DP",
-      "exact": true
+      "exact": true,
+      "code": "pl1"
     },
     {
       "label": "Rising Rivals",
@@ -383,7 +426,8 @@
         "Rising Rivals"
       ],
       "era": "DP & Platinum",
-      "family": "DP"
+      "family": "DP",
+      "code": "pl2"
     },
     {
       "label": "Supreme Victors",
@@ -391,7 +435,8 @@
         "Supreme Victors"
       ],
       "era": "DP & Platinum",
-      "family": "DP"
+      "family": "DP",
+      "code": "pl3"
     },
     {
       "label": "Arceus",
@@ -400,7 +445,8 @@
       ],
       "era": "DP & Platinum",
       "family": "DP",
-      "exact": true
+      "exact": true,
+      "code": "pl4"
     }
   ],
   "pins": [

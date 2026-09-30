@@ -282,9 +282,14 @@ tr.sec .dim { letter-spacing: 0; opacity: .6; margin-left: 4px; }
 .panel h2 .tabs { margin-left: 0; }
 
 /* sprites next to character & theme indexes */
-.spr { width: 18px; height: 18px; image-rendering: pixelated; vertical-align: -4px; margin: -3px 4px -3px 0; border-radius: 4px; background: #e9f2dc; }
+.spr { width: 20px; height: 20px; image-rendering: pixelated; vertical-align: -5px; margin: -4px 4px -4px 0; object-fit: contain; }
+.spr.setsym { image-rendering: auto; width: 16px; height: 16px; vertical-align: -3px; margin: -2px 5px -2px 1px; }
+.sig-img.icon { aspect-ratio: 1; object-fit: contain; border: 0; background: none; }
+.sig-img.icon.pix { image-rendering: pixelated; }
 .pk-t .spr { width: 20px; height: 20px; vertical-align: -5px; }
+.pk-t .spr.setsym { width: 15px; height: 15px; vertical-align: -3px; }
 .ctx-row .spr { width: 16px; height: 16px; vertical-align: -3px; margin: 0 4px 0 0; }
+.ctx-row .spr.setsym { width: 13px; height: 13px; vertical-align: -2px; }
 
 /* setup backtest */
 .setup { color: var(--up); margin-left: 4px; font-size: 10px; }

@@ -51,7 +51,9 @@
   const lineTag = (c) => (c.line ? ` · ${c.line}${c.est ? ' (est.)' : ''}` : '');
   const cardLabel = (c) => `${c.name}${lineTag(c)} — ${c.set} #${c.number}`;
   const KIND_WORD = { char: 'character', theme: 'theme', family: 'era family' };
-  const spr = (u) => (u ? `<img class="spr" src="${u}" alt="" loading="lazy" onerror="this.remove()">` : '');
+  // Index icons: character / theme sprites (pixel art) and set symbols. Hidden if they fail to load.
+  const spr = (u, cls = 'spr') => (u ? `<img class="${cls}" src="${u}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">` : '');
+  const icon = (x) => (x?.sprite ? spr(x.sprite) : x?.symbol ? spr(x.symbol, 'spr setsym') : '');
   const famOfCard = (c) => c.family || String(c.era || '').split(' ')[0];
   const idxLabel = (x) => `${x.kind === 'all' ? 'All tracked' : x.name} ${KIND_WORD[x.kind] ? KIND_WORD[x.kind] + ' ' : ''}index (${x.members.length})`;
   const symName = (r) => (r.isIndex ? `${r.index.kind === 'all' ? 'ALL' : r.name.toUpperCase()} IDX` : r.name + (r.card.line ? ` ${r.card.line}` : ''));
@@ -240,7 +242,7 @@
       const tc = Model.trackCorr(model.axis, cur.close, x.close);
       if (tc && tc.r != null && (!best || tc.r > best.r)) best = { id, r: tc.r, w: tc.weeks };
       const lab = { set: 'SET', era: 'ERA', family: 'FAMILY', char: 'CHAR', theme: 'THEME', all: 'ALL' }[x.kind] || x.kind.toUpperCase();
-      return `<button class="ctx-row" data-k="${id}" type="button"><span class="ck">${lab}</span><span class="cn">${spr(x.sprite)}${esc(x.name)}</span><span class="cv">${fmtP(s.c30, 0)}</span></button>`;
+      return `<button class="ctx-row" data-k="${id}" type="button"><span class="ck">${lab}</span><span class="cn">${icon(x)}${esc(x.name)}</span><span class="cv">${fmtP(s.c30, 0)}</span></button>`;
     }).join('');
     const trk = best && best.r >= 0.3 ? `Moves most with <b>${esc(model.idx[best.id].name)}</b> <span class="dim">(weekly r ${best.r.toFixed(2)}, ${best.w} wks)</span>` : best ? '<span class="dim">No clear link to any index yet (weekly r below 0.3).</span>' : '';
     return `<h3>ITS INDEXES <span class="dim">30D</span></h3>${rows}${trk ? `<p class="trk">${trk}</p>` : ''}`;
@@ -252,9 +254,11 @@
     const benchName = bench0 ? symName(bench0) : cur.id === 'idx:all' ? '—' : 'ALL IDX';
     $('sigName').textContent = ratio ? `${cur.isIndex ? symName(cur) : cur.card.name} ÷ ${symName(bench0)} · ${Model.GRADE_LABEL[state.grade]}` : `${cur.isIndex ? idxLabel(cur.index) : cur.card.name + lineTag(cur.card)} · ${Model.GRADE_LABEL[state.grade]}`;
     const img = $('sigImg'), card = !cur.isIndex && !ratio ? cur.card : null;
-    if (card?.tcgPlayerId) { // shown only once it has actually loaded
-      const u = `https://tcgplayer-cdn.tcgplayer.com/product/${card.tcgPlayerId}_in_200x200.jpg`;
-      if (img.dataset.u !== u) { img.hidden = true; img.onload = () => { img.hidden = false; }; img.onerror = () => { img.hidden = true; }; img.dataset.u = u; img.alt = card.name; img.src = u; }
+    const ix = cur.isIndex && !ratio ? cur.index : null, ixIcon = ix && (ix.sprite || ix.symbol);
+    img.classList.toggle('icon', !!ixIcon); img.classList.toggle('pix', !!ix?.sprite);
+    if (card?.tcgPlayerId || ixIcon) { // shown only once it has actually loaded
+      const u = ixIcon || `https://tcgplayer-cdn.tcgplayer.com/product/${card.tcgPlayerId}_in_200x200.jpg`;
+      if (img.dataset.u !== u) { img.hidden = true; img.onload = () => { img.hidden = false; }; img.onerror = () => { img.hidden = true; }; img.dataset.u = u; img.alt = card ? card.name : ix.name; img.src = u; }
       else img.hidden = !(img.complete && img.naturalWidth > 0);
     } else img.hidden = true;
     const base = card ? card.key.replace(/~alt$/, '') : null;
@@ -294,13 +298,13 @@
   function idxRow(x, M, st) {
     const s = st.idx[x.id];
     const where = { all: '', family: 'era family · ', era: 'era · ', set: `${x.era} · `, char: x.scope === 'all' ? 'character ladder · ' : 'character · ', theme: x.scope === 'all' ? 'theme ladder · ' : 'theme · ' }[x.kind] ?? '';
-    return { key: x.id, name: x.name, sub: `${where}${x.members.length} cards`, last: s.last, lastTxt: s.last != null ? s.last.toFixed(1) : '—', metric: M.get(s), score: s.score, tag: s.tag, ch: st.ch[x.id], isIdx: true, sprite: x.sprite };
+    return { key: x.id, name: x.name, sub: `${where}${x.members.length} cards`, last: s.last, lastTxt: s.last != null ? s.last.toFixed(1) : '—', metric: M.get(s), score: s.score, tag: s.tag, ch: st.ch[x.id], isIdx: true, sprite: x.sprite, symbol: x.symbol };
   }
   function rowHtml(r, M, extra = '') {
     const cls = r.score == null ? 'na' : r.tag[1];
     const star = r.isIdx ? '' : `<button class="st-btn${isStar(r.key) ? ' on' : ''}" data-star="${r.key}" title="${isStar(r.key) ? 'Remove from' : 'Add to'} MINE" aria-label="Star ${esc(r.name)}">${isStar(r.key) ? '★' : '☆'}</button>`;
     return `<tr class="row${r.key === state.key ? ' sel' : ''}${r.key === state.vs ? ' cmp' : ''}${extra}" data-k="${r.key}" tabindex="0">
-      <td><span class="nm">${spr(r.sprite)}${esc(r.name)}${chgBadge(r.ch)}${r.setup?.status === 'confirmed' ? `<span class="setup" title="Backtested setup fired ${r.setup.best.ago}d ago: ${esc(r.setup.best.label)}">◆</span>` : ''}</span><span class="st">${esc(r.sub)}</span></td>
+      <td><span class="nm">${icon(r)}${esc(r.name)}${chgBadge(r.ch)}${r.setup?.status === 'confirmed' ? `<span class="setup" title="Backtested setup fired ${r.setup.best.ago}d ago: ${esc(r.setup.best.label)}">◆</span>` : ''}</span><span class="st">${esc(r.sub)}</span></td>
       <td class="n">${r.lastTxt}</td>
       <td class="n">${M.fmt(r.metric)}</td>
       <td class="n"><span class="pill ${cls}" title="${r.tag?.[0] || ''}">${r.score ?? '··'}</span></td>
@@ -380,7 +384,7 @@
     const eras = [...new Set(cards.filter((b) => b.card.role !== 'group').map((b) => b.card.era))];
     const items = [];
     const cardItem = (b, depth) => { const s = st.cards[b.card.key]; return { id: b.card.key, depth, kind: 'card', text: `${b.card.name}`, sub: `#${b.card.number}${model.by[b.card.key + '~alt'] ? ' · 2 printings' : ''}`, right: s.last != null ? money(s.last) : '', c30: s.c30, custom: b.card.custom }; };
-    const idxItem = (x, depth, open, hasKids) => { const s = st.idx[x.id]; return { id: x.id, depth, kind: x.kind, sprite: x.sprite, text: x.kind === 'all' ? 'All tracked index' : x.name, sub: `${x.members.length} cards`, right: s.last != null ? s.last.toFixed(1) : '', c30: s.c30, open, hasKids }; };
+    const idxItem = (x, depth, open, hasKids) => { const s = st.idx[x.id]; return { id: x.id, depth, kind: x.kind, sprite: x.sprite, symbol: x.symbol, text: x.kind === 'all' ? 'All tracked index' : x.name, sub: `${x.members.length} cards`, right: s.last != null ? s.last.toFixed(1) : '', c30: s.c30, open, hasKids }; };
     if (slot === 'B') items.push({ id: 'none', depth: 0, kind: 'opt', text: 'None' }, { id: 'set', depth: 0, kind: 'opt', text: 'Own set index' }, { id: 'era', depth: 0, kind: 'opt', text: 'Own era index' });
     if (q) { // flat search: indexes and cards whose name / set / number match every word
       const words = q.split(/\s+/);
@@ -432,7 +436,7 @@
     const pc = (v) => (v == null ? '' : `<span class="${v >= 0 ? 'pos' : 'neg'}">${v >= 0 ? '+' : ''}${v.toFixed(0)}%</span>`);
     let html = items.map((it, i) => `<div class="pk-it d${it.depth} k-${it.kind}${it.id === cur ? ' cur' : ''}${i === P.hi ? ' hi' : ''}" data-i="${i}" role="option">
         ${it.hasKids ? `<button class="pk-tog" data-tog="${esc(it.tog || it.id)}" tabindex="-1" aria-label="${it.open ? 'Collapse' : 'Expand'}">${it.open ? '▾' : '▸'}</button>` : '<span class="pk-sp"></span>'}
-        <span class="pk-t">${spr(it.sprite)}${esc(it.text)}${it.custom ? ' <em>mine</em>' : ''}</span><span class="pk-s">${esc(it.sub || '')}</span><span class="pk-r">${it.right || ''} ${pc(it.c30)}</span></div>`).join('');
+        <span class="pk-t">${icon(it)}${esc(it.text)}${it.custom ? ' <em>mine</em>' : ''}</span><span class="pk-s">${esc(it.sub || '')}</span><span class="pk-r">${it.right || ''} ${pc(it.c30)}</span></div>`).join('');
     root.querySelector('.pk-list').innerHTML = html || '<div class="pk-miss">No matches.</div>';
     root._items = items;
     root.querySelector('.pk-it.hi')?.scrollIntoView({ block: 'nearest' });

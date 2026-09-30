@@ -76,7 +76,7 @@
     [...new Set(mains.map((k) => by[k].card.era))].forEach((e) => add('idx:era:' + slug(e), e, 'era', mains.filter((k) => by[k].card.era === e)));
     [...new Set(mains.map((k) => by[k].card.basket || slug(by[k].card.set)))].forEach((b) => {
       const keys = mains.filter((k) => (by[k].card.basket || slug(by[k].card.set)) === b);
-      if (keys.length >= 2) add('idx:set:' + b, by[keys[0]].card.set, 'set', keys, { era: by[keys[0]].card.era }); // a lone era pick is not a set index
+      if (keys.length >= 2) add('idx:set:' + b, by[keys[0]].card.set, 'set', keys, { era: by[keys[0]].card.era, symbol: WL.setSymbols?.[by[keys[0]].card.set] || null }); // a lone era pick is not a set index
     });
     // Era families (WOTC vs EX vs DP): only once there is more than one.
     const famOf = (c) => c.family || String(c.era || '').split(' ')[0];
