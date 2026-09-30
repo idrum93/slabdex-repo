@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-30T05:04:42.801Z",
+  "generated": "2026-09-30T16:48:46.968Z",
   "consensus": {
     "grades": [
       "raw",
@@ -1189,12 +1189,12 @@
     "grade": "psa8",
     "horizon": 30,
     "tested": 126,
-    "rules": 136,
+    "rules": 137,
     "counts": {
       "confirmed": 0,
       "promising": 9,
       "none": 117,
-      "few": 10
+      "few": 11
     },
     "base": {
       "mean": -0.030896381722720696,
@@ -6217,6 +6217,29 @@
         "status": "none"
       },
       {
+        "id": "gapLow",
+        "label": "Cheap vs next grade up (<80% of its usual ratio)",
+        "parts": [
+          "gapLow"
+        ],
+        "n": 14,
+        "cards": 12,
+        "mean": -0.050026487075059516,
+        "edge": -0.014436168523945638,
+        "excess": -4.879577045077976,
+        "vsPeers": -1.4332466662053234,
+        "hit": 0.35714285714285715,
+        "beatPeers": 0.6428571428571429,
+        "boom": 0,
+        "p": null,
+        "halves": [
+          4.8391335638164445,
+          -5.890010902582665
+        ],
+        "holds": false,
+        "status": "few"
+      },
+      {
         "id": "rsi30+gold",
         "label": "RSI↑30 + SMA20×50 within 7d",
         "parts": [
@@ -6455,7 +6478,7 @@
       }
     ],
     "cards": 117,
-    "events": 5502,
+    "events": 5516,
     "asOf": "2026-09-29"
   }
 }
