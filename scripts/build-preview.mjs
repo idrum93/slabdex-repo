@@ -21,6 +21,7 @@ html = html.replace('<script src="js/indicators.js"></script>', ((c) => () => c)
 html = html.replace('<script src="js/chart.js"></script>', ((c) => () => c)(`<script>\n${await rd('js/chart.js')}</script>`));
 html = html.replace('<script src="js/clean.js"></script>', ((c) => () => c)(`<script>\n${await rd('js/clean.js')}</script>`));
 html = html.replace('<script src="js/model.js"></script>', ((c) => () => c)(`<script>\n${await rd('js/model.js')}</script>`));
+html = html.replace('<script src="js/edge.js"></script>', ((c) => () => c)(`<script>\n${await rd('js/edge.js')}</script>`));
 html = html.replace('<script src="js/app.js"></script>', ((c) => () => c)(`<script>\n${await rd('js/app.js')}</script>`));
 if (process.argv.includes('--fragment')) html = html.replace(/^[\s\S]*?<head>\s*<meta charset="utf-8">\s*<meta name="viewport"[^>]*>/, '').replace(/<\/head>\s*<body>/, '').replace(/<\/body>\s*<\/html>\s*$/, '');
 await mkdir(path.join(ROOT, 'dist'), { recursive: true });

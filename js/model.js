@@ -34,7 +34,8 @@
 
   function buildModel(WL, SERIES, grade) {
     const lines = [];
-    for (const c of WL.cards) {
+    const all = [...WL.cards, ...(WL.extra || []).map((c) => ({ ...c, role: 'group' }))];
+    for (const c of all) {
       const s = SERIES[c.key];
       if (!s) continue;
       if (grade === 'raw') { lines.push(...rawLines(c, s)); continue; }
@@ -67,16 +68,32 @@
       }
       by[l.key] = { card: l.card, close, sales: l.dense ? null : raw, vol, demo: !!l.demo, saleN: l.pts.length, dense: !!l.dense };
     }
-    const mains = Object.keys(by).filter((k) => !by[k].card.virtual);
+    // Set / era / all indexes are the set baskets only; index-only cards (role 'group') feed character & theme indexes.
+    const mains = Object.keys(by).filter((k) => !by[k].card.virtual && by[k].card.role !== 'group');
     const idx = {};
     const add = (id, name, kind, keys, extra = {}) => { if (keys.length) idx[id] = { id, name, kind, members: keys, ...makeIndex(axis, keys.map((k) => by[k])), ...extra }; };
     add('idx:all', 'All tracked', 'all', mains);
     [...new Set(mains.map((k) => by[k].card.era))].forEach((e) => add('idx:era:' + slug(e), e, 'era', mains.filter((k) => by[k].card.era === e)));
     [...new Set(mains.map((k) => by[k].card.basket || slug(by[k].card.set)))].forEach((b) => {
       const keys = mains.filter((k) => (by[k].card.basket || slug(by[k].card.set)) === b);
-      add('idx:set:' + b, by[keys[0]].card.set, 'set', keys, { era: by[keys[0]].card.era });
+      if (keys.length >= 2) add('idx:set:' + b, by[keys[0]].card.set, 'set', keys, { era: by[keys[0]].card.era }); // a lone era pick is not a set index
     });
-    return { grade, dense: grade === 'raw', axis, by, idx, index: idx['idx:all']?.close || [] };
+    // Era families (WOTC vs EX vs DP): only once there is more than one.
+    const famOf = (c) => c.family || String(c.era || '').split(' ')[0];
+    const fams = [...new Set(mains.map((k) => famOf(by[k].card)))];
+    if (fams.length > 1) fams.forEach((f) => add('idx:fam:' + slug(f), WL.familyLabels?.[f] || f, 'family', mains.filter((k) => famOf(by[k].card) === f), { family: f }));
+    for (const g of WL.groups || []) add(g.id, g.label, g.kind, g.members.filter((k) => by[k]), { scope: g.scope, base: g.base || g.label, sprite: g.sprite || null });
+    // Which character / theme indexes each card belongs to (base key, so both printings share it).
+    const memberOf = {};
+    for (const g of WL.groups || []) for (const k of g.members) (memberOf[k] ||= []).push(g.id);
+    return { grade, dense: grade === 'raw', axis, by, idx, memberOf, index: idx['idx:all']?.close || [] };
+  }
+
+  // One entry per character / theme: its all-eras index where one exists, otherwise its single-era index.
+  function ladder(model, kind) {
+    const byBase = {};
+    for (const x of Object.values(model.idx)) if (x.kind === kind) (byBase[x.base || x.name] ||= []).push(x);
+    return Object.values(byBase).map((xs) => xs.find((x) => x.scope === 'all') || xs[0]);
   }
 
   // Equal-weight geometric chain-link, base 100: bouncing prices can't make it drift.
@@ -163,12 +180,13 @@
     // Card-level scoreability decides whether this grade is worth reading at all.
     const cardSig = [];
     for (const [k, b] of Object.entries(model.by)) {
+      if (b.card.custom) continue;
       const set = model.idx['idx:set:' + (b.card.basket || slug(b.card.set))];
       const s = signals(b.close, b.vol, set?.close || model.index, { dense });
       if (s.score != null) cardSig.push({ k, b, s });
     }
-    const nCards = Object.values(model.by).filter((b) => !b.card.virtual).length;
-    const meta = { asOf: model.axis[model.axis.length - 1] || null, grade: model.grade, gradeLabel: GRADE_LABEL[model.grade] || model.grade, cards: nCards, scoredCards: cardSig.filter((o) => !o.b.card.virtual).length };
+    const nCards = Object.values(model.by).filter((b) => !b.card.virtual && b.card.role !== 'group').length;
+    const meta = { asOf: model.axis[model.axis.length - 1] || null, grade: model.grade, gradeLabel: GRADE_LABEL[model.grade] || model.grade, cards: nCards, scoredCards: cardSig.filter((o) => !o.b.card.virtual && o.b.card.role !== 'group').length };
     if (!nCards || meta.scoredCards < Math.max(3, nCards * 0.3)) {
       return { ...meta, thin: true, lines: [{ label: 'Data', items: [item('idx:all', `Too few ${meta.gradeLabel} sales to read momentum yet (${meta.scoredCards}/${nCards} cards scoreable). Try another grade.`, 'warn')] }] };
     }
@@ -186,6 +204,18 @@
     const lag30 = by30.slice(-2).reverse().filter((o) => (o.s.c30 ?? 0) < 0 && !lagIds.has(o.x.id));
     if (lag.length || lag30.length) lines.push({ label: 'Lagging', items: [...lag.map((o) => item(o.x.id, `${o.x.name} ${o.s.score}`, 'bad')), ...lag30.map((o) => item(o.x.id, `${o.x.name} ${pc(o.s.c30)} 30D`, 'bad'))] });
     if (eras.length) lines.push({ label: 'Eras', items: eras.sort((a, b) => (b.s.c30 ?? -1e9) - (a.s.c30 ?? -1e9)).map((o) => item(o.x.id, `${o.x.name} ${pc(o.s.c30)}`, (o.s.c30 ?? 0) >= 0 ? 'good' : 'bad')) });
+    // Characters and themes: who is gaining on whom, independent of set.
+    const grp = (kind) => ladder(model, kind).map((x) => ({ x, s: sig(x) })).filter((o) => o.s.c30 != null);
+    const chars = grp('char').sort((a, b) => b.s.c30 - a.s.c30), themes = grp('theme').sort((a, b) => b.s.c30 - a.s.c30);
+    if (chars.length) {
+      lines.push({ label: 'Leading characters', items: chars.slice(0, 3).map((o) => item(o.x.id, `${o.x.name} ${pc(o.s.c30)} 30D`, o.s.c30 >= 0 ? 'good' : 'bad')) });
+      const rampC = chars.filter((o) => (o.s.accel ?? 0) > 5 && o.s.c30 > 0).sort((a, b) => b.s.accel - a.s.accel).slice(0, 2);
+      if (rampC.length) lines.push({ label: 'Characters ramping', items: rampC.map((o) => item(o.x.id, `${o.x.name} (+${o.s.accel.toFixed(0)} pts faster than prior 30D)`, 'good')) });
+      lines.push({ label: 'Trailing characters', items: chars.slice(-2).reverse().map((o) => item(o.x.id, `${o.x.name} ${pc(o.s.c30)} 30D`, o.s.c30 >= 0 ? 'mid' : 'bad')) });
+    }
+    if (themes.length) lines.push({ label: 'Themes', items: themes.map((o) => item(o.x.id, `${o.x.name} ${pc(o.s.c30)}`, o.s.c30 >= 0 ? 'good' : 'bad')) });
+    const famRows = Object.values(model.idx).filter((x) => x.kind === 'family').map((x) => ({ x, s: sig(x) })).filter((o) => o.s.c30 != null).sort((a, b) => b.s.c30 - a.s.c30);
+    if (famRows.length) lines.splice(1, 0, { label: 'Era families', items: famRows.map((o) => item(o.x.id, `${o.x.name} ${lv(o.s.last)} · ${pc(o.s.c30)} 30D`, o.s.c30 >= 0 ? 'good' : 'bad')) });
 
     // Standout cards: strong score AND clearly beating its own set, with real activity behind it.
     const cards = cardSig.filter((o) => !/mixed/.test(o.b.card.line || '')); // clean lines only
@@ -198,8 +228,154 @@
     return { ...meta, lines };
   }
 
-  function briefMarkdown(briefs) {
+  // ---------- consensus across grades ----------
+  // A read counts only where a grade has real data. Sets/cards are "agreeing" when 2+ grades point the
+  // same way and none points the other way. Printings are matched exactly (1st Ed with 1st Ed); blended
+  // "mixed" lines are left out so a pooled record can't fake agreement.
+  const CONS_GRADES = ['raw', 'psa7', 'psa8', 'psa9', 'psa10'];
+  const dirOf = (s) => (s.score == null ? null : s.score >= 55 && (s.c30 ?? 0) >= 0 ? 1 : s.score < 40 || ((s.c30 ?? 0) < -5 && s.score < 55) ? -1 : 0);
+  const tagOf = (line) => (!line ? 'single' : /1st/i.test(line) ? '1st' : /unl/i.test(line) ? 'unl' : /mixed/i.test(line) ? null : /reverse|lower|upper/i.test(line) ? null : 'single');
+  const TAG_LABEL = { '1st': ' 1st Ed', unl: ' Unl', single: '' };
+
+  function weeklyReturns(m, id) {
+    const x = m.idx[id]; if (!x) return {};
+    const w = {};
+    m.axis.forEach((d, i) => { if (x.close[i] == null) return; const dt = new Date(d + 'T00:00:00Z'); const wk = new Date(dt - ((dt.getUTCDay() + 6) % 7) * 864e5).toISOString().slice(0, 10); w[wk] = x.close[i]; });
+    const ks = Object.keys(w).sort(), r = {};
+    for (let i = 1; i < ks.length; i++) r[ks[i]] = Math.log(w[ks[i]] / w[ks[i - 1]]);
+    return r;
+  }
+  function corr(a, b) {
+    const n = a.length; if (n < 8) return null;
+    const ma = a.reduce((x, y) => x + y, 0) / n, mb = b.reduce((x, y) => x + y, 0) / n;
+    let ab = 0, aa = 0, bb = 0;
+    for (let i = 0; i < n; i++) { ab += (a[i] - ma) * (b[i] - mb); aa += (a[i] - ma) ** 2; bb += (b[i] - mb) ** 2; }
+    return aa && bb ? ab / Math.sqrt(aa * bb) : null;
+  }
+  // Does RAW move first? Correlate weekly RAW index returns with graded returns 1–4 weeks later.
+  function leadLag(raw, graded, id = 'idx:all') {
+    const R = weeklyReturns(raw, id), G = weeklyReturns(graded, id);
+    const ks = Object.keys(R).filter((k) => k in G).sort();
+    let best = null;
+    for (let lag = 1; lag <= 4; lag++) {
+      const a = [], b = [];
+      for (let i = 0; i + lag < ks.length; i++) { a.push(R[ks[i]]); b.push(G[ks[i + lag]]); }
+      const c = corr(a, b);
+      if (c != null && (!best || c > best.r)) best = { lag, r: c, n: a.length };
+    }
+    if (!best) return null;
+    best.need = 2.5 / Math.sqrt(best.n); // ~95% bar, raised because we pick the best of 4 lags
+    best.real = best.r >= best.need;
+    return best;
+  }
+
+  // Correlation of weekly returns between two aligned series over the last `days` days.
+  function trackCorr(axis, a, b, days = 120) {
+    const n = axis.length, from = Math.max(0, n - days), wk = {};
+    for (let i = from; i < n; i++) {
+      if (a[i] == null || b[i] == null) continue;
+      const dt = new Date(axis[i] + 'T00:00:00Z'), w = new Date(dt - ((dt.getUTCDay() + 6) % 7) * 864e5).toISOString().slice(0, 10);
+      wk[w] = [a[i], b[i]];
+    }
+    const ks = Object.keys(wk).sort(), ra = [], rb = [];
+    for (let i = 1; i < ks.length; i++) { const p = wk[ks[i - 1]], q = wk[ks[i]]; if (p[0] > 0 && p[1] > 0) { ra.push(Math.log(q[0] / p[0])); rb.push(Math.log(q[1] / p[1])); } }
+    const moved = ra.filter((x) => Math.abs(x) > 1e-9).length;
+    return moved >= 5 ? { r: corr(ra, rb), weeks: ra.length } : null;
+  }
+
+  function consensus(models) {
+    const grades = CONS_GRADES.filter((g) => models[g] && !brief(models[g]).thin);
+    const lab = (g) => GRADE_LABEL[g] || g;
+    const item = (k, text, tone) => ({ k, text, tone });
+    const lines = [];
+    const reads = (kind) => {
+      const out = {};
+      for (const g of grades) {
+        const m = models[g];
+        const pool = kind === 'char' || kind === 'theme' ? ladder(m, kind) : Object.values(m.idx).filter((x) => x.kind === kind);
+        for (const x of pool) {
+          const s = signals(x.close, x.vol, x.id === 'idx:all' ? null : m.index, { dense: m.dense });
+          const d = dirOf(s); if (d == null) continue;
+          (out[x.id] ||= { id: x.id, name: x.name, r: [] }).r.push({ g, d, score: s.score, c30: s.c30 });
+        }
+      }
+      return Object.values(out);
+    };
+    const summ = (o) => ({ ...o, up: o.r.filter((z) => z.d > 0), dn: o.r.filter((z) => z.d < 0), avg: o.r.reduce((a, z) => a + z.score, 0) / o.r.length });
+    const sets = reads('set').map(summ);
+    const gl = (arr) => arr.map((z) => lab(z.g).replace('RAW NM', 'RAW')).join(', ');
+
+    const agreeUp = sets.filter((o) => o.up.length >= 2 && !o.dn.length).sort((a, b) => b.up.length - a.up.length || b.avg - a.avg);
+    if (agreeUp.length) lines.push({ label: 'Grades agree ▲', items: agreeUp.slice(0, 4).map((o) => item(o.id, `${o.name} [${gl(o.up)}]`, 'good')) });
+    const agreeDn = sets.filter((o) => o.dn.length >= 2 && !o.up.length).sort((a, b) => b.dn.length - a.dn.length || a.avg - b.avg);
+    if (agreeDn.length) lines.push({ label: 'Grades agree ▼', items: agreeDn.slice(0, 3).map((o) => item(o.id, `${o.name} [${gl(o.dn)}]`, 'bad')) });
+    const split = sets.filter((o) => o.up.length && o.dn.length).sort((a, b) => b.r.length - a.r.length);
+    if (split.length) lines.push({ label: 'Grades split', items: split.slice(0, 3).map((o) => item(o.id, `${o.name} [▲ ${gl(o.up)} / ▼ ${gl(o.dn)}]`, 'warn')) });
+
+    // RAW moving before graded (or the reverse): a current divergence, not a proven lead.
+    if (grades.includes('raw')) {
+      const div = [];
+      for (const o of sets) {
+        const rw = o.r.find((z) => z.g === 'raw'); const gr = o.r.filter((z) => z.g !== 'raw' && z.c30 != null);
+        if (!rw || !gr.length || rw.c30 == null) continue;
+        const gAvg = gr.reduce((a, z) => a + z.c30, 0) / gr.length;
+        if (rw.c30 >= 8 && rw.d > 0 && gAvg < 3) div.push({ o, t: `${o.name}: RAW ${rw.c30 >= 0 ? '+' : ''}${rw.c30.toFixed(0)}% 30D, graded ${gAvg >= 0 ? '+' : ''}${gAvg.toFixed(0)}%`, tone: 'good', gap: rw.c30 - gAvg });
+        else if (gAvg >= 8 && rw.c30 <= 0) div.push({ o, t: `${o.name}: graded ${gAvg >= 0 ? '+' : ''}${gAvg.toFixed(0)}% 30D, RAW ${rw.c30.toFixed(0)}%`, tone: 'warn', gap: gAvg - rw.c30 });
+      }
+      div.sort((a, b) => b.gap - a.gap);
+      if (div.length) lines.push({ label: 'RAW vs graded', items: div.slice(0, 3).map((d) => item(d.o.id, d.t, d.tone)) });
+    }
+
+    for (const [kind, label] of [['char', 'Characters agree'], ['theme', 'Themes agree']]) {
+      const gs = reads(kind).map(summ);
+      const up = gs.filter((o) => o.up.length >= 2 && !o.dn.length).sort((a, b) => b.up.length - a.up.length || b.avg - a.avg);
+      const dn = gs.filter((o) => o.dn.length >= 2 && !o.up.length).sort((a, b) => b.dn.length - a.dn.length || a.avg - b.avg);
+      if (up.length) lines.push({ label: label + ' ▲', items: up.slice(0, 4).map((o) => item(o.id, `${o.name} [${gl(o.up)}]`, 'good')) });
+      if (dn.length) lines.push({ label: label + ' ▼', items: dn.slice(0, 3).map((o) => item(o.id, `${o.name} [${gl(o.dn)}]`, 'bad')) });
+    }
+    const eras = reads('era').map(summ);
+    if (eras.length) lines.push({ label: 'Eras', items: eras.sort((a, b) => b.up.length - b.dn.length - (a.up.length - a.dn.length)).map((o) => item(o.id, `${o.name} ▲${o.up.length} ▼${o.dn.length}`, o.up.length > o.dn.length ? 'good' : o.dn.length > o.up.length ? 'bad' : '')) });
+
+    // Cards: same card AND same printing agreeing across grades, clean lines only.
+    const cards = {};
+    for (const g of grades) {
+      const m = models[g];
+      for (const [k, b] of Object.entries(m.by)) {
+        if (b.card.custom) continue;
+        const tag = tagOf(b.card.line); if (!tag) continue;
+        const base = k.replace(/~alt$/, '');
+        const set = m.idx['idx:set:' + (b.card.basket || slug(b.card.set))];
+        const s = signals(b.close, b.vol, set?.close || m.index, { dense: m.dense });
+        const d = dirOf(s); if (d == null) continue;
+        const ck = base + '|' + tag;
+        (cards[ck] ||= { name: `${b.card.name}${TAG_LABEL[tag]} · ${b.card.set}`, keys: {}, r: [] }).r.push({ g, d, score: s.score, rs30: s.rs30 });
+        cards[ck].keys[g] = k;
+      }
+    }
+    const cardUp = Object.values(cards).map(summ).filter((o) => o.up.length >= 2 && !o.dn.length).sort((a, b) => b.up.length - a.up.length || b.avg - a.avg);
+    if (cardUp.length) lines.push({ label: 'Cards agree ▲', items: cardUp.slice(0, 3).map((o) => ({ ...item(Object.values(o.keys)[0], `${o.name} [${gl(o.up)}]`, 'good'), keys: o.keys })) });
+
+    // Lead-lag self-check, recomputed every run as history grows.
+    const ll = grades.includes('raw') ? grades.filter((g) => g !== 'raw').map((g) => ({ g, x: leadLag(models.raw, models[g]) })).filter((z) => z.x) : [];
+    const real = ll.filter((z) => z.x.real);
+    let leadNote = null;
+    if (ll.length) {
+      const weeks = Math.max(...ll.map((z) => z.x.n));
+      leadNote = real.length
+        ? `RAW has led ${real.map((z) => `${lab(z.g)} by ~${z.x.lag}w (r ${z.x.r.toFixed(2)})`).join(', ')} over ${weeks} weeks.`
+        : `No reliable RAW→graded lead yet (${weeks} weeks of data; best ${ll.sort((a, b) => b.x.r - a.x.r)[0] ? `${lab(ll[0].g)} at ${ll[0].x.lag}w, r ${ll[0].x.r.toFixed(2)} vs ${ll[0].x.need.toFixed(2)} needed` : '—'}).`;
+    }
+    return { grades, gradeLabels: grades.map(lab), lines, leadNote, leadLag: ll.map((z) => ({ grade: z.g, lag: z.x.lag, r: +z.x.r.toFixed(3), need: +z.x.need.toFixed(3), weeks: z.x.n, real: z.x.real })) };
+  }
+
+  function briefMarkdown(briefs, cons) {
     const L = ['# SlabDex market brief', ''];
+    if (cons) {
+      L.push(`## Consensus across grades (${cons.gradeLabels.join(', ')})`, '');
+      for (const l of cons.lines) L.push(`- **${l.label}:** ${l.items.map((i) => i.text).join('; ')}`);
+      if (cons.leadNote) L.push(`- **Lead-lag check:** ${cons.leadNote}`);
+      L.push('');
+    }
     for (const b of briefs) {
       L.push(`## ${b.gradeLabel} — as of ${b.asOf} (${b.cards} cards, ${b.scoredCards} with enough data to score)`, '');
       for (const l of b.lines) L.push(`- **${l.label}:** ${l.items.map((i) => i.text).join('; ')}`);
@@ -209,6 +385,27 @@
     return L.join('\n');
   }
 
-  const api = { buildModel, makeIndex, signals, brief, briefMarkdown, fillDays, slug, GRADE_LABEL, MIN_SALE_DAYS_90 };
+  // What changed: compare today's read with the read `lb` days ago on the same data.
+  const TAG_RANK = { WEAK: 0, NEUTRAL: 1, IMPROVING: 2, 'EARLY STRENGTH': 3, EXTENDED: 3 };
+  function changes(close, vol, bench, { dense = false, lb = 7 } = {}) {
+    const n = close.length, cut = (a) => (a ? a.slice(0, Math.max(0, n - lb)) : a);
+    const now = signals(close, vol, bench, { dense }), was = signals(cut(close), cut(vol), cut(bench), { dense });
+    const out = [];
+    const rk = (s) => (s.score == null ? null : TAG_RANK[s.tag?.[0]] ?? null);
+    const a = rk(was), b = rk(now);
+    if (a != null && b != null && a !== b) out.push({ dir: b > a ? 1 : -1, text: `${was.tag[0].toLowerCase()} → ${now.tag[0].toLowerCase()}` });
+    else if (a == null && b != null) out.push({ dir: b >= 2 ? 1 : 0, text: `now scoreable: ${now.tag[0].toLowerCase()}` });
+    if (was.distS50 != null && now.distS50 != null && Math.sign(was.distS50) !== Math.sign(now.distS50)) out.push({ dir: now.distS50 > 0 ? 1 : -1, text: now.distS50 > 0 ? 'crossed above 50D avg' : 'fell below 50D avg' });
+    if (was.accel != null && now.accel != null && was.accel <= 0 && now.accel > 5) out.push({ dir: 1, text: 'momentum turned up' });
+    if (was.accel != null && now.accel != null && was.accel >= 0 && now.accel < -5) out.push({ dir: -1, text: 'momentum rolled over' });
+    if (was.rs30 != null && now.rs30 != null && was.rs30 <= 0 && now.rs30 > 5) out.push({ dir: 1, text: 'started beating its benchmark' });
+    const dir = out.reduce((x, c) => x + c.dir, 0), d = dir > 0 ? 1 : dir < 0 ? -1 : 0;
+    // Only a real shift counts: 2+ signals agreeing on direction, or the tag jumping two levels.
+    const agree = out.filter((c) => c.dir === d && d !== 0).length;
+    const strong = d !== 0 && (agree >= 2 || (a != null && b != null && Math.abs(b - a) >= 2));
+    return strong ? { dir: d, items: out, now } : null;
+  }
+
+  const api = { ladder, trackCorr, changes, buildModel, makeIndex, signals, brief, consensus, leadLag, briefMarkdown, fillDays, slug, GRADE_LABEL, MIN_SALE_DAYS_90 };
   if (isNode) module.exports = api; else root.Model = api;
 })(typeof window !== 'undefined' ? window : globalThis);

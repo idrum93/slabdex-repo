@@ -6,7 +6,7 @@
   const I = window.Ind;
   const C = window.Clean;
 
-  const state = { v: 3, key: null, grade: 'psa9', vs: 'idx:all', range: 365, res: 'D', ind: { sma20: 1, sma50: 1, bb: 0, vol: 1, rs: 1, rsi: 1, macd: 1 }, sort: 'score', dir: -1, wlView: 'cards' };
+  const state = { v: 3, key: null, grade: 'psa9', vs: 'idx:all', range: 365, res: 'D', ind: { sma20: 1, sma50: 1, bb: 0, vol: 1, rs: 1, rsi: 1, macd: 1 }, sort: 'score', dir: -1, wlView: 'cards', wlMetric: 'c30', merge: false, print: 'main', group: false, collapsed: [], stars: [] };
   let hadSaved = false;
   try { const sv = JSON.parse(localStorage.getItem('slabdex') || 'null'); if (sv && sv.v === 3) { Object.assign(state, sv); hadSaved = true; } } catch (e) {} // older saved layouts are ignored
   const save = () => { try { localStorage.setItem('slabdex', JSON.stringify(state)); } catch (e) {} };
@@ -20,8 +20,9 @@
     const j = (u) => fetch(u, { cache: 'no-cache' }).then((r) => (r.ok ? r.json() : null)).catch(() => null);
     WL = await j('data/watchlist.json');
     STATUS = await j('data/status.json');
-    const res = await Promise.all(WL.cards.map((c) => j(`data/prices/${c.key}.json`)));
-    WL.cards.forEach((c, i) => { if (res[i]) SERIES[c.key] = res[i]; });
+    const all = [...WL.cards, ...(WL.extra || [])];
+    const res = await Promise.all(all.map((c) => j(`data/prices/${c.key}.json`)));
+    all.forEach((c, i) => { if (res[i]) SERIES[c.key] = res[i]; });
   }
 
   const buildModel = (grade) => Model.buildModel(WL, SERIES, grade);
@@ -45,11 +46,60 @@
     if (x) return { id, isIndex: true, name: x.name, index: x, close: x.close, vol: x.vol };
     return null;
   }
+  const hasAlt = (k) => !!model.by[k + '~alt'];
+  const curKey = () => (state.print === 'alt' && hasAlt(state.key) ? state.key + '~alt' : state.key);
   const lineTag = (c) => (c.line ? ` · ${c.line}${c.est ? ' (est.)' : ''}` : '');
   const cardLabel = (c) => `${c.name}${lineTag(c)} — ${c.set} #${c.number}`;
-  const idxLabel = (x) => `${x.kind === 'all' ? 'All tracked' : x.name} index (${x.members.length})`;
+  const KIND_WORD = { char: 'character', theme: 'theme', family: 'era family' };
+  const spr = (u) => (u ? `<img class="spr" src="${u}" alt="" loading="lazy" onerror="this.remove()">` : '');
+  const famOfCard = (c) => c.family || String(c.era || '').split(' ')[0];
+  const idxLabel = (x) => `${x.kind === 'all' ? 'All tracked' : x.name} ${KIND_WORD[x.kind] ? KIND_WORD[x.kind] + ' ' : ''}index (${x.members.length})`;
   const symName = (r) => (r.isIndex ? `${r.index.kind === 'all' ? 'ALL' : r.name.toUpperCase()} IDX` : r.name + (r.card.line ? ` ${r.card.line}` : ''));
 
+  // ---------- per-model stats (shared by watchlist + gauges) ----------
+  function stats() {
+    if (model._stats) return model._stats;
+    const cards = {}, idx = {};
+    const ch = {};
+    for (const [k, b] of Object.entries(model.by)) {
+      cards[k] = signals(b.close, b.vol, model.index);
+      const set = model.idx['idx:set:' + (b.card.basket || slug(b.card.set))];
+      ch[k] = Model.changes(b.close, b.vol, set?.close || model.index, { dense: model.dense });
+    }
+    for (const x of Object.values(model.idx)) {
+      idx[x.id] = signals(x.close, x.vol, x.id === 'idx:all' ? null : model.index);
+      if (x.id !== 'idx:all') ch[x.id] = Model.changes(x.close, x.vol, model.index, { dense: model.dense });
+    }
+    return (model._stats = { cards, idx, ch });
+  }
+  const pct0 = (v) => (v == null ? '—' : `<span class="${v >= 0 ? 'pos' : 'neg'}">${v >= 0 ? '+' : ''}${v.toFixed(0)}%</span>`);
+  const METRICS = {
+    c30: { label: '30D', get: (s) => s.c30, fmt: pct0 },
+    dist50: { label: 'vs 50D', get: (s) => s.distS50, fmt: pct0 },
+    accel: { label: 'Accel', get: (s) => s.accel, fmt: (v) => (v == null ? '—' : `<span class="${v >= 0 ? 'pos' : 'neg'}">${v >= 0 ? '+' : ''}${v.toFixed(0)}</span>`) },
+    volRatio: { label: 'Pace', get: (s) => s.volRatio, fmt: (v) => (v == null ? '—' : `<span class="${v >= 1.2 ? 'pos' : v < 0.8 ? 'neg' : ''}">${v.toFixed(2)}×</span>`) },
+    volExp: { label: 'Swing', get: (s) => s.volExp, fmt: (v) => (v == null ? '—' : `<span class="${v >= 1.3 ? 'warn' : ''}">${v.toFixed(2)}×</span>`) },
+  };
+
+  // Market gauges for the current grade. Each one ranks the watchlist by the metric behind it.
+  function gauges() {
+    const st = stats();
+    const mains = Object.entries(model.by).filter(([, b]) => !b.card.virtual && b.card.role !== 'group').map(([k]) => st.cards[k]);
+    const share = (f, g) => { const v = mains.filter((s) => g(s) != null); return v.length ? { v: (v.filter(f).length / v.length) * 100, n: v.length } : { v: null, n: 0 }; };
+    const scored = mains.filter((s) => s.score != null);
+    const all = st.idx['idx:all'] || {};
+    const pctTone = (v) => (v == null ? 'mid' : v >= 60 ? 'good' : v <= 40 ? 'bad' : 'mid');
+    const br = share((s) => s.distS50 > 0, (s) => s.distS50), adv = share((s) => s.c30 > 0, (s) => s.c30), rmp = share((s) => s.accel > 0, (s) => s.accel);
+    const mom = scored.length ? scored.reduce((a, s) => a + s.score, 0) / scored.length : null;
+    return [
+      { id: 'mom', label: 'MOMENTUM', v: mom, max: 100, txt: mom == null ? '—' : mom.toFixed(0), sub: `avg of ${scored.length} scored`, tone: mom == null ? 'mid' : mom >= 55 ? 'good' : mom < 40 ? 'bad' : 'mid', sort: 'score' },
+      { id: 'br', label: 'BREADTH', v: br.v, max: 100, txt: br.v == null ? '—' : br.v.toFixed(0) + '%', sub: 'above 50D avg', tone: pctTone(br.v), metric: 'dist50' },
+      { id: 'adv', label: 'ADVANCERS', v: adv.v, max: 100, txt: adv.v == null ? '—' : adv.v.toFixed(0) + '%', sub: 'up over 30D', tone: pctTone(adv.v), metric: 'c30' },
+      { id: 'rmp', label: 'RAMPING', v: rmp.v, max: 100, txt: rmp.v == null ? '—' : rmp.v.toFixed(0) + '%', sub: 'momentum speeding up', tone: pctTone(rmp.v), metric: 'accel' },
+      { id: 'pace', label: model.dense ? 'VOLUME' : 'SALES PACE', v: all.volRatio, max: 2, txt: all.volRatio == null ? '—' : all.volRatio.toFixed(2) + '×', sub: '7D vs 30D', tone: all.volRatio == null ? 'mid' : all.volRatio >= 1.2 ? 'good' : all.volRatio < 0.8 ? 'bad' : 'mid', metric: 'volRatio' },
+      { id: 'swing', label: 'SWINGS', v: all.volExp, max: 2, txt: all.volExp == null ? '—' : all.volExp.toFixed(2) + '×', sub: '30D vs 90D volatility', tone: all.volExp == null ? 'mid' : all.volExp >= 1.3 ? 'warn' : 'mid', metric: 'volExp' },
+    ];
+  }
   function weekly(axis, close, vol) {
     const W = [], C = [], V = [];
     let cur = null;
@@ -80,32 +130,48 @@
   // ---------- render ----------
   function draw({ keepView = false } = {}) {
     const T = theme();
-    const cur = resolve(state.key);
+    const cur = resolve(curKey());
     if (!cur) { chart.setData([], []); return; }
+    renderPrint();
+    const other = state.print === 'both' && hasAlt(state.key) ? resolve(state.key + '~alt') : null;
     const vsSeries = state.vs === 'none' ? null : resolve(state.vs, state.key);
     const bench0 = vsSeries && vsSeries.id !== cur.id ? vsSeries : null;
+    const merge = !!(state.merge && bench0);
+    $('mergeBtn').disabled = !bench0; $('mergeBtn').setAttribute('aria-pressed', String(merge));
 
     let dates = model.axis, close = cur.close, vol = cur.vol, ohlc = null, bench = bench0?.close || null;
     if (state.res === 'W') {
       const w = weekly(dates, close, vol); dates = w.dates; close = w.close; vol = w.vol; ohlc = w.ohlc;
       if (bench) bench = weekly(model.axis, bench).close;
     }
+    const benchShown = bench;
+    if (merge) { // one line: slot 1 ÷ slot 2, rebased to 100 where both first exist
+      const r = close.map((v, i) => (I.isN(v) && I.isN(bench[i]) && bench[i] ? v / bench[i] : null));
+      const r0 = r[I.firstIdx(r)] || 1;
+      close = r.map((v) => (I.isN(v) ? (v / r0) * 100 : null)); vol = close.map(() => null); ohlc = null; bench = null;
+    }
     const f = state.res === 'W' ? { s1: 4, s2: 10, bb: 10 } : { s1: 20, s2: 50, bb: 20 }; // weekly ≈ same calendar span
-    const percent = !!bench;
+    const percent = !!bench && !merge;
     const lvl = (v) => v.toFixed(1);
     const main = [];
     if (state.ind.bb) { const b = I.bollinger(close, f.bb); main.push({ type: 'band', data: b.up.map((u, i) => ({ up: u, lo: b.lo[i] })), fill: alpha(T.cmp, 0.08), rebaseWith: close, label: 'BB', color: alpha(T.cmp, 0.5) }); }
     if (ohlc) main.push({ type: 'candle', data: ohlc, label: '', tag: true, color: T.accent });
-    else main.push({ type: 'area', data: close, color: T.accent, width: 2, fillTop: alpha(T.accent, 0.18), fillBottom: alpha(T.accent, 0), label: cur.isIndex ? 'LEVEL' : `${Model.GRADE_LABEL[state.grade]}${model.dense ? '' : ' MKT'}`, tag: true });
-    if (!cur.isIndex && !ohlc && cur.sales) main.push({ type: 'dots', data: cur.sales, color: T.fg || T.text, rebaseWith: close, label: 'SALE' });
-    if (bench) main.push({ type: 'line', data: bench, color: T.cmp, width: 1.5, label: symName(bench0), tag: true });
+    else main.push({ type: 'area', data: close, color: T.accent, width: 2, fillTop: alpha(T.accent, 0.18), fillBottom: alpha(T.accent, 0), label: merge ? 'A÷B' : cur.isIndex ? 'LEVEL' : other ? cur.card.line + (cur.card.est ? ' est.' : '') : `${Model.GRADE_LABEL[state.grade]}${model.dense ? '' : ' MKT'}`, tag: true });
+    if (merge) main.push({ type: 'line', data: close.map((v) => (I.isN(v) ? 100 : null)), color: alpha(T.muted, 0.6), width: 1, dash: [3, 3], label: '' });
+    if (!merge && !cur.isIndex && !ohlc && cur.sales && state.res === 'D') main.push({ type: 'dots', data: cur.sales, color: T.fg || T.text, rebaseWith: close, label: 'SALE' });
+    if (bench) main.push({ type: 'line', data: bench, color: T.cmp, width: 1.5, tag: true }); // its legend lives in the compare row below
+    if (other && !merge) { // BOTH printings: overlay the other line on the same scale
+      const oc = state.res === 'W' ? weekly(model.axis, other.close).close : other.close;
+      main.push({ type: 'line', data: oc, color: T.warn, width: 1.5, label: other.card.line + (other.card.est ? ' est.' : ''), tag: true });
+    }
     if (state.ind.sma20) main.push({ type: 'line', data: I.sma(close, f.s1), color: T.sma20, width: 1, label: state.res === 'W' ? 'SMA4W' : 'SMA20', rebaseWith: close });
     if (state.ind.sma50) main.push({ type: 'line', data: I.sma(close, f.s2), color: T.sma50, width: 1, label: state.res === 'W' ? 'SMA10W' : 'SMA50', rebaseWith: close });
     if (state.ind.vol && vol.some(I.isN)) main.push({ type: 'hist', data: vol, ownScale: true, heightFrac: 0.16, color: alpha(T.muted, 0.45), label: model.dense ? (state.res === 'W' ? 'VOL/WK' : 'VOL/D') : state.res === 'W' ? 'SALES/WK' : 'SALES/D' });
 
-    const title = cur.isIndex ? `${idxLabel(cur.index)} · base 100` : `${cur.card.name}${lineTag(cur.card)}  ${cur.card.set} #${cur.card.number}`;
-    const panes = [{ id: 'main', ratio: 5, percent, fmt: cur.isIndex ? lvl : money, title, series: main }];
-    if (state.ind.rs && bench) {
+    const nameA = cur.isIndex ? `${idxLabel(cur.index)}` : `${cur.card.name}${other ? '' : lineTag(cur.card)}  ${cur.card.set} #${cur.card.number}`;
+    const title = merge ? `${cur.isIndex ? symName(cur) : cur.card.name + lineTag(cur.card)}  ÷  ${symName(bench0)} · base 100` : cur.isIndex ? `${nameA} · base 100` : nameA;
+    const panes = [{ id: 'main', ratio: 5, percent, fmt: cur.isIndex || merge ? lvl : money, title, series: main, extraTop: bench0 ? 20 : 0 }];
+    if (state.ind.rs && bench && !merge) {
       const rs = close.map((v, i) => (I.isN(v) && I.isN(bench[i]) && bench[i] ? v / bench[i] : null));
       const f0 = I.firstIdx(rs); const b0 = f0 >= 0 ? rs[f0] : 1;
       const rsn = rs.map((v) => (I.isN(v) ? (v / b0) * 100 : null));
@@ -125,85 +191,300 @@
     }
     chart.theme = T;
     chart.defaultBars = state.range ? Math.ceil(state.range / (state.res === 'W' ? 7 : 1)) : dates.length;
+    // Second slot gets its own legend row (values follow the crosshair) with a clear button.
+    CMP = bench0 ? { r: bench0, data: benchShown, dates, s: bench0.isIndex ? stats().idx[bench0.id] : stats().cards[bench0.id] } : null;
+    $('cmpRow').hidden = !CMP;
+    chart.onHover = renderCmpRow;
     chart.setData(dates, panes, { keepView });
     $('demoFlag').hidden = !(cur.demo || bench0?.demo);
-    renderSignal(cur, bench0);
+    renderSignal(cur, bench0, merge ? close : null);
+  }
+
+  function renderPrint() {
+    const el = $('print');
+    const m = model.by[state.key], a = model.by[state.key + '~alt'];
+    if (!m || !a) { el.hidden = true; el.innerHTML = ''; return; }
+    const lab = (c) => (c.line || 'Main').replace(/ \(est\.\)/, '') + (c.est ? '*' : '');
+    el.hidden = false;
+    el.innerHTML = [['main', lab(m.card)], ['alt', lab(a.card)], ['both', 'Both']].map(([v, t]) => `<button data-v="${v}" class="${state.print === v ? 'on' : ''}" title="${v === 'both' ? 'Overlay both printings' : 'Show this printing'}${m.card.est ? ' · * = split estimated from sale prices' : ''}">${t}</button>`).join('');
+  }
+
+  let CMP = null, cmpLast = '';
+  function renderCmpRow(hi) {
+    if (!CMP) return;
+    const d = CMP.data, r = CMP.r, s = CMP.s || {};
+    let i = hi; if (i == null || !I.isN(d[i])) i = I.lastIdx(d);
+    const v = i >= 0 ? d[i] : null;
+    const val = v == null ? '—' : r.isIndex ? v.toFixed(1) : money(v);
+    const when = hi != null && CMP.dates[hi] ? CMP.dates[hi].slice(5) + ' ' : '';
+    const pc = (x) => (x == null ? '—' : (x >= 0 ? '+' : '') + x.toFixed(0) + '%');
+    const html = `${when}<b>${val}</b> · 30D <b>${pc(s.c30)}</b> · 90D <b>${pc(s.c90)}</b> · Sig <b>${s.score ?? '··'}</b>${s.tag ? ' ' + s.tag[0].toLowerCase() : ''}`;
+    const name = symName(r) + (r.isIndex ? '' : ` · ${r.card.set}`);
+    const key = name + html;
+    if (key === cmpLast) return; cmpLast = key;
+    $('cmpName').textContent = name;
+    $('cmpVals').innerHTML = html;
   }
 
   function fmtP(v, d = 1) { return v == null ? '<span class="dim">—</span>' : `<span class="${v >= 0 ? 'pos' : 'neg'}">${v >= 0 ? '+' : ''}${v.toFixed(d)}%</span>`; }
 
-  function renderSignal(cur, bench0) {
-    const bench = bench0?.close || (cur.id === 'idx:all' ? null : model.index);
-    const s = signals(cur.close, cur.vol, bench);
+  // For a card: how its own set, character and theme indexes moved, and which of them it tracks most.
+  function contextRows(cur, ratio) {
+    if (ratio || cur.isIndex) return '';
+    const base = cur.id.replace(/~alt$/, ''), st = stats();
+    const ids = ['idx:set:' + (cur.card.basket || slug(cur.card.set)), 'idx:era:' + slug(cur.card.era || ''), 'idx:fam:' + slug(famOfCard(cur.card)), ...(model.memberOf[base] || []), 'idx:all'].filter((id, i, a) => model.idx[id] && a.indexOf(id) === i);
+    if (!ids.length) return '';
+    let best = null;
+    const rows = ids.map((id) => {
+      const x = model.idx[id], s = st.idx[id];
+      const tc = Model.trackCorr(model.axis, cur.close, x.close);
+      if (tc && tc.r != null && (!best || tc.r > best.r)) best = { id, r: tc.r, w: tc.weeks };
+      const lab = { set: 'SET', era: 'ERA', family: 'FAMILY', char: 'CHAR', theme: 'THEME', all: 'ALL' }[x.kind] || x.kind.toUpperCase();
+      return `<button class="ctx-row" data-k="${id}" type="button"><span class="ck">${lab}</span><span class="cn">${spr(x.sprite)}${esc(x.name)}</span><span class="cv">${fmtP(s.c30, 0)}</span></button>`;
+    }).join('');
+    const trk = best && best.r >= 0.3 ? `Moves most with <b>${esc(model.idx[best.id].name)}</b> <span class="dim">(weekly r ${best.r.toFixed(2)}, ${best.w} wks)</span>` : best ? '<span class="dim">No clear link to any index yet (weekly r below 0.3).</span>' : '';
+    return `<h3>ITS INDEXES <span class="dim">30D</span></h3>${rows}${trk ? `<p class="trk">${trk}</p>` : ''}`;
+  }
+
+  function renderSignal(cur, bench0, ratio) {
+    const bench = ratio ? null : bench0?.close || (cur.id === 'idx:all' ? null : model.index);
+    const s = ratio ? signals(ratio, null, null) : signals(cur.close, cur.vol, bench);
     const benchName = bench0 ? symName(bench0) : cur.id === 'idx:all' ? '—' : 'ALL IDX';
-    $('sigName').textContent = `${cur.isIndex ? idxLabel(cur.index) : cur.card.name + lineTag(cur.card)} · ${Model.GRADE_LABEL[state.grade]}`;
+    $('sigName').textContent = ratio ? `${cur.isIndex ? symName(cur) : cur.card.name} ÷ ${symName(bench0)} · ${Model.GRADE_LABEL[state.grade]}` : `${cur.isIndex ? idxLabel(cur.index) : cur.card.name + lineTag(cur.card)} · ${Model.GRADE_LABEL[state.grade]}`;
+    const img = $('sigImg'), card = !cur.isIndex && !ratio ? cur.card : null;
+    if (card?.tcgPlayerId) { // shown only once it has actually loaded
+      const u = `https://tcgplayer-cdn.tcgplayer.com/product/${card.tcgPlayerId}_in_200x200.jpg`;
+      if (img.dataset.u !== u) { img.hidden = true; img.onload = () => { img.hidden = false; }; img.onerror = () => { img.hidden = true; }; img.dataset.u = u; img.alt = card.name; img.src = u; }
+      else img.hidden = !(img.complete && img.naturalWidth > 0);
+    } else img.hidden = true;
+    const base = card ? card.key.replace(/~alt$/, '') : null;
+    $('sigStar').hidden = !base; if (base) { const on = isStar(base); $('sigStar').textContent = on ? '★' : '☆'; $('sigStar').classList.toggle('on', on); $('sigStar').dataset.k = base; }
+    const chg = !ratio && stats().ch[cur.id];
+    $('sigChange').innerHTML = chg ? `<span class="${chg.dir > 0 ? 'pos' : 'neg'}">${chg.dir > 0 ? '▲' : '▼'} this week:</span> ${esc(chg.items.map((i) => i.text).join(' · '))}` : '';
+    $('sigChange').hidden = !chg;
     $('scoreVal').textContent = s.score == null ? '—' : s.score;
     $('scoreBar').style.width = (s.score ?? 0) + '%';
     const tag = $('scoreTag'); tag.textContent = s.tag?.[0] || '—'; tag.className = 'tag ' + (s.tag?.[1] || 'mid');
     const rows = [
-      [cur.isIndex ? 'Level' : 'Last', s.last != null ? (cur.isIndex ? s.last.toFixed(1) : money(s.last)) : '—'],
+      [ratio ? 'Ratio (base 100)' : cur.isIndex ? 'Level' : 'Last', s.last != null ? (cur.isIndex || ratio ? s.last.toFixed(1) : money(s.last)) : '—'],
       ['7D / 30D', `${fmtP(s.c7)} / ${fmtP(s.c30)}`],
       ['90D / 1Y', `${fmtP(s.c90)} / ${fmtP(s.c365)}`],
       ['Momentum accel.', s.accel == null ? '—' : `<span class="${s.accel >= 0 ? 'pos' : 'neg'}">${s.accel >= 0 ? '+' : ''}${s.accel.toFixed(1)} pts</span>`],
-      [`RS 30D vs ${benchName}`, fmtP(s.rs30)],
-      ['RS 90D', fmtP(s.rs90)],
+      ...(ratio ? [] : [[`RS 30D vs ${benchName}`, fmtP(s.rs30)], ['RS 90D', fmtP(s.rs90)]]),
       ['RSI 14', s.rsi == null ? '—' : `<span class="${s.rsi > 70 ? 'neg' : s.rsi >= 50 ? 'pos' : 'dim'}">${s.rsi.toFixed(0)}</span>`],
       ['MACD hist', s.macdH == null ? '—' : `<span class="${s.macdH >= 0 ? 'pos' : 'neg'}">${s.macdH >= 0 ? 'above 0' : 'below 0'} · ${s.macdRising ? 'rising' : 'falling'}</span>`],
       ['vs SMA50', fmtP(s.distS50)],
       ['Sales pace 7D/30D', s.volRatio == null ? '—' : `<span class="${s.volRatio >= 1.2 ? 'pos' : s.volRatio < 0.8 ? 'neg' : ''}">${s.volRatio.toFixed(2)}×</span>`],
       ['Drawdown from 1Y high', fmtP(s.dd)],
       ['Volatility 30D (ann.)', s.vol30 == null ? '—' : s.vol30.toFixed(0) + '%'],
-      [cur.isIndex ? 'Members' : model.dense ? 'Price days' : 'Clean sale days', cur.isIndex ? String(cur.index.members.length) : String(cur.saleN)],
-      ...(model.dense ? [] : [['Sale days, last 90D', s.saleDays90 == null ? '—' : `<span class="${s.saleDays90 < Model.MIN_SALE_DAYS_90 ? 'neg' : ''}">${s.saleDays90}</span>`]]),
+      ...(ratio ? [] : [[cur.isIndex ? 'Members' : model.dense ? 'Price days' : 'Clean sale days', cur.isIndex ? String(cur.index.members.length) : String(cur.saleN)]]),
+      ...(model.dense || ratio ? [] : [['Sale days, last 90D', s.saleDays90 == null ? '—' : `<span class="${s.saleDays90 < Model.MIN_SALE_DAYS_90 ? 'neg' : ''}">${s.saleDays90}</span>`]]),
       ['History', `${s.days} days`],
     ];
+    $('sigCtx').innerHTML = setupLine(cur, ratio) + contextRows(cur, ratio);
     $('metrics').innerHTML = rows.map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join('');
   }
 
+  const isStar = (k) => state.stars.includes(k);
+  const chgBadge = (c) => (c ? `<span class="chg ${c.dir > 0 ? 'up' : 'dn'}" title="This week: ${esc(c.items.map((i) => i.text).join('; '))}">${c.dir > 0 ? '▲' : '▼'}</span>` : '');
+  function cardRow(b, M, st) {
+    const c = b.card, s = st.cards[c.key], alt = model.by[c.key + '~alt']?.card;
+    return { key: c.key, name: c.name, set: c.set, custom: !!c.custom, sub: `${c.role === 'group' ? 'idx-only · ' : ''}${c.set} #${c.number}${alt ? ` · ${c.line}/${alt.line}${c.est ? '*' : ''}` : c.line ? ' · ' + c.line : ''}`, last: s.last, lastTxt: s.last != null ? money(s.last) : '—', metric: M.get(s), score: s.score, tag: s.tag, ch: st.ch[c.key], basket: c.basket || slug(c.set), setup: edgeLive(c.key) };
+  }
+  function idxRow(x, M, st) {
+    const s = st.idx[x.id];
+    const where = { all: '', family: 'era family · ', era: 'era · ', set: `${x.era} · `, char: x.scope === 'all' ? 'character ladder · ' : 'character · ', theme: x.scope === 'all' ? 'theme ladder · ' : 'theme · ' }[x.kind] ?? '';
+    return { key: x.id, name: x.name, sub: `${where}${x.members.length} cards`, last: s.last, lastTxt: s.last != null ? s.last.toFixed(1) : '—', metric: M.get(s), score: s.score, tag: s.tag, ch: st.ch[x.id], isIdx: true, sprite: x.sprite };
+  }
+  function rowHtml(r, M, extra = '') {
+    const cls = r.score == null ? 'na' : r.tag[1];
+    const star = r.isIdx ? '' : `<button class="st-btn${isStar(r.key) ? ' on' : ''}" data-star="${r.key}" title="${isStar(r.key) ? 'Remove from' : 'Add to'} MINE" aria-label="Star ${esc(r.name)}">${isStar(r.key) ? '★' : '☆'}</button>`;
+    return `<tr class="row${r.key === state.key ? ' sel' : ''}${r.key === state.vs ? ' cmp' : ''}${extra}" data-k="${r.key}" tabindex="0">
+      <td><span class="nm">${spr(r.sprite)}${esc(r.name)}${chgBadge(r.ch)}${r.setup?.status === 'confirmed' ? `<span class="setup" title="Backtested setup fired ${r.setup.best.ago}d ago: ${esc(r.setup.best.label)}">◆</span>` : ''}</span><span class="st">${esc(r.sub)}</span></td>
+      <td class="n">${r.lastTxt}</td>
+      <td class="n">${M.fmt(r.metric)}</td>
+      <td class="n"><span class="pill ${cls}" title="${r.tag?.[0] || ''}">${r.score ?? '··'}</span></td>
+      <td class="acts"><button class="sw${r.key === state.vs ? ' on' : ''}" data-vs="${r.key}" title="Compare against this" aria-label="Compare against ${esc(r.name)}">⇄</button>${star}</td></tr>`;
+  }
   function renderWatchlist() {
-    const sets = state.wlView === 'sets';
-    document.querySelectorAll('#wlTabs button').forEach((b) => b.classList.toggle('on', b.dataset.v === state.wlView));
-    $('wlFirstCol').textContent = sets ? 'Index' : 'Card';
-    $('wlLastCol').textContent = sets ? 'Level' : 'Last';
-    let rows;
-    if (sets) {
-      const order = { all: 0, era: 1, set: 2 };
-      rows = Object.values(model.idx).map((x) => {
-        const s = signals(x.close, x.vol, x.id === 'idx:all' ? null : model.index);
-        return { key: x.id, name: x.name, sub: x.kind === 'all' ? `${x.members.length} cards` : x.kind === 'era' ? `era · ${x.members.length} cards` : `${x.era} · ${x.members.length} cards`, last: s.last, lastTxt: s.last != null ? s.last.toFixed(1) : '—', c30: s.c30, score: s.score, tag: s.tag, grp: order[x.kind] };
-      });
-      if (state.sort === 'score' || state.sort === 'c30' || state.sort === 'last' || state.sort === 'name') { /* sort below */ }
+    const view = state.wlView, brief = view === 'brief';
+    document.querySelectorAll('#wlTabs button').forEach((b) => b.classList.toggle('on', b.dataset.v === view));
+    document.querySelector('.wl table').hidden = brief; $('briefList').hidden = !brief;
+    $('groupBtn').hidden = view !== 'cards'; $('groupBtn').setAttribute('aria-pressed', String(!!state.group));
+    if (brief) { renderBriefList(); return; }
+    $('wlFirstCol').textContent = view === 'sets' ? 'Index' : 'Card';
+    $('wlLastCol').textContent = view === 'sets' ? 'Level' : 'Last';
+    const M = METRICS[state.wlMetric] || METRICS.c30;
+    $('wlMetric').value = state.wlMetric in METRICS ? state.wlMetric : 'c30';
+    const st = stats();
+    const k = state.sort === 'c30' ? 'metric' : state.sort, dir = state.dir;
+    const cmp = (a, b) => { const x = a[k], y = b[k]; if (x == null) return y == null ? 0 : 1; if (y == null) return -1; return (x < y ? -1 : x > y ? 1 : 0) * dir; };
+    const mains = Object.values(model.by).filter((b) => !b.card.virtual);
+    let html = '';
+    if (view === 'sets') {
+      // Ladders = one row per character/theme (its all-eras index when it spans eras); per-era splits sit in collapsible sections.
+      const all = Object.values(model.idx), lad = { char: Model.ladder(model, 'char'), theme: Model.ladder(model, 'theme') };
+      const ladIds = new Set([...lad.char, ...lad.theme].map((x) => x.id));
+      const secs = [
+        ['all', 'Market', all.filter((x) => x.kind === 'all')],
+        ['family', 'Era families', all.filter((x) => x.kind === 'family')],
+        ['era', 'Eras', all.filter((x) => x.kind === 'era')],
+        ['set', 'Sets', all.filter((x) => x.kind === 'set')],
+        ['lad:char', 'Character ladder', lad.char],
+        ['lad:theme', 'Themes', lad.theme],
+        ['by:char', 'Characters by era', all.filter((x) => x.kind === 'char' && !ladIds.has(x.id)), true],
+        ['by:theme', 'Themes by era', all.filter((x) => x.kind === 'theme' && !ladIds.has(x.id)), true],
+      ];
+      html = secs.map(([key, title, xs, fold]) => {
+        if (!xs.length) return '';
+        const rows = xs.map((x) => idxRow(x, M, st)).sort(cmp);
+        const tk = 'sec:' + key, open = fold ? state.collapsed.includes(tk) : !state.collapsed.includes(tk); // folded sections: toggled = open
+        return `<tr class="sec" data-toggle="${tk}"><td colspan="5">${open ? '▾' : '▸'} ${title} <span class="dim">${xs.length}</span></td></tr>` + (open ? rows.map((r) => rowHtml(r, M)).join('') : '');
+      }).join('');
+    } else if (view === 'mine') {
+      const rows = mains.filter((b) => isStar(b.card.key)).map((b) => cardRow(b, M, st)).sort(cmp);
+      html = rows.length ? rows.map((r) => rowHtml(r, M)).join('') : `<tr><td colspan="5" class="empty">Star cards with ☆ (or press S) to keep them here. Stars are saved in this browser.</td></tr>`;
+    } else if (state.group) { // grouped by set: set index row, then its cards
+      const rows = mains.map((b) => cardRow(b, M, st));
+      const sets = Object.values(model.idx).filter((x) => x.kind === 'set').map((x) => ({ ...idxRow(x, M, st), basket: x.id.slice(8) })).sort(cmp);
+      // Era picks without a set index (one card from a set) group under their era instead.
+      const have = new Set(sets.map((g) => g.basket)), loose = rows.filter((r) => !have.has(r.basket));
+      const lEras = [...new Set(loose.map((r) => model.by[r.key].card.era))];
+      html = lEras.map((e) => {
+        const tk = 'loose:' + slug(e), open = !state.collapsed.includes(tk), kids = loose.filter((r) => model.by[r.key].card.era === e).sort(cmp);
+        return `<tr class="sec" data-toggle="${tk}"><td colspan="5">${open ? '▾' : '▸'} ${esc(e)} picks <span class="dim">${kids.length}</span></td></tr>` + (open ? kids.map((r) => rowHtml(r, M, ' kid')).join('') : '');
+      }).join('') + sets.map((g) => {
+        const open = !state.collapsed.includes(g.key);
+        const kids = rows.filter((r) => r.basket === g.basket).sort(cmp);
+        return rowHtml({ ...g, name: `${open ? '▾' : '▸'} ${g.name}` }, M, ' grp').replace('<tr class="row', `<tr data-toggle="${g.key}" class="row`) + (open ? kids.map((r) => rowHtml(r, M, ' kid')).join('') : '');
+      }).join('');
     } else {
-      rows = Object.values(model.by).map((b) => {
-        const s = signals(b.close, b.vol, model.index);
-        const c = b.card;
-        return { key: c.key, name: c.name, sub: `${c.set} #${c.number}${c.line ? ' · ' + c.line + (c.est ? ' est.' : '') : ''}`, last: s.last, lastTxt: s.last != null ? money(s.last) : '—', c30: s.c30, score: s.score, tag: s.tag };
-      });
+      html = mains.map((b) => cardRow(b, M, st)).sort(cmp).map((r) => rowHtml(r, M)).join('');
     }
-    const k = state.sort, dir = state.dir;
-    rows.sort((a, b) => (sets ? (a.grp ?? 0) - (b.grp ?? 0) : 0) || (() => { const x = a[k], y = b[k]; if (x == null) return 1; if (y == null) return -1; return (x < y ? -1 : x > y ? 1 : 0) * dir; })());
-    $('wlBody').innerHTML = rows.map((r) => {
-      const cls = r.score == null ? 'na' : r.tag[1];
-      return `<tr class="row${r.key === state.key ? ' sel' : ''}${r.key === state.vs ? ' cmp' : ''}" data-k="${r.key}" tabindex="0">
-        <td><span class="nm">${r.name}</span><span class="st">${r.sub}</span></td>
-        <td class="n">${r.lastTxt}</td>
-        <td class="n">${fmtP(r.c30, 0)}</td>
-        <td class="n"><span class="pill ${cls}" title="${r.tag?.[0] || ''}">${r.score ?? '··'}</span></td>
-        <td><button class="sw${r.key === state.vs ? ' on' : ''}" data-vs="${r.key}" title="Compare against this" aria-label="Compare against ${r.name}">⇄</button></td></tr>`;
-    }).join('');
+    $('wlBody').innerHTML = html;
+  }
+
+  // ---------- picker: Era ▸ Set ▸ Card tree with type-to-search (both slots) ----------
+  const PK = { A: { open: new Set(), q: '', hi: 0 }, B: { open: new Set(), q: '', hi: 0 } };
+  function pickerLabel(id, slot) {
+    if (slot === 'B' && (!id || id === 'none')) return 'None';
+    if (id === 'set') return 'Own set index';
+    if (id === 'era') return 'Own era index';
+    const x = model.idx[id]; if (x) return idxLabel(x);
+    const b = model.by[id]; if (b) return `${b.card.name} — ${b.card.set} #${b.card.number}`;
+    return '—';
+  }
+  function pickerItems(slot) {
+    const P = PK[slot], q = P.q.trim().toLowerCase(), st = stats();
+    const cards = Object.values(model.by).filter((b) => !b.card.virtual);
+    const eras = [...new Set(cards.filter((b) => b.card.role !== 'group').map((b) => b.card.era))];
+    const items = [];
+    const cardItem = (b, depth) => { const s = st.cards[b.card.key]; return { id: b.card.key, depth, kind: 'card', text: `${b.card.name}`, sub: `#${b.card.number}${model.by[b.card.key + '~alt'] ? ' · 2 printings' : ''}`, right: s.last != null ? money(s.last) : '', c30: s.c30, custom: b.card.custom }; };
+    const idxItem = (x, depth, open, hasKids) => { const s = st.idx[x.id]; return { id: x.id, depth, kind: x.kind, sprite: x.sprite, text: x.kind === 'all' ? 'All tracked index' : x.name, sub: `${x.members.length} cards`, right: s.last != null ? s.last.toFixed(1) : '', c30: s.c30, open, hasKids }; };
+    if (slot === 'B') items.push({ id: 'none', depth: 0, kind: 'opt', text: 'None' }, { id: 'set', depth: 0, kind: 'opt', text: 'Own set index' }, { id: 'era', depth: 0, kind: 'opt', text: 'Own era index' });
+    if (q) { // flat search: indexes and cards whose name / set / number match every word
+      const words = q.split(/\s+/);
+      const hit = (t) => words.every((w) => t.includes(w));
+      for (const x of Object.values(model.idx)) if (hit(`${x.name} ${x.kind === 'all' ? 'all tracked' : ''} ${KIND_WORD[x.kind] || x.kind} index`.toLowerCase())) { const it = idxItem(x, 0, false, false); it.sub = `${KIND_WORD[x.kind] || x.kind} · ${it.sub}`; items.push(it); }
+      for (const b of cards) if (hit(`${b.card.name} ${b.card.set} ${b.card.number} ${b.card.era}`.toLowerCase())) { const it = cardItem(b, 0); it.sub = `${b.card.set} ${it.sub}`; items.push(it); }
+      return items;
+    }
+    const mine = cards.filter((b) => isStar(b.card.key));
+    if (mine.length) { items.push({ id: 'grp:mine', depth: 0, kind: 'group', text: '★ Mine', sub: `${mine.length} cards`, open: P.open.has('grp:mine'), hasKids: true }); if (P.open.has('grp:mine')) mine.forEach((b) => { const it = cardItem(b, 1); it.sub = `${b.card.set} ${it.sub}`; items.push(it); }); }
+    if (model.idx['idx:all']) items.push(idxItem(model.idx['idx:all'], 0, false, false));
+    for (const e of eras) {
+      const ex = model.idx['idx:era:' + slug(e)], eo = P.open.has('era:' + e);
+      items.push({ ...(ex ? idxItem(ex, 0, eo, true) : { id: null, depth: 0, kind: 'era', text: e }), tog: 'era:' + e, open: eo, hasKids: true });
+      if (!eo) continue;
+      const sets = Object.values(model.idx).filter((x) => x.kind === 'set' && x.era === e);
+      for (const sx of sets) {
+        const so = P.open.has(sx.id);
+        items.push({ ...idxItem(sx, 1, so, true), tog: sx.id });
+        if (so) cards.filter((b) => b.card.role !== 'group' && (b.card.basket || slug(b.card.set)) === sx.id.slice(8)).forEach((b) => items.push(cardItem(b, 2)));
+      }
+      cards.filter((b) => b.card.role !== 'group' && b.card.era === e && !model.idx['idx:set:' + (b.card.basket || slug(b.card.set))])
+        .forEach((b) => { const it = cardItem(b, 1); it.sub = `${b.card.set} ${it.sub}`; items.push(it); });
+    }
+    for (const [kind, title] of [['char', 'Characters'], ['theme', 'Themes']]) {
+      const gs = Model.ladder(model, kind); if (!gs.length) continue;
+      const t = 'grp:' + kind, o = P.open.has(t);
+      items.push({ id: null, depth: 0, kind: 'era', text: title, sub: `${gs.length} ladder indexes`, tog: t, open: o, hasKids: true });
+      if (!o) continue;
+      for (const gx of gs.sort((a, b) => (a.base || a.name).localeCompare(b.base || b.name))) {
+        const go = P.open.has(gx.id);
+        items.push({ ...idxItem(gx, 1, go, true), tog: gx.id });
+        if (!go) continue;
+        // per-era splits of this character/theme, then its cards
+        Object.values(model.idx).filter((y) => y.kind === kind && y.id !== gx.id && (y.base || y.name) === (gx.base || gx.name))
+          .forEach((y) => items.push(idxItem(y, 2, false, false)));
+        gx.members.forEach((k) => { const b = model.by[k]; if (b) { const it = cardItem(b, 2); it.sub = `${b.card.set} ${it.sub}`; items.push(it); } });
+      }
+    }
+    return items;
+  }
+  function renderPicker(slot) {
+    const root = $(slot === 'A' ? 'pickA' : 'pickB'), P = PK[slot];
+    const cur = slot === 'A' ? state.key : state.vs;
+    root.querySelector('.pk-val').textContent = pickerLabel(cur, slot);
+    const pop = root.querySelector('.pk-pop'); if (pop.hidden) return;
+    const items = pickerItems(slot).filter((it) => !(slot === 'B' && it.id === state.key));
+    P.hi = Math.max(0, Math.min(P.hi, items.length - 1));
+    const pc = (v) => (v == null ? '' : `<span class="${v >= 0 ? 'pos' : 'neg'}">${v >= 0 ? '+' : ''}${v.toFixed(0)}%</span>`);
+    let html = items.map((it, i) => `<div class="pk-it d${it.depth} k-${it.kind}${it.id === cur ? ' cur' : ''}${i === P.hi ? ' hi' : ''}" data-i="${i}" role="option">
+        ${it.hasKids ? `<button class="pk-tog" data-tog="${esc(it.tog || it.id)}" tabindex="-1" aria-label="${it.open ? 'Collapse' : 'Expand'}">${it.open ? '▾' : '▸'}</button>` : '<span class="pk-sp"></span>'}
+        <span class="pk-t">${spr(it.sprite)}${esc(it.text)}${it.custom ? ' <em>mine</em>' : ''}</span><span class="pk-s">${esc(it.sub || '')}</span><span class="pk-r">${it.right || ''} ${pc(it.c30)}</span></div>`).join('');
+    root.querySelector('.pk-list').innerHTML = html || '<div class="pk-miss">No matches.</div>';
+    root._items = items;
+    root.querySelector('.pk-it.hi')?.scrollIntoView({ block: 'nearest' });
+  }
+  function openPicker(slot, on = true) {
+    const root = $(slot === 'A' ? 'pickA' : 'pickB'), pop = root.querySelector('.pk-pop'), P = PK[slot];
+    for (const o of ['A', 'B']) if (o !== slot) $(o === 'A' ? 'pickA' : 'pickB').querySelector('.pk-pop').hidden = true;
+    pop.hidden = !on; root.classList.toggle('open', on);
+    if (on) {
+      const cur = slot === 'A' ? state.key : state.vs, b = model.by[cur], x = model.idx[cur];
+      const era = b ? b.card.era : x?.era || (x?.kind === 'era' ? x.name : null);
+      if (era) P.open.add('era:' + era);
+      const setId = b ? 'idx:set:' + (b.card.basket || slug(b.card.set)) : x?.kind === 'set' ? x.id : null;
+      if (setId) P.open.add(setId);
+      if (x && (x.kind === 'char' || x.kind === 'theme')) P.open.add('grp:' + x.kind);
+      P.q = ''; root.querySelector('.pk-q').value = ''; P.hi = 0;
+      renderPicker(slot);
+      const i = (root._items || []).findIndex((it) => it.id === cur); if (i >= 0) { P.hi = i; renderPicker(slot); }
+      root.querySelector('.pk-q').focus();
+    }
+  }
+  function choose(slot, id) {
+    if (!id || id.startsWith('grp:')) return;
+    openPicker(slot, false);
+    if (slot === 'A') select(id);
+    else { state.vs = id; if (id === 'none') state.merge = false; renderSelects(); refresh({ keepView: true }); }
+  }
+  function bindPicker(slot) {
+    const root = $(slot === 'A' ? 'pickA' : 'pickB'), P = PK[slot], q = root.querySelector('.pk-q');
+    root.querySelector('.pk-btn').addEventListener('click', () => openPicker(slot, root.querySelector('.pk-pop').hidden));
+    q.addEventListener('input', () => { P.q = q.value; P.hi = 0; renderPicker(slot); });
+    q.addEventListener('keydown', (e) => {
+      const items = root._items || [];
+      if (e.key === 'ArrowDown') { P.hi = Math.min(items.length - 1, P.hi + 1); renderPicker(slot); e.preventDefault(); }
+      else if (e.key === 'ArrowUp') { P.hi = Math.max(0, P.hi - 1); renderPicker(slot); e.preventDefault(); }
+      else if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { const it = items[P.hi]; if (it?.hasKids && !P.q) { const t = it.tog || it.id; e.key === 'ArrowRight' ? P.open.add(t) : P.open.delete(t); renderPicker(slot); e.preventDefault(); } }
+      else if (e.key === 'Enter') { const it = items[P.hi]; if (it) choose(slot, it.id); e.preventDefault(); }
+      else if (e.key === 'Escape') { openPicker(slot, false); root.querySelector('.pk-btn').focus(); }
+    });
+    root.querySelector('.pk-list').addEventListener('click', (e) => {
+      const tg = e.target.closest('[data-tog]');
+      if (tg) { const t = tg.dataset.tog; P.open.has(t) ? P.open.delete(t) : P.open.add(t); renderPicker(slot); q.focus(); return; }
+      const it = e.target.closest('.pk-it'); if (!it) return;
+      const item = root._items[+it.dataset.i];
+      if (item.id) choose(slot, item.id); else if (item.hasKids) { const t = item.tog; P.open.has(t) ? P.open.delete(t) : P.open.add(t); renderPicker(slot); }
+    });
   }
 
   function renderSelects() {
-    const idxs = Object.values(model.idx);
-    const groups = (kind) => idxs.filter((x) => x.kind === kind).map((x) => `<option value="${x.id}">${idxLabel(x)}</option>`).join('');
-    const idxOpts = `<optgroup label="Indexes">${groups('all')}${groups('era')}${groups('set')}</optgroup>`;
-    const cardOpts = (skip) => `<optgroup label="Cards">${Object.values(model.by).filter((b) => b.card.key !== skip).map((b) => `<option value="${b.card.key}">${cardLabel(b.card)}</option>`).join('')}</optgroup>`;
-    $('sym').innerHTML = idxOpts + cardOpts(null);
-    $('sym').value = state.key;
-    $('vs').innerHTML = `<option value="none">None</option><option value="set">Own set index</option><option value="era">Own era index</option>` + idxOpts + cardOpts(state.key);
     const valid = ['none', 'set', 'era'].includes(state.vs) || model.by[state.vs] || model.idx[state.vs];
     if (!valid || state.vs === state.key) state.vs = state.key === 'idx:all' ? 'none' : 'idx:all';
-    $('vs').value = state.vs;
+    renderPicker('A'); renderPicker('B');
   }
 
   function syncButtons() {
@@ -222,23 +503,121 @@
       : `LIVE · ${all.length} cards · ${nSets} sets · ${last || 'no fetch log'}${STATUS?.dailyRemaining != null ? ' · ' + STATUS.dailyRemaining + ' credits left' : ''}`;
   }
 
-  function renderBrief() {
-    const b = Model.brief(model);
-    const esc = (t) => String(t).replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
-    $('briefHead').textContent = `BRIEF · ${b.gradeLabel} · ${b.asOf || '—'} · ${b.scoredCards}/${b.cards} cards scoreable`;
-    $('briefBody').innerHTML = b.lines.map((l) => `<div class="bl"><span class="bk">${l.label}</span>${l.items.map((i) => `<button class="bi ${i.tone || ''}" data-k="${i.k}">${esc(i.text)}</button>`).join('<span class="sep">·</span>')}</div>`).join('');
+  // Consensus across grades is grade-independent, so it's computed once per data load.
+  let CONS = null;
+  function consensusOnce() {
+    if (CONS) return CONS;
+    const models = {};
+    for (const g of ['raw', 'psa7', 'psa8', 'psa9', 'psa10']) { const m = g === state.grade ? model : Model.buildModel(WL, SERIES, g); if (Object.keys(m.by).length) models[g] = m; }
+    return (CONS = Model.consensus(models));
   }
+  // ---------- setup backtest (js/edge.js): once per grade, computed just after first paint ----------
+  const EDGE = {}; let edgePending = null;
+  function edge() {
+    const g = state.grade;
+    if (EDGE[g] || typeof Edge === 'undefined') return EDGE[g] || null;
+    if (edgePending !== g) {
+      edgePending = g;
+      setTimeout(() => {
+        if (model.grade !== g) { edgePending = null; return; }
+        try { EDGE[g] = Edge.run(model); } catch (err) { console.error(err); EDGE[g] = { ok: false, reason: 'backtest failed' }; }
+        edgePending = null; renderBrief(); refresh({ keepView: true });
+      }, 40);
+    }
+    return null;
+  }
+  const edgeLive = (k) => { const e = EDGE[state.grade]; return e?.ok ? e.picks.find((p) => p.key === k) || null : null; };
+  function setupLine(cur, ratio) {
+    if (ratio || cur.isIndex) return '';
+    const p = edgeLive(cur.id); if (!p) return '';
+    const b = p.best, conf = p.status === 'confirmed';
+    return `<p class="setupline ${conf ? 'conf' : ''}">${conf ? '◆ BACKTESTED SETUP' : '◇ Promising setup (not confirmed)'} · ${b.ago === 0 ? 'today' : b.ago + 'd ago'}<br><b>${esc(b.label)}</b><br><span class="dim">${esc(Edge.stat(b))}</span></p>`;
+  }
+  function edgeGroup() {
+    const e = edge();
+    if (!e) return '<div class="bgroup"><h3>Setups · backtest</h3><p>Testing setups against history…</p></div>';
+    const conf = e.ok ? e.picks.filter((p) => p.status === 'confirmed') : [], prom = e.ok ? e.picks.filter((p) => p.status === 'promising') : [];
+    const row = (p, mark, tone) => `<button class="${tone}" data-k="${esc(p.key)}" type="button">${mark} ${esc(p.card.name + lineTag(p.card))} (${esc(p.card.set)}) — ${esc(p.best.label)}, ${p.best.ago === 0 ? 'today' : p.best.ago + 'd ago'} · ${esc(Edge.stat(p.best))}</button>`;
+    let h = `<div class="bgroup edge${conf.length ? ' hot' : ''}"><h3>Setups · backtest · ${esc(Model.GRADE_LABEL[e.grade] || '')}</h3><p>${esc(Edge.verdict(e))}</p>`;
+    if (conf.length) h += '<h4>Firing now · confirmed</h4>' + conf.map((p) => row(p, '◆', 'good')).join('');
+    if (prom.length) h += '<h4>Firing now · promising, could be luck</h4>' + prom.slice(0, 8).map((p) => row(p, '◇', '')).join('');
+    if (e.ok) {
+      const top = e.results.filter((r) => r.p != null).slice(0, 6);
+      if (top.length) h += '<h4>Best tested setups</h4>' + top.map((r) => `<p class="erow"><b>${esc(r.label)}</b> · ${r.status}<br>${esc(Edge.stat(r))} · halves ${r.halves.map((v) => Edge.pct(v, 0)).join(' / ')}</p>`).join('');
+      h += `<p class="dim">Entry = median of the next real sales after a setup fires; outcome = ${e.horizon}D later, versus other tracked cards on the same dates. ${e.tested} setups tested, so single wins are corrected for luck (q ≤ 0.10) and must hold in both halves of the history.</p>`;
+    }
+    return h + '</div>';
+  }
+
+  // ---------- brief: tiles up top, full list in the watchlist column ----------
+  const esc = (t) => String(t).replace(/[&<>"']/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+  const splitItem = (t) => {
+    const cut = (i, skip) => ({ n: t.slice(0, i).trim(), d: t.slice(i + skip).replace(/^[\s:,]+/, '').replace(/[\])]$/, '') });
+    let i = t.lastIndexOf(' ['); if (i > 0) return cut(i, 2);
+    i = t.indexOf(': '); if (i > 0) return cut(i, 2);
+    const pm = t.match(/\s\((?=[+\-−]?\d)/); if (pm) return cut(pm.index, 2);
+    const m = t.match(/\s(?=[+\-−]?\d)/); if (m) return cut(m.index, 1);
+    return { n: t, d: '' };
+  };
+  const itemAttrs = (i) => `data-k="${esc(i.k)}"${i.keys ? ` data-keys="${esc(JSON.stringify(i.keys))}"` : ''}`;
+  function renderTiles() {
+    const b = Model.brief(model), c = consensusOnce();
+    const find = (src, label) => src.lines.find((l) => l.label === label);
+    const gs = Object.fromEntries(gauges().map((g) => [g.id, g]));
+    const tiles = [];
+    const add = (label, line, meta) => { if (!line || !line.items.length) return; const it = line.items[0], sp = splitItem(it.text); tiles.push({ label, it, n: sp.n, d: sp.d, meta: meta ?? (line.items.length > 1 ? `+${line.items.length - 1} more` : ''), all: line.items.map((x) => x.text).join('\n') }); };
+    if (b.thin) add(`${b.gradeLabel} data`, b.lines[0]);
+    else add(`Market · ${b.gradeLabel}`, find(b, 'Market'), `breadth ${gs.br.txt} · up ${gs.adv.txt} · ramping ${gs.rmp.txt}`);
+    add('All grades agree ▲', find(c, 'Grades agree ▲'));
+    add('Leading set', find(b, 'Leading set'));
+    add('Ramping up', find(b, 'Ramping up'));
+    add('Card to watch', find(c, 'Cards agree ▲') || find(b, 'Cards to note'));
+    add('RAW vs graded', find(c, 'RAW vs graded'));
+    add('Weakest', find(c, 'Grades agree ▼') || find(b, 'Lagging'));
+    add('Leading character', find(b, 'Leading characters'));
+    add('Themes', find(b, 'Themes'));
+    add('Swings widening', find(b, 'Swings widening'));
+    { // what changed this week across sets and cards
+      const st = stats(), rows = [];
+      for (const [k, c] of Object.entries(st.ch)) if (c && !k.endsWith('~alt') && !(model.by[k]?.card.custom)) rows.push({ k, c, name: model.idx[k] ? model.idx[k].name + ' index' : model.by[k]?.card.name + (model.by[k]?.card.line ? ' ' + model.by[k].card.line : '') });
+      const up = rows.filter((r) => r.c.dir > 0), dn = rows.filter((r) => r.c.dir < 0);
+      const lead = up.find((r) => r.k.startsWith('idx:')) || up[0] || dn[0];
+      if (lead) tiles.splice(1, 0, { label: 'New this week', it: { k: lead.k, tone: lead.c.dir > 0 ? 'good' : 'bad' }, n: lead.name, d: lead.c.items.map((i) => i.text).join(' · '), meta: `▲ ${up.length} turned up · ▼ ${dn.length} turned down`, all: rows.map((r) => `${r.c.dir > 0 ? '▲' : '▼'} ${r.name}: ${r.c.items.map((i) => i.text).join('; ')}`).join('\n') });
+    }
+    { // backtested setups take the first slot, but only once the evidence is confirmed
+      const e = edge(), top = e?.ok ? e.picks.filter((p) => p.status === 'confirmed') : [];
+      if (top.length) { const p = top[0]; tiles.unshift({ label: '◆ Buy setup · tested', it: { k: p.key, tone: 'good' }, n: p.card.name + lineTag(p.card), d: `${p.best.label} · ${Edge.pct(p.best.vsPeers, 1)} vs peers`, meta: `${p.best.ago === 0 ? 'today' : p.best.ago + 'd ago'}${top.length > 1 ? ` · +${top.length - 1} more` : ''}`, all: top.map((x) => `${x.card.name} (${x.card.set}): ${x.best.label} — ${Edge.stat(x.best)}`).join('\n') }); }
+    }
+    $('tiles').innerHTML = tiles.map((t) => `<button class="tile ${t.it.tone || 'mid'}" ${itemAttrs(t.it)} title="${esc(t.all)}" type="button"><span class="tl">${esc(t.label)}</span><span class="tn">${esc(t.n)}</span><span class="td">${esc(t.d)}</span>${t.meta ? `<span class="tm">${esc(t.meta)}</span>` : ''}</button>`).join('');
+  }
+  function renderBriefList() {
+    const b = Model.brief(model), c = consensusOnce();
+    const grp = (title, lines, note) => `<div class="bgroup"><h3>${esc(title)}</h3>${lines.map((l) => `<h4>${esc(l.label)}</h4>${l.items.map((i) => `<button class="${i.tone || ''}" ${itemAttrs(i)} type="button">${esc(i.text)}</button>`).join('')}`).join('')}${note ? `<p>${esc(note)}</p>` : ''}</div>`;
+    const st = stats(), chg = Object.entries(st.ch).filter(([k, c]) => c && !model.by[k]?.card.custom).map(([k, c]) => ({ k, tone: c.dir > 0 ? 'good' : 'bad', text: `${c.dir > 0 ? '▲' : '▼'} ${model.idx[k] ? model.idx[k].name + ' index' : model.by[k].card.name + (model.by[k].card.line ? ' ' + model.by[k].card.line : '')}: ${c.items.map((i) => i.text).join('; ')}` })).sort((a, b) => (a.k.startsWith('idx:') ? 0 : 1) - (b.k.startsWith('idx:') ? 0 : 1));
+    const eg = edgeGroup(), hot = /bgroup edge hot/.test(eg);
+    $('briefList').innerHTML = (hot ? eg : '') + (chg.length ? grp(`New this week · ${Model.GRADE_LABEL[state.grade]}`, [{ label: 'Changed status', items: chg }]) : '') + grp(`Consensus · ${c.gradeLabels.map((x) => x.replace('RAW NM', 'RAW')).join(' / ')}`, c.lines, c.leadNote ? 'Lead-lag: ' + c.leadNote : '') + grp(`${b.gradeLabel} · ${b.asOf || '—'} · ${b.scoredCards}/${b.cards} scoreable`, b.lines) + (hot ? '' : eg);
+  }
+  const renderBrief = () => { renderTiles(); if (state.wlView === 'brief') renderBriefList(); };
 
   function refresh(opts) { save(); syncButtons(); renderWatchlist(); draw(opts); }
 
+  // Keep the same printing when switching grades (the '~alt' line is 1st Ed in one grade, Unl in another).
+  const ptag = (line) => (!line ? '' : /1st/i.test(line) ? '1st' : /unl/i.test(line) ? 'unl' : /reverse|upper/i.test(line) ? 'hi' : /holo|lower/i.test(line) ? 'lo' : '');
   function rebuild() {
+    const shown = model?.by[curKey()]?.card;
     model = buildModel(state.grade);
-    if (!model.by[state.key] && !model.idx[state.key]) state.key = Object.keys(model.by)[0] || 'idx:all';
+    state.key = (state.key || '').replace(/~alt$/, '');
+    if (shown && ptag(shown.line) && state.print !== 'both') {
+      const want = ptag(shown.line), a = model.by[state.key + '~alt'];
+      state.print = a && ptag(a.card.line) === want ? 'alt' : 'main';
+    }
+    if (!model.by[state.key] && !model.idx[state.key]) state.key = Object.keys(model.by).find((k) => !k.endsWith('~alt')) || 'idx:all';
     renderSelects(); renderStatus(); renderBrief(); refresh();
   }
 
-  function select(key) {
-    state.key = key;
+  function select(key, { keepPrint = false } = {}) {
+    if (key.endsWith('~alt')) { state.key = key.replace(/~alt$/, ''); state.print = 'alt'; }
+    else { state.key = key; if (!keepPrint) state.print = 'main'; }
     if (state.vs === key) state.vs = 'idx:all';
     renderSelects(); refresh();
   }
@@ -250,15 +629,36 @@
     seg('range', (v) => { state.range = +v; refresh(); });
     seg('res', (v) => { state.res = v; refresh(); });
     seg('ind', (v) => { state.ind[v] = state.ind[v] ? 0 : 1; refresh({ keepView: true }); });
-    seg('wlTabs', (v) => { state.wlView = v; renderWatchlist(); save(); });
-    $('sym').addEventListener('change', (e) => select(e.target.value));
-    $('vs').addEventListener('change', (e) => { state.vs = e.target.value; refresh({ keepView: true }); });
+    seg('wlTabs', (v) => { state.wlView = v; renderWatchlist(); save(); $('wlScroll').scrollTop = 0; });
+    bindPicker('A'); bindPicker('B');
+    document.addEventListener('pointerdown', (e) => { for (const id of ['pickA', 'pickB']) if (!$(id).contains(e.target)) { $(id).querySelector('.pk-pop').hidden = true; $(id).classList.remove('open'); } });
+    $('groupBtn').addEventListener('click', () => { state.group = !state.group; renderWatchlist(); save(); });
+    $('sigStar').addEventListener('click', () => toggleStar($('sigStar').dataset.k));
+    $('sigCtx').addEventListener('click', (e) => { const b = e.target.closest('.ctx-row[data-k]'); if (b) select(b.dataset.k); });
+    $('helpBtn').addEventListener('click', () => { $('help').hidden = !$('help').hidden; });
+    $('help').addEventListener('click', (e) => { if (e.target === $('help') || e.target.closest('[data-close]')) $('help').hidden = true; });
+    $('mergeBtn').addEventListener('click', () => { state.merge = !state.merge; refresh({ keepView: true }); });
+    $('cmpX').addEventListener('click', () => { state.vs = 'none'; state.merge = false; renderSelects(); refresh({ keepView: true }); });
+    $('resetView').addEventListener('click', () => { chart.resetLayout(); chart.resetView(); chart.render(); state.paneRatios = {}; save(); });
+    seg('print', (v) => { state.print = v; refresh({ keepView: true }); });
+    $('wlMetric').addEventListener('click', (e) => e.stopPropagation());
+    $('wlMetric').addEventListener('change', (e) => { state.wlMetric = e.target.value; state.sort = 'metric'; state.dir = -1; renderWatchlist(); save(); });
     $('wlBody').addEventListener('click', (e) => {
       const sw = e.target.closest('[data-vs]');
+      const stb = e.target.closest('[data-star]'); if (stb) { e.stopPropagation(); toggleStar(stb.dataset.star); return; }
+      const tg = e.target.closest('tr[data-toggle]');
+      if (tg && (tg.classList.contains('sec') || (e.target.closest('td:first-child') && e.offsetX < 22))) { const k = tg.dataset.toggle; state.collapsed = state.collapsed.includes(k) ? state.collapsed.filter((x) => x !== k) : [...state.collapsed, k]; renderWatchlist(); save(); return; }
       if (sw) { e.stopPropagation(); state.vs = state.vs === sw.dataset.vs ? 'idx:all' : sw.dataset.vs; if (state.vs === state.key) state.vs = 'idx:all'; renderSelects(); refresh({ keepView: true }); return; }
-      const tr = e.target.closest('tr[data-k]'); if (tr) select(tr.dataset.k);
+      const tr = e.target.closest('tr[data-k]'); if (tr) select(tr.dataset.k, { keepPrint: tr.dataset.k === state.key });
     });
-    $('briefBody').addEventListener('click', (e) => { const b = e.target.closest('[data-k]'); if (b) select(b.dataset.k); });
+    const briefClick = (e) => {
+      const b = e.target.closest('[data-k]'); if (!b) return;
+      let k = b.dataset.k;
+      if (b.dataset.keys) { const ks = JSON.parse(b.dataset.keys); k = ks[state.grade] || k; if (!model.by[k] && !model.idx[k]) { const g = Object.keys(ks)[0]; state.grade = g; model = buildModel(g); renderSelects(); renderStatus(); renderBrief(); k = ks[g]; } }
+      select(k);
+    };
+    $('tiles').addEventListener('click', briefClick);
+    $('briefList').addEventListener('click', briefClick);
     $('wlBody').addEventListener('keydown', (e) => { if (e.key === 'Enter' && e.target.matches('tr[data-k]')) e.target.click(); });
     document.querySelector('.wl thead').addEventListener('click', (e) => {
       const th = e.target.closest('th[data-sort]'); if (!th) return;
@@ -266,20 +666,42 @@
     });
     matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => draw({ keepView: true }));
     new MutationObserver(() => draw({ keepView: true })).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
-    window.addEventListener('keydown', (e) => { // ↑/↓ step through the watchlist
-      if (e.target.matches('select, input')) return;
-      if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
-      const rows = [...document.querySelectorAll('#wlBody tr[data-k]')]; const i = rows.findIndex((r) => r.dataset.k === state.key);
+    window.addEventListener('keydown', (e) => { // shortcuts (see the ? panel)
+      if (e.target.matches('select, input, textarea') || e.metaKey || e.ctrlKey || e.altKey) return;
+      const k = e.key;
+      const G = { 1: 'raw', 2: 'psa7', 3: 'psa8', 4: 'psa9', 5: 'psa10' };
+      if (k === '/' ) { e.preventDefault(); openPicker('A'); return; }
+      if (k === '\\') { e.preventDefault(); openPicker('B'); return; }
+      if (G[k]) { state.grade = G[k]; rebuild(); return; }
+      if (k === 'p' || k === 'P') { if (hasAlt(state.key)) { state.print = { main: 'alt', alt: 'both', both: 'main' }[state.print] || 'main'; refresh({ keepView: true }); } return; }
+      if (k === 'm' || k === 'M') { if (state.vs !== 'none') { state.merge = !state.merge; refresh({ keepView: true }); } return; }
+      if (k === 'x' || k === 'X') { state.vs = 'none'; state.merge = false; renderSelects(); refresh({ keepView: true }); return; }
+      if (k === 'w' || k === 'W') { state.res = state.res === 'W' ? 'D' : 'W'; refresh(); return; }
+      if (k === 'r' || k === 'R') { chart.resetLayout(); chart.resetView(); chart.render(); return; }
+      if (k === 's' || k === 'S') { const b = model.by[state.key]; if (b && !b.card.virtual) toggleStar(state.key); return; }
+      if (k === 'g' || k === 'G') { state.group = !state.group; state.wlView = 'cards'; renderWatchlist(); save(); return; }
+      if (k === '?') { $('help').hidden = !$('help').hidden; return; }
+      if (k === 'Escape') { $('help').hidden = true; return; }
+      if (k !== 'ArrowDown' && k !== 'ArrowUp') return;
+      const rows = [...document.querySelectorAll('#wlBody tr[data-k]:not(.grp)')]; const i = rows.findIndex((r) => r.dataset.k === state.key);
       const nx = rows[Math.max(0, Math.min(rows.length - 1, i + (e.key === 'ArrowDown' ? 1 : -1)))];
       if (nx) { e.preventDefault(); nx.click(); nx.scrollIntoView({ block: 'nearest' }); }
     });
   }
 
+  function toggleStar(k) {
+    if (!k) return;
+    state.stars = isStar(k) ? state.stars.filter((x) => x !== k) : [...state.stars, k];
+    save(); renderWatchlist(); draw({ keepView: true });
+  }
+
   async function start() {
     chart = new TerminalChart($('chart'), theme());
+    chart.ratios = { ...(state.paneRatios || {}) };
+    chart.onLayout = (r) => { state.paneRatios = { ...r }; save(); };
     try { await load(); } catch (e) { $('status').textContent = 'Could not load data/ — ' + e.message; return; }
     if (!WL || !Object.keys(SERIES).length) { $('status').textContent = 'NO DATA · run the discovery or fetch workflow'; return; }
-    if (!hadSaved && WL.primaryGrade) state.grade = WL.primaryGrade; // vintage baskets default to PSA 9
+    if (!hadSaved && WL.primaryGrade) state.grade = WL.primaryGrade; // deepest clean grade, chosen by discover
     bind(); rebuild();
   }
   start();

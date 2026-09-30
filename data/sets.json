@@ -1,35 +1,442 @@
 {
-  "_comment": "Sets scanned by scripts/discover.mjs. 'names' are tried in order against the provider's set list. Add pins as {\"set\": \"Base Set\", \"number\": \"4\"} to force a card into its basket.",
+  "_comment": "Sets scanned by scripts/discover.mjs. 'names' are tried in order against the provider's set list ('exact' = only an exact name match). family decides how cards are picked: WOTC = every set gets a basket (perSet); later eras = one budget-capped basket of the era's best cards (top), where each tracked character gets first claim. Pins force a card in; exclude keeps one out.",
   "perSet": 3,
   "shortlist": 6,
   "minSaleDays": 4,
   "maxOutlierShare": 0.35,
-  "primaryGrade": "psa9",
-  "grades": ["psa7", "psa8", "psa9", "psa10"],
-  "minSales": { "psa9": 8, "psa10": 3 },
+  "primaryGrade": "psa8",
+  "grades": [
+    "psa7",
+    "psa8",
+    "psa9",
+    "psa10"
+  ],
+  "minSales": {
+    "psa8": 8,
+    "psa9": 8,
+    "psa10": 3
+  },
   "sets": [
-    { "label": "Base Set",             "names": ["Base Set"],                              "era": "WOTC Vintage" },
-    { "label": "Base Set Shadowless",  "names": ["Base Set (Shadowless)", "Base Set Shadowless"], "era": "WOTC Vintage", "optional": true },
-    { "label": "Jungle",               "names": ["Jungle"],                                "era": "WOTC Vintage" },
-    { "label": "Fossil",               "names": ["Fossil"],                                "era": "WOTC Vintage" },
-    { "label": "Base Set 2",           "names": ["Base Set 2"],                            "era": "WOTC Vintage" },
-    { "label": "Team Rocket",          "names": ["Team Rocket"],                           "era": "WOTC Vintage" },
-    { "label": "Gym Heroes",           "names": ["Gym Heroes"],                            "era": "WOTC Vintage" },
-    { "label": "Gym Challenge",        "names": ["Gym Challenge"],                         "era": "WOTC Vintage" },
-    { "label": "Neo Genesis",          "names": ["Neo Genesis"],                           "era": "WOTC Neo & e-Card" },
-    { "label": "Neo Discovery",        "names": ["Neo Discovery"],                         "era": "WOTC Neo & e-Card" },
-    { "label": "Neo Revelation",       "names": ["Neo Revelation"],                        "era": "WOTC Neo & e-Card" },
-    { "label": "Neo Destiny",          "names": ["Neo Destiny"],                           "era": "WOTC Neo & e-Card" },
-    { "label": "Legendary Collection", "names": ["Legendary Collection"],                  "era": "WOTC Neo & e-Card" },
-    { "label": "Expedition",           "names": ["Expedition Base Set", "Expedition"],     "era": "WOTC Neo & e-Card" },
-    { "label": "Aquapolis",            "names": ["Aquapolis"],                             "era": "WOTC Neo & e-Card" },
-    { "label": "Skyridge",             "names": ["Skyridge"],                              "era": "WOTC Neo & e-Card" },
-    { "label": "WOTC Black Star Promos", "names": ["WoTC Promo", "Wizards Black Star Promos", "WOTC Black Star Promos"], "era": "WOTC Promo", "allRarities": true }
+    {
+      "label": "Base Set",
+      "names": [
+        "Base Set"
+      ],
+      "era": "WOTC Vintage",
+      "family": "WOTC"
+    },
+    {
+      "label": "Base Set Shadowless",
+      "names": [
+        "Base Set (Shadowless)",
+        "Base Set Shadowless"
+      ],
+      "era": "WOTC Vintage",
+      "optional": true,
+      "family": "WOTC"
+    },
+    {
+      "label": "Jungle",
+      "names": [
+        "Jungle"
+      ],
+      "era": "WOTC Vintage",
+      "family": "WOTC"
+    },
+    {
+      "label": "Fossil",
+      "names": [
+        "Fossil"
+      ],
+      "era": "WOTC Vintage",
+      "family": "WOTC"
+    },
+    {
+      "label": "Base Set 2",
+      "names": [
+        "Base Set 2"
+      ],
+      "era": "WOTC Vintage",
+      "family": "WOTC"
+    },
+    {
+      "label": "Team Rocket",
+      "names": [
+        "Team Rocket"
+      ],
+      "era": "WOTC Vintage",
+      "family": "WOTC"
+    },
+    {
+      "label": "Gym Heroes",
+      "names": [
+        "Gym Heroes"
+      ],
+      "era": "WOTC Vintage",
+      "family": "WOTC"
+    },
+    {
+      "label": "Gym Challenge",
+      "names": [
+        "Gym Challenge"
+      ],
+      "era": "WOTC Vintage",
+      "family": "WOTC"
+    },
+    {
+      "label": "Neo Genesis",
+      "names": [
+        "Neo Genesis"
+      ],
+      "era": "WOTC Neo & e-Card",
+      "family": "WOTC"
+    },
+    {
+      "label": "Neo Discovery",
+      "names": [
+        "Neo Discovery"
+      ],
+      "era": "WOTC Neo & e-Card",
+      "family": "WOTC"
+    },
+    {
+      "label": "Neo Revelation",
+      "names": [
+        "Neo Revelation"
+      ],
+      "era": "WOTC Neo & e-Card",
+      "family": "WOTC"
+    },
+    {
+      "label": "Neo Destiny",
+      "names": [
+        "Neo Destiny"
+      ],
+      "era": "WOTC Neo & e-Card",
+      "family": "WOTC"
+    },
+    {
+      "label": "Legendary Collection",
+      "names": [
+        "Legendary Collection"
+      ],
+      "era": "WOTC Neo & e-Card",
+      "family": "WOTC"
+    },
+    {
+      "label": "Expedition",
+      "names": [
+        "Expedition Base Set",
+        "Expedition"
+      ],
+      "era": "WOTC Neo & e-Card",
+      "family": "WOTC"
+    },
+    {
+      "label": "Aquapolis",
+      "names": [
+        "Aquapolis"
+      ],
+      "era": "WOTC Neo & e-Card",
+      "family": "WOTC"
+    },
+    {
+      "label": "Skyridge",
+      "names": [
+        "Skyridge"
+      ],
+      "era": "WOTC Neo & e-Card",
+      "family": "WOTC"
+    },
+    {
+      "label": "WOTC Black Star Promos",
+      "names": [
+        "WoTC Promo",
+        "Wizards Black Star Promos",
+        "WOTC Black Star Promos"
+      ],
+      "era": "WOTC Promo",
+      "allRarities": true,
+      "family": "WOTC"
+    },
+    {
+      "label": "Ruby & Sapphire",
+      "names": [
+        "Ruby and Sapphire",
+        "Ruby & Sapphire",
+        "EX Ruby & Sapphire",
+        "EX Ruby and Sapphire"
+      ],
+      "era": "EX Series",
+      "family": "EX"
+    },
+    {
+      "label": "Sandstorm",
+      "names": [
+        "Sandstorm",
+        "EX Sandstorm"
+      ],
+      "era": "EX Series",
+      "family": "EX"
+    },
+    {
+      "label": "Dragon",
+      "names": [
+        "Dragon",
+        "EX Dragon"
+      ],
+      "era": "EX Series",
+      "family": "EX",
+      "exact": true
+    },
+    {
+      "label": "Team Magma vs Team Aqua",
+      "names": [
+        "Team Magma vs Team Aqua",
+        "EX Team Magma vs Team Aqua",
+        "Team Magma vs. Team Aqua"
+      ],
+      "era": "EX Series",
+      "family": "EX"
+    },
+    {
+      "label": "Hidden Legends",
+      "names": [
+        "Hidden Legends",
+        "EX Hidden Legends"
+      ],
+      "era": "EX Series",
+      "family": "EX"
+    },
+    {
+      "label": "FireRed & LeafGreen",
+      "names": [
+        "FireRed & LeafGreen",
+        "FireRed and LeafGreen",
+        "EX FireRed & LeafGreen"
+      ],
+      "era": "EX Series",
+      "family": "EX"
+    },
+    {
+      "label": "Team Rocket Returns",
+      "names": [
+        "Team Rocket Returns",
+        "EX Team Rocket Returns"
+      ],
+      "era": "EX Series",
+      "family": "EX"
+    },
+    {
+      "label": "Deoxys",
+      "names": [
+        "Deoxys",
+        "EX Deoxys"
+      ],
+      "era": "EX Series",
+      "family": "EX",
+      "exact": true
+    },
+    {
+      "label": "Emerald",
+      "names": [
+        "Emerald",
+        "EX Emerald"
+      ],
+      "era": "EX Series",
+      "family": "EX",
+      "exact": true
+    },
+    {
+      "label": "Unseen Forces",
+      "names": [
+        "Unseen Forces",
+        "EX Unseen Forces"
+      ],
+      "era": "EX Series",
+      "family": "EX"
+    },
+    {
+      "label": "Delta Species",
+      "names": [
+        "Delta Species",
+        "EX Delta Species"
+      ],
+      "era": "EX Series",
+      "family": "EX"
+    },
+    {
+      "label": "Legend Maker",
+      "names": [
+        "Legend Maker",
+        "EX Legend Maker"
+      ],
+      "era": "EX Series",
+      "family": "EX"
+    },
+    {
+      "label": "Holon Phantoms",
+      "names": [
+        "Holon Phantoms",
+        "EX Holon Phantoms"
+      ],
+      "era": "EX Series",
+      "family": "EX"
+    },
+    {
+      "label": "Crystal Guardians",
+      "names": [
+        "Crystal Guardians",
+        "EX Crystal Guardians"
+      ],
+      "era": "EX Series",
+      "family": "EX"
+    },
+    {
+      "label": "Dragon Frontiers",
+      "names": [
+        "Dragon Frontiers",
+        "EX Dragon Frontiers"
+      ],
+      "era": "EX Series",
+      "family": "EX"
+    },
+    {
+      "label": "Power Keepers",
+      "names": [
+        "Power Keepers",
+        "EX Power Keepers"
+      ],
+      "era": "EX Series",
+      "family": "EX"
+    },
+    {
+      "label": "Diamond & Pearl",
+      "names": [
+        "Diamond and Pearl",
+        "Diamond & Pearl"
+      ],
+      "era": "DP & Platinum",
+      "family": "DP",
+      "exact": true
+    },
+    {
+      "label": "Mysterious Treasures",
+      "names": [
+        "Mysterious Treasures"
+      ],
+      "era": "DP & Platinum",
+      "family": "DP"
+    },
+    {
+      "label": "Secret Wonders",
+      "names": [
+        "Secret Wonders"
+      ],
+      "era": "DP & Platinum",
+      "family": "DP"
+    },
+    {
+      "label": "Great Encounters",
+      "names": [
+        "Great Encounters"
+      ],
+      "era": "DP & Platinum",
+      "family": "DP"
+    },
+    {
+      "label": "Majestic Dawn",
+      "names": [
+        "Majestic Dawn"
+      ],
+      "era": "DP & Platinum",
+      "family": "DP"
+    },
+    {
+      "label": "Legends Awakened",
+      "names": [
+        "Legends Awakened"
+      ],
+      "era": "DP & Platinum",
+      "family": "DP"
+    },
+    {
+      "label": "Stormfront",
+      "names": [
+        "Stormfront"
+      ],
+      "era": "DP & Platinum",
+      "family": "DP"
+    },
+    {
+      "label": "Platinum",
+      "names": [
+        "Platinum"
+      ],
+      "era": "DP & Platinum",
+      "family": "DP",
+      "exact": true
+    },
+    {
+      "label": "Rising Rivals",
+      "names": [
+        "Rising Rivals"
+      ],
+      "era": "DP & Platinum",
+      "family": "DP"
+    },
+    {
+      "label": "Supreme Victors",
+      "names": [
+        "Supreme Victors"
+      ],
+      "era": "DP & Platinum",
+      "family": "DP"
+    },
+    {
+      "label": "Arceus",
+      "names": [
+        "Arceus"
+      ],
+      "era": "DP & Platinum",
+      "family": "DP",
+      "exact": true
+    }
   ],
   "pins": [
-    { "set": "Base Set", "number": "4", "name": "Charizard" }
+    {
+      "set": "Base Set",
+      "number": "4",
+      "name": "Charizard"
+    }
   ],
   "exclude": [
-    { "set": "Skyridge", "number": "146", "name": "Charizard" }
-  ]
+    {
+      "set": "Skyridge",
+      "number": "146",
+      "name": "Charizard"
+    }
+  ],
+  "families": {
+    "WOTC": {
+      "mode": "perSet",
+      "label": "WOTC"
+    },
+    "EX": {
+      "mode": "top",
+      "label": "EX",
+      "cap": 18,
+      "shortlist": 36,
+      "maxPerSet": 3,
+      "maxPerCharacter": 2
+    },
+    "DP": {
+      "mode": "top",
+      "label": "DP & Platinum",
+      "cap": 12,
+      "shortlist": 24,
+      "maxPerSet": 3,
+      "maxPerCharacter": 2
+    }
+  }
 }

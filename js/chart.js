@@ -32,6 +32,9 @@
       this.view = { from: 0, to: 1 };
       this.hover = null;
       this.defaultBars = 180;
+      this.ratios = {};   // pane id → user-set height ratio (drag a divider)
+      this.yView = {};    // pane id → { zoom, off }  manual price scale (wheel/drag the axis, drag the plot)
+      this.scales = [];   // per drawn pane: { id, top, bot, lo, hi, fixed }
       this._bind();
       new ResizeObserver(() => this.resize()).observe(el);
       this.resize();
@@ -75,9 +78,10 @@
     // ---------- geometry ----------
     _layout() {
       const plotW = this.w - AXIS_W, total = this.h - TIME_H;
-      const sum = this.panes.reduce((s, p) => s + (p.ratio || 1), 0) || 1;
+      const rat = (p) => this.ratios[p.id] ?? p.ratio ?? 1;
+      const sum = this.panes.reduce((s, p) => s + rat(p), 0) || 1;
       let y = 0;
-      this.boxes = this.panes.map((p) => { const h = Math.floor((total * (p.ratio || 1)) / sum); const b = { x: 0, y, w: plotW, h }; y += h; return b; });
+      this.boxes = this.panes.map((p) => { const h = Math.floor((total * rat(p)) / sum); const b = { x: 0, y, w: plotW, h }; y += h; return b; });
       this.plotW = plotW;
       this.barW = plotW / (this.view.to - this.view.from);
     }
@@ -93,32 +97,70 @@
     _bind() {
       const c = this.canvas;
       let drag = null;
-      c.addEventListener('pointerdown', (e) => { drag = { x: e.clientX, from: this.view.from, to: this.view.to }; c.setPointerCapture(e.pointerId); c.style.cursor = 'grabbing'; });
-      c.addEventListener('pointerup', (e) => { drag = null; c.releasePointerCapture(e.pointerId); c.style.cursor = 'crosshair'; });
+      const at = (e) => { const r = c.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; };
+      const paneAt = (y) => (this.boxes || []).findIndex((b) => y >= b.y && y < b.y + b.h);
+      const divAt = (y) => (this.boxes || []).findIndex((b, k) => k > 0 && Math.abs(y - b.y) <= 4);
+      const yv = (id) => (this.yView[id] ||= { zoom: 1, off: 0 });
+      const cursorFor = ({ x, y }) => (divAt(y) > 0 ? 'row-resize' : x > this.plotW && y < this.h - 24 ? 'ns-resize' : 'crosshair');
+
+      c.addEventListener('pointerdown', (e) => {
+        const p = at(e), dv = divAt(p.y), k = paneAt(p.y);
+        if (dv > 0) { // resize the two panes around this divider
+          const a = this.panes[dv - 1], b = this.panes[dv];
+          const ra = this.ratios[a.id] ?? a.ratio ?? 1, rb = this.ratios[b.id] ?? b.ratio ?? 1;
+          drag = { mode: 'div', y: p.y, a, b, ra, rb, ha: this.boxes[dv - 1].h, hb: this.boxes[dv].h };
+        } else if (p.x > this.plotW && k >= 0) { // stretch/squash the price scale
+          const pid = this.panes[k].id; drag = { mode: 'axis', y: p.y, pid, z0: yv(pid).zoom };
+        } else {
+          const pid = k >= 0 ? this.panes[k].id : null;
+          const sc = this.scales[k];
+          drag = { mode: 'pan', x: e.clientX, y: p.y, from: this.view.from, to: this.view.to, pid, off0: pid ? yv(pid).off : 0, h: sc ? sc.bot - sc.top : 1, fixed: sc?.fixed };
+        }
+        c.setPointerCapture(e.pointerId); c.style.cursor = drag.mode === 'pan' ? 'grabbing' : c.style.cursor;
+      });
+      c.addEventListener('pointerup', (e) => { const was = drag; drag = null; try { c.releasePointerCapture(e.pointerId); } catch {} c.style.cursor = cursorFor(at(e)); if (was?.mode === 'div' && this.onLayout) this.onLayout(this.ratios); });
       c.addEventListener('pointermove', (e) => {
-        const r = c.getBoundingClientRect();
-        const x = e.clientX - r.left, y = e.clientY - r.top;
-        if (drag) {
+        const p = at(e);
+        if (drag?.mode === 'pan') {
           const d = (e.clientX - drag.x) / this.barW;
           this.view = { from: drag.from - d, to: drag.to - d };
           this._clamp();
-        }
-        this.hover = x < this.plotW && y < this.h - TIME_H ? { x, y } : null;
+          if (drag.pid && !drag.fixed) { const v = yv(drag.pid); v.off = drag.off0 + ((p.y - drag.y) / drag.h) * v.zoom; }
+        } else if (drag?.mode === 'axis') {
+          yv(drag.pid).zoom = Math.max(0.05, Math.min(20, drag.z0 * Math.exp((p.y - drag.y) * 0.01)));
+        } else if (drag?.mode === 'div') {
+          const tot = drag.ha + drag.hb, dy = p.y - drag.y;
+          const ha = Math.max(40, Math.min(tot - 40, drag.ha + dy)), s = drag.ra + drag.rb;
+          this.ratios[drag.a.id] = (s * ha) / tot; this.ratios[drag.b.id] = (s * (tot - ha)) / tot;
+        } else c.style.cursor = cursorFor(p);
+        this.hover = !drag || drag.mode === 'pan' ? (p.x < this.plotW && p.y < this.h - 24 ? p : null) : null;
         this.render();
       });
-      c.addEventListener('pointerleave', () => { this.hover = null; this.render(); });
+      c.addEventListener('pointerleave', () => { if (!drag) { this.hover = null; this.render(); } });
       c.addEventListener('wheel', (e) => {
         e.preventDefault();
-        const r = c.getBoundingClientRect();
-        const x = Math.min(e.clientX - r.left, this.plotW);
+        const p = at(e);
+        if (p.x > this.plotW) { // wheel over the price axis = zoom that pane's price scale
+          const k = paneAt(p.y); if (k < 0) return;
+          const v = yv(this.panes[k].id); v.zoom = Math.max(0.05, Math.min(20, v.zoom * Math.exp((e.deltaY || 0) * 0.0015)));
+          this.render(); return;
+        }
+        const x = Math.min(p.x, this.plotW);
         const anchor = this.view.from + x / this.barW;
         const k = Math.exp((e.deltaY || e.deltaX) * 0.0015);
         this.view = { from: anchor - (anchor - this.view.from) * k, to: anchor + (this.view.to - anchor) * k };
         this._clamp();
         this.render();
       }, { passive: false });
-      c.addEventListener('dblclick', () => { this.resetView(); this.render(); });
+      c.addEventListener('dblclick', (e) => { // axis: reset that pane's scale · plot: reset everything
+        const p = at(e);
+        if (p.x > this.plotW) { const k = paneAt(p.y); if (k >= 0) delete this.yView[this.panes[k].id]; }
+        else { this.yView = {}; this.resetView(); }
+        this.render();
+      });
     }
+    resetLayout() { this.ratios = {}; this.yView = {}; this.render(); }
+    isManual() { return Object.values(this.yView).some((v) => v.zoom !== 1 || v.off !== 0); }
 
     // ---------- drawing ----------
     render() {
@@ -176,7 +218,13 @@
       if (hiV === lo) { hiV += Math.abs(hiV) * 0.05 || 1; lo -= Math.abs(lo) * 0.05 || 1; }
       const padV = p.range ? 0 : (hiV - lo) * 0.08;
       lo -= padV; hiV += padV;
-      const top = b.y + PAD_T + (k === 0 ? 18 : 14), bot = b.y + b.h - 4;
+      const yvw = this.yView[p.id];
+      if (yvw && (yvw.zoom !== 1 || yvw.off !== 0)) { // manual price scale: zoom around the centre, shifted by off (in ranges)
+        const rng = hiV - lo, mid = (hiV + lo) / 2 + yvw.off * rng, half = (rng / 2) * yvw.zoom;
+        lo = mid - half; hiV = mid + half;
+      }
+      const top = b.y + PAD_T + (k === 0 ? 18 : 14) + (p.extraTop || 0), bot = b.y + b.h - 4;
+      this.scales[k] = { id: p.id, top, bot, lo, hi: hiV, fixed: !!p.range };
       const y = (v) => bot - ((v - lo) / (hiV - lo)) * (bot - top);
       const fmt = p.percent ? pct : p.fmt || money;
 

@@ -1,0 +1,185 @@
+{
+  "_comment": "Character and theme indexes, built by scripts/groups.mjs. Names match the Pokémon itself (owner prefixes, Dark/Light/Shining, numbers ignored). Picked rarity first, then PSA 8 price, and must pass the clean-sales rules. Each group gets one index per era family plus an 'all eras' index. WOTC may add index-only cards; later eras only use cards already in their era basket (keeps the free tier safe).",
+  "_sprites": "Sprites are hotlinked from pokemondb.net (Crystal sprites, shown next to character & theme indexes). Change spriteBase to swap the style (e.g. .../sprites/home/normal/1x/), or set a group's sprite to null to hide it.",
+  "spriteBase": "https://img.pokemondb.net/sprites/crystal/normal/",
+  "character": {
+    "perGroup": 4,
+    "maxPerSet": 1,
+    "maxPerSetPromo": 2,
+    "minMembers": 2
+  },
+  "theme": {
+    "perGroup": 6,
+    "maxPerSet": 2,
+    "maxPerCharacter": 2,
+    "minMembers": 3
+  },
+  "characters": [
+    {
+      "label": "Charizard",
+      "names": [
+        "Charizard"
+      ],
+      "sprite": "charizard"
+    },
+    {
+      "label": "Blastoise",
+      "names": [
+        "Blastoise"
+      ],
+      "sprite": "blastoise"
+    },
+    {
+      "label": "Venusaur",
+      "names": [
+        "Venusaur"
+      ],
+      "sprite": "venusaur"
+    },
+    {
+      "label": "Pikachu & Raichu",
+      "names": [
+        "Pikachu",
+        "Raichu"
+      ],
+      "sprite": "pikachu"
+    },
+    {
+      "label": "Mewtwo",
+      "names": [
+        "Mewtwo"
+      ],
+      "sprite": "mewtwo"
+    },
+    {
+      "label": "Mew",
+      "names": [
+        "Mew"
+      ],
+      "sprite": "mew"
+    },
+    {
+      "label": "Gengar",
+      "names": [
+        "Gengar"
+      ],
+      "sprite": "gengar"
+    },
+    {
+      "label": "Gyarados",
+      "names": [
+        "Gyarados"
+      ],
+      "sprite": "gyarados"
+    },
+    {
+      "label": "Dragonite",
+      "names": [
+        "Dragonite"
+      ],
+      "sprite": "dragonite"
+    },
+    {
+      "label": "Snorlax",
+      "names": [
+        "Snorlax"
+      ],
+      "sprite": "snorlax"
+    },
+    {
+      "label": "Lugia",
+      "names": [
+        "Lugia"
+      ],
+      "sprite": "lugia"
+    },
+    {
+      "label": "Ho-Oh",
+      "names": [
+        "Ho-oh",
+        "Ho-Oh"
+      ],
+      "sprite": "ho-oh"
+    },
+    {
+      "label": "Tyranitar",
+      "names": [
+        "Tyranitar"
+      ],
+      "sprite": "tyranitar"
+    },
+    {
+      "label": "Umbreon",
+      "names": [
+        "Umbreon"
+      ],
+      "sprite": "umbreon"
+    }
+  ],
+  "themes": [
+    {
+      "label": "Eeveelutions",
+      "names": [
+        "Eevee",
+        "Vaporeon",
+        "Jolteon",
+        "Flareon",
+        "Espeon",
+        "Umbreon"
+      ],
+      "sprite": "eevee"
+    },
+    {
+      "label": "Dragons",
+      "names": [
+        "Dragonite",
+        "Dragonair",
+        "Dratini",
+        "Charizard"
+      ],
+      "sprite": "dragonite"
+    },
+    {
+      "label": "Legendary Birds",
+      "names": [
+        "Articuno",
+        "Zapdos",
+        "Moltres",
+        "Ho-oh",
+        "Ho-Oh",
+        "Lugia"
+      ],
+      "sprite": "articuno"
+    },
+    {
+      "label": "Legendary Beasts",
+      "names": [
+        "Raikou",
+        "Entei",
+        "Suicune"
+      ],
+      "sprite": "suicune"
+    }
+  ],
+  "exclude": [
+    {
+      "set": "Skyridge",
+      "number": "146",
+      "name": "Charizard"
+    }
+  ],
+  "families": {
+    "WOTC": {
+      "addCards": true
+    },
+    "EX": {
+      "addCards": false
+    },
+    "DP": {
+      "addCards": false
+    }
+  },
+  "allEras": {
+    "minMembers": 2
+  }
+}

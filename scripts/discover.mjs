@@ -21,7 +21,7 @@ import { readFile, writeFile, mkdir, unlink, readdir } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import path from 'node:path';
 import { createRequire } from 'node:module';
-import { DATA, PRICES, BudgetError, client, asList, num, slug, gradeBlock, pickPrice, salesOf, loadSeries, saveSeries, mergeCard, cleanPts, medianOf } from './lib.mjs';
+import { DATA, PRICES, BudgetError, client, asList, num, slug, gradeBlock, pickPrice, salesOf, loadSeries, saveSeries, mergeCard, baseName, rarityTier } from './lib.mjs';
 const Clean = createRequire(import.meta.url)('../js/clean.js'); // same cleaning the terminal uses
 
 const args = process.argv.slice(2);
@@ -34,6 +34,7 @@ const DAYS = Number(opt('--days', process.env.PPT_DAYS || 180));
 const SETS_ONLY = flag('--sets-only');
 const FROM_CANDIDATES = flag('--from-candidates');
 const RESCAN = flag('--rescan');
+const FAMILIES = (opt('--families', process.env.PPT_FAMILIES || '') || '').split(',').map((f) => f.trim()).filter(Boolean); // limit scanning to these families
 const TODAY = new Date().toISOString().slice(0, 10);
 const OUT = path.join(DATA, 'discovery');
 
@@ -46,7 +47,13 @@ const PER_SET = Number(opt('--per-set', cfg.perSet || 3));
 const SHORTLIST = Number(cfg.shortlist || 6);
 const MIN_DAYS = Number(cfg.minSaleDays || 4);
 const MAX_OUT = Number(cfg.maxOutlierShare ?? 0.35); // clean-sales rule: drop cards whose sales are mostly junk
-const PRIMARY = cfg.primaryGrade || 'psa9';
+const PRIMARY = cfg.primaryGrade || 'psa8';
+const FAM = cfg.families || { WOTC: { mode: 'perSet' } };
+const familyOf = (def) => def?.family || String(def?.era || '').split(' ')[0] || 'WOTC';
+const ruleOf = (fam) => FAM[fam] || { mode: 'perSet' };
+const defOf = (label) => cfg.sets.find((d) => d.label === label) || {};
+const groupsCfg = existsSync(path.join(DATA, 'groups.json')) ? JSON.parse(await readFile(path.join(DATA, 'groups.json'), 'utf8')) : { characters: [], themes: [] };
+const CHAR_NAMES = [...(groupsCfg.characters || []), ...(groupsCfg.themes || [])].map((g) => ({ label: g.label, names: g.names.map((n) => n.toLowerCase()) }));
 const GRADES = cfg.grades || ['psa9', 'psa10'];
 const norm = (s) => String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
 const numOf = (c) => String(c.cardNumber ?? c.number ?? '').split('/')[0].replace(/^0+/, '') || '0';
@@ -60,7 +67,7 @@ async function resolveSet(def) {
     const j = await api.get('/sets', { search: name, language: 'english', limit: 20 }, 1);
     const list = asList(j).filter((s) => !/japan/i.test(s.language || '') && !/japanese/i.test(s.name || ''));
     const want = norm(name);
-    const pick = list.find((s) => norm(s.name) === want) || list.find((s) => norm(s.name).startsWith(want)) || null;
+    const pick = list.find((s) => norm(s.name) === want) || (def.exact ? null : list.find((s) => norm(s.name).startsWith(want)) || list.find((s) => norm(s.name).includes(want))) || null;
     if (pick) return { ...pick, _query: name, _alts: list.map((s) => s.name).slice(0, 8) };
   }
   return null;
@@ -83,24 +90,28 @@ function summarize(c, def) {
   const g = {};
   for (const gr of GRADES) { const b = gradeBlock(c, gr); g[gr] = { p: pickPrice(b), m: num(b?.medianPrice), n: salesOf(b), v7: num(b?.dailyVolume7Day) }; }
   return {
-    tcgPlayerId: String(c.tcgPlayerId ?? ''), name: c.name, number: numOf(c), rarity: c.rarity || '', set: def.label, era: def.era,
+    tcgPlayerId: String(c.tcgPlayerId ?? ''), name: c.name, number: numOf(c), rarity: c.rarity || '', set: def.label, era: def.era, family: familyOf(def),
     variants: c.printingsAvailable || (c.variants ? Object.keys(c.variants) : null), g,
   };
 }
 function passes(x, def) {
   const rarityOk = def.allRarities || (CHASE.test(x.rarity) && !NOT_CHASE.test(x.rarity.trim()));
-  const liquid = (x.g.psa9?.n ?? 0) >= (cfg.minSales?.psa9 ?? 8) || (x.g.psa10?.n ?? 0) >= (cfg.minSales?.psa10 ?? 3);
+  const liquid = Object.entries(cfg.minSales || { psa9: 8, psa10: 3 }).some(([g, n]) => (x.g[g]?.n ?? 0) >= n); // PSA 8 counts: scarce-at-9 cards still have a market
   const m9 = x.g.psa9?.m ?? x.g.psa9?.p, m10 = x.g.psa10?.m ?? x.g.psa10?.p;
   const gradesAgree = !(m9 && m10 && (x.g.psa9?.n ?? 0) >= 2 && (x.g.psa10?.n ?? 0) >= 2 && m10 < m9 * 0.9); // PSA 10 selling under PSA 9 = mismatched sales
   return rarityOk && liquid && gradesAgree && !!x.tcgPlayerId;
 }
-const rankVal = (x) => x.g[PRIMARY]?.m ?? x.g[PRIMARY]?.p ?? ((x.g.psa10?.m ?? x.g.psa10?.p) != null ? (x.g.psa10.m ?? x.g.psa10.p) * 0.35 : 0);
+// Rank by PSA 8 median (then PSA 9 scaled down, then PSA 10) so the price scale is comparable across cards.
+const rankVal = (x) => x.g[PRIMARY]?.m ?? x.g[PRIMARY]?.p ?? ((x.g.psa9?.m ?? x.g.psa9?.p) != null ? (x.g.psa9.m ?? x.g.psa9.p) * 0.6 : (x.g.psa10?.m ?? x.g.psa10?.p) != null ? (x.g.psa10.m ?? x.g.psa10.p) * 0.25 : 0);
+const charOf = (x) => CHAR_NAMES.find((c) => c.names.includes(baseName(x.name)))?.label || null;
 const isPooled = (x) => { const v = (x.variants || []).join(' '); return /1st/i.test(v) && /unlimited/i.test(v); };
 
 // Stage 1: shortlist per set (pins first, then best-priced passing candidates, deduped).
 function shortlist(candidates) {
   const out = [];
+  for (const [fam, rule] of Object.entries(FAM)) if (rule.mode === 'top') out.push(...eraShortlist(candidates, fam, rule));
   for (const def of cfg.sets) {
+    if (ruleOf(familyOf(def)).mode === 'top') continue;
     const pool = candidates.filter((x) => x.set === def.label);
     const hit = (p, x) => p.set === def.label && String(p.number) === x.number && (!p.name || norm(p.name) === norm(x.name));
     const pinned = pool.filter((x) => (cfg.pins || []).some((p) => hit(p, x)));
@@ -115,10 +126,48 @@ function shortlist(candidates) {
   }
   return out;
 }
+// Era-wide shortlist for 'top' families: each tracked character gets first claim on its best cards,
+// then the best remaining cards fill in (rarity first, then PSA 8 price), within per-set / per-character caps.
+function eraCandidates(candidates, fam) {
+  const hit = (p, x) => p.set === x.set && String(p.number) === x.number && (!p.name || norm(p.name) === norm(x.name));
+  return candidates.filter((x) => x.family === fam && x.pass && !(cfg.exclude || []).some((p) => hit(p, x)))
+    .sort((a, b) => rarityTier(b.rarity, b.name) - rarityTier(a.rarity, a.name) || rankVal(b) - rankVal(a));
+}
+function takeWithCaps(pool, want, rule, into = []) {
+  const perSet = {}, perChar = {}, seen = new Set(into.map(keyOf));
+  for (const x of into) { perSet[x.set] = (perSet[x.set] || 0) + 1; const b = baseName(x.name); perChar[b] = (perChar[b] || 0) + 1; }
+  for (const x of pool) {
+    if (into.length >= want) break;
+    const b = baseName(x.name);
+    if (seen.has(keyOf(x)) || (perSet[x.set] || 0) >= (rule.maxPerSet ?? 3) || (perChar[b] || 0) >= (rule.maxPerCharacter ?? 2)) continue;
+    into.push(x); seen.add(keyOf(x)); perSet[x.set] = (perSet[x.set] || 0) + 1; perChar[b] = (perChar[b] || 0) + 1;
+  }
+  return into;
+}
+function eraShortlist(candidates, fam, rule) {
+  const pool = eraCandidates(candidates, fam), list = [];
+  for (const c of CHAR_NAMES) { // first claim: up to 2 per tracked character (so a reject still leaves a backup)
+    const mine = pool.filter((x) => c.names.includes(baseName(x.name)));
+    takeWithCaps(mine, list.length + 2, rule, list);
+  }
+  takeWithCaps(pool, rule.shortlist ?? rule.cap * 2, rule, list);
+  return list.map((x) => ({ ...x, eraPick: true }));
+}
+
 // Stage 2: after backfill, keep cards with enough real sale days, ranked by median sale price.
 function finalPick(short) {
   const chosen = [];
+  const okC = (x) => (x.days ?? 0) >= MIN_DAYS && (x.outShare ?? 0) <= MAX_OUT;
+  for (const [fam, rule] of Object.entries(FAM)) {
+    if (rule.mode !== 'top') continue;
+    const pool = short.filter((x) => x.family === fam && okC(x)).sort((a, b) => rarityTier(b.rarity, b.name) - rarityTier(a.rarity, a.name) || (b.med ?? rankVal(b)) - (a.med ?? rankVal(a)));
+    const picked = [];
+    for (const c of CHAR_NAMES) takeWithCaps(pool.filter((x) => c.names.includes(baseName(x.name))), Math.min(rule.cap, picked.length + 1), rule, picked); // one per character first
+    takeWithCaps(pool, rule.cap, rule, picked);
+    picked.forEach((x) => chosen.push({ ...x, lead: false }));
+  }
   for (const def of cfg.sets) {
+    if (ruleOf(familyOf(def)).mode === 'top') continue;
     const pool = short.filter((x) => x.set === def.label);
     const ok = (x) => (x.days ?? 0) >= MIN_DAYS && (x.outShare ?? 0) <= MAX_OUT;
     const ranked = [...pool].sort((a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0) || (ok(b) ? 1 : 0) - (ok(a) ? 1 : 0) || (b.med ?? rankVal(b)) - (a.med ?? rankVal(a)));
@@ -130,9 +179,10 @@ const keyOf = (x) => `${slug(x.set)}-${slug(x.name)}-${x.number}`;
 
 function toWatch(x) {
   return {
-    key: keyOf(x), name: x.name, set: x.set, number: x.number, era: x.era, basket: slug(x.set),
+    key: keyOf(x), name: x.name, set: x.set, number: x.number, era: x.era || defOf(x.set).era, family: x.family || familyOf(defOf(x.set)), basket: slug(x.set),
     rarity: x.rarity, pooled: isPooled(x), query: `${x.name} ${x.set} ${x.number}`,
-    tier: 'rotate', // every card every 2 days (3-day history window, so nothing is missed)
+    tier: 'rotate', // every card every 3 days
+    ...(ruleOf(x.family || familyOf(defOf(x.set))).mode === 'top' ? { raw: false } : {}), // later eras skip RAW (2 credits)
     tcgPlayerId: x.tcgPlayerId,
   };
 }
@@ -148,8 +198,8 @@ function report(sets, candidates, short, chosen, variantNotes) {
     L.push(`| ${def.label} | ${st.res ? `${st.res.name}${st.via ? ` (via \`${st.via}\`)` : ''}` : pool.length ? '(from saved scan)' : '**not found**'} | ${pool.length} | ${pool.filter((x) => x.pass).length} | ${short.filter((x) => x.set === def.label).length} |`);
   }
   const lineOf = (x) => (x.split ? `${x.split.mainLabel} (est.) + ${x.altDays} ${x.split.altLabel}` : x.kind === '1st' ? '1st+Unl mixed' : x.kind === 'rev' ? 'holo+rev mixed' : 'single');
-  L.push('', '## Baskets', '', '| Set | Card | # | Median PSA 9 (main line) | Clean sale days | Junk | Line | Refresh |', '|---|---|---|---|---|---|---|---|');
-  for (const x of chosen) L.push(`| ${x.set} | ${x.name}${x.pinned ? ' 📌' : ''} | ${x.number} | ${fm(x.med)} | ${x.days ?? 0}${(x.days ?? 0) < MIN_DAYS ? ' ⚠' : ''} | ${Math.round((x.outShare ?? 0) * 100)}% | ${lineOf(x)} | ${x.lead ? 'daily' : '2 days'} |`);
+  L.push('', '## Baskets', '', `| Era | Set | Card | # | Median ${PRIMARY.toUpperCase()} (main line) | Clean sale days | Junk | Line |`, '|---|---|---|---|---|---|---|---|');
+  for (const x of chosen) L.push(`| ${x.family || ''} | ${x.set} | ${x.name}${x.pinned ? ' 📌' : ''} | ${x.number} | ${fm(x.med)} | ${x.days ?? 0}${(x.days ?? 0) < MIN_DAYS ? ' ⚠' : ''} | ${Math.round((x.outShare ?? 0) * 100)}% | ${lineOf(x)} |`);
   const bench = short.filter((x) => !chosen.some((c) => keyOf(c) === keyOf(x)));
   if (bench.length) {
     L.push('', '## Bench (backfilled, not tracked daily)', '', '| Set | Card | # | Median PSA 9 | Clean days | Junk | Why not picked |', '|---|---|---|---|---|---|---|');
@@ -164,15 +214,18 @@ async function main() {
   await mkdir(OUT, { recursive: true });
   await mkdir(PRICES, { recursive: true });
   const candPath = path.join(OUT, 'candidates.json');
-  let candidates = existsSync(candPath) && !RESCAN ? JSON.parse(await readFile(candPath, 'utf8')) : [];
+  let candidates = existsSync(candPath) ? JSON.parse(await readFile(candPath, 'utf8')) : [];
+  const inScope = (def) => !FAMILIES.length || FAMILIES.includes(familyOf(def));
+  if (RESCAN) { const drop = new Set(cfg.sets.filter(inScope).map((d) => d.label)); candidates = candidates.filter((x) => !drop.has(x.set)); } // rescan only the chosen families
+  for (const x of candidates) x.family ||= familyOf(defOf(x.set));
   const sets = [], variantNotes = [];
   const done = new Set(candidates.map((x) => x.set));
   if (!FROM_CANDIDATES && !KEY) throw new Error('PPT_API_KEY not set');
 
   // 1–2. scan sets that aren't in the saved scan yet
   if (!FROM_CANDIDATES) {
-    const todo = cfg.sets.filter((d) => !done.has(d.label));
-    note(`Discovery ${TODAY}: ${todo.length} sets to scan (${done.size} from saved scan), shortlist ${SHORTLIST}/set → keep ${PER_SET}, budget ${BUDGET}, history ${DAYS}d`);
+    const todo = cfg.sets.filter((d) => inScope(d) && !done.has(d.label));
+    note(`Discovery ${TODAY}: ${todo.length} sets to scan${FAMILIES.length ? ` (${FAMILIES.join(', ')})` : ''}, ${done.size} from saved scan · select by ${PRIMARY.toUpperCase()} · budget ${BUDGET} · history ${DAYS}d`);
     for (const def of todo) {
       try {
         const res = await resolveSet(def);
@@ -251,11 +304,16 @@ async function main() {
 
   // watchlist + cleanup
   const wlPath = path.join(DATA, 'watchlist.json');
+  const prevWl = existsSync(wlPath) ? JSON.parse(await readFile(wlPath, 'utf8')) : {};
   if (existsSync(wlPath)) await writeFile(path.join(DATA, 'watchlist.previous.json'), await readFile(wlPath, 'utf8'));
   const cards = chosen.map(toWatch);
+  const extraN = (prevWl.extra || []).length, perDay = (cards.reduce((n, c) => n + (c.raw === false ? 2 : 3), 0) + extraN * 2) / 3;
+  const byFam = {}; for (const c of cards) byFam[c.family] = (byFam[c.family] || 0) + 1;
+  note(`Budget after the paid plan: ${cards.length} basket cards (${Object.entries(byFam).map(([f, n]) => `${f} ${n}`).join(', ')}) + ${extraN} index-only ≈ ${perDay.toFixed(0)} credits/day of 100${perDay > 90 ? ' ⚠ over the safe limit (90): lower a family cap in sets.json' : ''}.`);
+  variantNotes.push(`Ongoing cost ≈ ${perDay.toFixed(0)} credits/day (every card every 3 days; later eras without RAW).`);
   const bench = short.filter((x) => !cards.some((c) => c.key === keyOf(x))).map((x) => ({ ...toWatch(x), tier: 'bench' }));
-  await writeFile(wlPath, JSON.stringify({ _comment: 'Generated by scripts/discover.mjs from data/sets.json. basket = set index group. tier daily = every run, rotate = every 2 days. bench = backfilled runners-up, not fetched.', grades: GRADES, primaryGrade: defaultGrade, selectionGrade: PRIMARY, cards, bench }, null, 2) + '\n');
-  const keep = new Set([...cards, ...bench].map((c) => c.key));
+  await writeFile(wlPath, JSON.stringify({ _comment: 'Generated by scripts/discover.mjs from data/sets.json. basket = set index group. tier rotate = every 3 days. bench = backfilled runners-up, not fetched.', grades: GRADES, primaryGrade: defaultGrade, selectionGrade: PRIMARY, familyLabels: Object.fromEntries(Object.entries(FAM).map(([f, r]) => [f, r.label || f])), cards, bench, extra: prevWl.extra || [], groups: prevWl.groups || [] }, null, 2) + '\n');
+  const keep = new Set([...cards, ...bench, ...(prevWl.extra || [])].map((c) => c.key));
   for (const f of await readdir(PRICES)) {
     const k = f.replace(/\.json$/, '');
     if (keep.has(k)) continue;

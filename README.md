@@ -24,10 +24,10 @@ Because free history is only 3 days, the strategy is **snapshot, don't query his
 
 ### Credit budget
 
-- After discovery: 17 daily + 34 every-2-days cards ≈ **64 credits/day**.
-- First runs also resolve each card's `tcgPlayerId` once (≤3 credits each, then cached in `watchlist.json`). The budget cap (90) means resolution spills over 2 days, which is fine.
-- `tier: "daily"` cards snapshot every run; `tier: "rotate"` cards refresh when older than 3 days, oldest first, with leftover credits.
-- The fetcher reads `X-RateLimit-Daily-Remaining` and stops with a 5-credit reserve. Nothing ever retries into a daily-limit wall.
+- Every card refreshes every 3 days, stalest first (each call asks for 4 days so no sale day is missed).
+- WOTC set-basket cards cost 3 credits (graded + RAW history). EX, DP and index-only cards skip RAW: 2 credits.
+- Target ≤ 90 credits/day on the 100/day free tier. `discover` and `groups` print the projected daily cost at the end of each run; anything over 90 is flagged ⚠.
+- The fetcher reads `X-RateLimit-Daily-Remaining` and stops with a reserve. Nothing ever retries into a daily-limit wall.
 
 ## Setup
 
@@ -44,15 +44,60 @@ Because free history is only 3 days, the strategy is **snapshot, don't query his
 
 The repo ships with **demo series** (clearly flagged in the UI) so the terminal works on day one. Each card's demo data is replaced automatically the first time a real snapshot lands.
 
-## WOTC discovery + backfill (run once on a paid plan)
+## Eras and how cards are picked (run once on a paid plan, before Oct 17)
 
-`data/sets.json` lists the sets in scope (all WOTC-era sets from Base Set through Skyridge, plus Black Star Promos). With a paid key in `PPT_API_KEY`, run **Actions → Discover WOTC baskets + backfill**:
+`data/sets.json` lists 44 sets in three era families:
 
-1. Optional: tick *sets only* first (about 20 credits) to confirm every set name resolves.
-2. Full run: pulls every card in each set with eBay graded data, keeps chase rarities with a real graded market (min lifetime sales: PSA 9 ≥ 8 or PSA 10 ≥ 3), takes the **top 3 per set by PSA 9 price**, then backfills up to 180 days of history for those cards. Roughly 3–4k credits for all 17 sets.
-3. It rewrites `data/watchlist.json` (old one kept as `watchlist.previous.json`) and writes `data/discovery/report.md` (also shown on the run's summary page), `candidates.json` and raw `sample-card.json` for checking field names.
+| Family | Sets | Rule | Cards |
+|---|---|---|---|
+| **WOTC** | Base Set → Skyridge + Black Star Promos | per set: top 3 per set | ~48 |
+| **EX** | Ruby & Sapphire → Power Keepers | era top: best 18 across the era, ≤ 3 per set, ≤ 2 per character | 18 |
+| **DP & Platinum** | Diamond & Pearl → Arceus | era top: best 12 across the era, ≤ 3 per set, ≤ 2 per character | 12 |
 
-Each set's top card refreshes daily and the other two every 2 days, about 64 credits/day, so the free tier maintains it after the paid plan ends. To change baskets later without spending credits, edit `sets.json` (pins, per-set count, sales minimums) and run `node scripts/discover.mjs --from-candidates`.
+WOTC is covered set by set. Later eras flip it: the era's best cards decide which sets appear, so the budget goes to the cards that matter instead of 27 more set baskets. The EX / DP shortlist gives tracked characters (groups.json) first claim before filling with the rest.
+
+Everything ranks by **PSA 8** (then PSA 9 × 0.6, then PSA 10 × 0.25), holo-or-better, with a real graded market (PSA 8 ≥ 8 or PSA 9 ≥ 8 or PSA 10 ≥ 3 lifetime sales) and clean sales.
+
+**Run order** — Actions → *Discover baskets + backfill*:
+
+1. Tick *sets only* (about 60 credits) to confirm every set name resolves.
+2. Full run: families `WOTC,EX,DP`, tick *rescan*, budget 15000. It rescans WOTC with PSA 8 summaries, scans EX and DP, re-picks, backfills 180 days, then builds the character & theme indexes. Roughly 10k credits.
+3. Read the summary's budget line (≤ 90/day).
+
+To change baskets later without spending credits, edit `sets.json` (pins, excludes, caps) and run `node scripts/discover.mjs --from-candidates`.
+
+## Using the terminal
+
+- **CARD / VS boxes** — click (or press `/` and `\\`) to open the Era ▸ Set ▸ Card tree. Era, set, character and theme rows *are* their indexes: click the name to chart the index, the arrow to open it. Type to search across everything.
+- **Printings** — one row per card. When a card has two printings (1st Ed / Unlimited, holo / reverse) a toggle appears in the toolbar; *Both* overlays them. `*` = split estimated from graded sale prices; RAW is exact.
+- **Watchlist** — CARDS (⊞ groups by set; era picks without a set index group under their era), INDEXES (market, era families, eras, sets, character ladder, themes; *by era* sections open on click), MINE (★ starred, saved in your browser), BRIEF (full readout). The metric column header is a dropdown.
+- **▲ / ▼ badges** — a real shift in the last 7 days (2+ signals agreeing, or the tag jumping two levels).
+- **Chart** — wheel = zoom time; wheel or drag on the price axis = zoom price; drag = pan; drag a pane divider = resize; double-click or ⟲ = reset. Press `?` for all shortcuts.
+
+## Character & theme indexes — the ladder
+
+`data/groups.json` defines characters (Charizard, Lugia, Ho-Oh, …) and themes (Eeveelutions, Dragons, Legendary Birds, Legendary Beasts). `scripts/groups.mjs` builds, for every group:
+
+- **one index per era family** (`Charizard · WOTC`, `Charizard · EX`, …) — rarity first (secret / shining / gold star / LV.X > holo / ex), then PSA 8 price, spread across sets, and each card must pass the clean-sales check (PSA 8 or PSA 9).
+- **one all-eras index** when the group spans 2+ eras (`Charizard · all eras`). These form the **character ladder** — the macro hierarchy of characters across eras, shown in INDEXES, the picker and the brief.
+
+Only WOTC may add index-only cards (2 credits, no RAW, never in set / era / all indexes). EX and DP groups reuse their era picks, so they cost nothing extra.
+
+Run **Actions → Build character & theme indexes** after editing groups.json (discovery runs it too). The Signal panel lists each card's set, era, era family, character and theme indexes and which it moves with most.
+
+## Setup backtest — "which signals actually worked?"
+
+`js/edge.js` tests ~60 indicator setups against the tracked history (runs in the browser per grade, and in `brief.mjs` for `brief.md`). Setups: RSI up through 30 / 50, MACD crossing its signal (and below zero), price back above SMA50, SMA20 × SMA50, relative strength turning up, sales-pace surge, oversold dip, the SlabDex score reaching IMPROVING / EARLY STRENGTH — plus every pair firing within 7 days, and 3+ setups within 10 days.
+
+- **Outcome**: buy at the median of the next real sales after the setup fires (not the price that triggered it), measured 30 days later, versus the market.
+- **Chance**: each event is compared with random *other* tracked cards over the *same* dates, 1000 times (p-value).
+- **Luck from testing many setups**: Benjamini–Hochberg correction (q ≤ 0.10), must beat peers in both halves of the history, across 5+ cards, and beat the typical peer at least half the time.
+
+Only **confirmed** setups get top billing (first tile, ◆ in the card list, a box in the Signal panel, first in BRIEF). Otherwise the BRIEF tab says plainly that nothing has beaten chance yet. It was checked on simulated random prices (no false confirmations) and on planted effects (a +20% effect is usually found, +10% usually isn't yet — the history is still short). With ~180 days, expect "no edge yet" or a few promising setups at first; evidence firms up as history accumulates.
+
+## Sprites
+
+Character and theme indexes show Crystal sprites hotlinked from pokemondb.net (`spriteBase` + `sprite` in groups.json, applied the next time groups.mjs runs). If the images can't load they're simply hidden.
 
 ## Local use
 
@@ -63,10 +108,6 @@ python3 -m http.server              # open http://localhost:8000
 node scripts/build-preview.mjs      # single-file dist/slabdex.html snapshot
 ```
 
-## Adding cards
-
-Add an entry to `data/watchlist.json` with a unique `key`, `name`, `set`, `number`, `era`, a search `query`, and `"tcgPlayerId": null`. Stick to cards with real graded markets (holos, alt arts, SIRs) — base commons return empty eBay data and waste credits. Each daily card costs 2 credits/day.
-
 ## Layout
 
 ```
@@ -74,19 +115,26 @@ index.html            terminal UI
 css/styles.css        Pokédex shell + terminal tokens (dark-first, light supported)
 js/chart.js           dependency-free canvas chart engine (panes, crosshair, zoom, % compare)
 js/indicators.js      SMA/EMA/BB/RSI/MACD/ROC/volatility
-js/app.js             model (shared daily axis, forward-fill, chain-linked index), signals, UI
-scripts/fetch.mjs     budgeted daily collector
+js/edge.js            setup backtest (permutation test vs same-date peers)
+js/model.js           model (shared daily axis, chain-linked indexes, ladder), signals, brief
+js/clean.js           clean-sales filter (junk, printing split, bands)
+js/app.js             UI
+scripts/fetch.mjs     budgeted collector (every card every 3 days)
+scripts/discover.mjs  set scans, basket picks, backfill
+scripts/groups.mjs    character & theme indexes
+scripts/brief.mjs     market brief (brief.json / brief.md)
+data/sets.json        sets, eras, pick rules
+data/groups.json      characters & themes
 scripts/seed-demo.mjs demo data
 data/watchlist.json   tracked cards (ids cached here)
 data/prices/*.json    accumulated history { t, p, n, v7 } per grade
 data/status.json      last run log + credits left
 ```
 
-## Roadmap (not built yet)
+## Roadmap
 
-- Era and set indexes (every card already carries `era` and `set`, so this is a grouping change in `buildModel`).
-- Leaderboard view by short/medium/long window.
-- Optional backfill: one month of the paid API plan returns 6 months of history; `fetch.mjs` already merges any history points it receives.
+- Modern (SWSH / SV) as an era family: add sets with `family` + a `top` rule in sets.json. Budget allows roughly 8–10 more cards at 2 credits.
+- Lead-lag between eras once there are 6+ months of overlap.
 
 ## Notes
 

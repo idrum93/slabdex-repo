@@ -144,3 +144,12 @@ export function mergeCard(s, c, grades, today) {
   s.tcgMarket = num(c.prices?.market) ?? s.tcgMarket ?? null;
   return wrote;
 }
+
+// ---- card identity helpers shared by discover.mjs and groups.mjs ----
+// The Pokémon on the card: "Blaine's Charizard" → charizard, "Dark Raichu" → raichu, "Tyranitar (H28)" → tyranitar,
+// "Rayquaza ex" / "Garchomp LV.X" / "Mewtwo Star" / "Charizard δ" → the base Pokémon.
+export const baseName = (n) => String(n).replace(/\s*\(.*?\)\s*/g, ' ').replace(/\[.*?\]/g, ' ').replace(/^(Dark|Light|Shining)\s+/i, '')
+  .replace(/^[A-Z][A-Za-z.]*(\s[A-Z][a-z]*)?'s\s+/, '').replace(/\s+(Gold Star|Star|ex|EX|LV\.?\s?X|δ|Delta Species|G|GL|FB|C|E4|4)$/i, '')
+  .replace(/\s+/g, ' ').trim().toLowerCase();
+// Rarity first: secret / shining / gold star / crystal / LV.X = 3, holo / ex / promo = 2, anything else 0.
+export const rarityTier = (r, name = '') => (/secret|shining|gold ?star|crystal|\bstar\b|lv\.?\s?x/i.test(`${r} ${name}`) ? 3 : /holo|\bex\b|promo/i.test(`${r} ${name}`) ? 2 : 0);

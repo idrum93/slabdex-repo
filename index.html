@@ -18,64 +18,97 @@
   </header>
 
   <nav class="toolbar" aria-label="Chart controls">
-    <label class="sym">
-      <span class="lbl">CARD</span>
-      <select id="sym"></select>
-    </label>
+    <div class="picker" id="pickA">
+      <button class="pk-btn" type="button" aria-haspopup="listbox"><span class="lbl">CARD</span><span class="pk-val">—</span><span class="pk-caret">▾</span></button>
+      <div class="pk-pop" hidden><input class="pk-q" type="search" placeholder="Search cards, sets, characters…   ( / )" aria-label="Search" autocomplete="off"><div class="pk-list" role="listbox"></div></div>
+    </div>
     <div class="seg" id="grade" role="group" aria-label="Grade">
       <button data-v="raw" title="TCGplayer raw Near Mint, split exactly by printing">RAW</button><button data-v="psa7">PSA 7</button><button data-v="psa8">PSA 8</button><button data-v="psa9" class="on">PSA 9</button><button data-v="psa10">PSA 10</button>
     </div>
-    <label class="sym vs">
-      <span class="lbl">VS</span>
-      <select id="vs"></select>
-    </label>
+    <div class="picker vs" id="pickB">
+      <button class="pk-btn" type="button" aria-haspopup="listbox"><span class="lbl">VS</span><span class="pk-val">—</span><span class="pk-caret">▾</span></button>
+      <div class="pk-pop" hidden><input class="pk-q" type="search" placeholder="Compare against…   ( \\ )" aria-label="Search" autocomplete="off"><div class="pk-list" role="listbox"></div></div>
+    </div>
+    <div class="seg" id="print" role="group" aria-label="Printing" hidden></div>
+    <button class="tbtn" id="mergeBtn" type="button" title="Merge: chart slot 1 ÷ slot 2 as one relative-strength line" aria-pressed="false">A÷B</button>
     <div class="seg" id="range" role="group" aria-label="Range">
       <button data-v="30">1M</button><button data-v="90">3M</button><button data-v="180">6M</button><button data-v="365" class="on">1Y</button><button data-v="0">ALL</button>
     </div>
     <div class="seg" id="res" role="group" aria-label="Resolution">
       <button data-v="D" class="on" title="Daily line">D</button><button data-v="W" title="Weekly candles">W</button>
     </div>
+    <button class="tbtn help-btn" id="helpBtn" type="button" title="Keyboard shortcuts (?)" aria-label="Keyboard shortcuts">?</button>
     <div class="seg ind" id="ind" role="group" aria-label="Indicators">
       <button data-v="sma20" class="on">SMA20</button><button data-v="sma50" class="on">SMA50</button><button data-v="bb">BB</button><button data-v="vol" class="on">VOL</button><button data-v="rs" class="on">RS</button><button data-v="rsi" class="on">RSI</button><button data-v="macd" class="on">MACD</button>
     </div>
   </nav>
 
-  <section class="brief" aria-labelledby="briefHead">
-    <h2 id="briefHead">BRIEF</h2>
-    <div class="brief-body" id="briefBody"></div>
-  </section>
+  <section class="tiles" id="tiles" aria-label="Market brief at a glance"></section>
 
   <main class="body">
     <section class="screen" aria-label="Price chart">
       <div id="chart" class="chart"></div>
+      <div class="cmp-row" id="cmpRow" hidden>
+        <i class="dot"></i><span class="cmp-name" id="cmpName"></span><span class="cmp-vals" id="cmpVals"></span>
+        <button class="cmp-x" id="cmpX" type="button" title="Clear the second slot" aria-label="Clear the second slot">✕</button>
+      </div>
+      <button class="reset-view" id="resetView" type="button" title="Reset zoom, price scale and pane sizes (or double-click the chart)">⟲ reset</button>
       <div class="demo-flag" id="demoFlag" hidden>DEMO DATA · simulated series until the daily fetcher has run</div>
     </section>
-    <aside class="side">
+    <aside class="side side-a">
       <section class="panel sig" aria-labelledby="sigH">
-        <h2 id="sigH">SIGNAL <span id="sigName"></span></h2>
+        <h2 id="sigH">SIGNAL <span id="sigName"></span><button class="st-btn" id="sigStar" type="button" title="Add to MINE (s)" hidden>☆</button></h2>
+        <div class="sig-top">
+        <img class="sig-img" id="sigImg" alt="" hidden referrerpolicy="no-referrer">
         <div class="score">
           <div class="meter"><div id="scoreBar"></div></div>
           <div class="score-row"><b id="scoreVal">—</b><span id="scoreTag" class="tag">—</span></div>
+          <p class="sig-chg" id="sigChange" hidden></p>
+        </div>
         </div>
         <dl class="metrics" id="metrics"></dl>
+        <div class="sig-ctx" id="sigCtx"></div>
         <p class="fine">Heuristic read of trend, momentum and relative strength. Not financial advice.</p>
       </section>
+    </aside>
+    <aside class="side side-b">
       <section class="panel wl" aria-labelledby="wlH">
-        <h2 id="wlH">WATCHLIST <span class="seg tabs" id="wlTabs" role="group" aria-label="Watchlist view"><button data-v="cards" class="on">CARDS</button><button data-v="sets">SETS</button></span><span class="hint">⇄ VS</span></h2>
-        <div class="wl-scroll">
+        <h2 id="wlH"><span class="seg tabs" id="wlTabs" role="group" aria-label="Watchlist view"><button data-v="cards" class="on">CARDS</button><button data-v="sets">INDEXES</button><button data-v="mine">MINE</button><button data-v="brief">BRIEF</button></span><button class="tbtn grp-btn" id="groupBtn" type="button" title="Group cards by set (g)" aria-pressed="false">⊞</button></h2>
+        <div class="wl-scroll" id="wlScroll">
           <table>
-            <thead><tr><th data-sort="name" id="wlFirstCol">Card</th><th data-sort="last" class="n" id="wlLastCol">Last</th><th data-sort="c30" class="n">30D</th><th data-sort="score" class="n">Sig</th><th></th></tr></thead>
+            <thead><tr><th data-sort="name" id="wlFirstCol">Card</th><th data-sort="last" class="n" id="wlLastCol">Last</th><th data-sort="metric" class="n"><select id="wlMetric" aria-label="Metric column"><option value="c30">30D</option><option value="dist50">vs 50D</option><option value="accel">Accel</option><option value="volRatio">Pace</option><option value="volExp">Swing</option></select></th><th data-sort="score" class="n">Sig</th><th></th></tr></thead>
             <tbody id="wlBody"></tbody>
           </table>
+          <div class="blist" id="briefList" hidden></div>
         </div>
       </section>
     </aside>
   </main>
 </div>
+<div class="help" id="help" hidden role="dialog" aria-label="Keyboard shortcuts">
+  <div class="help-card">
+    <h2>SHORTCUTS <button class="cmp-x" data-close type="button" aria-label="Close">✕</button></h2>
+    <dl>
+      <dt>/</dt><dd>Search cards, sets and eras (slot 1)</dd>
+      <dt>\</dt><dd>Pick what to compare against (slot 2)</dd>
+      <dt>↑ ↓</dt><dd>Step through the watchlist</dd>
+      <dt>1 – 5</dt><dd>RAW · PSA 7 · PSA 8 · PSA 9 · PSA 10</dd>
+      <dt>P</dt><dd>Cycle printing: main → other → both</dd>
+      <dt>M</dt><dd>Merge slot 1 ÷ slot 2</dd>
+      <dt>X</dt><dd>Clear slot 2</dd>
+      <dt>W</dt><dd>Daily line ↔ weekly candles</dd>
+      <dt>S</dt><dd>Star / unstar the current card</dd>
+      <dt>G</dt><dd>Group the watchlist by set</dd>
+      <dt>R</dt><dd>Reset zoom, price scale and pane sizes</dd>
+    </dl>
+    <p>On the chart: wheel = zoom time · wheel or drag on the price axis = zoom price · drag = pan · drag a pane divider = resize · double-click = reset.</p>
+  </div>
+</div>
 <script src="js/indicators.js"></script>
 <script src="js/chart.js"></script>
 <script src="js/clean.js"></script>
 <script src="js/model.js"></script>
+<script src="js/edge.js"></script>
 <script src="js/app.js"></script>
 </body>
 </html>
