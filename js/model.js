@@ -72,8 +72,8 @@
     const mains = Object.keys(by).filter((k) => !by[k].card.virtual && by[k].card.role !== 'group');
     const idx = {};
     const add = (id, name, kind, keys, extra = {}) => { if (keys.length) idx[id] = { id, name, kind, members: keys, ...makeIndex(axis, keys.map((k) => by[k])), ...extra }; };
-    add('idx:all', 'All tracked', 'all', mains);
-    [...new Set(mains.map((k) => by[k].card.era))].forEach((e) => add('idx:era:' + slug(e), e, 'era', mains.filter((k) => by[k].card.era === e)));
+    add('idx:all', 'All tracked', 'all', mains, { sprite: WL.eraSprites?.all || null });
+    [...new Set(mains.map((k) => by[k].card.era))].forEach((e) => add('idx:era:' + slug(e), e, 'era', mains.filter((k) => by[k].card.era === e), { sprite: WL.eraSprites?.eras?.[e] || null }));
     [...new Set(mains.map((k) => by[k].card.basket || slug(by[k].card.set)))].forEach((b) => {
       const keys = mains.filter((k) => (by[k].card.basket || slug(by[k].card.set)) === b);
       if (keys.length >= 2) add('idx:set:' + b, by[keys[0]].card.set, 'set', keys, { era: by[keys[0]].card.era, symbol: WL.setSymbols?.[by[keys[0]].card.set] || null }); // a lone era pick is not a set index
@@ -81,7 +81,7 @@
     // Era families (WOTC vs EX vs DP): only once there is more than one.
     const famOf = (c) => c.family || String(c.era || '').split(' ')[0];
     const fams = [...new Set(mains.map((k) => famOf(by[k].card)))];
-    if (fams.length > 1) fams.forEach((f) => add('idx:fam:' + slug(f), WL.familyLabels?.[f] || f, 'family', mains.filter((k) => famOf(by[k].card) === f), { family: f }));
+    if (fams.length > 1) fams.forEach((f) => add('idx:fam:' + slug(f), WL.familyLabels?.[f] || f, 'family', mains.filter((k) => famOf(by[k].card) === f), { family: f, sprite: WL.eraSprites?.families?.[f] || null }));
     for (const g of WL.groups || []) add(g.id, g.label, g.kind, g.members.filter((k) => by[k]), { scope: g.scope, base: g.base || g.label, sprite: g.sprite || null });
     // Which character / theme indexes each card belongs to (base key, so both printings share it).
     const memberOf = {};

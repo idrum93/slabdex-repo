@@ -181,5 +181,21 @@
   },
   "allEras": {
     "minMembers": 2
+  },
+  "eraSprites": {
+    "_comment": "Era mascots (sprite names in img/sprites): each in its era's game style.",
+    "eras": {
+      "WOTC Vintage": "charizard",
+      "WOTC Neo & e-Card": "lugia",
+      "WOTC Promo": "mew",
+      "EX Series": "rayquaza",
+      "DP & Platinum": "giratina"
+    },
+    "families": {
+      "WOTC": "charizard",
+      "EX": "rayquaza",
+      "DP": "giratina"
+    },
+    "all": "master-ball"
   }
 }
