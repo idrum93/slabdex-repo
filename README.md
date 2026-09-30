@@ -72,6 +72,8 @@ To change baskets later without spending credits, edit `sets.json` (pins, exclud
 - **Printings** — one row per card. When a card has two printings (1st Ed / Unlimited, holo / reverse) a toggle appears in the toolbar; *Both* overlays them. `*` = split estimated from graded sale prices; RAW is exact.
 - **Watchlist** — CARDS (⊞ groups by set; era picks without a set index group under their era), INDEXES (market, era families, eras, sets, character ladder, themes; *by era* sections open on click), MINE (★ starred, saved in your browser), BRIEF (full readout). The metric column header is a dropdown.
 - **▲ / ▼ badges** — a real shift in the last 7 days (2+ signals agreeing, or the tag jumping two levels).
+- **Indicators** — ordered by backtest evidence for the current grade (tooltips show the best tested result): Supertrend 10×3 (close-only), SMA 50 / 20, Hull MA 20, RS, VZO (sales pressure, Fisher line ≈ FSVZO), RSI, sales volume, MACD. **GUIDE** (on by default) adds a line under each pane — what it's for, what's favorable, ✓/✗ now — and shades where it held; the price pane is shaded where every enabled trend check agrees. EMA and Bollinger were dropped: EMA duplicated SMA, and bands on sparse forward-filled sales mostly measure gaps between sales.
+- **Brief** — BRIEF tab rows: sprite / set symbol, name, why, 30D %, signal score. On RAW, a note explains that EX, DP and index-only cards are graded-only.
 - **Chart** — wheel = zoom time; wheel or drag on the price axis = zoom price; drag = pan; drag a pane divider = resize; double-click or ⟲ = reset. Press `?` for all shortcuts.
 
 ## Character & theme indexes — the ladder
@@ -87,7 +89,7 @@ Run **Actions → Build character & theme indexes** after editing groups.json (d
 
 ## Setup backtest — "which signals actually worked?"
 
-`js/edge.js` tests ~60 indicator setups against the tracked history (runs in the browser per grade, and in `brief.mjs` for `brief.md`). Setups: RSI up through 30 / 50, MACD crossing its signal (and below zero), price back above SMA50, SMA20 × SMA50, relative strength turning up, sales-pace surge, oversold dip, the SlabDex score reaching IMPROVING / EARLY STRENGTH — plus every pair firing within 7 days, and 3+ setups within 10 days.
+`js/edge.js` tests ~60 indicator setups against the tracked history (runs in the browser per grade, and in `brief.mjs` for `brief.md`). Setups: RSI up through 30 / 50, MACD crossing its signal (and below zero), price back above SMA50, SMA20 × SMA50, relative strength turning up, sales-pace surge, oversold dip, Hull MA turning up, Supertrend flipping up, VZO crossing 0, the SlabDex score reaching IMPROVING / EARLY STRENGTH — plus every pair firing within 7 days, and 3+ setups within 10 days.
 
 - **Outcome**: buy at the median of the next real sales after the setup fires (not the price that triggered it), measured 30 days later, versus the market.
 - **Chance**: each event is compared with random *other* tracked cards over the *same* dates, 1000 times (p-value).
@@ -97,6 +99,7 @@ Only **confirmed** setups get top billing (first tile, ◆ in the card list, a b
 
 ## Sprites and set symbols
 
+- Every card shows its Pokémon's sprite (Poké Ball for trainers): `scripts/sprites.mjs` (run by groups.mjs) downloads missing ones from PokeAPI's sprite repo — Crystal #1–251, Emerald #252–386, Platinum #387–493 — using `data/dex.json`, and writes `sprite` into the watchlist. No credits.
 - Character and theme indexes use transparent Crystal sprites from [PokeAPI/sprites](https://github.com/PokeAPI/sprites), stored in `img/sprites/` (groups.json: `spriteBase` + `sprite`). They show in the lists, the picker and as the Signal panel image.
 - Set indexes use set symbols from pokemontcg.io (`symbolBase` + each set's `code` in sets.json), written into the watchlist by discover. Missing images are simply hidden.
 

@@ -38,8 +38,8 @@
       <button data-v="D" class="on" title="Daily line">D</button><button data-v="W" title="Weekly candles">W</button>
     </div>
     <button class="tbtn help-btn" id="helpBtn" type="button" title="Keyboard shortcuts (?)" aria-label="Keyboard shortcuts">?</button>
-    <div class="seg ind" id="ind" role="group" aria-label="Indicators">
-      <button data-v="sma20" class="on">SMA20</button><button data-v="sma50" class="on">SMA50</button><button data-v="bb">BB</button><button data-v="vol" class="on">VOL</button><button data-v="rs" class="on">RS</button><button data-v="rsi" class="on">RSI</button><button data-v="macd" class="on">MACD</button>
+    <div class="seg ind" id="ind" role="group" aria-label="Indicators, ordered by backtest evidence">
+      <button data-v="guide" class="on guide" title="Guide: what each indicator is for, what's favorable, whether it is now, and shading where it held">GUIDE</button><button data-v="st" class="on" title="Supertrend 10×3 — trailing trend line; green = up">ST</button><button data-v="sma50" class="on" title="SMA 50 — the trend filter: price above it = uptrend">SMA50</button><button data-v="hma" title="Hull MA 20 — fast turn signal, can overshoot on jumpy sales">HMA</button><button data-v="rs" class="on" title="Relative strength vs the compare index">RS</button><button data-v="sma20" class="on" title="SMA 20 — crossing above SMA50 = trend confirmed">SMA20</button><button data-v="vzo" title="VZO — sales pressure: sales on up days minus down days (Fisher line approximates FSVZO)">VZO</button><button data-v="rsi" class="on" title="RSI 14 — momentum; 50–70 is the healthy zone">RSI</button><button data-v="vol" class="on" title="Sales per day — demand">VOL</button><button data-v="macd" title="MACD 12 26 9 — momentum turns">MACD</button>
     </div>
   </nav>
 

@@ -106,6 +106,51 @@
     return Math.sqrt(r.reduce((s, x) => s + (x - m) ** 2, 0) / r.length) * Math.sqrt(365) * 100;
   }
 
-  const api = { sma, ema, stdev, bollinger, rsi, macd, roc, ffill, lastN, lastIdx, firstIdx, chg, volatility, isN };
+  // Weighted moving average (linear weights), needs n valid values in a row.
+  function wma(a, n) {
+    const out = new Array(a.length).fill(null), d = (n * (n + 1)) / 2;
+    for (let i = n - 1; i < a.length; i++) {
+      let s = 0, ok = true;
+      for (let j = 0; j < n; j++) { const v = a[i - j]; if (!isN(v)) { ok = false; break; } s += v * (n - j); }
+      if (ok) out[i] = s / d;
+    }
+    return out;
+  }
+  // Hull moving average: WMA(2·WMA(n/2) − WMA(n), √n). Less lag than SMA/EMA, but overshoots on jumpy prices.
+  function hma(a, n = 20) {
+    const h = wma(a, Math.max(1, Math.round(n / 2))), f = wma(a, n);
+    return wma(a.map((_, i) => (isN(h[i]) && isN(f[i]) ? 2 * h[i] - f[i] : null)), Math.max(1, Math.round(Math.sqrt(n))));
+  }
+  // Supertrend on a close-only series (no intraday highs/lows for card sales): ATR = Wilder average of |Δclose|.
+  // Returns the trailing line and direction (+1 up, −1 down).
+  function supertrend(a, n = 10, mult = 3) {
+    const line = new Array(a.length).fill(null), dir = new Array(a.length).fill(null);
+    let atr = null, k = 0, up = null, dn = null, d = 1, prev = null;
+    for (let i = 0; i < a.length; i++) {
+      const c = a[i]; if (!isN(c)) continue;
+      if (prev != null) { const tr = Math.abs(c - prev); atr = atr == null ? tr : k < n ? (atr * k + tr) / (k + 1) : (atr * (n - 1) + tr) / n; k++; }
+      if (atr != null && k >= n) {
+        const bu = c - mult * atr, bd = c + mult * atr;
+        up = up != null && prev > up ? Math.max(bu, up) : bu;
+        dn = dn != null && prev < dn ? Math.min(bd, dn) : bd;
+        if (d === 1 && c < up) d = -1; else if (d === -1 && c > dn) d = 1;
+        line[i] = d === 1 ? up : dn; dir[i] = d;
+      }
+      prev = c;
+    }
+    return { line, dir };
+  }
+  // Volume Zone Oscillator with sale counts as volume: 100·EMA(±volume by price direction) / EMA(volume).
+  // +40 and above = buying pressure zone, −40 and below = selling pressure. fisher = Fisher-transformed, smoothed.
+  function vzo(close, vol, n = 14) {
+    const sv = close.map((c, i) => { const p = close[i - 1]; const v = isN(vol?.[i]) ? vol[i] : 0; return isN(c) && isN(p) ? (c > p ? v : c < p ? -v : 0) : null; });
+    const vv = close.map((c, i) => (isN(c) ? (isN(vol?.[i]) ? vol[i] : 0) : null));
+    const a = ema(sv, n), b = ema(vv, n);
+    const z = a.map((x, i) => (isN(x) && isN(b[i]) && b[i] > 0 ? (100 * x) / b[i] : isN(x) ? 0 : null));
+    const fz = ema(z.map((x) => { if (!isN(x)) return null; const y = Math.max(-0.999, Math.min(0.999, x / 100)); return 50 * Math.log((1 + y) / (1 - y)); }), 5);
+    return { vzo: z, fisher: fz };
+  }
+
+  const api = { sma, ema, wma, hma, supertrend, vzo, stdev, bollinger, rsi, macd, roc, ffill, lastN, lastIdx, firstIdx, chg, volatility, isN };
   if (typeof module !== "undefined" && module.exports) module.exports = api; else window.Ind = api;
 })();

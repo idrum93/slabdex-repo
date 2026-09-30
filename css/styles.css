@@ -298,3 +298,22 @@ tr.sec .dim { letter-spacing: 0; opacity: .6; margin-left: 4px; }
 .bgroup.edge.hot { box-shadow: inset 3px 0 0 var(--up); padding-left: 8px; }
 .bgroup .erow { margin: 3px 0; padding-left: 8px; border-left: 2px solid var(--line); font-size: 11.5px; line-height: 1.4; }
 .bgroup p.dim { font-size: 10.5px; color: var(--muted); }
+
+/* brief as scannable rows */
+.bhead { display: grid; grid-template-columns: 1fr 46px 30px; gap: 6px; padding: 0 2px; font: 600 9px var(--f-disp); letter-spacing: .12em; color: var(--muted); text-align: right; position: sticky; top: 0; background: var(--panel); z-index: 1; }
+.bgroup button.brow { display: grid; grid-template-columns: 24px minmax(0, 1fr) 46px 30px; gap: 6px; align-items: center; padding: 4px 2px 4px 6px; }
+.brow .bic { display: flex; align-items: center; justify-content: center; height: 22px; }
+.brow .bic .spr { width: 22px; height: 22px; margin: 0; vertical-align: 0; }
+.brow .bic .spr.setsym { width: 16px; height: 16px; }
+.bthumb { width: 16px; height: 22px; object-fit: cover; border-radius: 2px; }
+.bk { font: 600 7.5px var(--f-disp); letter-spacing: .06em; color: var(--muted); border: 1px solid var(--line); border-radius: 3px; padding: 2px 2px; }
+.brow .bt { display: grid; min-width: 0; line-height: 1.25; }
+.brow .bt b { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.brow .bt small { font-size: 10.5px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bchip { text-align: right; font-size: 11.5px; font-variant-numeric: tabular-nums; }
+.bchip.pos { color: var(--up); } .bchip.neg { color: var(--down); }
+.brow .pill { justify-self: end; }
+.tile .tn .spr { width: 18px; height: 18px; vertical-align: -4px; margin: -3px 4px -3px 0; }
+.tile .tn .spr.setsym { width: 14px; height: 14px; vertical-align: -2px; }
+.rawnote { margin: 4px 0; padding: 6px 8px; font: 11px/1.4 var(--f-mono); color: var(--fg); background: var(--grid); border-left: 2px solid var(--warn); text-transform: none; letter-spacing: 0; white-space: normal; }
+.rawnote button { margin-left: 6px; font: inherit; color: var(--accent); background: none; border: 1px solid var(--accent); border-radius: 3px; padding: 1px 6px; cursor: pointer; }

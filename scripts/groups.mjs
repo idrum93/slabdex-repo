@@ -15,6 +15,7 @@
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import path from 'node:path';
 import { createRequire } from 'node:module';
+import { ensureSprites } from './sprites.mjs';
 import { DATA, BudgetError, client, asList, slug, loadSeries, saveSeries, mergeCard, baseName, rarityTier } from './lib.mjs';
 const Clean = createRequire(import.meta.url)('../js/clean.js');
 
@@ -125,6 +126,7 @@ for (const [gid, g] of Object.entries(allMembers)) {
 }
 
 const out = { ...wl, extra: [...extra.values()], groups };
+if (!DRY) await ensureSprites([...out.cards, ...out.extra], note); // card sprites (free, from PokeAPI's sprite repo)
 const perDay = (wl.cards.reduce((n, c) => n + (c.raw === false ? 2 : 3), 0) + out.extra.length * 2) / 3;
 note(`\n${groups.length} indexes (${groups.filter((g) => g.scope === 'all').length} all-eras) · ${out.extra.length} index-only cards · ongoing ≈ ${perDay.toFixed(0)} credits/day of 100${perDay > 90 ? ' ⚠ over the safe limit' : ''}${api ? ` · spent ${api.st.spent} credits` : ''}`);
 if (!DRY) {

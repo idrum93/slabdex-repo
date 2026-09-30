@@ -36,10 +36,13 @@
     ['rsX', 'RS turns up vs market', (x, i) => upX(x.rs, x.rsm, i)],
     ['volUp', 'Sales pace surge', (x, i) => upTh(x.vr, i, 1.5)],
     ['dip', 'Oversold dip (−15%, RSI<40)', (x, i) => x.dip[i] && !x.dip[i - 1]],
+    ['hmaUp', 'Hull MA turns up', (x, i) => isN(x.hm[i]) && isN(x.hm[i - 1]) && isN(x.hm[i - 2]) && x.hm[i] > x.hm[i - 1] && x.hm[i - 1] <= x.hm[i - 2]],
+    ['stUp', 'Supertrend flips up', (x, i) => x.st[i] === 1 && x.st[i - 1] === -1],
+    ['vzoX', 'VZO (sales pressure) crosses 0', (x, i) => upTh(x.vz, i, 0)],
     ['sc55', 'Score to IMPROVING', (x, i) => upTh(x.sc, i, 55)],
     ['sc68', 'Score to EARLY STRENGTH', (x, i) => upTh(x.sc, i, 68)],
   ];
-  const SHORT = { rsi30: 'RSI↑30', rsi50: 'RSI↑50', macdX: 'MACD×', macdX0: 'MACD×<0', px50: 'Px>SMA50', gold: 'SMA20×50', rsX: 'RS↑', volUp: 'Pace↑', dip: 'Dip', sc55: 'Score≥55', sc68: 'Score≥68' };
+  const SHORT = { rsi30: 'RSI↑30', rsi50: 'RSI↑50', macdX: 'MACD×', macdX0: 'MACD×<0', px50: 'Px>SMA50', gold: 'SMA20×50', rsX: 'RS↑', volUp: 'Pace↑', dip: 'Dip', hmaUp: 'HMA↑', stUp: 'ST↑', vzoX: 'VZO↑0', sc55: 'Score≥55', sc68: 'Score≥68' };
   const NESTED = new Set(['macdX+macdX0', 'sc55+sc68']);
   const RULES = [
     ...BASE.map(([id, label]) => ({ id, label, parts: [id] })),
@@ -67,7 +70,8 @@
       dip[i] = isN(c[i]) && c[i] <= hi * 0.85 && rsi[i] != null && rsi[i] < 40;
       if (i - first >= WARM - 1) sc[i] = Model.signals(c.slice(0, i + 1), b.vol ? b.vol.slice(0, i + 1) : null, bench.slice(0, i + 1), { dense: b.dense }).score ?? null;
     }
-    return { c, rsi, ml: m.line, ms: m.signal, s20, s50, rs, rsm, vr, dip, sc };
+    const hm = I.hma(c, 20), st = I.supertrend(c, 10, 3).dir, vz = b.vol ? I.vzo(c, b.vol, 14).vzo : new Array(n).fill(null);
+    return { c, rsi, ml: m.line, ms: m.signal, s20, s50, rs, rsm, vr, dip, sc, hm, st, vz };
   }
 
   function run(model, opts = {}) {
@@ -161,7 +165,7 @@
       }
       const hm = hs.map((h) => (h.n >= 5 ? h.s / h.n : null));
       const holds = hm.every((v) => v != null && v > 0);
-      results.push({ id: r.id, label: r.label, n, cards: cards.size, mean, edge: n ? edge / n : null, excess: mean == null ? null : (Math.exp(mean) - 1) * 100, vsPeers: n ? (Math.exp(edge / n) - 1) * 100 : null, hit: n ? hit / n : null, beatPeers: n ? beat / n : null, boom: n ? boom / n : null, p, halves: hm.map((v) => (v == null ? null : (Math.exp(v) - 1) * 100)), holds, live });
+      results.push({ id: r.id, label: r.label, parts: r.parts, n, cards: cards.size, mean, edge: n ? edge / n : null, excess: mean == null ? null : (Math.exp(mean) - 1) * 100, vsPeers: n ? (Math.exp(edge / n) - 1) * 100 : null, hit: n ? hit / n : null, beatPeers: n ? beat / n : null, boom: n ? boom / n : null, p, halves: hm.map((v) => (v == null ? null : (Math.exp(v) - 1) * 100)), holds, live });
     }
     // Benjamini–Hochberg over the setups that had enough events.
     const tested = results.filter((r) => r.p != null).sort((a, b) => a.p - b.p), m = tested.length;

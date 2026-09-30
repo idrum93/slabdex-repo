@@ -6,9 +6,9 @@
   const I = window.Ind;
   const C = window.Clean;
 
-  const state = { v: 3, key: null, grade: 'psa9', vs: 'idx:all', range: 365, res: 'D', ind: { sma20: 1, sma50: 1, bb: 0, vol: 1, rs: 1, rsi: 1, macd: 1 }, sort: 'score', dir: -1, wlView: 'cards', wlMetric: 'c30', merge: false, print: 'main', group: false, collapsed: [], stars: [] };
+  const state = { v: 3, key: null, grade: 'psa9', vs: 'idx:all', range: 365, res: 'D', ind: { st: 1, sma20: 1, sma50: 1, hma: 0, vol: 1, rs: 1, rsi: 1, macd: 0, vzo: 0 }, guide: 1, sort: 'score', dir: -1, wlView: 'cards', wlMetric: 'c30', merge: false, print: 'main', group: false, collapsed: [], stars: [] };
   let hadSaved = false;
-  try { const sv = JSON.parse(localStorage.getItem('slabdex') || 'null'); if (sv && sv.v === 3) { Object.assign(state, sv); hadSaved = true; } } catch (e) {} // older saved layouts are ignored
+  try { const sv = JSON.parse(localStorage.getItem('slabdex') || 'null'); if (sv && sv.v === 3) { Object.assign(state, sv); hadSaved = true; if (!('st' in state.ind)) state.ind.st = 1; } } catch (e) {} // older saved layouts are ignored
   const save = () => { try { localStorage.setItem('slabdex', JSON.stringify(state)); } catch (e) {} };
 
   let WL = null, SERIES = {}, STATUS = null, chart = null, model = null;
@@ -54,6 +54,15 @@
   // Index icons: character / theme sprites (pixel art) and set symbols. Hidden if they fail to load.
   const spr = (u, cls = 'spr') => (u ? `<img class="${cls}" src="${u}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">` : '');
   const icon = (x) => (x?.sprite ? spr(x.sprite) : x?.symbol ? spr(x.symbol, 'spr setsym') : '');
+  const KIND_TAG = { all: 'ALL', family: 'FAM', era: 'ERA', set: 'SET', char: 'CHR', theme: 'THM' };
+  function keyIcon(k, { thumb = true } = {}) {
+    const x = model.idx[k]; if (x) return icon(x) || `<span class="bk">${KIND_TAG[x.kind] || ''}</span>`;
+    const b = model.by[k]; if (!b) return '';
+    if (b.card.sprite) return spr(b.card.sprite); // the card's own Pokémon (Poké Ball for trainers)
+    const base = k.replace(/~alt$/, ''), g = (model.memberOf[base] || []).map((id) => model.idx[id]).find((y) => y?.kind === 'char' && y.sprite);
+    if (g) return spr(g.sprite);
+    return thumb && b.card.tcgPlayerId ? `<img class="bthumb" src="https://tcgplayer-cdn.tcgplayer.com/product/${b.card.tcgPlayerId}_in_200x200.jpg" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">` : '';
+  }
   const famOfCard = (c) => c.family || String(c.era || '').split(' ')[0];
   const idxLabel = (x) => `${x.kind === 'all' ? 'All tracked' : x.name} ${KIND_WORD[x.kind] ? KIND_WORD[x.kind] + ' ' : ''}index (${x.members.length})`;
   const symName = (r) => (r.isIndex ? `${r.index.kind === 'all' ? 'ALL' : r.name.toUpperCase()} IDX` : r.name + (r.card.line ? ` ${r.card.line}` : ''));
@@ -156,7 +165,6 @@
     const percent = !!bench && !merge;
     const lvl = (v) => v.toFixed(1);
     const main = [];
-    if (state.ind.bb) { const b = I.bollinger(close, f.bb); main.push({ type: 'band', data: b.up.map((u, i) => ({ up: u, lo: b.lo[i] })), fill: alpha(T.cmp, 0.08), rebaseWith: close, label: 'BB', color: alpha(T.cmp, 0.5) }); }
     if (ohlc) main.push({ type: 'candle', data: ohlc, label: '', tag: true, color: T.accent });
     else main.push({ type: 'area', data: close, color: T.accent, width: 2, fillTop: alpha(T.accent, 0.18), fillBottom: alpha(T.accent, 0), label: merge ? 'A÷B' : cur.isIndex ? 'LEVEL' : other ? cur.card.line + (cur.card.est ? ' est.' : '') : `${Model.GRADE_LABEL[state.grade]}${model.dense ? '' : ' MKT'}`, tag: true });
     if (merge) main.push({ type: 'line', data: close.map((v) => (I.isN(v) ? 100 : null)), color: alpha(T.muted, 0.6), width: 1, dash: [3, 3], label: '' });
@@ -168,11 +176,34 @@
     }
     if (state.ind.sma20) main.push({ type: 'line', data: I.sma(close, f.s1), color: T.sma20, width: 1, label: state.res === 'W' ? 'SMA4W' : 'SMA20', rebaseWith: close });
     if (state.ind.sma50) main.push({ type: 'line', data: I.sma(close, f.s2), color: T.sma50, width: 1, label: state.res === 'W' ? 'SMA10W' : 'SMA50', rebaseWith: close });
+    if (state.ind.hma) main.push({ type: 'line', data: I.hma(close, f.s1), color: T.warn, width: 1.3, label: state.res === 'W' ? 'HMA4W' : 'HMA20', rebaseWith: close });
+    if (state.ind.st) { // trailing line, green while the trend is up, red while down
+      const t = I.supertrend(close, state.res === 'W' ? 4 : 10, 3);
+      main.push({ type: 'line', data: t.line.map((v, i) => (t.dir[i] === 1 ? v : null)), color: T.up, width: 1.3, label: 'ST▲', rebaseWith: close });
+      main.push({ type: 'line', data: t.line.map((v, i) => (t.dir[i] === -1 ? v : null)), color: T.down, width: 1.3, label: 'ST▼', rebaseWith: close });
+    }
     if (state.ind.vol && vol.some(I.isN)) main.push({ type: 'hist', data: vol, ownScale: true, heightFrac: 0.16, color: alpha(T.muted, 0.45), label: model.dense ? (state.res === 'W' ? 'VOL/WK' : 'VOL/D') : state.res === 'W' ? 'SALES/WK' : 'SALES/D' });
 
     const nameA = cur.isIndex ? `${idxLabel(cur.index)}` : `${cur.card.name}${other ? '' : lineTag(cur.card)}  ${cur.card.set} #${cur.card.number}`;
     const title = merge ? `${cur.isIndex ? symName(cur) : cur.card.name + lineTag(cur.card)}  ÷  ${symName(bench0)} · base 100` : cur.isIndex ? `${nameA} · base 100` : nameA;
     const panes = [{ id: 'main', ratio: 5, percent, fmt: cur.isIndex || merge ? lvl : money, title, series: main, extraTop: bench0 ? 20 : 0 }];
+    // Guide: each indicator says what it's for, what "favorable" looks like, whether it is now, and shades where it held.
+    const G = !!state.guide, zc = alpha(T.up, 0.09);
+    const lastOk = (z) => { for (let i = z.length - 1; i >= 0; i--) if (z[i] != null) return !!z[i]; return null; };
+    const guide = (pane, z, text) => { if (!G) return; pane.zones = z.map(Boolean); pane.zoneColor = zc; pane.hint = { ok: lastOk(z), text }; };
+    if (G && !merge) { // trend conditions from the overlays that are on; the main pane is shaded where all of them agree
+      const conds = [];
+      if (state.ind.sma50) { const s2 = I.sma(close, f.s2); conds.push(['price > SMA50', close.map((v, i) => (I.isN(v) && I.isN(s2[i]) ? v > s2[i] : null))]); }
+      if (state.ind.sma20 && state.ind.sma50) { const s1 = I.sma(close, f.s1), s2 = I.sma(close, f.s2); conds.push(['SMA20 > SMA50', close.map((_, i) => (I.isN(s1[i]) && I.isN(s2[i]) ? s1[i] > s2[i] : null))]); }
+      if (state.ind.st) { const t = I.supertrend(close, state.res === 'W' ? 4 : 10, 3); conds.push(['Supertrend up', t.dir.map((d) => (d == null ? null : d === 1))]); }
+      if (state.ind.hma) { const h = I.hma(close, f.s1); conds.push(['HMA rising', h.map((v, i) => (I.isN(v) && I.isN(h[i - 1]) ? v > h[i - 1] : null))]); }
+      if (state.ind.vol && vol.some(I.isN)) { const a7 = I.sma(vol.map((v) => v ?? 0), state.res === 'W' ? 1 : 7), a30 = I.sma(vol.map((v) => v ?? 0), state.res === 'W' ? 4 : 30); conds.push(['sales pace up', a7.map((v, i) => (I.isN(v) && I.isN(a30[i]) && a30[i] > 0 ? v > a30[i] : null))]); }
+      if (conds.length) {
+        const all = close.map((_, i) => (conds.every(([, z]) => z[i] != null) ? conds.every(([, z]) => z[i]) : null));
+        panes[0].zones = all.map(Boolean); panes[0].zoneColor = zc;
+        panes[0].hint = { ok: lastOk(all), text: 'Trend check (shaded = all true): ' + conds.map(([n, z]) => `${n} ${lastOk(z) ? '✓' : '✗'}`).join(' · ') };
+      }
+    }
     if (state.ind.rs && bench && !merge) {
       const rs = close.map((v, i) => (I.isN(v) && I.isN(bench[i]) && bench[i] ? v / bench[i] : null));
       const f0 = I.firstIdx(rs); const b0 = f0 >= 0 ? rs[f0] : 1;
@@ -181,8 +212,10 @@
         { type: 'line', data: rsn, color: T.cmp, width: 1.5, label: 'RS' },
         { type: 'line', data: I.sma(rsn, f.s1), color: T.sma20, width: 1, label: 'MA', fmt: lvl },
       ] });
+      const rm = I.sma(rsn, f.s1); guide(panes[panes.length - 1], rsn.map((v, i) => (I.isN(v) && I.isN(rm[i]) ? v > rm[i] : null)), 'Beating the benchmark? Favorable: RS above its MA (rising line = outperforming)');
     }
-    if (state.ind.rsi) panes.push({ id: 'rsi', ratio: 1.2, title: 'RSI 14', range: [0, 100], levels: [30, 50, 70], fmt: (v) => v.toFixed(0), series: [{ type: 'line', data: I.rsi(close, 14), color: T.sma20, width: 1.3, label: 'RSI', fmt: lvl }] });
+    if (state.ind.rsi) { const r = I.rsi(close, 14); panes.push({ id: 'rsi', ratio: 1.2, title: 'RSI 14', range: [0, 100], levels: [30, 50, 70], fmt: (v) => v.toFixed(0), series: [{ type: 'line', data: r, color: T.sma20, width: 1.3, label: 'RSI', fmt: lvl }] });
+      guide(panes[panes.length - 1], r.map((v) => (I.isN(v) ? v >= 50 && v <= 70 : null)), 'Momentum. Favorable: 50–70 (above 70 = stretched, below 50 = weak)'); }
     if (state.ind.macd) {
       const m = I.macd(close);
       panes.push({ id: 'macd', ratio: 1.3, title: 'MACD 12 26 9', zeroCenter: true, fmt: (v) => v.toFixed(Math.abs(v) < 10 ? 1 : 0), series: [
@@ -190,6 +223,15 @@
         { type: 'line', data: m.line, color: T.cmp, width: 1.2, label: 'MACD' },
         { type: 'line', data: m.signal, color: T.warn || T.accent, width: 1, label: 'SIG' },
       ] });
+      guide(panes[panes.length - 1], m.hist.map((v) => (I.isN(v) ? v > 0 : null)), 'Momentum turns. Favorable: MACD above its signal (green histogram)');
+    }
+    if (state.ind.vzo && vol.some(I.isN)) {
+      const z = I.vzo(close, vol, state.res === 'W' ? 6 : 14);
+      panes.push({ id: 'vzo', ratio: 1.2, title: 'VZO 14 · sales-weighted', range: [-100, 100], levels: [-40, 0, 40], fmt: (v) => v.toFixed(0), series: [
+        { type: 'line', data: z.vzo, color: T.cmp, width: 1.3, label: 'VZO', fmt: lvl },
+        { type: 'line', data: z.fisher.map((v) => (I.isN(v) ? Math.max(-100, Math.min(100, v)) : null)), color: T.warn, width: 1, label: 'FISHER', fmt: lvl },
+      ] });
+      guide(panes[panes.length - 1], z.vzo.map((v) => (I.isN(v) ? v > 0 : null)), 'Sales pressure (more sales on up days). Favorable: above 0, strong above 40. Noisy on thin cards');
     }
     chart.theme = T;
     chart.defaultBars = state.range ? Math.ceil(state.range / (state.res === 'W' ? 7 : 1)) : dates.length;
@@ -293,7 +335,7 @@
   const chgBadge = (c) => (c ? `<span class="chg ${c.dir > 0 ? 'up' : 'dn'}" title="This week: ${esc(c.items.map((i) => i.text).join('; '))}">${c.dir > 0 ? '▲' : '▼'}</span>` : '');
   function cardRow(b, M, st) {
     const c = b.card, s = st.cards[c.key], alt = model.by[c.key + '~alt']?.card;
-    return { key: c.key, name: c.name, set: c.set, custom: !!c.custom, sub: `${c.role === 'group' ? 'idx-only · ' : ''}${c.set} #${c.number}${alt ? ` · ${c.line}/${alt.line}${c.est ? '*' : ''}` : c.line ? ' · ' + c.line : ''}`, last: s.last, lastTxt: s.last != null ? money(s.last) : '—', metric: M.get(s), score: s.score, tag: s.tag, ch: st.ch[c.key], basket: c.basket || slug(c.set), setup: edgeLive(c.key) };
+    return { key: c.key, name: c.name, set: c.set, custom: !!c.custom, sub: `${c.role === 'group' ? 'idx-only · ' : ''}${c.set} #${c.number}${alt ? ` · ${c.line}/${alt.line}${c.est ? '*' : ''}` : c.line ? ' · ' + c.line : ''}`, last: s.last, lastTxt: s.last != null ? money(s.last) : '—', metric: M.get(s), score: s.score, tag: s.tag, ch: st.ch[c.key], basket: c.basket || slug(c.set), setup: edgeLive(c.key), sprite: c.sprite };
   }
   function idxRow(x, M, st) {
     const s = st.idx[x.id];
@@ -365,6 +407,7 @@
     } else {
       html = mains.map((b) => cardRow(b, M, st)).sort(cmp).map((r) => rowHtml(r, M)).join('');
     }
+    if (model.dense && view !== 'brief') html = `<tr class="sec"><td colspan="5">${rawNote()}</td></tr>` + html;
     $('wlBody').innerHTML = html;
   }
 
@@ -383,7 +426,7 @@
     const cards = Object.values(model.by).filter((b) => !b.card.virtual);
     const eras = [...new Set(cards.filter((b) => b.card.role !== 'group').map((b) => b.card.era))];
     const items = [];
-    const cardItem = (b, depth) => { const s = st.cards[b.card.key]; return { id: b.card.key, depth, kind: 'card', text: `${b.card.name}`, sub: `#${b.card.number}${model.by[b.card.key + '~alt'] ? ' · 2 printings' : ''}`, right: s.last != null ? money(s.last) : '', c30: s.c30, custom: b.card.custom }; };
+    const cardItem = (b, depth) => { const s = st.cards[b.card.key]; return { id: b.card.key, depth, kind: 'card', sprite: b.card.sprite, text: `${b.card.name}`, sub: `#${b.card.number}${model.by[b.card.key + '~alt'] ? ' · 2 printings' : ''}`, right: s.last != null ? money(s.last) : '', c30: s.c30, custom: b.card.custom }; };
     const idxItem = (x, depth, open, hasKids) => { const s = st.idx[x.id]; return { id: x.id, depth, kind: x.kind, sprite: x.sprite, symbol: x.symbol, text: x.kind === 'all' ? 'All tracked index' : x.name, sub: `${x.members.length} cards`, right: s.last != null ? s.last.toFixed(1) : '', c30: s.c30, open, hasKids }; };
     if (slot === 'B') items.push({ id: 'none', depth: 0, kind: 'opt', text: 'None' }, { id: 'set', depth: 0, kind: 'opt', text: 'Own set index' }, { id: 'era', depth: 0, kind: 'opt', text: 'Own era index' });
     if (q) { // flat search: indexes and cards whose name / set / number match every word
@@ -437,6 +480,7 @@
     let html = items.map((it, i) => `<div class="pk-it d${it.depth} k-${it.kind}${it.id === cur ? ' cur' : ''}${i === P.hi ? ' hi' : ''}" data-i="${i}" role="option">
         ${it.hasKids ? `<button class="pk-tog" data-tog="${esc(it.tog || it.id)}" tabindex="-1" aria-label="${it.open ? 'Collapse' : 'Expand'}">${it.open ? '▾' : '▸'}</button>` : '<span class="pk-sp"></span>'}
         <span class="pk-t">${icon(it)}${esc(it.text)}${it.custom ? ' <em>mine</em>' : ''}</span><span class="pk-s">${esc(it.sub || '')}</span><span class="pk-r">${it.right || ''} ${pc(it.c30)}</span></div>`).join('');
+    if (model.dense && !P.q.trim()) html = `<div class="pk-miss">${rawNote()}</div>` + html;
     root.querySelector('.pk-list').innerHTML = html || '<div class="pk-miss">No matches.</div>';
     root._items = items;
     root.querySelector('.pk-it.hi')?.scrollIntoView({ block: 'nearest' });
@@ -494,7 +538,7 @@
   function syncButtons() {
     const set = (id, v) => $(id).querySelectorAll('button').forEach((b) => b.classList.toggle('on', b.dataset.v === String(v)));
     set('grade', state.grade); set('range', state.range); set('res', state.res);
-    $('ind').querySelectorAll('button').forEach((b) => b.classList.toggle('on', !!state.ind[b.dataset.v]));
+    $('ind').querySelectorAll('button').forEach((b) => b.classList.toggle('on', b.dataset.v === 'guide' ? !!state.guide : !!state.ind[b.dataset.v]));
   }
 
   function renderStatus() {
@@ -525,10 +569,24 @@
       setTimeout(() => {
         if (model.grade !== g) { edgePending = null; return; }
         try { EDGE[g] = Edge.run(model); } catch (err) { console.error(err); EDGE[g] = { ok: false, reason: 'backtest failed' }; }
-        edgePending = null; renderBrief(); refresh({ keepView: true });
+        edgePending = null; rankIndicators(); renderBrief(); refresh({ keepView: true });
       }, 40);
     }
     return null;
+  }
+  // Order the indicator buttons by backtest evidence for this grade (strongest first) and put the evidence in each tooltip.
+  const IND_BASES = { st: ['stUp'], sma50: ['px50', 'gold'], hma: ['hmaUp'], rs: ['rsX'], sma20: ['gold'], vzo: ['vzoX'], rsi: ['rsi30', 'rsi50'], vol: ['volUp'], macd: ['macdX', 'macdX0'] };
+  function rankIndicators() {
+    const e = EDGE[state.grade], bar = $('ind'); if (!e?.ok || !bar) return;
+    const btns = [...bar.querySelectorAll('button')];
+    const ev = {};
+    for (const b of btns) {
+      const bases = IND_BASES[b.dataset.v]; if (!bases) continue;
+      const best = e.results.filter((r) => r.p != null && r.vsPeers > 0 && (r.parts || [r.id]).some((x) => bases.includes(x))).sort((a, c) => a.p - c.p)[0];
+      ev[b.dataset.v] = best ? -Math.log10(best.p) : 0;
+      b.title = b.title.replace(/\n\nBacktest:[\s\S]*$/, '') + (best ? `\n\nBacktest (${Model.GRADE_LABEL[state.grade]}): best with this — ${best.label}: ${Edge.stat(best)} · ${best.status}` : '\n\nBacktest: no positive result yet');
+    }
+    btns.sort((a, b) => (b.dataset.v === 'guide') - (a.dataset.v === 'guide') || (ev[b.dataset.v] ?? 0) - (ev[a.dataset.v] ?? 0)).forEach((b) => bar.appendChild(b));
   }
   const edgeLive = (k) => { const e = EDGE[state.grade]; return e?.ok ? e.picks.find((p) => p.key === k) || null : null; };
   function setupLine(cur, ratio) {
@@ -541,7 +599,7 @@
     const e = edge();
     if (!e) return '<div class="bgroup"><h3>Setups · backtest</h3><p>Testing setups against history…</p></div>';
     const conf = e.ok ? e.picks.filter((p) => p.status === 'confirmed') : [], prom = e.ok ? e.picks.filter((p) => p.status === 'promising') : [];
-    const row = (p, mark, tone) => `<button class="${tone}" data-k="${esc(p.key)}" type="button">${mark} ${esc(p.card.name + lineTag(p.card))} (${esc(p.card.set)}) — ${esc(p.best.label)}, ${p.best.ago === 0 ? 'today' : p.best.ago + 'd ago'} · ${esc(Edge.stat(p.best))}</button>`;
+    const row = (p, mark, tone) => briefRow({ k: p.key, tone, text: `${mark} ${p.card.name}${lineTag(p.card)}: ${p.best.label}, ${p.best.ago === 0 ? 'today' : p.best.ago + 'd ago'} · ${Edge.stat(p.best)}` });
     let h = `<div class="bgroup edge${conf.length ? ' hot' : ''}"><h3>Setups · backtest · ${esc(Model.GRADE_LABEL[e.grade] || '')}</h3><p>${esc(Edge.verdict(e))}</p>`;
     if (conf.length) h += '<h4>Firing now · confirmed</h4>' + conf.map((p) => row(p, '◆', 'good')).join('');
     if (prom.length) h += '<h4>Firing now · promising, could be luck</h4>' + prom.slice(0, 8).map((p) => row(p, '◇', '')).join('');
@@ -592,14 +650,29 @@
       const e = edge(), top = e?.ok ? e.picks.filter((p) => p.status === 'confirmed') : [];
       if (top.length) { const p = top[0]; tiles.unshift({ label: '◆ Buy setup · tested', it: { k: p.key, tone: 'good' }, n: p.card.name + lineTag(p.card), d: `${p.best.label} · ${Edge.pct(p.best.vsPeers, 1)} vs peers`, meta: `${p.best.ago === 0 ? 'today' : p.best.ago + 'd ago'}${top.length > 1 ? ` · +${top.length - 1} more` : ''}`, all: top.map((x) => `${x.card.name} (${x.card.set}): ${x.best.label} — ${Edge.stat(x.best)}`).join('\n') }); }
     }
-    $('tiles').innerHTML = tiles.map((t) => `<button class="tile ${t.it.tone || 'mid'}" ${itemAttrs(t.it)} title="${esc(t.all)}" type="button"><span class="tl">${esc(t.label)}</span><span class="tn">${esc(t.n)}</span><span class="td">${esc(t.d)}</span>${t.meta ? `<span class="tm">${esc(t.meta)}</span>` : ''}</button>`).join('');
+    $('tiles').innerHTML = tiles.map((t) => `<button class="tile ${t.it.tone || 'mid'}" ${itemAttrs(t.it)} title="${esc(t.all)}" type="button"><span class="tl">${esc(t.label)}</span><span class="tn">${keyIcon(t.it.k, { thumb: false })}${esc(t.n)}</span><span class="td">${esc(t.d)}</span>${t.meta ? `<span class="tm">${esc(t.meta)}</span>` : ''}</button>`).join('');
+  }
+  // BRIEF tab: one row per item — icon, name, the reason in small type, then 30D % and signal score to scan down.
+  function briefRow(i) {
+    const st = stats(), x = model.idx[i.k], b = model.by[i.k], s = x ? st.idx[i.k] : b ? st.cards[i.k] : null;
+    const sp = splitItem(i.text);
+    const chip = s?.c30 != null ? `<span class="bchip ${s.c30 >= 0 ? 'pos' : 'neg'}">${s.c30 >= 0 ? '+' : ''}${s.c30.toFixed(0)}%</span>` : '<span class="bchip"></span>';
+    const pill = s?.score != null ? `<span class="pill ${s.tag[1]}" title="${esc(s.tag[0])}">${s.score}</span>` : '<span class="pill na">··</span>';
+    return `<button class="brow ${i.tone || ''}" ${itemAttrs(i)} type="button" title="${esc(i.text)}"><span class="bic">${keyIcon(i.k)}</span><span class="bt"><b>${esc(sp.n.replace(/^[▲▼]\s*/, ''))}</b><small>${esc(sp.d)}</small></span>${chip}${pill}</button>`;
   }
   function renderBriefList() {
     const b = Model.brief(model), c = consensusOnce();
-    const grp = (title, lines, note) => `<div class="bgroup"><h3>${esc(title)}</h3>${lines.map((l) => `<h4>${esc(l.label)}</h4>${l.items.map((i) => `<button class="${i.tone || ''}" ${itemAttrs(i)} type="button">${esc(i.text)}</button>`).join('')}`).join('')}${note ? `<p>${esc(note)}</p>` : ''}</div>`;
-    const st = stats(), chg = Object.entries(st.ch).filter(([k, c]) => c && !model.by[k]?.card.custom).map(([k, c]) => ({ k, tone: c.dir > 0 ? 'good' : 'bad', text: `${c.dir > 0 ? '▲' : '▼'} ${model.idx[k] ? model.idx[k].name + ' index' : model.by[k].card.name + (model.by[k].card.line ? ' ' + model.by[k].card.line : '')}: ${c.items.map((i) => i.text).join('; ')}` })).sort((a, b) => (a.k.startsWith('idx:') ? 0 : 1) - (b.k.startsWith('idx:') ? 0 : 1));
+    const grp = (title, lines, note) => `<div class="bgroup"><h3>${esc(title)}</h3>${lines.map((l) => `<h4>${esc(l.label)}</h4>${l.items.map(briefRow).join('')}`).join('')}${note ? `<p>${esc(note)}</p>` : ''}</div>`;
+    const st = stats(), chg = Object.entries(st.ch).filter(([k, c]) => c && !model.by[k]?.card.custom).map(([k, c]) => ({ k, tone: c.dir > 0 ? 'good' : 'bad', text: `${model.idx[k] ? model.idx[k].name : model.by[k].card.name + (model.by[k].card.line ? ' ' + model.by[k].card.line : '')}: ${c.dir > 0 ? '▲' : '▼'} ${c.items.map((i) => i.text).join('; ')}` })).sort((a, b) => (a.k.startsWith('idx:') ? 0 : 1) - (b.k.startsWith('idx:') ? 0 : 1));
     const eg = edgeGroup(), hot = /bgroup edge hot/.test(eg);
-    $('briefList').innerHTML = (hot ? eg : '') + (chg.length ? grp(`New this week · ${Model.GRADE_LABEL[state.grade]}`, [{ label: 'Changed status', items: chg }]) : '') + grp(`Consensus · ${c.gradeLabels.map((x) => x.replace('RAW NM', 'RAW')).join(' / ')}`, c.lines, c.leadNote ? 'Lead-lag: ' + c.leadNote : '') + grp(`${b.gradeLabel} · ${b.asOf || '—'} · ${b.scoredCards}/${b.cards} scoreable`, b.lines) + (hot ? '' : eg);
+    const head = `<div class="bhead"><span></span><span>30D</span><span>Sig</span></div>`;
+    $('briefList').innerHTML = rawNote() + head + (hot ? eg : '') + (chg.length ? grp(`New this week · ${Model.GRADE_LABEL[state.grade]}`, [{ label: 'Changed status', items: chg }]) : '') + grp(`Consensus · ${c.gradeLabels.map((x) => x.replace('RAW NM', 'RAW')).join(' / ')}`, c.lines, c.leadNote ? 'Lead-lag: ' + c.leadNote : '') + grp(`${b.gradeLabel} · ${b.asOf || '—'} · ${b.scoredCards}/${b.cards} scoreable`, b.lines) + (hot ? '' : eg);
+  }
+  // RAW only covers WOTC set baskets (EX, DP and index-only cards are fetched without RAW to fit the free tier).
+  function rawNote() {
+    if (!model.dense) return '';
+    const n = [...WL.cards, ...(WL.extra || [])].filter((c) => c.raw === false).length;
+    return n ? `<p class="rawnote">RAW tracks WOTC set cards only — ${n} EX, DP & index-only cards are graded-only. <button type="button" data-grade="${WL.primaryGrade || 'psa8'}">Switch to ${Model.GRADE_LABEL[WL.primaryGrade || 'psa8']}</button></p>` : '';
   }
   const renderBrief = () => { renderTiles(); if (state.wlView === 'brief') renderBriefList(); };
 
@@ -632,10 +705,11 @@
     seg('grade', (v) => { state.grade = v; rebuild(); });
     seg('range', (v) => { state.range = +v; refresh(); });
     seg('res', (v) => { state.res = v; refresh(); });
-    seg('ind', (v) => { state.ind[v] = state.ind[v] ? 0 : 1; refresh({ keepView: true }); });
+    seg('ind', (v) => { if (v === 'guide') state.guide = state.guide ? 0 : 1; else state.ind[v] = state.ind[v] ? 0 : 1; refresh({ keepView: true }); });
     seg('wlTabs', (v) => { state.wlView = v; renderWatchlist(); save(); $('wlScroll').scrollTop = 0; });
     bindPicker('A'); bindPicker('B');
     document.addEventListener('pointerdown', (e) => { for (const id of ['pickA', 'pickB']) if (!$(id).contains(e.target)) { $(id).querySelector('.pk-pop').hidden = true; $(id).classList.remove('open'); } });
+    document.addEventListener('click', (e) => { const g = e.target.closest('[data-grade]'); if (!g) return; e.stopPropagation(); e.preventDefault(); state.grade = g.dataset.grade; rebuild(); }, true); // 'Switch to PSA 8' links
     $('groupBtn').addEventListener('click', () => { state.group = !state.group; renderWatchlist(); save(); });
     $('sigStar').addEventListener('click', () => toggleStar($('sigStar').dataset.k));
     $('sigCtx').addEventListener('click', (e) => { const b = e.target.closest('.ctx-row[data-k]'); if (b) select(b.dataset.k); });

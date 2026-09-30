@@ -223,7 +223,7 @@
         const rng = hiV - lo, mid = (hiV + lo) / 2 + yvw.off * rng, half = (rng / 2) * yvw.zoom;
         lo = mid - half; hiV = mid + half;
       }
-      const top = b.y + PAD_T + (k === 0 ? 18 : 14) + (p.extraTop || 0), bot = b.y + b.h - 4;
+      const top = b.y + PAD_T + (k === 0 ? 18 : 14) + (p.extraTop || 0) + (p.hint ? 13 : 0), bot = b.y + b.h - 4;
       this.scales[k] = { id: p.id, top, bot, lo, hi: hiV, fixed: !!p.range };
       const y = (v) => bot - ((v - lo) / (hiV - lo)) * (bot - top);
       const fmt = p.percent ? pct : p.fmt || money;
@@ -242,6 +242,18 @@
         const yy = Math.round(y(lv)) + 0.5;
         ctx.setLineDash([3, 3]); ctx.strokeStyle = T.level; ctx.beginPath(); ctx.moveTo(0, yy); ctx.lineTo(b.w, yy); ctx.stroke(); ctx.setLineDash([]);
       });
+
+      // guide zones: shade the bars where the pane's favorable condition holds
+      if (p.zones) {
+        ctx.fillStyle = p.zoneColor || 'rgba(15,138,126,0.10)';
+        const bw = this.barW;
+        let run = -1;
+        for (let i = i0; i <= i1 + 1; i++) {
+          const on = i <= i1 && p.zones[i];
+          if (on && run < 0) run = i;
+          if (!on && run >= 0) { const xa = this.xOf(run) - bw / 2, xb = this.xOf(i - 1) + bw / 2; ctx.fillRect(Math.max(0, xa), top - 2, Math.min(b.w, xb) - Math.max(0, xa), bot - top + 2); run = -1; }
+        }
+      }
 
       // series
       ctx.beginPath(); ctx.rect(0, b.y, b.w, b.h); ctx.save(); ctx.clip();
@@ -381,6 +393,12 @@
         ctx.fillStyle = T.muted; ctx.fillText(txt, x + 12, yy);
         x += ctx.measureText(txt).width + 24;
       });
+      if (p.hint) { // second line: what it's for · what's favorable · whether it is now
+        const y2 = yy + 13 + (p.extraTop || 0); let x2 = 8;
+        ctx.font = `600 10px ${T.font}`;
+        if (p.hint.ok != null) { const t = p.hint.ok ? '✓ NOW' : '✗ NOW'; ctx.fillStyle = p.hint.ok ? T.up : T.muted; ctx.fillText(t, x2, y2); x2 += ctx.measureText(t).width + 8; }
+        ctx.font = `10px ${T.font}`; ctx.fillStyle = T.muted; ctx.fillText(p.hint.text, x2, y2);
+      }
     }
 
     _drawTimeAxis(hi) {
