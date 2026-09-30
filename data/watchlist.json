@@ -3356,5 +3356,20 @@
         "supreme-victors-articuno-148-148"
       ]
     }
-  ]
+  ],
+  "eraSprites": {
+    "all": "img/sprites/master-ball.png",
+    "eras": {
+      "WOTC Vintage": "img/sprites/charizard.png",
+      "WOTC Neo & e-Card": "img/sprites/lugia.png",
+      "WOTC Promo": "img/sprites/mew.png",
+      "EX Series": "img/sprites/rayquaza.png",
+      "DP & Platinum": "img/sprites/giratina.png"
+    },
+    "families": {
+      "WOTC": "img/sprites/charizard.png",
+      "EX": "img/sprites/rayquaza.png",
+      "DP": "img/sprites/giratina.png"
+    }
+  }
 }
