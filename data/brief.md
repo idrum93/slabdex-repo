@@ -84,39 +84,39 @@ _Heuristic read of trend, momentum and relative strength from clean eBay graded 
 
 ## Setup backtest · PSA 8 · 30D excess vs market
 
-No setup is confirmed yet. 6 look promising (p < 0.05 alone) but don't survive correction for testing 59 setups, so they may be luck.
+No setup is confirmed yet. 15 look promising (p < 0.05 alone) but don't survive correction for testing 98 setups, so they may be luck.
 
 Baseline (all card-days, entry at next sales): -2.3% vs market on average, 45% beat the market, 18% by 15%+. "vs peers" = versus other tracked cards over the same dates.
 
 ### Setups firing now (last 7 days)
 
-- **Umbreon (Delta Species) · holo+rev mixed** (Delta Species) — Px>SMA50 + Score≥68 within 7d, 2d ago · promising · hist. +10.6% vs peers, 57% beat typical peer, n 40
-- **Scyther (10) · 1st+Unl mixed** (Jungle) — Px>SMA50 + Score≥68 within 7d, 1d ago · promising · hist. +10.6% vs peers, 57% beat typical peer, n 40
+- **Umbreon (Delta Species) · holo+rev mixed** (Delta Species) — ST↑ + Score≥68 within 7d, 2d ago · promising · hist. +11.6% vs peers, 58% beat typical peer, n 43
+- **Scyther (10) · 1st+Unl mixed** (Jungle) — ST↑ + Score≥68 within 7d, 1d ago · promising · hist. +11.6% vs peers, 58% beat typical peer, n 43
+- **Raikou (13) · 1st Ed** (Neo Revelation) — ST↑ + Score≥68 within 7d, 1d ago · promising · hist. +11.6% vs peers, 58% beat typical peer, n 43
+- **Shining Mewtwo · 1st+Unl mixed** (Neo Destiny) — ST↑ + Score≥68 within 7d, 6d ago · promising · hist. +11.6% vs peers, 58% beat typical peer, n 43
+- **Charizard · holo+rev mixed** (Legendary Collection) — ST↑ + Score≥68 within 7d, 6d ago · promising · hist. +11.6% vs peers, 58% beat typical peer, n 43
+- **Dark Raichu · 1st+Unl mixed** (Team Rocket) — ST↑ + Score≥68 within 7d, 3d ago · promising · hist. +11.6% vs peers, 58% beat typical peer, n 43
+- **Mew (47)** (WOTC Black Star Promos) — ST↑ + Score≥68 within 7d, 6d ago · promising · hist. +11.6% vs peers, 58% beat typical peer, n 43
+- **Light Dragonite · 1st+Unl mixed** (Neo Destiny) — ST↑ + Score≥68 within 7d, 5d ago · promising · hist. +11.6% vs peers, 58% beat typical peer, n 43
+- **Dark Espeon · 1st+Unl mixed** (Neo Destiny) — ST↑ + Score≥68 within 7d, 6d ago · promising · hist. +11.6% vs peers, 58% beat typical peer, n 43
 - **Misty's Gyarados · 1st+Unl mixed** (Gym Challenge) — Px>SMA50 + Score≥68 within 7d, 5d ago · promising · hist. +10.6% vs peers, 57% beat typical peer, n 40
-- **Raikou (13) · 1st Ed** (Neo Revelation) — Px>SMA50 + Score≥68 within 7d, 1d ago · promising · hist. +10.6% vs peers, 57% beat typical peer, n 40
-- **Charizard · holo+rev mixed** (Legendary Collection) — Px>SMA50 + Score≥68 within 7d, 6d ago · promising · hist. +10.6% vs peers, 57% beat typical peer, n 40
-- **Mew (47)** (WOTC Black Star Promos) — Px>SMA50 + Score≥68 within 7d, 6d ago · promising · hist. +10.6% vs peers, 57% beat typical peer, n 40
-- **Light Dragonite · 1st+Unl mixed** (Neo Destiny) — Px>SMA50 + Score≥68 within 7d, 5d ago · promising · hist. +10.6% vs peers, 57% beat typical peer, n 40
-- **Dark Espeon · 1st+Unl mixed** (Neo Destiny) — Px>SMA50 + Score≥68 within 7d, 6d ago · promising · hist. +10.6% vs peers, 57% beat typical peer, n 40
 - **Venusaur ex** (FireRed & LeafGreen) — Px>SMA50 + Score≥55 within 7d, 2d ago · promising · hist. +8.8% vs peers, 62% beat typical peer, n 47
-- **Shining Gyarados · 1st+Unl mixed** (Neo Revelation) — Px>SMA50 + Score≥55 within 7d, 7d ago · promising · hist. +8.8% vs peers, 62% beat typical peer, n 47
 - **Raikou (13) · Unl** (Neo Revelation) — Px>SMA50 + Score≥55 within 7d, 7d ago · promising · hist. +8.8% vs peers, 62% beat typical peer, n 47
-- **Shining Charizard · 1st+Unl mixed** (Neo Destiny) — Px>SMA50 + Score≥55 within 7d, 7d ago · promising · hist. +8.8% vs peers, 62% beat typical peer, n 47
 
 | Setup | Status | Events | Cards | vs peers | vs market | Beat typical peer | 15%+ | p | q | Halves (vs peers) |
 |---|---|---|---|---|---|---|---|---|---|---|
-| Px>SMA50 + Score≥68 within 7d | promising | 40 | 25 | +10.6% | +8.1% | 57% | 38% | 0.010 | 0.34 | +13% / +9% |
-| Px>SMA50 + Score≥55 within 7d | promising | 47 | 30 | +8.8% | +7.5% | 62% | 34% | 0.023 | 0.34 | +10% / +7% |
-| RS↑ + Score≥55 within 7d | promising | 52 | 34 | +8.0% | +6.4% | 54% | 29% | 0.026 | 0.34 | +9% / +7% |
-| RSI↑50 + MACD×<0 within 7d | promising | 34 | 25 | +9.0% | +6.5% | 56% | 26% | 0.029 | 0.34 | +25% / -1% |
-| Score to EARLY STRENGTH | promising | 55 | 35 | +6.4% | +4.1% | 49% | 27% | 0.032 | 0.34 | +10% / +3% |
-| Price back above SMA50 | promising | 57 | 37 | +6.3% | +4.9% | 58% | 28% | 0.050 | 0.34 | +5% / +7% |
-| Px>SMA50 + Dip within 7d | none | 20 | 14 | +10.6% | +10.4% | 60% | 35% | 0.051 | 0.34 | +6% / +18% |
-| RSI↑50 + MACD× within 7d | none | 49 | 30 | +6.2% | +3.7% | 57% | 24% | 0.065 | 0.34 | +22% / -3% |
-| MACD× + Px>SMA50 within 7d | none | 44 | 29 | +6.5% | +4.4% | 57% | 25% | 0.069 | 0.34 | +15% / +1% |
-| RSI↑50 + Score≥55 within 7d | none | 47 | 29 | +6.5% | +5.4% | 53% | 32% | 0.070 | 0.34 | +6% / +7% |
-| RSI↑50 + Score≥68 within 7d | none | 42 | 25 | +6.0% | +2.9% | 52% | 29% | 0.072 | 0.34 | +2% / +9% |
-| MACD× + Score≥68 within 7d | none | 37 | 24 | +6.2% | +3.6% | 57% | 27% | 0.075 | 0.34 | +15% / -0% |
-| MACD×<0 + Px>SMA50 within 7d | none | 31 | 22 | +7.5% | +4.8% | 52% | 26% | 0.086 | 0.34 | +16% / +2% |
-| Dip + Score≥68 within 7d | none | 20 | 14 | +9.4% | +8.2% | 50% | 45% | 0.086 | 0.34 | +7% / +12% |
-| RS↑ + Score≥68 within 7d | none | 48 | 29 | +5.5% | +2.5% | 52% | 29% | 0.087 | 0.34 | +1% / +8% |
+| ST↑ + Score≥68 within 7d | promising | 43 | 27 | +11.6% | +9.4% | 58% | 37% | 0.006 | 0.29 | +14% / +10% |
+| Px>SMA50 + Score≥68 within 7d | promising | 40 | 25 | +10.6% | +8.1% | 57% | 38% | 0.008 | 0.29 | +13% / +9% |
+| RS↑ + Score≥55 within 7d | promising | 52 | 34 | +8.0% | +6.4% | 54% | 29% | 0.020 | 0.29 | +9% / +7% |
+| HMA↑ + Score≥68 within 7d | promising | 46 | 29 | +8.5% | +5.4% | 61% | 30% | 0.023 | 0.29 | +8% / +9% |
+| RSI↑50 + MACD×<0 within 7d | promising | 34 | 25 | +9.0% | +6.5% | 56% | 26% | 0.024 | 0.29 | +25% / -1% |
+| Px>SMA50 + Score≥55 within 7d | promising | 47 | 30 | +8.8% | +7.5% | 62% | 34% | 0.026 | 0.29 | +10% / +7% |
+| Px>SMA50 + VZO↑0 within 7d | promising | 39 | 28 | +8.9% | +6.8% | 67% | 33% | 0.030 | 0.29 | +5% / +13% |
+| Score to EARLY STRENGTH | promising | 55 | 35 | +6.4% | +4.1% | 49% | 27% | 0.032 | 0.29 | +10% / +3% |
+| Px>SMA50 + ST↑ within 7d | promising | 47 | 30 | +7.4% | +5.3% | 57% | 30% | 0.035 | 0.29 | +9% / +6% |
+| ST↑ + Score≥55 within 7d | promising | 45 | 29 | +7.9% | +6.9% | 58% | 36% | 0.037 | 0.29 | +12% / +4% |
+| VZO↑0 + Score≥55 within 7d | promising | 40 | 28 | +7.3% | +5.9% | 65% | 33% | 0.037 | 0.29 | +9% / +6% |
+| MACD× + VZO↑0 within 7d | promising | 47 | 31 | +6.9% | +4.8% | 60% | 28% | 0.044 | 0.29 | +15% / +1% |
+| MACD×<0 + ST↑ within 7d | promising | 36 | 27 | +8.7% | +6.7% | 58% | 28% | 0.045 | 0.29 | +22% / -0% |
+| RS↑ + VZO↑0 within 7d | promising | 54 | 37 | +6.1% | +3.7% | 63% | 30% | 0.048 | 0.29 | +6% / +6% |
+| Price back above SMA50 | promising | 57 | 37 | +6.3% | +4.9% | 58% | 28% | 0.050 | 0.29 | +5% / +7% |

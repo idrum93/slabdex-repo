@@ -73,7 +73,8 @@
       "query": "Charizard Star (Delta Species) Dragon Frontiers 100",
       "tier": "rotate",
       "raw": false,
-      "tcgPlayerId": "84198"
+      "tcgPlayerId": "84198",
+      "sprite": "img/sprites/charizard.png"
     },
     {
       "key": "crystal-guardians-blastoise-delta-species-2",
@@ -88,7 +89,8 @@
       "query": "Blastoise (Delta Species) Crystal Guardians 2",
       "tier": "rotate",
       "raw": false,
-      "tcgPlayerId": "83899"
+      "tcgPlayerId": "83899",
+      "sprite": "img/sprites/blastoise.png"
     },
     {
       "key": "firered-leafgreen-venusaur-ex-112",
@@ -103,7 +105,8 @@
       "query": "Venusaur ex FireRed & LeafGreen 112",
       "tier": "rotate",
       "raw": false,
-      "tcgPlayerId": "90323"
+      "tcgPlayerId": "90323",
+      "sprite": "img/sprites/venusaur.png"
     },
     {
       "key": "holon-phantoms-pikachu-star-104",
@@ -118,7 +121,8 @@
       "query": "Pikachu Star Holon Phantoms 104",
       "tier": "rotate",
       "raw": false,
-      "tcgPlayerId": "88111"
+      "tcgPlayerId": "88111",
+      "sprite": "img/sprites/pikachu.png"
     },
     {
       "key": "holon-phantoms-mewtwo-star-103",
@@ -133,7 +137,8 @@
       "query": "Mewtwo Star Holon Phantoms 103",
       "tier": "rotate",
       "raw": false,
-      "tcgPlayerId": "87427"
+      "tcgPlayerId": "87427",
+      "sprite": "img/sprites/mewtwo.png"
     },
     {
       "key": "dragon-frontiers-mew-star-delta-species-101",
@@ -148,7 +153,8 @@
       "query": "Mew Star (Delta Species) Dragon Frontiers 101",
       "tier": "rotate",
       "raw": false,
-      "tcgPlayerId": "87408"
+      "tcgPlayerId": "87408",
+      "sprite": "img/sprites/mew.png"
     },
     {
       "key": "firered-leafgreen-gengar-ex-108",
@@ -163,7 +169,8 @@
       "query": "Gengar ex FireRed & LeafGreen 108",
       "tier": "rotate",
       "raw": false,
-      "tcgPlayerId": "85680"
+      "tcgPlayerId": "85680",
+      "sprite": "img/sprites/gengar.png"
     },
     {
       "key": "dragon-dragonite-ex-90",
@@ -178,7 +185,8 @@
       "query": "Dragonite ex Dragon 90",
       "tier": "rotate",
       "raw": false,
-      "tcgPlayerId": "84918"
+      "tcgPlayerId": "84918",
+      "sprite": "img/sprites/dragonite.png"
     },
     {
       "key": "unseen-forces-lugia-ex-105",
@@ -193,7 +201,8 @@
       "query": "Lugia ex Unseen Forces 105",
       "tier": "rotate",
       "raw": false,
-      "tcgPlayerId": "86912"
+      "tcgPlayerId": "86912",
+      "sprite": "img/sprites/lugia.png"
     },
     {
       "key": "unseen-forces-ho-oh-ex-104",
@@ -208,7 +217,8 @@
       "query": "Ho-Oh ex Unseen Forces 104",
       "tier": "rotate",
       "raw": false,
-      "tcgPlayerId": "86128"
+      "tcgPlayerId": "86128",
+      "sprite": "img/sprites/ho-oh.png"
     },
     {
       "key": "unseen-forces-tyranitar-ex-111",
@@ -223,7 +233,8 @@
       "query": "Tyranitar ex Unseen Forces 111",
       "tier": "rotate",
       "raw": false,
-      "tcgPlayerId": "90125"
+      "tcgPlayerId": "90125",
+      "sprite": "img/sprites/tyranitar.png"
     },
     {
       "key": "delta-species-umbreon-delta-species-17",
@@ -238,7 +249,8 @@
       "query": "Umbreon (Delta Species) Delta Species 17",
       "tier": "rotate",
       "raw": false,
-      "tcgPlayerId": "90151"
+      "tcgPlayerId": "90151",
+      "sprite": "img/sprites/umbreon.png"
     },
     {
       "key": "deoxys-rayquaza-star-107",
@@ -253,7 +265,8 @@
       "query": "Rayquaza Star Deoxys 107",
       "tier": "rotate",
       "raw": false,
-      "tcgPlayerId": "88636"
+      "tcgPlayerId": "88636",
+      "sprite": "img/sprites/rayquaza.png"
     },
     {
       "key": "delta-species-metagross-star-113",
@@ -268,7 +281,8 @@
       "query": "Metagross Star Delta Species 113",
       "tier": "rotate",
       "raw": false,
-      "tcgPlayerId": "87345"
+      "tcgPlayerId": "87345",
+      "sprite": "img/sprites/metagross.png"
     },
     {
       "key": "crystal-guardians-alakazam-star-99",
@@ -283,7 +297,8 @@
       "query": "Alakazam Star Crystal Guardians 99",
       "tier": "rotate",
       "raw": false,
-      "tcgPlayerId": "83502"
+      "tcgPlayerId": "83502",
+      "sprite": "img/sprites/alakazam.png"
     },
     {
       "key": "crystal-guardians-celebi-star-100",
@@ -298,7 +313,8 @@
       "query": "Celebi Star Crystal Guardians 100",
       "tier": "rotate",
       "raw": false,
-      "tcgPlayerId": "84149"
+      "tcgPlayerId": "84149",
+      "sprite": "img/sprites/celebi.png"
     },
     {
       "key": "power-keepers-vaporeon-star-102",
@@ -313,7 +329,8 @@
       "query": "Vaporeon Star Power Keepers 102",
       "tier": "rotate",
       "raw": false,
-      "tcgPlayerId": "90292"
+      "tcgPlayerId": "90292",
+      "sprite": "img/sprites/vaporeon.png"
     },
     {
       "key": "power-keepers-flareon-star-100",
@@ -328,7 +345,8 @@
       "query": "Flareon Star Power Keepers 100",
       "tier": "rotate",
       "raw": false,
-      "tcgPlayerId": "85503"
+      "tcgPlayerId": "85503",
+      "sprite": "img/sprites/flareon.png"
     },
     {
       "key": "stormfront-charizard-103",
@@ -343,7 +361,8 @@
       "query": "Charizard Stormfront 103",
       "tier": "rotate",
       "raw": false,
-      "tcgPlayerId": "84190"
+      "tcgPlayerId": "84190",
+      "sprite": "img/sprites/charizard.png"
     },
     {
       "key": "secret-wonders-blastoise-2",
@@ -358,7 +377,8 @@
       "query": "Blastoise Secret Wonders 2",
       "tier": "rotate",
       "raw": false,
-      "tcgPlayerId": "83893"
+      "tcgPlayerId": "83893",
+      "sprite": "img/sprites/blastoise.png"
     },
     {
       "key": "supreme-victors-venusaur-13",
@@ -373,7 +393,8 @@
       "query": "Venusaur Supreme Victors 13",
       "tier": "rotate",
       "raw": false,
-      "tcgPlayerId": "90321"
+      "tcgPlayerId": "90321",
+      "sprite": "img/sprites/venusaur.png"
     },
     {
       "key": "rising-rivals-pikachu-112",
@@ -388,7 +409,8 @@
       "query": "Pikachu Rising Rivals 112",
       "tier": "rotate",
       "raw": false,
-      "tcgPlayerId": "88091"
+      "tcgPlayerId": "88091",
+      "sprite": "img/sprites/pikachu.png"
     },
     {
       "key": "legends-awakened-mewtwo-lv-x-144",
@@ -403,7 +425,8 @@
       "query": "Mewtwo LV.X Legends Awakened 144",
       "tier": "rotate",
       "raw": false,
-      "tcgPlayerId": "87433"
+      "tcgPlayerId": "87433",
+      "sprite": "img/sprites/mewtwo.png"
     },
     {
       "key": "arceus-gengar-lv-x-97",
@@ -418,7 +441,8 @@
       "query": "Gengar Lv.X Arceus 97",
       "tier": "rotate",
       "raw": false,
-      "tcgPlayerId": "85682"
+      "tcgPlayerId": "85682",
+      "sprite": "img/sprites/gengar.png"
     },
     {
       "key": "legends-awakened-dragonite-2",
@@ -433,7 +457,8 @@
       "query": "Dragonite Legends Awakened 2",
       "tier": "rotate",
       "raw": false,
-      "tcgPlayerId": "84913"
+      "tcgPlayerId": "84913",
+      "sprite": "img/sprites/dragonite.png"
     },
     {
       "key": "rising-rivals-snorlax-lv-x-111",
@@ -448,7 +473,8 @@
       "query": "Snorlax Lv.X Rising Rivals 111",
       "tier": "rotate",
       "raw": false,
-      "tcgPlayerId": "89397"
+      "tcgPlayerId": "89397",
+      "sprite": "img/sprites/snorlax.png"
     },
     {
       "key": "mysterious-treasures-tyranitar-17",
@@ -463,7 +489,8 @@
       "query": "Tyranitar Mysterious Treasures 17",
       "tier": "rotate",
       "raw": false,
-      "tcgPlayerId": "90119"
+      "tcgPlayerId": "90119",
+      "sprite": "img/sprites/tyranitar.png"
     },
     {
       "key": "majestic-dawn-leafeon-lv-x-99",
@@ -478,7 +505,8 @@
       "query": "Leafeon LV.X Majestic Dawn 99",
       "tier": "rotate",
       "raw": false,
-      "tcgPlayerId": "86684"
+      "tcgPlayerId": "86684",
+      "sprite": "img/sprites/leafeon.png"
     },
     {
       "key": "supreme-victors-articuno-148-148",
@@ -493,7 +521,8 @@
       "query": "Articuno (148) Supreme Victors 148",
       "tier": "rotate",
       "raw": false,
-      "tcgPlayerId": "83651"
+      "tcgPlayerId": "83651",
+      "sprite": "img/sprites/articuno.png"
     },
     {
       "key": "rising-rivals-surfing-pikachu-114",
@@ -508,7 +537,8 @@
       "query": "Surfing Pikachu Rising Rivals 114",
       "tier": "rotate",
       "raw": false,
-      "tcgPlayerId": "89644"
+      "tcgPlayerId": "89644",
+      "sprite": "img/sprites/pikachu.png"
     },
     {
       "key": "base-set-charizard-4",
@@ -522,7 +552,8 @@
       "pooled": false,
       "query": "Charizard Base Set 4",
       "tier": "rotate",
-      "tcgPlayerId": "42382"
+      "tcgPlayerId": "42382",
+      "sprite": "img/sprites/charizard.png"
     },
     {
       "key": "base-set-blastoise-2",
@@ -536,7 +567,8 @@
       "pooled": false,
       "query": "Blastoise Base Set 2",
       "tier": "rotate",
-      "tcgPlayerId": "42360"
+      "tcgPlayerId": "42360",
+      "sprite": "img/sprites/blastoise.png"
     },
     {
       "key": "base-set-venusaur-15",
@@ -550,7 +582,8 @@
       "pooled": false,
       "query": "Venusaur Base Set 15",
       "tier": "rotate",
-      "tcgPlayerId": "42355"
+      "tcgPlayerId": "42355",
+      "sprite": "img/sprites/venusaur.png"
     },
     {
       "key": "jungle-snorlax-11-11",
@@ -564,7 +597,8 @@
       "pooled": true,
       "query": "Snorlax (11) Jungle 11",
       "tier": "rotate",
-      "tcgPlayerId": "45122"
+      "tcgPlayerId": "45122",
+      "sprite": "img/sprites/snorlax.png"
     },
     {
       "key": "jungle-scyther-10-10",
@@ -578,7 +612,8 @@
       "pooled": true,
       "query": "Scyther (10) Jungle 10",
       "tier": "rotate",
-      "tcgPlayerId": "45121"
+      "tcgPlayerId": "45121",
+      "sprite": "img/sprites/scyther.png"
     },
     {
       "key": "jungle-vaporeon-12-12",
@@ -592,7 +627,8 @@
       "pooled": true,
       "query": "Vaporeon (12) Jungle 12",
       "tier": "rotate",
-      "tcgPlayerId": "45123"
+      "tcgPlayerId": "45123",
+      "sprite": "img/sprites/vaporeon.png"
     },
     {
       "key": "fossil-zapdos-15-15",
@@ -606,7 +642,8 @@
       "pooled": true,
       "query": "Zapdos (15) Fossil 15",
       "tier": "rotate",
-      "tcgPlayerId": "44424"
+      "tcgPlayerId": "44424",
+      "sprite": "img/sprites/zapdos.png"
     },
     {
       "key": "fossil-articuno-2-2",
@@ -620,7 +657,8 @@
       "pooled": true,
       "query": "Articuno (2) Fossil 2",
       "tier": "rotate",
-      "tcgPlayerId": "106518"
+      "tcgPlayerId": "106518",
+      "sprite": "img/sprites/articuno.png"
     },
     {
       "key": "fossil-moltres-12-12",
@@ -634,7 +672,8 @@
       "pooled": true,
       "query": "Moltres (12) Fossil 12",
       "tier": "rotate",
-      "tcgPlayerId": "44421"
+      "tcgPlayerId": "44421",
+      "sprite": "img/sprites/moltres.png"
     },
     {
       "key": "base-set-2-charizard-4",
@@ -648,7 +687,8 @@
       "pooled": false,
       "query": "Charizard Base Set 2 4",
       "tier": "rotate",
-      "tcgPlayerId": "42479"
+      "tcgPlayerId": "42479",
+      "sprite": "img/sprites/charizard.png"
     },
     {
       "key": "base-set-2-venusaur-18",
@@ -662,7 +702,8 @@
       "pooled": false,
       "query": "Venusaur Base Set 2 18",
       "tier": "rotate",
-      "tcgPlayerId": "42462"
+      "tcgPlayerId": "42462",
+      "sprite": "img/sprites/venusaur.png"
     },
     {
       "key": "base-set-2-mewtwo-10",
@@ -676,7 +717,8 @@
       "pooled": false,
       "query": "Mewtwo Base Set 2 10",
       "tier": "rotate",
-      "tcgPlayerId": "42445"
+      "tcgPlayerId": "42445",
+      "sprite": "img/sprites/mewtwo.png"
     },
     {
       "key": "team-rocket-dark-charizard-4-4",
@@ -690,7 +732,8 @@
       "pooled": true,
       "query": "Dark Charizard (4) Team Rocket 4",
       "tier": "rotate",
-      "tcgPlayerId": "84572"
+      "tcgPlayerId": "84572",
+      "sprite": "img/sprites/charizard.png"
     },
     {
       "key": "team-rocket-dark-blastoise-3-3",
@@ -704,7 +747,8 @@
       "pooled": true,
       "query": "Dark Blastoise (3) Team Rocket 3",
       "tier": "rotate",
-      "tcgPlayerId": "84568"
+      "tcgPlayerId": "84568",
+      "sprite": "img/sprites/blastoise.png"
     },
     {
       "key": "team-rocket-dark-dragonite-5-5",
@@ -718,7 +762,8 @@
       "pooled": true,
       "query": "Dark Dragonite (5) Team Rocket 5",
       "tier": "rotate",
-      "tcgPlayerId": "84584"
+      "tcgPlayerId": "84584",
+      "sprite": "img/sprites/dragonite.png"
     },
     {
       "key": "gym-heroes-blaine-s-moltres-1",
@@ -732,7 +777,8 @@
       "pooled": true,
       "query": "Blaine's Moltres Gym Heroes 1",
       "tier": "rotate",
-      "tcgPlayerId": "83875"
+      "tcgPlayerId": "83875",
+      "sprite": "img/sprites/moltres.png"
     },
     {
       "key": "gym-heroes-erika-s-dragonair-4",
@@ -746,7 +792,8 @@
       "pooled": true,
       "query": "Erika's Dragonair Gym Heroes 4",
       "tier": "rotate",
-      "tcgPlayerId": "85290"
+      "tcgPlayerId": "85290",
+      "sprite": "img/sprites/dragonair.png"
     },
     {
       "key": "gym-heroes-brock-s-rhydon-2",
@@ -760,7 +807,8 @@
       "pooled": true,
       "query": "Brock's Rhydon Gym Heroes 2",
       "tier": "rotate",
-      "tcgPlayerId": "83978"
+      "tcgPlayerId": "83978",
+      "sprite": "img/sprites/rhydon.png"
     },
     {
       "key": "gym-challenge-blaine-s-charizard-2",
@@ -774,7 +822,8 @@
       "pooled": true,
       "query": "Blaine's Charizard Gym Challenge 2",
       "tier": "rotate",
-      "tcgPlayerId": "83861"
+      "tcgPlayerId": "83861",
+      "sprite": "img/sprites/charizard.png"
     },
     {
       "key": "gym-challenge-rocket-s-mewtwo-14",
@@ -788,7 +837,8 @@
       "pooled": true,
       "query": "Rocket's Mewtwo Gym Challenge 14",
       "tier": "rotate",
-      "tcgPlayerId": "88777"
+      "tcgPlayerId": "88777",
+      "sprite": "img/sprites/mewtwo.png"
     },
     {
       "key": "gym-challenge-misty-s-gyarados-13",
@@ -802,7 +852,8 @@
       "pooled": true,
       "query": "Misty's Gyarados Gym Challenge 13",
       "tier": "rotate",
-      "tcgPlayerId": "87531"
+      "tcgPlayerId": "87531",
+      "sprite": "img/sprites/gyarados.png"
     },
     {
       "key": "neo-genesis-pichu-12",
@@ -816,7 +867,8 @@
       "pooled": true,
       "query": "Pichu Neo Genesis 12",
       "tier": "rotate",
-      "tcgPlayerId": "88011"
+      "tcgPlayerId": "88011",
+      "sprite": "img/sprites/pichu.png"
     },
     {
       "key": "neo-genesis-slowking-14",
@@ -830,7 +882,8 @@
       "pooled": true,
       "query": "Slowking Neo Genesis 14",
       "tier": "rotate",
-      "tcgPlayerId": "89311"
+      "tcgPlayerId": "89311",
+      "sprite": "img/sprites/slowking.png"
     },
     {
       "key": "neo-genesis-feraligatr-5-5",
@@ -844,7 +897,8 @@
       "pooled": true,
       "query": "Feraligatr (5) Neo Genesis 5",
       "tier": "rotate",
-      "tcgPlayerId": "85413"
+      "tcgPlayerId": "85413",
+      "sprite": "img/sprites/feraligatr.png"
     },
     {
       "key": "neo-discovery-umbreon-13-13",
@@ -858,7 +912,8 @@
       "pooled": true,
       "query": "Umbreon (13) Neo Discovery 13",
       "tier": "rotate",
-      "tcgPlayerId": "90137"
+      "tcgPlayerId": "90137",
+      "sprite": "img/sprites/umbreon.png"
     },
     {
       "key": "neo-discovery-espeon-1-1",
@@ -872,7 +927,8 @@
       "pooled": true,
       "query": "Espeon (1) Neo Discovery 1",
       "tier": "rotate",
-      "tcgPlayerId": "85316"
+      "tcgPlayerId": "85316",
+      "sprite": "img/sprites/espeon.png"
     },
     {
       "key": "neo-discovery-houndour-5-5",
@@ -886,7 +942,8 @@
       "pooled": true,
       "query": "Houndour (5) Neo Discovery 5",
       "tier": "rotate",
-      "tcgPlayerId": "86216"
+      "tcgPlayerId": "86216",
+      "sprite": "img/sprites/houndour.png"
     },
     {
       "key": "neo-revelation-shining-gyarados-65",
@@ -900,7 +957,8 @@
       "pooled": true,
       "query": "Shining Gyarados Neo Revelation 65",
       "tier": "rotate",
-      "tcgPlayerId": "89164"
+      "tcgPlayerId": "89164",
+      "sprite": "img/sprites/gyarados.png"
     },
     {
       "key": "neo-revelation-raikou-13-13",
@@ -914,7 +972,8 @@
       "pooled": true,
       "query": "Raikou (13) Neo Revelation 13",
       "tier": "rotate",
-      "tcgPlayerId": "88529"
+      "tcgPlayerId": "88529",
+      "sprite": "img/sprites/raikou.png"
     },
     {
       "key": "neo-revelation-suicune-14-14",
@@ -928,7 +987,8 @@
       "pooled": true,
       "query": "Suicune (14) Neo Revelation 14",
       "tier": "rotate",
-      "tcgPlayerId": "89597"
+      "tcgPlayerId": "89597",
+      "sprite": "img/sprites/suicune.png"
     },
     {
       "key": "neo-destiny-shining-charizard-107",
@@ -942,7 +1002,8 @@
       "pooled": true,
       "query": "Shining Charizard Neo Destiny 107",
       "tier": "rotate",
-      "tcgPlayerId": "89163"
+      "tcgPlayerId": "89163",
+      "sprite": "img/sprites/charizard.png"
     },
     {
       "key": "neo-destiny-shining-mewtwo-109",
@@ -956,7 +1017,8 @@
       "pooled": true,
       "query": "Shining Mewtwo Neo Destiny 109",
       "tier": "rotate",
-      "tcgPlayerId": "89167"
+      "tcgPlayerId": "89167",
+      "sprite": "img/sprites/mewtwo.png"
     },
     {
       "key": "neo-destiny-shining-tyranitar-113",
@@ -970,7 +1032,8 @@
       "pooled": true,
       "query": "Shining Tyranitar Neo Destiny 113",
       "tier": "rotate",
-      "tcgPlayerId": "89171"
+      "tcgPlayerId": "89171",
+      "sprite": "img/sprites/tyranitar.png"
     },
     {
       "key": "legendary-collection-charizard-3",
@@ -984,7 +1047,8 @@
       "pooled": false,
       "query": "Charizard Legendary Collection 3",
       "tier": "rotate",
-      "tcgPlayerId": "84196"
+      "tcgPlayerId": "84196",
+      "sprite": "img/sprites/charizard.png"
     },
     {
       "key": "legendary-collection-dark-dragonite-5",
@@ -998,7 +1062,8 @@
       "pooled": false,
       "query": "Dark Dragonite Legendary Collection 5",
       "tier": "rotate",
-      "tcgPlayerId": "84585"
+      "tcgPlayerId": "84585",
+      "sprite": "img/sprites/dragonite.png"
     },
     {
       "key": "legendary-collection-dark-blastoise-4",
@@ -1012,7 +1077,8 @@
       "pooled": false,
       "query": "Dark Blastoise Legendary Collection 4",
       "tier": "rotate",
-      "tcgPlayerId": "84569"
+      "tcgPlayerId": "84569",
+      "sprite": "img/sprites/blastoise.png"
     },
     {
       "key": "expedition-mew-19-19",
@@ -1026,7 +1092,8 @@
       "pooled": false,
       "query": "Mew (19) Expedition 19",
       "tier": "rotate",
-      "tcgPlayerId": "87396"
+      "tcgPlayerId": "87396",
+      "sprite": "img/sprites/mew.png"
     },
     {
       "key": "expedition-gengar-13-13",
@@ -1040,7 +1107,8 @@
       "pooled": false,
       "query": "Gengar (13) Expedition 13",
       "tier": "rotate",
-      "tcgPlayerId": "85671"
+      "tcgPlayerId": "85671",
+      "sprite": "img/sprites/gengar.png"
     },
     {
       "key": "expedition-dragonite-9-9",
@@ -1054,7 +1122,8 @@
       "pooled": false,
       "query": "Dragonite (9) Expedition 9",
       "tier": "rotate",
-      "tcgPlayerId": "84910"
+      "tcgPlayerId": "84910",
+      "sprite": "img/sprites/dragonite.png"
     },
     {
       "key": "aquapolis-lugia-149",
@@ -1068,7 +1137,8 @@
       "pooled": false,
       "query": "Lugia Aquapolis 149",
       "tier": "rotate",
-      "tcgPlayerId": "86905"
+      "tcgPlayerId": "86905",
+      "sprite": "img/sprites/lugia.png"
     },
     {
       "key": "aquapolis-umbreon-h29-H29",
@@ -1082,7 +1152,8 @@
       "pooled": false,
       "query": "Umbreon (H29) Aquapolis H29",
       "tier": "rotate",
-      "tcgPlayerId": "90139"
+      "tcgPlayerId": "90139",
+      "sprite": "img/sprites/umbreon.png"
     },
     {
       "key": "aquapolis-nidoking-150-150",
@@ -1096,7 +1167,8 @@
       "pooled": false,
       "query": "Nidoking (150) Aquapolis 150",
       "tier": "rotate",
-      "tcgPlayerId": "87695"
+      "tcgPlayerId": "87695",
+      "sprite": "img/sprites/nidoking.png"
     },
     {
       "key": "skyridge-umbreon-h30-H30",
@@ -1110,7 +1182,8 @@
       "pooled": false,
       "query": "Umbreon (H30) Skyridge H30",
       "tier": "rotate",
-      "tcgPlayerId": "90140"
+      "tcgPlayerId": "90140",
+      "sprite": "img/sprites/umbreon.png"
     },
     {
       "key": "skyridge-ho-oh-149",
@@ -1124,7 +1197,8 @@
       "pooled": false,
       "query": "Ho-oh Skyridge 149",
       "tier": "rotate",
-      "tcgPlayerId": "86121"
+      "tcgPlayerId": "86121",
+      "sprite": "img/sprites/ho-oh.png"
     },
     {
       "key": "skyridge-kabutops-150-150",
@@ -1138,7 +1212,8 @@
       "pooled": false,
       "query": "Kabutops (150) Skyridge 150",
       "tier": "rotate",
-      "tcgPlayerId": "86396"
+      "tcgPlayerId": "86396",
+      "sprite": "img/sprites/kabutops.png"
     },
     {
       "key": "wotc-black-star-promos-lucky-stadium-41",
@@ -1152,7 +1227,8 @@
       "pooled": false,
       "query": "Lucky Stadium WOTC Black Star Promos 41",
       "tier": "rotate",
-      "tcgPlayerId": "86894"
+      "tcgPlayerId": "86894",
+      "sprite": "img/sprites/poke-ball.png"
     },
     {
       "key": "wotc-black-star-promos-pokemon-center-40",
@@ -1166,7 +1242,8 @@
       "pooled": false,
       "query": "Pokemon Center WOTC Black Star Promos 40",
       "tier": "rotate",
-      "tcgPlayerId": "88213"
+      "tcgPlayerId": "88213",
+      "sprite": "img/sprites/poke-ball.png"
     },
     {
       "key": "wotc-black-star-promos-snorlax-49",
@@ -1180,7 +1257,8 @@
       "pooled": false,
       "query": "Snorlax WOTC Black Star Promos 49",
       "tier": "rotate",
-      "tcgPlayerId": "89385"
+      "tcgPlayerId": "89385",
+      "sprite": "img/sprites/snorlax.png"
     }
   ],
   "bench": [
@@ -2322,7 +2400,8 @@
       "role": "group",
       "raw": false,
       "tcgPlayerId": "90314",
-      "since": "2026-09-30"
+      "since": "2026-09-30",
+      "sprite": "img/sprites/venusaur.png"
     },
     {
       "key": "gym-challenge-erika-s-venusaur-4",
@@ -2338,7 +2417,8 @@
       "role": "group",
       "raw": false,
       "tcgPlayerId": "85307",
-      "since": "2026-09-30"
+      "since": "2026-09-30",
+      "sprite": "img/sprites/venusaur.png"
     },
     {
       "key": "neo-destiny-shining-raichu-111",
@@ -2354,7 +2434,8 @@
       "role": "group",
       "raw": false,
       "tcgPlayerId": "89169",
-      "since": "2026-09-30"
+      "since": "2026-09-30",
+      "sprite": "img/sprites/raichu.png"
     },
     {
       "key": "team-rocket-dark-raichu-83",
@@ -2370,7 +2451,8 @@
       "role": "group",
       "raw": false,
       "tcgPlayerId": "84647",
-      "since": "2026-09-30"
+      "since": "2026-09-30",
+      "sprite": "img/sprites/raichu.png"
     },
     {
       "key": "wotc-black-star-promos-pikachu-corocoro-grey-star-0",
@@ -2386,7 +2468,8 @@
       "role": "group",
       "raw": false,
       "tcgPlayerId": "696103",
-      "since": "2026-09-30"
+      "since": "2026-09-30",
+      "sprite": "img/sprites/pikachu.png"
     },
     {
       "key": "skyridge-raichu-h25-H25",
@@ -2402,7 +2485,8 @@
       "role": "group",
       "raw": false,
       "tcgPlayerId": "88502",
-      "since": "2026-09-30"
+      "since": "2026-09-30",
+      "sprite": "img/sprites/raichu.png"
     },
     {
       "key": "wotc-black-star-promos-mewtwo-12-12",
@@ -2418,7 +2502,8 @@
       "role": "group",
       "raw": false,
       "tcgPlayerId": "87416",
-      "since": "2026-09-30"
+      "since": "2026-09-30",
+      "sprite": "img/sprites/mewtwo.png"
     },
     {
       "key": "base-set-mewtwo-10",
@@ -2434,7 +2519,8 @@
       "role": "group",
       "raw": false,
       "tcgPlayerId": "42347",
-      "since": "2026-09-30"
+      "since": "2026-09-30",
+      "sprite": "img/sprites/mewtwo.png"
     },
     {
       "key": "wotc-black-star-promos-mew-47-47",
@@ -2450,7 +2536,8 @@
       "role": "group",
       "raw": false,
       "tcgPlayerId": "87397",
-      "since": "2026-09-30"
+      "since": "2026-09-30",
+      "sprite": "img/sprites/mew.png"
     },
     {
       "key": "wotc-black-star-promos-mew-9-9",
@@ -2466,7 +2553,8 @@
       "role": "group",
       "raw": false,
       "tcgPlayerId": "87395",
-      "since": "2026-09-30"
+      "since": "2026-09-30",
+      "sprite": "img/sprites/mew.png"
     },
     {
       "key": "neo-destiny-dark-gengar-6",
@@ -2482,7 +2570,8 @@
       "role": "group",
       "raw": false,
       "tcgPlayerId": "84599",
-      "since": "2026-09-30"
+      "since": "2026-09-30",
+      "sprite": "img/sprites/gengar.png"
     },
     {
       "key": "skyridge-gyarados-h10-H10",
@@ -2498,7 +2587,8 @@
       "role": "group",
       "raw": false,
       "tcgPlayerId": "85987",
-      "since": "2026-09-30"
+      "since": "2026-09-30",
+      "sprite": "img/sprites/gyarados.png"
     },
     {
       "key": "base-set-gyarados-6",
@@ -2514,7 +2604,8 @@
       "role": "group",
       "raw": false,
       "tcgPlayerId": "42404",
-      "since": "2026-09-30"
+      "since": "2026-09-30",
+      "sprite": "img/sprites/gyarados.png"
     },
     {
       "key": "neo-destiny-light-dragonite-14",
@@ -2530,7 +2621,8 @@
       "role": "group",
       "raw": false,
       "tcgPlayerId": "86738",
-      "since": "2026-09-30"
+      "since": "2026-09-30",
+      "sprite": "img/sprites/dragonite.png"
     },
     {
       "key": "neo-genesis-lugia-9",
@@ -2546,7 +2638,8 @@
       "role": "group",
       "raw": false,
       "tcgPlayerId": "86903",
-      "since": "2026-09-30"
+      "since": "2026-09-30",
+      "sprite": "img/sprites/lugia.png"
     },
     {
       "key": "wotc-black-star-promos-ho-oh-52",
@@ -2562,7 +2655,8 @@
       "role": "group",
       "raw": false,
       "tcgPlayerId": "86120",
-      "since": "2026-09-30"
+      "since": "2026-09-30",
+      "sprite": "img/sprites/ho-oh.png"
     },
     {
       "key": "aquapolis-tyranitar-h28-H28",
@@ -2578,7 +2672,8 @@
       "role": "group",
       "raw": false,
       "tcgPlayerId": "90114",
-      "since": "2026-09-30"
+      "since": "2026-09-30",
+      "sprite": "img/sprites/tyranitar.png"
     },
     {
       "key": "expedition-tyranitar-29-29",
@@ -2594,7 +2689,8 @@
       "role": "group",
       "raw": false,
       "tcgPlayerId": "90115",
-      "since": "2026-09-30"
+      "since": "2026-09-30",
+      "sprite": "img/sprites/tyranitar.png"
     },
     {
       "key": "neo-discovery-tyranitar-12-12",
@@ -2610,7 +2706,8 @@
       "role": "group",
       "raw": false,
       "tcgPlayerId": "90113",
-      "since": "2026-09-30"
+      "since": "2026-09-30",
+      "sprite": "img/sprites/tyranitar.png"
     },
     {
       "key": "skyridge-vaporeon-h31-H31",
@@ -2626,7 +2723,8 @@
       "role": "group",
       "raw": false,
       "tcgPlayerId": "90280",
-      "since": "2026-09-30"
+      "since": "2026-09-30",
+      "sprite": "img/sprites/vaporeon.png"
     },
     {
       "key": "neo-destiny-dark-espeon-4",
@@ -2642,7 +2740,8 @@
       "role": "group",
       "raw": false,
       "tcgPlayerId": "84592",
-      "since": "2026-09-30"
+      "since": "2026-09-30",
+      "sprite": "img/sprites/espeon.png"
     },
     {
       "key": "legendary-collection-dark-vaporeon-9",
@@ -2658,7 +2757,8 @@
       "role": "group",
       "raw": false,
       "tcgPlayerId": "84664",
-      "since": "2026-09-30"
+      "since": "2026-09-30",
+      "sprite": "img/sprites/vaporeon.png"
     },
     {
       "key": "skyridge-articuno-h3-H03",
@@ -2674,7 +2774,8 @@
       "role": "group",
       "raw": false,
       "tcgPlayerId": "83644",
-      "since": "2026-09-30"
+      "since": "2026-09-30",
+      "sprite": "img/sprites/articuno.png"
     },
     {
       "key": "aquapolis-zapdos-h32-H32",
@@ -2690,7 +2791,8 @@
       "role": "group",
       "raw": false,
       "tcgPlayerId": "90715",
-      "since": "2026-09-30"
+      "since": "2026-09-30",
+      "sprite": "img/sprites/zapdos.png"
     },
     {
       "key": "aquapolis-suicune-h25-H25",
@@ -2706,7 +2808,8 @@
       "role": "group",
       "raw": false,
       "tcgPlayerId": "89598",
-      "since": "2026-09-30"
+      "since": "2026-09-30",
+      "sprite": "img/sprites/suicune.png"
     },
     {
       "key": "aquapolis-entei-h8-H08",
@@ -2722,7 +2825,8 @@
       "role": "group",
       "raw": false,
       "tcgPlayerId": "85267",
-      "since": "2026-09-30"
+      "since": "2026-09-30",
+      "sprite": "img/sprites/entei.png"
     },
     {
       "key": "wotc-black-star-promos-entei-34",
@@ -2738,7 +2842,8 @@
       "role": "group",
       "raw": false,
       "tcgPlayerId": "85270",
-      "since": "2026-09-30"
+      "since": "2026-09-30",
+      "sprite": "img/sprites/entei.png"
     }
   ],
   "groups": [
