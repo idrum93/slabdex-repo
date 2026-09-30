@@ -27,7 +27,7 @@ for (const g of grades) {
 const consensus = Model.consensus(models);
 // Setup backtest on the default grade (same code the terminal runs).
 const pg = WL.primaryGrade || 'psa8';
-const edge = models[pg] ? Edge.run(models[pg]) : { ok: false, reason: `no ${pg} data` };
+const edge = models[pg] ? Edge.run(models[pg], { others: Object.values(models) }) : { ok: false, reason: `no ${pg} data` };
 const edgeOut = edge.ok ? { ...edge, results: edge.results.map(({ live, ...r }) => r), picks: edge.picks.map((p) => ({ key: p.key, name: p.card.name, set: p.card.set, status: p.status, rules: p.rules })) } : edge;
 await writeFile(path.join(DATA, 'brief.json'), JSON.stringify({ generated: new Date().toISOString(), consensus, briefs, edge: edgeOut }, null, 2) + '\n');
 await writeFile(path.join(DATA, 'brief.md'), Model.briefMarkdown(briefs, consensus) + '\n' + Edge.markdown(edge));

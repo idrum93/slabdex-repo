@@ -39,25 +39,38 @@
     ['hmaUp', 'Hull MA turns up', (x, i) => isN(x.hm[i]) && isN(x.hm[i - 1]) && isN(x.hm[i - 2]) && x.hm[i] > x.hm[i - 1] && x.hm[i - 1] <= x.hm[i - 2]],
     ['stUp', 'Supertrend flips up', (x, i) => x.st[i] === 1 && x.st[i - 1] === -1],
     ['vzoX', 'VZO (sales pressure) crosses 0', (x, i) => upTh(x.vz, i, 0)],
+    ['rsSetX', 'Beats its own set (RS vs set turns up)', (x, i) => upX(x.rsS, x.rsSm, i)],
     ['sc55', 'Score to IMPROVING', (x, i) => upTh(x.sc, i, 55)],
     ['sc68', 'Score to EARLY STRENGTH', (x, i) => upTh(x.sc, i, 68)],
   ];
-  const SHORT = { rsi30: 'RSI↑30', rsi50: 'RSI↑50', macdX: 'MACD×', macdX0: 'MACD×<0', px50: 'Px>SMA50', gold: 'SMA20×50', rsX: 'RS↑', volUp: 'Pace↑', dip: 'Dip', hmaUp: 'HMA↑', stUp: 'ST↑', vzoX: 'VZO↑0', sc55: 'Score≥55', sc68: 'Score≥68' };
+  const SHORT = { rsi30: 'RSI↑30', rsi50: 'RSI↑50', macdX: 'MACD×', macdX0: 'MACD×<0', px50: 'Px>SMA50', gold: 'SMA20×50', rsX: 'RS↑', volUp: 'Pace↑', dip: 'Dip', hmaUp: 'HMA↑', stUp: 'ST↑', vzoX: 'VZO↑0', rsSetX: 'RS↑set', sc55: 'Score≥55', sc68: 'Score≥68' };
   const NESTED = new Set(['macdX+macdX0', 'sc55+sc68']);
   const RULES = [
     ...BASE.map(([id, label]) => ({ id, label, parts: [id] })),
     ...BASE.flatMap(([a], i) => BASE.slice(i + 1).map(([b]) => ({ id: `${a}+${b}`, parts: [a, b] }))).filter((r) => !NESTED.has(r.id))
       .map((r) => ({ ...r, label: `${SHORT[r.parts[0]]} + ${SHORT[r.parts[1]]} within ${PAIR_WIN}d` })),
     { id: 'conf3', label: `${CONF_N}+ setups within ${CONF_WIN}d`, parts: null },
+    // Curated combos built from what the pairs keep pointing at (trend turning up + strength), plus filters:
+    { id: 'trend3', label: 'ST↑ + Px>SMA50 + Score≥55 within 7d', parts: ['stUp', 'px50', 'sc55'], all: true },
+    { id: 'stCalm', label: 'ST↑ while RSI < 70 (not stretched)', parts: ['stUp'], fn: (u, i) => u.trig.stUp[i] && u.x.rsi[i] != null && u.x.rsi[i] < 70 },
+    { id: 'stDemand', label: 'ST↑ with sales pressure (VZO > 0)', parts: ['stUp', 'vzoX'], fn: (u, i) => u.trig.stUp[i] && u.x.vz[i] != null && u.x.vz[i] > 0 },
+    { id: 'stLeader', label: 'ST↑ while beating the market (RS > its MA)', parts: ['stUp', 'rsX'], fn: (u, i) => u.trig.stUp[i] && u.x.rs[i] != null && u.x.rsm[i] != null && u.x.rs[i] > u.x.rsm[i] },
+    { id: 'pullback', label: 'Pullback in uptrend (back above SMA20, SMA20>SMA50, ST up)', parts: ['px50', 'gold', 'stUp'], fn: (u, i) => { const x = u.x; return x.st[i] === 1 && x.s20[i] > x.s50[i] && x.c[i] > x.s20[i] && x.c[i - 1] <= x.s20[i - 1]; } },
   ];
 
+  const within = (t, i, w) => { if (!t) return false; for (let j = Math.max(0, i - w); j <= i; j++) if (t[j]) return true; return false; };
+  // Same setup firing in another PSA grade of the same card (and printing) within the week: agreement across
+  // separate sale streams is much harder to get by accident than one grade's wiggle.
+  const CROSS = ['rsi30', 'rsi50', 'macdX', 'px50', 'gold', 'rsX', 'rsSetX', 'volUp', 'hmaUp', 'stUp', 'vzoX', 'dip'];
+  RULES.push(...CROSS.map((id) => ({ id: id + '@2g', label: `${BASE.find((b) => b[0] === id)[1]} · in 2+ grades`, parts: [id], cross: true, fn: (u, i) => u.trig[id][i] && within(u.cross?.[id], i, PAIR_WIN) })));
   // Deterministic RNG so the browser and the brief script agree.
   function rng(seed) { let s = seed >>> 0; return () => { s = (s + 0x6D2B79F5) >>> 0; let t = s; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
 
-  function context(b, bench) {
+  function context(b, bench, setBench, light = false) {
     const c = b.close, n = c.length;
     const rsi = I.rsi(c, 14), m = I.macd(c), s20 = I.sma(c, 20), s50 = I.sma(c, 50);
     const rs = c.map((v, i) => (isN(v) && isN(bench[i]) && bench[i] ? v / bench[i] : null)), rsm = I.sma(rs, 20);
+    const sb = setBench || bench, rsS = c.map((v, i) => (isN(v) && isN(sb[i]) && sb[i] ? v / sb[i] : null)), rsSm = I.sma(rsS, 20);
     const vr = new Array(n).fill(null), dip = new Array(n).fill(false), sc = new Array(n).fill(null);
     const first = I.firstIdx(c);
     for (let i = first; i < n && first >= 0; i++) {
@@ -68,10 +81,10 @@
       }
       let hi = -Infinity; for (let j = Math.max(first, i - 89); j <= i; j++) if (isN(c[j]) && c[j] > hi) hi = c[j];
       dip[i] = isN(c[i]) && c[i] <= hi * 0.85 && rsi[i] != null && rsi[i] < 40;
-      if (i - first >= WARM - 1) sc[i] = Model.signals(c.slice(0, i + 1), b.vol ? b.vol.slice(0, i + 1) : null, bench.slice(0, i + 1), { dense: b.dense }).score ?? null;
+      if (!light && i - first >= WARM - 1) sc[i] = Model.signals(c.slice(0, i + 1), b.vol ? b.vol.slice(0, i + 1) : null, bench.slice(0, i + 1), { dense: b.dense }).score ?? null;
     }
     const hm = I.hma(c, 20), st = I.supertrend(c, 10, 3).dir, vz = b.vol ? I.vzo(c, b.vol, 14).vzo : new Array(n).fill(null);
-    return { c, rsi, ml: m.line, ms: m.signal, s20, s50, rs, rsm, vr, dip, sc, hm, st, vz };
+    return { c, rsi, ml: m.line, ms: m.signal, s20, s50, rs, rsm, rsS, rsSm, vr, dip, sc, hm, st, vz };
   }
 
   function run(model, opts = {}) {
@@ -81,12 +94,34 @@
     // RAW is the provider's smoothed market price (a rolling average of sales). Smoothing makes trends persist
     // on paper, so momentum setups would look predictive without being buyable. Graded sales only.
     if (model.dense) return { ok: false, grade: model.grade, reason: 'not run on RAW — it is a smoothed market price, which would flatter momentum setups; switch to a PSA grade' };
+    const setClose = (m, c) => (m.idx['idx:set:' + (c.basket || Model.slug(c.set))] || m.idx['idx:era:' + Model.slug(c.era || '')])?.close || null;
+    const pos = new Map(axis.map((d, i) => [d, i]));
+    const others = (opts.others || []).filter((m) => m && m !== model && !m.dense && m.grade !== model.grade);
+    // Base triggers of the same card+printing in the other grades, mapped onto this grade's dates.
+    function crossTrig(key, b, first, last) {
+      if (!others.length) return null;
+      const base = key.replace(/~alt$/, ''), out = {};
+      for (const id of CROSS) out[id] = new Uint8Array(axis.length);
+      let any = false;
+      for (const om of others) {
+        const cand = [om.by[base], om.by[base + '~alt']].filter(Boolean);
+        const ob = b.card.line && cand.some((y) => y.card.line) ? cand.find((y) => y.card.line === b.card.line) : om.by[key];
+        if (!ob || ob.demo) continue;
+        const f0 = I.firstIdx(ob.close), l0 = I.lastIdx(ob.close); if (f0 < 0) continue;
+        const ox = context(ob, om.index, setClose(om, ob.card), true);
+        for (const [id, , fn] of BASE) {
+          if (!CROSS.includes(id)) continue;
+          for (let i = Math.max(f0 + 1, f0 + WARM); i <= l0; i++) if (fn(ox, i)) { const j = pos.get(om.axis[i]); if (j != null) { out[id][j] = 1; any = true; } }
+        }
+      }
+      return any ? out : null;
+    }
     const units = [];
     for (const [key, b] of Object.entries(model.by)) {
       if (b.demo) continue;
       const first = I.firstIdx(b.close), last = I.lastIdx(b.close);
       const lo = first + WARM, hi = last - H;
-      const x = context(b, bench);
+      const x = context(b, bench, setClose(model, b.card));
       // Base triggers on every day (for live setups too), fwd excess where the outcome is known.
       const trig = {};
       for (const [id, , fn] of BASE) {
@@ -111,15 +146,20 @@
         }
         if (isN(entry) && entry > 0) fwd[i] = Math.log(b.close[i + H] / entry) - Math.log(bench[i + H] / bench[i]);
       }
-      units.push({ key, card: b.card, lo, hi, last, trig, fwd });
+      units.push({ key, card: b.card, lo, hi, last, trig, fwd, x, cross: crossTrig(key, b, first, last) });
     }
     const usable = units.filter((u) => u.hi - u.lo >= 20);
     if (usable.length < MIN_CARDS) return { ok: false, reason: `needs ${WARM + H + 20}+ days of history on ${MIN_CARDS}+ cards (have ${usable.length})`, horizon: H, tested: 0 };
 
     // Rule event arrays (raw, before cooldown).
-    const within = (t, i, w) => { for (let j = Math.max(0, i - w); j <= i; j++) if (t[j]) return true; return false; };
     function ruleTrig(u, r) {
       const n = axis.length, out = new Uint8Array(n);
+      if (r.fn) { for (let i = 1; i < n; i++) if (r.fn(u, i)) out[i] = 1; return out; }
+      if (r.all) { // every part fired within PAIR_WIN days, event on the day the last one fires
+        const T = r.parts.map((p) => u.trig[p]);
+        for (let i = 0; i < n; i++) if (T.some((t) => t[i]) && T.every((t) => within(t, i, PAIR_WIN))) out[i] = 1;
+        return out;
+      }
       if (r.parts && r.parts.length === 1) return u.trig[r.id];
       if (r.parts) { const [A, B] = r.parts.map((p) => u.trig[p]); for (let i = 0; i < n; i++) if ((A[i] && within(B, i, PAIR_WIN)) || (B[i] && within(A, i, PAIR_WIN))) out[i] = 1; return out; }
       let prevOn = false; // confluence: distinct base setups in the last CONF_WIN days reaches CONF_N

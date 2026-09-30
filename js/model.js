@@ -43,7 +43,7 @@
       if (!pts?.length) continue;
       const demo = s.source === 'demo';
       const kind = demo ? null : C.pooledKind(s.printings);
-      const r = demo ? { main: pts, alt: [], out: [], split: null } : C.classify(pts, kind);
+      const r = demo ? { main: pts, alt: [], out: [], split: null } : C.classify(pts, kind, { prior: C.priorOf(s), labels: C.labelsOf(s) });
       const mixed = kind && !r.split ? (kind === '1st' ? '1st+Unl mixed' : 'holo+rev mixed') : null;
       lines.push({ key: c.key, card: { ...c, line: r.split ? r.split.mainLabel : mixed, est: !!r.split }, pts: r.main, demo });
       if (r.split && r.alt.length >= 4) lines.push({ key: c.key + '~alt', card: { ...c, key: c.key + '~alt', line: r.split.altLabel, est: true, virtual: true }, pts: r.alt, demo });

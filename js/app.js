@@ -346,7 +346,7 @@
     const cls = r.score == null ? 'na' : r.tag[1];
     const star = r.isIdx ? '' : `<button class="st-btn${isStar(r.key) ? ' on' : ''}" data-star="${r.key}" title="${isStar(r.key) ? 'Remove from' : 'Add to'} MINE" aria-label="Star ${esc(r.name)}">${isStar(r.key) ? '★' : '☆'}</button>`;
     return `<tr class="row${r.key === state.key ? ' sel' : ''}${r.key === state.vs ? ' cmp' : ''}${extra}" data-k="${r.key}" tabindex="0">
-      <td><span class="nm">${icon(r)}${esc(r.name)}${chgBadge(r.ch)}${r.setup?.status === 'confirmed' ? `<span class="setup" title="Backtested setup fired ${r.setup.best.ago}d ago: ${esc(r.setup.best.label)}">◆</span>` : ''}</span><span class="st">${esc(r.sub)}</span></td>
+      <td><span class="nm">${icon(r)}${esc(r.name)}${chgBadge(r.ch)}${r.setup ? `<span class="setup ${r.setup.status}" title="${r.setup.status === 'confirmed' ? 'Confirmed' : 'Promising (could be luck)'} setup fired ${r.setup.best.ago}d ago: ${esc(r.setup.best.label)} — see SETUPS">${r.setup.status === 'confirmed' ? '◆' : '◇'}</span>` : ''}</span><span class="st">${esc(r.sub)}</span></td>
       <td class="n">${r.lastTxt}</td>
       <td class="n">${M.fmt(r.metric)}</td>
       <td class="n"><span class="pill ${cls}" title="${r.tag?.[0] || ''}">${r.score ?? '··'}</span></td>
@@ -387,6 +387,16 @@
         const tk = 'sec:' + key, open = fold ? state.collapsed.includes(tk) : !state.collapsed.includes(tk); // folded sections: toggled = open
         return `<tr class="sec" data-toggle="${tk}"><td colspan="5">${open ? '▾' : '▸'} ${title} <span class="dim">${xs.length}</span></td></tr>` + (open ? rows.map((r) => rowHtml(r, M)).join('') : '');
       }).join('');
+    } else if (view === 'setups') { // cards where a tested setup fired in the last 7 days
+      const e = edge();
+      if (!e) html = '<tr><td colspan="5" class="empty">Testing setups against history…</td></tr>';
+      else {
+        // Rank: confirmed first, then how many separate setups are firing on the card, then the best one's evidence.
+        const picks = e.ok ? e.picks.filter((p) => model.by[p.key]).map((p) => ({ ...p, nRules: p.rules.length })).sort((a, b) => (a.status === 'confirmed' ? 0 : 1) - (b.status === 'confirmed' ? 0 : 1) || b.nRules - a.nRules || (a.best.p ?? 1) - (b.best.p ?? 1)) : [];
+        const q = picks.length ? Math.max(...picks.map((p) => p.best.q ?? 1)) : null;
+        const note = `<tr class="sec"><td colspan="5"><p class="setupnote">${esc(Edge.verdict(e))}${picks.some((p) => p.status === 'promising') ? ` <b>◇ promising</b> = beat other cards in the past but didn't survive the luck correction${q != null ? ` (up to ~${Math.round(q * 100)}% of these could be flukes)` : ''}; <b>◆ confirmed</b> = did. Sorted by how many setups agree (×N). ${picks.length} of ${Object.keys(model.by).length} card lines — a lead to research, not a buy signal.` : ''}</p></td></tr>`;
+        html = note + (picks.length ? picks.map((p) => { const r = cardRow(model.by[p.key], M, st); r.sub = `${p.status === 'confirmed' ? '◆' : '◇'}${p.nRules > 1 ? '×' + p.nRules : ''} ${p.best.label} · ${p.best.ago === 0 ? 'today' : p.best.ago + 'd ago'} · ${Edge.pct(p.best.vsPeers, 1)} vs peers`; return rowHtml(r, M, p.status === 'confirmed' ? ' setup-conf' : ' setup-prom'); }).join('') : '<tr><td colspan="5" class="empty">No tested setup has fired in the last 7 days.</td></tr>');
+      }
     } else if (view === 'mine') {
       const rows = mains.filter((b) => isStar(b.card.key)).map((b) => cardRow(b, M, st)).sort(cmp);
       html = rows.length ? rows.map((r) => rowHtml(r, M)).join('') : `<tr><td colspan="5" class="empty">Star cards with ☆ (or press S) to keep them here. Stars are saved in this browser.</td></tr>`;
@@ -568,7 +578,7 @@
       edgePending = g;
       setTimeout(() => {
         if (model.grade !== g) { edgePending = null; return; }
-        try { EDGE[g] = Edge.run(model); } catch (err) { console.error(err); EDGE[g] = { ok: false, reason: 'backtest failed' }; }
+        try { EDGE[g] = Edge.run(model, { others: ['psa7', 'psa8', 'psa9', 'psa10'].filter((x) => x !== g).map(otherModel) }); } catch (err) { console.error(err); EDGE[g] = { ok: false, reason: 'backtest failed' }; }
         edgePending = null; rankIndicators(); renderBrief(); refresh({ keepView: true });
       }, 40);
     }
@@ -588,6 +598,8 @@
     }
     btns.sort((a, b) => (b.dataset.v === 'guide') - (a.dataset.v === 'guide') || (ev[b.dataset.v] ?? 0) - (ev[a.dataset.v] ?? 0)).forEach((b) => bar.appendChild(b));
   }
+  const OTHER = {};
+  const otherModel = (g) => (OTHER[g] ||= Model.buildModel(WL, SERIES, g)); // other grades, for cross-grade setups
   const edgeLive = (k) => { const e = EDGE[state.grade]; return e?.ok ? e.picks.find((p) => p.key === k) || null : null; };
   function setupLine(cur, ratio) {
     if (ratio || cur.isIndex) return '';

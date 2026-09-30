@@ -62,7 +62,7 @@ async function ensureAndCheck(x, allowFetch) {
   let best = null, most = { days: 0, junk: 0 };
   for (const g of ['psa8', 'psa9']) {
     const tot = (s.grades?.[g] || []).length; if (!tot) continue;
-    const r = Clean.classify(s.grades[g], kind), v = { days: r.main.length, junk: r.out.length / tot };
+    const r = Clean.classify(s.grades[g], kind, { prior: Clean.priorOf(s) }), v = { days: r.main.length, junk: r.out.length / tot };
     if (v.days > most.days) most = v;
     if (v.days >= MIN_DAYS && v.junk <= 0.35 && (!best || v.days > best.days)) best = v;
   }

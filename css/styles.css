@@ -99,7 +99,7 @@ button:focus-visible, select:focus-visible, tr:focus-visible { outline: 2px soli
 .panel h2 span { color: var(--fg); letter-spacing: .04em; font: 500 11px var(--f-mono); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .panel h2 .hint { color: var(--muted); font-size: 10px; margin-left: auto; }
 .panel h2 .tabs { margin-left: 4px; }
-.panel h2 .tabs button { font: 600 10px var(--f-disp); letter-spacing: .12em; padding: 3px 8px; }
+.panel h2 .tabs button { font: 600 10px var(--f-disp); letter-spacing: .08em; padding: 3px 6px; }
 select optgroup { font-style: normal; color: var(--muted); }
 
 .score { margin-bottom: 8px; }
@@ -317,3 +317,7 @@ tr.sec .dim { letter-spacing: 0; opacity: .6; margin-left: 4px; }
 .tile .tn .spr.setsym { width: 14px; height: 14px; vertical-align: -2px; }
 .rawnote { margin: 4px 0; padding: 6px 8px; font: 11px/1.4 var(--f-mono); color: var(--fg); background: var(--grid); border-left: 2px solid var(--warn); text-transform: none; letter-spacing: 0; white-space: normal; }
 .rawnote button { margin-left: 6px; font: inherit; color: var(--accent); background: none; border: 1px solid var(--accent); border-radius: 3px; padding: 1px 6px; cursor: pointer; }
+.setup.promising { color: var(--muted); }
+.setupnote { margin: 2px 0; font: 11px/1.45 var(--f-mono); color: var(--fg); text-transform: none; letter-spacing: 0; white-space: normal; }
+tr.setup-conf td:first-child { box-shadow: inset 3px 0 0 var(--up); }
+tr.setup-prom td:first-child { box-shadow: inset 3px 0 0 var(--muted); }
