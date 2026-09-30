@@ -1,5 +1,15 @@
 # SlabDex market brief
 
+## Consensus across grades (RAW NM, PSA 7, PSA 8, PSA 9)
+
+- **Grades agree ▲:** Neo Genesis [RAW, PSA 7, PSA 8, PSA 9]; Neo Destiny [RAW, PSA 7, PSA 9]; Neo Discovery [PSA 7, PSA 8, PSA 9]; Base Set [PSA 7, PSA 8]
+- **Grades agree ▼:** WOTC Black Star Promos [PSA 8, PSA 9]
+- **Grades split:** Jungle [▲ PSA 8, PSA 9 / ▼ RAW, PSA 7]; Fossil [▲ RAW, PSA 8, PSA 9 / ▼ PSA 7]; Team Rocket [▲ RAW, PSA 7 / ▼ PSA 8]
+- **RAW vs graded:** Jungle: graded +30% 30D, RAW -2%; Legendary Collection: RAW +27% 30D, graded +3%; Skyridge: graded +10% 30D, RAW 0%
+- **Eras:** WOTC Vintage ▲2 ▼0; WOTC Neo & e-Card ▲3 ▼1; WOTC Promo ▲0 ▼2
+- **Cards agree ▲:** Snorlax (11) 1st Ed · Jungle [RAW, PSA 7, PSA 8, PSA 9]; Suicune (14) 1st Ed · Neo Revelation [RAW, PSA 7, PSA 8]; Lugia · Aquapolis [RAW, PSA 8]
+- **Lead-lag check:** No reliable RAW→graded lead yet (24 weeks of data; best PSA 9 at 3w, r 0.43 vs 0.52 needed).
+
 ## PSA 8 — as of 2026-09-28 (48 cards, 29 with enough data to score)
 
 - **Market:** All tracked 113 · +15% 30D · +17% 90D
@@ -49,3 +59,42 @@
 - **Data:** Too few PSA 10 sales to read momentum yet (2/35 cards scoreable). Try another grade.
 
 _Heuristic read of trend, momentum and relative strength from clean eBay graded sales (PSA) and TCGplayer raw Near Mint prices. Not financial advice._
+
+## Setup backtest · PSA 8 · 30D excess vs market
+
+7 setups beat other cards beyond chance over the next 30 days (of 40 tested on 45 cards, corrected for multiple tests, held in both halves).
+
+Baseline (all card-days, entry at next sales): -1.7% vs market on average, 48% beat the market, 22% by 15%+. "vs peers" = versus other tracked cards over the same dates.
+
+### Setups firing now (last 7 days)
+
+- **Shining Gyarados** (Neo Revelation) — MACD×<0 + Px>SMA50 within 7d, 6d ago · confirmed · hist. +20.7% vs peers, 52% beat typical peer, n 21
+- **Charizard** (Legendary Collection) — MACD×<0 + Px>SMA50 within 7d, 5d ago · confirmed · hist. +20.7% vs peers, 52% beat typical peer, n 21
+- **Scyther (10)** (Jungle) — Px>SMA50 + Score≥55 within 7d, 7d ago · confirmed · hist. +16.9% vs peers, 61% beat typical peer, n 28
+- **Zapdos (15)** (Fossil) — Px>SMA50 + Score≥55 within 7d, 7d ago · confirmed · hist. +16.9% vs peers, 61% beat typical peer, n 28
+- **Lapras (10)** (Fossil) — Px>SMA50 + Score≥55 within 7d, 6d ago · confirmed · hist. +16.9% vs peers, 61% beat typical peer, n 28
+- **Houndoom (4)** (Neo Discovery) — Px>SMA50 + Score≥55 within 7d, 3d ago · confirmed · hist. +16.9% vs peers, 61% beat typical peer, n 28
+- **Shining Mewtwo** (Neo Destiny) — Score to EARLY STRENGTH, 5d ago · confirmed · hist. +11.7% vs peers, 61% beat typical peer, n 36
+- **Lugia** (Aquapolis) — Score to EARLY STRENGTH, 1d ago · confirmed · hist. +11.7% vs peers, 61% beat typical peer, n 36
+- **Snorlax** (WOTC Black Star Promos) — Score to EARLY STRENGTH, 1d ago · confirmed · hist. +11.7% vs peers, 61% beat typical peer, n 36
+- **Moltres (12)** (Fossil) — Price back above SMA50, 0d ago · promising · hist. +11.1% vs peers, 53% beat typical peer, n 32
+- **Blaine's Moltres** (Gym Heroes) — Price back above SMA50, 6d ago · promising · hist. +11.1% vs peers, 53% beat typical peer, n 32
+- **Erika's Dragonair** (Gym Heroes) — Price back above SMA50, 1d ago · promising · hist. +11.1% vs peers, 53% beat typical peer, n 32
+
+| Setup | Status | Events | Cards | vs peers | vs market | Beat typical peer | 15%+ | p | q | Halves (vs peers) |
+|---|---|---|---|---|---|---|---|---|---|---|
+| Px>SMA50 + Score≥55 within 7d | confirmed | 28 | 18 | +16.9% | +17.9% | 61% | 46% | 0.006 | 0.10 | +13% / +26% |
+| RSI↑50 + MACD×<0 within 7d | confirmed | 22 | 15 | +20.2% | +19.8% | 59% | 36% | 0.008 | 0.10 | +33% / +6% |
+| MACD×<0 + Px>SMA50 within 7d | confirmed | 21 | 14 | +20.7% | +20.9% | 52% | 33% | 0.010 | 0.10 | +24% / +18% |
+| Px>SMA50 + Score≥68 within 7d | confirmed | 26 | 18 | +15.8% | +15.9% | 62% | 46% | 0.014 | 0.10 | +18% / +12% |
+| MACD×<0 + Score≥55 within 7d | confirmed | 20 | 15 | +16.9% | +16.8% | 55% | 35% | 0.016 | 0.10 | +25% / +7% |
+| RS↑ + Score≥55 within 7d | confirmed | 30 | 19 | +13.1% | +9.9% | 60% | 33% | 0.018 | 0.10 | +11% / +16% |
+| Score to EARLY STRENGTH | confirmed | 36 | 20 | +11.7% | +12.2% | 61% | 36% | 0.020 | 0.10 | +11% / +12% |
+| RSI↑50 + MACD× within 7d | promising | 30 | 17 | +13.3% | +13.3% | 60% | 37% | 0.018 | 0.10 | +28% / -1% |
+| SMA20×50 + Score≥68 within 7d | promising | 17 | 13 | +15.7% | +14.8% | 65% | 41% | 0.023 | 0.10 | +9% / +20% |
+| MACD× + Px>SMA50 within 7d | promising | 27 | 18 | +13.6% | +15.8% | 52% | 37% | 0.035 | 0.12 | +17% / +10% |
+| RSI↑50 + Score≥55 within 7d | promising | 33 | 18 | +11.0% | +9.3% | 58% | 36% | 0.036 | 0.12 | +4% / +21% |
+| MACD× + Score≥55 within 7d | promising | 27 | 17 | +12.3% | +11.7% | 59% | 37% | 0.042 | 0.12 | +24% / -1% |
+| MACD× + Score≥68 within 7d | promising | 26 | 16 | +11.6% | +11.9% | 54% | 31% | 0.044 | 0.12 | +18% / +4% |
+| Price back above SMA50 | promising | 32 | 21 | +11.1% | +13.6% | 53% | 38% | 0.046 | 0.12 | +4% / +25% |
+| MACD×<0 + RS↑ within 7d | promising | 26 | 17 | +11.3% | +9.6% | 54% | 31% | 0.047 | 0.12 | +18% / +5% |
