@@ -276,6 +276,35 @@
 
   function fmtP(v, d = 1) { return v == null ? '<span class="dim">—</span>' : `<span class="${v >= 0 ? 'pos' : 'neg'}">${v >= 0 ? '+' : ''}${v.toFixed(d)}%</span>`; }
 
+  // The card in every PSA grade: price, 30D move, share of the next grade up, last sale. A grade whose neighbour
+  // just jumped ≥20% while it stayed flat is marked as lagging — the one to look at before it (maybe) catches up.
+  const allModels = () => { const o = {}; for (const g of ['psa7', 'psa8', 'psa9', 'psa10']) o[g] = g === model.grade ? model : otherModel(g); return o; };
+  function ladderRows(cur, ratio) {
+    if (ratio || cur.isIndex || model.dense) return '';
+    const rows = Model.gradeLadder(allModels(), cur.id, cur.card); if (rows.length < 2) return '';
+    const L = Model.GRADE_LABEL, e = EDGE[state.grade];
+    const res = (id) => e?.ok ? e.results.find((r) => r.id === id) : null;
+    const lagNote = rows.some((r) => r.lagging) ? (() => { const a = res('lagUp'), b = res('lagDown'); const t = [a, b].filter((x) => x && x.n).map((x) => `${x.id === 'lagUp' ? 'grade above led' : 'grade below led'}: ${Edge.pct(x.vsPeers, 1)} vs peers over 30D (${x.n}×, ${x.status === 'few' ? 'too few' : x.status})`).join(' · '); return `<p class="trk">⤴ = a neighbouring grade jumped ≥20% in 30D and this one hasn't followed. Backtest (${L[state.grade]}): ${t || 'not enough history yet'}. Not a buy signal on its own.</p>`; })() : '';
+    return `<h3>GRADES <span class="dim">30D · share of next grade</span></h3>` + rows.map((r) => `<button class="ctx-row lad${r.grade === model.grade ? ' on' : ''}${r.lagging ? ' lagging' : ''}" data-grade="${r.grade}" type="button" title="${r.lagging ? `Lagging: ${r.lagging.map((g) => L[g]).join(' & ')} jumped, ${L[r.grade]} hasn't followed · ` : ''}Last sale ${r.age ?? '—'} days ago · click to switch grade"><span class="ck">${L[r.grade]}</span><span class="cn">${money(r.price)} ${r.share != null ? `<span class="dim">${(r.share * 100).toFixed(0)}%</span>` : ''}${r.lagging ? ' <b class="lagm">⤴</b>' : ''}</span><span class="cv">${fmtP(r.c30, 0)}</span></button>`).join('') + lagNote;
+  }
+  // Cards with a lagging grade right now: the flat grade, the grade that jumped, and the spread between them.
+  let LAGS = null;
+  function lagList() {
+    if (LAGS && LAGS.m === model) return LAGS.rows;
+    const ms = allModels(), rows = [], seen = new Set();
+    for (const [k, b] of Object.entries(model.by)) {
+      const base = k.replace(/~alt$/, ''), id = base + '|' + (b.card.line || '');
+      if (seen.has(id)) continue; seen.add(id);
+      const lad = Model.gradeLadder(ms, k, b.card);
+      for (const r of lad) if (r.lagging) {
+        const led = r.lagging.map((g) => lad.find((x) => x.grade === g)).sort((a, c) => c.c30 - a.c30)[0];
+        rows.push({ k, card: b.card, lag: r, led, spread: led.c30 - r.c30 });
+      }
+    }
+    rows.sort((a, c) => c.spread - a.spread);
+    LAGS = { m: model, rows };
+    return rows;
+  }
   // For a card: how its own set, character and theme indexes moved, and which of them it tracks most.
   function contextRows(cur, ratio) {
     if (ratio || cur.isIndex) return '';
@@ -332,7 +361,7 @@
       ...(model.dense || ratio ? [] : [['Sale days, last 90D', s.saleDays90 == null ? '—' : `<span class="${s.saleDays90 < Model.MIN_SALE_DAYS_90 ? 'neg' : ''}">${s.saleDays90}</span>`]]),
       ['History', `${s.days} days`],
     ];
-    $('sigCtx').innerHTML = setupLine(cur, ratio) + contextRows(cur, ratio);
+    $('sigCtx').innerHTML = setupLine(cur, ratio) + ladderRows(cur, ratio) + contextRows(cur, ratio);
     $('metrics').innerHTML = rows.map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join('');
   }
 
@@ -402,6 +431,15 @@
         const note = `<tr class="sec"><td colspan="5"><p class="setupnote">${esc(Edge.verdict(e))}${picks.some((p) => p.status === 'promising') ? ` <b>◇ promising</b> = beat other cards in the past but didn't survive the luck correction${q != null ? ` (up to ~${Math.round(q * 100)}% of these could be flukes)` : ''}; <b>◆ confirmed</b> = did. Sorted by how many setups agree (×N). ${picks.length} of ${Object.keys(model.by).length} card lines — a lead to research, not a buy signal.` : ''}</p></td></tr>`;
         html = note + (picks.length ? picks.map((p) => { const r = cardRow(model.by[p.key], M, st); r.sub = `${p.status === 'confirmed' ? '◆' : '◇'}${p.nRules > 1 ? '×' + p.nRules : ''} ${p.best.label} · ${p.best.ago === 0 ? 'today' : p.best.ago + 'd ago'} · ${Edge.pct(p.best.vsPeers, 1)} vs peers`; return rowHtml(r, M, p.status === 'confirmed' ? ' setup-conf' : ' setup-prom'); }).join('') : '<tr><td colspan="5" class="empty">No tested setup has fired in the last 7 days.</td></tr>');
       }
+    } else if (view === 'lag') { // a neighbouring grade jumped, this grade hasn't followed
+      const L = Model.GRADE_LABEL, rows = model.dense ? [] : lagList(), e = EDGE[state.grade];
+      const bt = ['lagUp', 'lagDown'].map((id) => e?.ok ? e.results.find((r) => r.id === id) : null).filter((x) => x && x.n);
+      const note = `<tr class="sec"><td colspan="5"><p class="setupnote">⤴ A card's neighbouring grade rose ≥20% in 30 days (with a sale in the last 14 days) while the grade shown stayed within +5% and still sells. Sorted by the gap between the two moves; click to open that grade. Backtest (${L[state.grade]}): ${bt.length ? bt.map((x) => `${x.id === 'lagUp' ? 'grade above led' : 'grade below led'} ${Edge.pct(x.vsPeers, 1)} vs peers over 30D (${x.n}×, ${x.status === 'few' ? 'too few to judge' : x.status})`).join(' · ') : 'not enough history yet'}. Check the jump came from several sales before chasing.</p></td></tr>`;
+      const M2 = { fmt: (v) => (v == null ? '—' : `<span class="warn" title="How far the jumping grade outran this one over 30D">+${v.toFixed(0)}</span>`) };
+      html = model.dense ? `<tr class="sec"><td colspan="5">${rawNote()}</td></tr>` : note + (rows.length ? rows.map((x) => {
+        const r = { key: x.k, name: x.card.name, sub: `${L[x.lag.grade]} ${Edge.pct(x.lag.c30, 0)} · ${L[x.led.grade]} ${Edge.pct(x.led.c30, 0)}${x.card.line ? ' · ' + x.card.line : ''}`, lastTxt: `<span title="${L[x.lag.grade]} price">${money(x.lag.price)}</span>`, metric: x.spread, score: null, tag: null, sprite: x.card.sprite, isIdx: false };
+        return rowHtml(r, M2, ' lagrow').replace('<tr class="row', `<tr data-lgrade="${x.lag.grade}" class="row`).replace(/<span class="pill[^"]*"[^>]*>··<\/span>/, `<span class="pill lagg">${L[x.lag.grade].replace('PSA ', '')}</span>`);
+      }).join('') : '<tr><td colspan="5" class="empty">No lagging grades right now.</td></tr>');
     } else if (view === 'mine') {
       const rows = mains.filter((b) => isStar(b.card.key)).map((b) => cardRow(b, M, st)).sort(cmp);
       html = rows.length ? rows.map((r) => rowHtml(r, M)).join('') : `<tr><td colspan="5" class="empty">Star cards with ☆ (or press S) to keep them here. Stars are saved in this browser.</td></tr>`;
@@ -423,6 +461,7 @@
       html = mains.map((b) => cardRow(b, M, st)).sort(cmp).map((r) => rowHtml(r, M)).join('');
     }
     if (model.dense && view !== 'brief') html = `<tr class="sec"><td colspan="5">${rawNote()}</td></tr>` + html;
+    document.querySelector('.wl table').classList.toggle('lagv', view === 'lag');
     $('wlBody').innerHTML = html;
   }
 
@@ -749,7 +788,9 @@
       const tg = e.target.closest('tr[data-toggle]');
       if (tg && (tg.classList.contains('sec') || (e.target.closest('td:first-child') && e.offsetX < 22))) { const k = tg.dataset.toggle; state.collapsed = state.collapsed.includes(k) ? state.collapsed.filter((x) => x !== k) : [...state.collapsed, k]; renderWatchlist(); save(); return; }
       if (sw) { e.stopPropagation(); state.vs = state.vs === sw.dataset.vs ? 'idx:all' : sw.dataset.vs; if (state.vs === state.key) state.vs = 'idx:all'; renderSelects(); refresh({ keepView: true }); return; }
-      const tr = e.target.closest('tr[data-k]'); if (tr) select(tr.dataset.k, { keepPrint: tr.dataset.k === state.key });
+      const tr = e.target.closest('tr[data-k]');
+      if (tr?.dataset.lgrade && tr.dataset.lgrade !== state.grade) { state.key = tr.dataset.k; state.grade = tr.dataset.lgrade; rebuild(); return; }
+      if (tr) select(tr.dataset.k, { keepPrint: tr.dataset.k === state.key });
     });
     const briefClick = (e) => {
       const b = e.target.closest('[data-k]'); if (!b) return;

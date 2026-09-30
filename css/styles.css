@@ -321,3 +321,13 @@ tr.sec .dim { letter-spacing: 0; opacity: .6; margin-left: 4px; }
 .setupnote { margin: 2px 0; font: 11px/1.45 var(--f-mono); color: var(--fg); text-transform: none; letter-spacing: 0; white-space: normal; }
 tr.setup-conf td:first-child { box-shadow: inset 3px 0 0 var(--up); }
 tr.setup-prom td:first-child { box-shadow: inset 3px 0 0 var(--muted); }
+.ctx-row.lad.on { border-left-color: var(--accent); background: var(--grid); }
+.ctx-row.lagging { border-left-color: var(--warn); }
+.lagm { color: var(--warn); }
+.ctx-row.lad { grid-template-columns: 48px minmax(0, 1fr) auto; }
+.ctx-row.lad .ck { white-space: nowrap; }
+.pill.lagg { background: var(--warn); color: var(--bg); }
+.wl table.lagv #wlMetric { display: none; }
+.wl table.lagv th[data-sort="metric"]::after { content: "LEAD"; }
+.wl table.lagv #wlLastCol { font-size: 0; } .wl table.lagv #wlLastCol::after { content: "Price"; font-size: 10px; }
+.wl table.lagv th[data-sort="score"] { font-size: 0; } .wl table.lagv th[data-sort="score"]::after { content: "PSA"; font-size: 10px; }

@@ -448,6 +448,47 @@
     return rows;
   }
 
-  const api = { gapSeries, gradeGaps, NEXT, lineIn, ladder, trackCorr, changes, buildModel, makeIndex, signals, brief, consensus, leadLag, briefMarkdown, fillDays, slug, GRADE_LABEL, MIN_SALE_DAYS_90 };
+  // ---------- lagging grade: a neighbouring grade of the same card jumped, this one hasn't followed yet ----------
+  const PREV = { psa8: 'psa7', psa9: 'psa8', psa10: 'psa9' };
+  const LAG = { lb: 30, jump: 0.2, flat: 0.05, fresh: 14, live: 30 };
+  // For each day: did grade `other` of this card rise ≥20% over 30 days (on a sale in the last 14 days) while this
+  // grade moved ≤5% (and still trades — a sale in the last 30 days)? Returns the per-day flag and the moves.
+  function lagSeries(model, other, key) {
+    const b = model.by[key]; if (!b || !other || model.dense || other.dense) return null;
+    const o = lineIn(other, key, b.card); if (!o) return null;
+    const pos = new Map(other.axis.map((d, i) => [d, i])), n = model.axis.length;
+    const flag = new Array(n).fill(null), oc = new Array(n).fill(null), mc = new Array(n).fill(null);
+    let mySale = null;
+    for (let i = 0; i < n; i++) {
+      if (I.isN(b.sales?.[i])) mySale = i;
+      const j = pos.get(model.axis[i]); if (j == null || j < LAG.lb || i < LAG.lb) continue;
+      const a = o.close[j], a0 = o.close[j - LAG.lb], c = b.close[i], c0 = b.close[i - LAG.lb];
+      if (!I.isN(a) || !I.isN(a0) || !I.isN(c) || !I.isN(c0) || a0 <= 0 || c0 <= 0) continue;
+      let oFresh = false; for (let k = j; k >= 0 && k >= j - LAG.fresh; k--) if (I.isN(o.sales?.[k])) { oFresh = true; break; }
+      const live = mySale != null && i - mySale <= LAG.live;
+      oc[i] = a / a0 - 1; mc[i] = c / c0 - 1;
+      flag[i] = oFresh && live ? oc[i] >= LAG.jump && mc[i] <= LAG.flat : false;
+    }
+    return { other: other.grade, flag, oc, mc };
+  }
+  // The card across every grade: latest price, 30D move, days since last sale, share of the next grade up.
+  function gradeLadder(models, key, card) {
+    const rows = [];
+    for (const g of ['psa7', 'psa8', 'psa9', 'psa10']) {
+      const m = models[g]; if (!m) continue;
+      const b = lineIn(m, key, card); if (!b) continue;
+      const li = I.lastIdx(b.close); if (li < 0) continue;
+      let ls = null; for (let i = li; i >= 0; i--) if (I.isN(b.sales?.[i])) { ls = i; break; }
+      rows.push({ grade: g, price: b.close[li], c30: I.chg(b.close, 30), age: ls == null ? null : Math.round((Date.parse(m.axis[m.axis.length - 1]) - Date.parse(m.axis[ls])) / 864e5), key: b.card.key });
+    }
+    rows.forEach((r, k) => { const up = rows[k + 1]; r.share = up && up.grade === NEXT[r.grade] ? r.price / up.price : null; });
+    // flag laggards: a neighbour up ≥20% in 30D (with a fresh sale) while this grade is ≤ +5% and still selling
+    rows.forEach((r, k) => {
+      for (const nb of [rows[k - 1], rows[k + 1]]) if (nb && nb.c30 != null && r.c30 != null && nb.c30 >= LAG.jump * 100 && r.c30 <= LAG.flat * 100 && nb.age != null && nb.age <= LAG.fresh && r.age != null && r.age <= LAG.live) r.lagging = (r.lagging || []).concat(nb.grade);
+    });
+    return rows;
+  }
+
+  const api = { lagSeries, gradeLadder, PREV, LAG, gapSeries, gradeGaps, NEXT, lineIn, ladder, trackCorr, changes, buildModel, makeIndex, signals, brief, consensus, leadLag, briefMarkdown, fillDays, slug, GRADE_LABEL, MIN_SALE_DAYS_90 };
   if (isNode) module.exports = api; else root.Model = api;
 })(typeof window !== 'undefined' ? window : globalThis);
