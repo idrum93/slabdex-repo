@@ -15,19 +15,19 @@
   },
   "cards": [
     {
-      "key": "firered-leafgreen-charizard-ex-105",
-      "name": "Charizard ex",
-      "set": "FireRed & LeafGreen",
-      "number": "105",
+      "key": "dragon-frontiers-charizard-star-delta-species-100",
+      "name": "Charizard Star (Delta Species)",
+      "set": "Dragon Frontiers",
+      "number": "100",
       "era": "EX Series",
       "family": "EX",
-      "basket": "firered-leafgreen",
+      "basket": "dragon-frontiers",
       "rarity": "Ultra Rare",
       "pooled": false,
-      "query": "Charizard ex FireRed & LeafGreen 105",
+      "query": "Charizard Star (Delta Species) Dragon Frontiers 100",
       "tier": "rotate",
       "raw": false,
-      "tcgPlayerId": "84199"
+      "tcgPlayerId": "84198"
     },
     {
       "key": "crystal-guardians-blastoise-delta-species-2",
@@ -90,19 +90,19 @@
       "tcgPlayerId": "87427"
     },
     {
-      "key": "holon-phantoms-mew-111",
-      "name": "Mew",
-      "set": "Holon Phantoms",
-      "number": "111",
+      "key": "dragon-frontiers-mew-star-delta-species-101",
+      "name": "Mew Star (Delta Species)",
+      "set": "Dragon Frontiers",
+      "number": "101",
       "era": "EX Series",
       "family": "EX",
-      "basket": "holon-phantoms",
-      "rarity": "Secret Rare",
+      "basket": "dragon-frontiers",
+      "rarity": "Ultra Rare",
       "pooled": false,
-      "query": "Mew Holon Phantoms 111",
+      "query": "Mew Star (Delta Species) Dragon Frontiers 101",
       "tier": "rotate",
       "raw": false,
-      "tcgPlayerId": "87400"
+      "tcgPlayerId": "87408"
     },
     {
       "key": "firered-leafgreen-gengar-ex-108",
@@ -150,19 +150,19 @@
       "tcgPlayerId": "84918"
     },
     {
-      "key": "dragon-frontiers-snorlax-delta-species-10",
-      "name": "Snorlax (Delta Species)",
-      "set": "Dragon Frontiers",
-      "number": "10",
+      "key": "firered-leafgreen-snorlax-15",
+      "name": "Snorlax",
+      "set": "FireRed & LeafGreen",
+      "number": "15",
       "era": "EX Series",
       "family": "EX",
-      "basket": "dragon-frontiers",
+      "basket": "firered-leafgreen",
       "rarity": "Holo Rare",
       "pooled": false,
-      "query": "Snorlax (Delta Species) Dragon Frontiers 10",
+      "query": "Snorlax FireRed & LeafGreen 15",
       "tier": "rotate",
       "raw": false,
-      "tcgPlayerId": "89395"
+      "tcgPlayerId": "89388"
     },
     {
       "key": "unseen-forces-lugia-ex-105",
@@ -225,64 +225,64 @@
       "tcgPlayerId": "90151"
     },
     {
-      "key": "power-keepers-vaporeon-star-102",
-      "name": "Vaporeon Star",
-      "set": "Power Keepers",
-      "number": "102",
-      "era": "EX Series",
-      "family": "EX",
-      "basket": "power-keepers",
-      "rarity": "Ultra Rare",
-      "pooled": false,
-      "query": "Vaporeon Star Power Keepers 102",
-      "tier": "rotate",
-      "raw": false,
-      "tcgPlayerId": "90292"
-    },
-    {
-      "key": "delta-species-dragonite-delta-species-3",
-      "name": "Dragonite (Delta Species)",
-      "set": "Delta Species",
-      "number": "3",
-      "era": "EX Series",
-      "family": "EX",
-      "basket": "delta-species",
-      "rarity": "Holo Rare",
-      "pooled": false,
-      "query": "Dragonite (Delta Species) Delta Species 3",
-      "tier": "rotate",
-      "raw": false,
-      "tcgPlayerId": "84917"
-    },
-    {
-      "key": "team-rocket-returns-rocket-s-articuno-ex-96",
-      "name": "Rocket's Articuno ex",
-      "set": "Team Rocket Returns",
-      "number": "96",
-      "era": "EX Series",
-      "family": "EX",
-      "basket": "team-rocket-returns",
-      "rarity": "Ultra Rare",
-      "pooled": false,
-      "query": "Rocket's Articuno ex Team Rocket Returns 96",
-      "tier": "rotate",
-      "raw": false,
-      "tcgPlayerId": "88768"
-    },
-    {
-      "key": "deoxys-rocket-s-raikou-ex-108",
-      "name": "Rocket's Raikou ex",
+      "key": "deoxys-rayquaza-star-107",
+      "name": "Rayquaza Star",
       "set": "Deoxys",
-      "number": "108",
+      "number": "107",
       "era": "EX Series",
       "family": "EX",
       "basket": "deoxys",
-      "rarity": "Secret Rare",
+      "rarity": "Ultra Rare",
       "pooled": false,
-      "query": "Rocket's Raikou ex Deoxys 108",
+      "query": "Rayquaza Star Deoxys 107",
       "tier": "rotate",
       "raw": false,
-      "tcgPlayerId": "88785"
+      "tcgPlayerId": "88636"
+    },
+    {
+      "key": "delta-species-metagross-star-113",
+      "name": "Metagross Star",
+      "set": "Delta Species",
+      "number": "113",
+      "era": "EX Series",
+      "family": "EX",
+      "basket": "delta-species",
+      "rarity": "Ultra Rare",
+      "pooled": false,
+      "query": "Metagross Star Delta Species 113",
+      "tier": "rotate",
+      "raw": false,
+      "tcgPlayerId": "87345"
+    },
+    {
+      "key": "crystal-guardians-alakazam-star-99",
+      "name": "Alakazam Star",
+      "set": "Crystal Guardians",
+      "number": "99",
+      "era": "EX Series",
+      "family": "EX",
+      "basket": "crystal-guardians",
+      "rarity": "Ultra Rare",
+      "pooled": false,
+      "query": "Alakazam Star Crystal Guardians 99",
+      "tier": "rotate",
+      "raw": false,
+      "tcgPlayerId": "83502"
+    },
+    {
+      "key": "crystal-guardians-celebi-star-100",
+      "name": "Celebi Star",
+      "set": "Crystal Guardians",
+      "number": "100",
+      "era": "EX Series",
+      "family": "EX",
+      "basket": "crystal-guardians",
+      "rarity": "Ultra Rare",
+      "pooled": false,
+      "query": "Celebi Star Crystal Guardians 100",
+      "tier": "rotate",
+      "raw": false,
+      "tcgPlayerId": "84149"
     },
     {
       "key": "stormfront-charizard-103",
@@ -420,36 +420,6 @@
       "tcgPlayerId": "90119"
     },
     {
-      "key": "secret-wonders-charizard-3",
-      "name": "Charizard",
-      "set": "Secret Wonders",
-      "number": "3",
-      "era": "DP & Platinum",
-      "family": "DP",
-      "basket": "secret-wonders",
-      "rarity": "Holo Rare",
-      "pooled": false,
-      "query": "Charizard Secret Wonders 3",
-      "tier": "rotate",
-      "raw": false,
-      "tcgPlayerId": "84189"
-    },
-    {
-      "key": "supreme-victors-articuno-148-148",
-      "name": "Articuno (148)",
-      "set": "Supreme Victors",
-      "number": "148",
-      "era": "DP & Platinum",
-      "family": "DP",
-      "basket": "supreme-victors",
-      "rarity": "Secret Rare",
-      "pooled": false,
-      "query": "Articuno (148) Supreme Victors 148",
-      "tier": "rotate",
-      "raw": false,
-      "tcgPlayerId": "83651"
-    },
-    {
       "key": "majestic-dawn-leafeon-lv-x-99",
       "name": "Leafeon LV.X",
       "set": "Majestic Dawn",
@@ -463,6 +433,36 @@
       "tier": "rotate",
       "raw": false,
       "tcgPlayerId": "86684"
+    },
+    {
+      "key": "majestic-dawn-glaceon-lv-x-98",
+      "name": "Glaceon LV.X",
+      "set": "Majestic Dawn",
+      "number": "98",
+      "era": "DP & Platinum",
+      "family": "DP",
+      "basket": "majestic-dawn",
+      "rarity": "Ultra Rare",
+      "pooled": false,
+      "query": "Glaceon LV.X Majestic Dawn 98",
+      "tier": "rotate",
+      "raw": false,
+      "tcgPlayerId": "85750"
+    },
+    {
+      "key": "majestic-dawn-garchomp-lv-x-97",
+      "name": "Garchomp LV.X",
+      "set": "Majestic Dawn",
+      "number": "97",
+      "era": "DP & Platinum",
+      "family": "DP",
+      "basket": "majestic-dawn",
+      "rarity": "Ultra Rare",
+      "pooled": false,
+      "query": "Garchomp LV.X Majestic Dawn 97",
+      "tier": "rotate",
+      "raw": false,
+      "tcgPlayerId": "85631"
     },
     {
       "key": "base-set-charizard-4",
@@ -507,6 +507,20 @@
       "tcgPlayerId": "42355"
     },
     {
+      "key": "jungle-jolteon-4-4",
+      "name": "Jolteon (4)",
+      "set": "Jungle",
+      "number": "4",
+      "era": "WOTC Vintage",
+      "family": "WOTC",
+      "basket": "jungle",
+      "rarity": "Holo Rare",
+      "pooled": true,
+      "query": "Jolteon (4) Jungle 4",
+      "tier": "rotate",
+      "tcgPlayerId": "45130"
+    },
+    {
       "key": "jungle-snorlax-11-11",
       "name": "Snorlax (11)",
       "set": "Jungle",
@@ -533,20 +547,6 @@
       "query": "Pidgeot (8) Jungle 8",
       "tier": "rotate",
       "tcgPlayerId": "45134"
-    },
-    {
-      "key": "jungle-scyther-10-10",
-      "name": "Scyther (10)",
-      "set": "Jungle",
-      "number": "10",
-      "era": "WOTC Vintage",
-      "family": "WOTC",
-      "basket": "jungle",
-      "rarity": "Holo Rare",
-      "pooled": true,
-      "query": "Scyther (10) Jungle 10",
-      "tier": "rotate",
-      "tcgPlayerId": "45121"
     },
     {
       "key": "fossil-zapdos-15-15",
@@ -591,6 +591,34 @@
       "tcgPlayerId": "44421"
     },
     {
+      "key": "base-set-2-charizard-4",
+      "name": "Charizard",
+      "set": "Base Set 2",
+      "number": "4",
+      "era": "WOTC Vintage",
+      "family": "WOTC",
+      "basket": "base-set-2",
+      "rarity": "Holo Rare",
+      "pooled": false,
+      "query": "Charizard Base Set 2 4",
+      "tier": "rotate",
+      "tcgPlayerId": "42479"
+    },
+    {
+      "key": "base-set-2-blastoise-2",
+      "name": "Blastoise",
+      "set": "Base Set 2",
+      "number": "2",
+      "era": "WOTC Vintage",
+      "family": "WOTC",
+      "basket": "base-set-2",
+      "rarity": "Holo Rare",
+      "pooled": false,
+      "query": "Blastoise Base Set 2 2",
+      "tier": "rotate",
+      "tcgPlayerId": "42464"
+    },
+    {
       "key": "base-set-2-venusaur-18",
       "name": "Venusaur",
       "set": "Base Set 2",
@@ -603,34 +631,6 @@
       "query": "Venusaur Base Set 2 18",
       "tier": "rotate",
       "tcgPlayerId": "42462"
-    },
-    {
-      "key": "base-set-2-alakazam-1",
-      "name": "Alakazam",
-      "set": "Base Set 2",
-      "number": "1",
-      "era": "WOTC Vintage",
-      "family": "WOTC",
-      "basket": "base-set-2",
-      "rarity": "Holo Rare",
-      "pooled": false,
-      "query": "Alakazam Base Set 2 1",
-      "tier": "rotate",
-      "tcgPlayerId": "42444"
-    },
-    {
-      "key": "base-set-2-ninetales-13",
-      "name": "Ninetales",
-      "set": "Base Set 2",
-      "number": "13",
-      "era": "WOTC Vintage",
-      "family": "WOTC",
-      "basket": "base-set-2",
-      "rarity": "Holo Rare",
-      "pooled": false,
-      "query": "Ninetales Base Set 2 13",
-      "tier": "rotate",
-      "tcgPlayerId": "42457"
     },
     {
       "key": "team-rocket-dark-charizard-4-4",
@@ -689,32 +689,32 @@
       "tcgPlayerId": "83875"
     },
     {
-      "key": "gym-heroes-erika-s-dragonair-4",
-      "name": "Erika's Dragonair",
+      "key": "gym-heroes-rocket-s-moltres-12",
+      "name": "Rocket's Moltres",
       "set": "Gym Heroes",
-      "number": "4",
+      "number": "12",
       "era": "WOTC Vintage",
       "family": "WOTC",
       "basket": "gym-heroes",
       "rarity": "Holo Rare",
       "pooled": true,
-      "query": "Erika's Dragonair Gym Heroes 4",
+      "query": "Rocket's Moltres Gym Heroes 12",
       "tier": "rotate",
-      "tcgPlayerId": "85290"
+      "tcgPlayerId": "88781"
     },
     {
-      "key": "gym-heroes-erika-s-clefable-3",
-      "name": "Erika's Clefable",
+      "key": "gym-heroes-rocket-s-scyther-13",
+      "name": "Rocket's Scyther",
       "set": "Gym Heroes",
-      "number": "3",
+      "number": "13",
       "era": "WOTC Vintage",
       "family": "WOTC",
       "basket": "gym-heroes",
       "rarity": "Holo Rare",
       "pooled": true,
-      "query": "Erika's Clefable Gym Heroes 3",
+      "query": "Rocket's Scyther Gym Heroes 13",
       "tier": "rotate",
-      "tcgPlayerId": "85287"
+      "tcgPlayerId": "88788"
     },
     {
       "key": "gym-challenge-blaine-s-charizard-2",
@@ -759,20 +759,6 @@
       "tcgPlayerId": "87531"
     },
     {
-      "key": "neo-genesis-typhlosion-17-17",
-      "name": "Typhlosion (17)",
-      "set": "Neo Genesis",
-      "number": "17",
-      "era": "WOTC Neo & e-Card",
-      "family": "WOTC",
-      "basket": "neo-genesis",
-      "rarity": "Holo Rare",
-      "pooled": true,
-      "query": "Typhlosion (17) Neo Genesis 17",
-      "tier": "rotate",
-      "tcgPlayerId": "90098"
-    },
-    {
       "key": "neo-genesis-pichu-12",
       "name": "Pichu",
       "set": "Neo Genesis",
@@ -801,6 +787,20 @@
       "tcgPlayerId": "90099"
     },
     {
+      "key": "neo-genesis-slowking-14",
+      "name": "Slowking",
+      "set": "Neo Genesis",
+      "number": "14",
+      "era": "WOTC Neo & e-Card",
+      "family": "WOTC",
+      "basket": "neo-genesis",
+      "rarity": "Holo Rare",
+      "pooled": true,
+      "query": "Slowking Neo Genesis 14",
+      "tier": "rotate",
+      "tcgPlayerId": "89311"
+    },
+    {
       "key": "neo-discovery-umbreon-13-13",
       "name": "Umbreon (13)",
       "set": "Neo Discovery",
@@ -815,6 +815,20 @@
       "tcgPlayerId": "90137"
     },
     {
+      "key": "neo-discovery-espeon-1-1",
+      "name": "Espeon (1)",
+      "set": "Neo Discovery",
+      "number": "1",
+      "era": "WOTC Neo & e-Card",
+      "family": "WOTC",
+      "basket": "neo-discovery",
+      "rarity": "Holo Rare",
+      "pooled": true,
+      "query": "Espeon (1) Neo Discovery 1",
+      "tier": "rotate",
+      "tcgPlayerId": "85316"
+    },
+    {
       "key": "neo-discovery-houndour-5-5",
       "name": "Houndour (5)",
       "set": "Neo Discovery",
@@ -827,20 +841,6 @@
       "query": "Houndour (5) Neo Discovery 5",
       "tier": "rotate",
       "tcgPlayerId": "86216"
-    },
-    {
-      "key": "neo-discovery-tyranitar-12-12",
-      "name": "Tyranitar (12)",
-      "set": "Neo Discovery",
-      "number": "12",
-      "era": "WOTC Neo & e-Card",
-      "family": "WOTC",
-      "basket": "neo-discovery",
-      "rarity": "Holo Rare",
-      "pooled": true,
-      "query": "Tyranitar (12) Neo Discovery 12",
-      "tier": "rotate",
-      "tcgPlayerId": "90113"
     },
     {
       "key": "neo-revelation-shining-gyarados-65",
@@ -941,32 +941,46 @@
       "tcgPlayerId": "84196"
     },
     {
-      "key": "legendary-collection-dark-vaporeon-9",
-      "name": "Dark Vaporeon",
+      "key": "legendary-collection-dark-dragonite-5",
+      "name": "Dark Dragonite",
       "set": "Legendary Collection",
-      "number": "9",
+      "number": "5",
       "era": "WOTC Neo & e-Card",
       "family": "WOTC",
       "basket": "legendary-collection",
       "rarity": "Holo Rare",
       "pooled": false,
-      "query": "Dark Vaporeon Legendary Collection 9",
+      "query": "Dark Dragonite Legendary Collection 5",
       "tier": "rotate",
-      "tcgPlayerId": "84664"
+      "tcgPlayerId": "84585"
     },
     {
-      "key": "legendary-collection-venusaur-18",
-      "name": "Venusaur",
+      "key": "legendary-collection-dark-blastoise-4",
+      "name": "Dark Blastoise",
       "set": "Legendary Collection",
-      "number": "18",
+      "number": "4",
       "era": "WOTC Neo & e-Card",
       "family": "WOTC",
       "basket": "legendary-collection",
       "rarity": "Holo Rare",
       "pooled": false,
-      "query": "Venusaur Legendary Collection 18",
+      "query": "Dark Blastoise Legendary Collection 4",
       "tier": "rotate",
-      "tcgPlayerId": "90313"
+      "tcgPlayerId": "84569"
+    },
+    {
+      "key": "expedition-mew-19-19",
+      "name": "Mew (19)",
+      "set": "Expedition",
+      "number": "19",
+      "era": "WOTC Neo & e-Card",
+      "family": "WOTC",
+      "basket": "expedition",
+      "rarity": "Holo Rare",
+      "pooled": false,
+      "query": "Mew (19) Expedition 19",
+      "tier": "rotate",
+      "tcgPlayerId": "87396"
     },
     {
       "key": "expedition-gengar-13-13",
@@ -983,32 +997,18 @@
       "tcgPlayerId": "85671"
     },
     {
-      "key": "expedition-tyranitar-29-29",
-      "name": "Tyranitar (29)",
+      "key": "expedition-dragonite-9-9",
+      "name": "Dragonite (9)",
       "set": "Expedition",
-      "number": "29",
+      "number": "9",
       "era": "WOTC Neo & e-Card",
       "family": "WOTC",
       "basket": "expedition",
       "rarity": "Holo Rare",
       "pooled": false,
-      "query": "Tyranitar (29) Expedition 29",
+      "query": "Dragonite (9) Expedition 9",
       "tier": "rotate",
-      "tcgPlayerId": "90115"
-    },
-    {
-      "key": "expedition-venusaur-30-30",
-      "name": "Venusaur (30)",
-      "set": "Expedition",
-      "number": "30",
-      "era": "WOTC Neo & e-Card",
-      "family": "WOTC",
-      "basket": "expedition",
-      "rarity": "Holo Rare",
-      "pooled": false,
-      "query": "Venusaur (30) Expedition 30",
-      "tier": "rotate",
-      "tcgPlayerId": "90314"
+      "tcgPlayerId": "84910"
     },
     {
       "key": "aquapolis-lugia-149",
@@ -1184,19 +1184,19 @@
       "tcgPlayerId": "87428"
     },
     {
-      "key": "legend-maker-mew-ex-88",
-      "name": "Mew ex",
-      "set": "Legend Maker",
-      "number": "88",
+      "key": "holon-phantoms-mew-111",
+      "name": "Mew",
+      "set": "Holon Phantoms",
+      "number": "111",
       "era": "EX Series",
       "family": "EX",
-      "basket": "legend-maker",
-      "rarity": "Ultra Rare",
+      "basket": "holon-phantoms",
+      "rarity": "Secret Rare",
       "pooled": false,
-      "query": "Mew ex Legend Maker 88",
+      "query": "Mew Holon Phantoms 111",
       "tier": "bench",
       "raw": false,
-      "tcgPlayerId": "87409"
+      "tcgPlayerId": "87400"
     },
     {
       "key": "legend-maker-gengar-5",
@@ -1212,6 +1212,21 @@
       "tier": "bench",
       "raw": false,
       "tcgPlayerId": "85674"
+    },
+    {
+      "key": "dragon-frontiers-dragonite-ex-delta-species-91",
+      "name": "Dragonite ex (Delta Species)",
+      "set": "Dragon Frontiers",
+      "number": "91",
+      "era": "EX Series",
+      "family": "EX",
+      "basket": "dragon-frontiers",
+      "rarity": "Ultra Rare",
+      "pooled": false,
+      "query": "Dragonite ex (Delta Species) Dragon Frontiers 91",
+      "tier": "bench",
+      "raw": false,
+      "tcgPlayerId": "84919"
     },
     {
       "key": "delta-species-tyranitar-delta-species-16",
@@ -1244,6 +1259,36 @@
       "tcgPlayerId": "85503"
     },
     {
+      "key": "power-keepers-vaporeon-star-102",
+      "name": "Vaporeon Star",
+      "set": "Power Keepers",
+      "number": "102",
+      "era": "EX Series",
+      "family": "EX",
+      "basket": "power-keepers",
+      "rarity": "Ultra Rare",
+      "pooled": false,
+      "query": "Vaporeon Star Power Keepers 102",
+      "tier": "bench",
+      "raw": false,
+      "tcgPlayerId": "90292"
+    },
+    {
+      "key": "team-rocket-returns-rocket-s-articuno-ex-96",
+      "name": "Rocket's Articuno ex",
+      "set": "Team Rocket Returns",
+      "number": "96",
+      "era": "EX Series",
+      "family": "EX",
+      "basket": "team-rocket-returns",
+      "rarity": "Ultra Rare",
+      "pooled": false,
+      "query": "Rocket's Articuno ex Team Rocket Returns 96",
+      "tier": "bench",
+      "raw": false,
+      "tcgPlayerId": "88768"
+    },
+    {
       "key": "team-rocket-returns-rocket-s-moltres-ex-100",
       "name": "Rocket's Moltres ex",
       "set": "Team Rocket Returns",
@@ -1257,6 +1302,21 @@
       "tier": "bench",
       "raw": false,
       "tcgPlayerId": "88782"
+    },
+    {
+      "key": "deoxys-rocket-s-raikou-ex-108",
+      "name": "Rocket's Raikou ex",
+      "set": "Deoxys",
+      "number": "108",
+      "era": "EX Series",
+      "family": "EX",
+      "basket": "deoxys",
+      "rarity": "Secret Rare",
+      "pooled": false,
+      "query": "Rocket's Raikou ex Deoxys 108",
+      "tier": "bench",
+      "raw": false,
+      "tcgPlayerId": "88785"
     },
     {
       "key": "team-rocket-returns-rocket-s-suicune-ex-105",
@@ -1274,81 +1334,6 @@
       "tcgPlayerId": "88797"
     },
     {
-      "key": "deoxys-rayquaza-star-107",
-      "name": "Rayquaza Star",
-      "set": "Deoxys",
-      "number": "107",
-      "era": "EX Series",
-      "family": "EX",
-      "basket": "deoxys",
-      "rarity": "Ultra Rare",
-      "pooled": false,
-      "query": "Rayquaza Star Deoxys 107",
-      "tier": "bench",
-      "raw": false,
-      "tcgPlayerId": "88636"
-    },
-    {
-      "key": "dragon-frontiers-charizard-star-delta-species-100",
-      "name": "Charizard Star (Delta Species)",
-      "set": "Dragon Frontiers",
-      "number": "100",
-      "era": "EX Series",
-      "family": "EX",
-      "basket": "dragon-frontiers",
-      "rarity": "Ultra Rare",
-      "pooled": false,
-      "query": "Charizard Star (Delta Species) Dragon Frontiers 100",
-      "tier": "bench",
-      "raw": false,
-      "tcgPlayerId": "84198"
-    },
-    {
-      "key": "dragon-frontiers-mew-star-delta-species-101",
-      "name": "Mew Star (Delta Species)",
-      "set": "Dragon Frontiers",
-      "number": "101",
-      "era": "EX Series",
-      "family": "EX",
-      "basket": "dragon-frontiers",
-      "rarity": "Ultra Rare",
-      "pooled": false,
-      "query": "Mew Star (Delta Species) Dragon Frontiers 101",
-      "tier": "bench",
-      "raw": false,
-      "tcgPlayerId": "87408"
-    },
-    {
-      "key": "crystal-guardians-alakazam-star-99",
-      "name": "Alakazam Star",
-      "set": "Crystal Guardians",
-      "number": "99",
-      "era": "EX Series",
-      "family": "EX",
-      "basket": "crystal-guardians",
-      "rarity": "Ultra Rare",
-      "pooled": false,
-      "query": "Alakazam Star Crystal Guardians 99",
-      "tier": "bench",
-      "raw": false,
-      "tcgPlayerId": "83502"
-    },
-    {
-      "key": "crystal-guardians-celebi-star-100",
-      "name": "Celebi Star",
-      "set": "Crystal Guardians",
-      "number": "100",
-      "era": "EX Series",
-      "family": "EX",
-      "basket": "crystal-guardians",
-      "rarity": "Ultra Rare",
-      "pooled": false,
-      "query": "Celebi Star Crystal Guardians 100",
-      "tier": "bench",
-      "raw": false,
-      "tcgPlayerId": "84149"
-    },
-    {
       "key": "power-keepers-jolteon-star-101",
       "name": "Jolteon Star",
       "set": "Power Keepers",
@@ -1362,6 +1347,21 @@
       "tier": "bench",
       "raw": false,
       "tcgPlayerId": "86351"
+    },
+    {
+      "key": "legend-maker-regice-star-90",
+      "name": "Regice Star",
+      "set": "Legend Maker",
+      "number": "90",
+      "era": "EX Series",
+      "family": "EX",
+      "basket": "legend-maker",
+      "rarity": "Ultra Rare",
+      "pooled": false,
+      "query": "Regice Star Legend Maker 90",
+      "tier": "bench",
+      "raw": false,
+      "tcgPlayerId": "88658"
     },
     {
       "key": "team-magma-vs-team-aqua-absol-96",
@@ -1407,6 +1407,21 @@
       "tier": "bench",
       "raw": false,
       "tcgPlayerId": "85921"
+    },
+    {
+      "key": "secret-wonders-charizard-3",
+      "name": "Charizard",
+      "set": "Secret Wonders",
+      "number": "3",
+      "era": "DP & Platinum",
+      "family": "DP",
+      "basket": "secret-wonders",
+      "rarity": "Holo Rare",
+      "pooled": false,
+      "query": "Charizard Secret Wonders 3",
+      "tier": "bench",
+      "raw": false,
+      "tcgPlayerId": "84189"
     },
     {
       "key": "platinum-blastoise-2",
@@ -1469,6 +1484,21 @@
       "tcgPlayerId": "87422"
     },
     {
+      "key": "supreme-victors-articuno-148-148",
+      "name": "Articuno (148)",
+      "set": "Supreme Victors",
+      "number": "148",
+      "era": "DP & Platinum",
+      "family": "DP",
+      "basket": "supreme-victors",
+      "rarity": "Secret Rare",
+      "pooled": false,
+      "query": "Articuno (148) Supreme Victors 148",
+      "tier": "bench",
+      "raw": false,
+      "tcgPlayerId": "83651"
+    },
+    {
       "key": "supreme-victors-moltres-149-149",
       "name": "Moltres (149)",
       "set": "Supreme Victors",
@@ -1484,21 +1514,6 @@
       "tcgPlayerId": "87563"
     },
     {
-      "key": "majestic-dawn-glaceon-lv-x-98",
-      "name": "Glaceon LV.X",
-      "set": "Majestic Dawn",
-      "number": "98",
-      "era": "DP & Platinum",
-      "family": "DP",
-      "basket": "majestic-dawn",
-      "rarity": "Ultra Rare",
-      "pooled": false,
-      "query": "Glaceon LV.X Majestic Dawn 98",
-      "tier": "bench",
-      "raw": false,
-      "tcgPlayerId": "85750"
-    },
-    {
       "key": "rising-rivals-surfing-pikachu-114",
       "name": "Surfing Pikachu",
       "set": "Rising Rivals",
@@ -1512,21 +1527,6 @@
       "tier": "bench",
       "raw": false,
       "tcgPlayerId": "89644"
-    },
-    {
-      "key": "majestic-dawn-garchomp-lv-x-97",
-      "name": "Garchomp LV.X",
-      "set": "Majestic Dawn",
-      "number": "97",
-      "era": "DP & Platinum",
-      "family": "DP",
-      "basket": "majestic-dawn",
-      "rarity": "Ultra Rare",
-      "pooled": false,
-      "query": "Garchomp LV.X Majestic Dawn 97",
-      "tier": "bench",
-      "raw": false,
-      "tcgPlayerId": "85631"
     },
     {
       "key": "great-encounters-dialga-lv-x-105",
@@ -1617,18 +1617,46 @@
       "tcgPlayerId": "42346"
     },
     {
-      "key": "base-set-raichu-14",
-      "name": "Raichu",
+      "key": "base-set-ninetales-12",
+      "name": "Ninetales",
       "set": "Base Set",
-      "number": "14",
+      "number": "12",
       "era": "WOTC Vintage",
       "family": "WOTC",
       "basket": "base-set",
       "rarity": "Holo Rare",
       "pooled": false,
-      "query": "Raichu Base Set 14",
+      "query": "Ninetales Base Set 12",
       "tier": "bench",
-      "tcgPlayerId": "42354"
+      "tcgPlayerId": "42352"
+    },
+    {
+      "key": "jungle-flareon-3-3",
+      "name": "Flareon (3)",
+      "set": "Jungle",
+      "number": "3",
+      "era": "WOTC Vintage",
+      "family": "WOTC",
+      "basket": "jungle",
+      "rarity": "Holo Rare",
+      "pooled": true,
+      "query": "Flareon (3) Jungle 3",
+      "tier": "bench",
+      "tcgPlayerId": "45129"
+    },
+    {
+      "key": "jungle-scyther-10-10",
+      "name": "Scyther (10)",
+      "set": "Jungle",
+      "number": "10",
+      "era": "WOTC Vintage",
+      "family": "WOTC",
+      "basket": "jungle",
+      "rarity": "Holo Rare",
+      "pooled": true,
+      "query": "Scyther (10) Jungle 10",
+      "tier": "bench",
+      "tcgPlayerId": "45121"
     },
     {
       "key": "jungle-vaporeon-12-12",
@@ -1645,116 +1673,88 @@
       "tcgPlayerId": "45123"
     },
     {
-      "key": "jungle-vileplume-15-15",
-      "name": "Vileplume (15)",
-      "set": "Jungle",
-      "number": "15",
-      "era": "WOTC Vintage",
-      "family": "WOTC",
-      "basket": "jungle",
-      "rarity": "Holo Rare",
-      "pooled": true,
-      "query": "Vileplume (15) Jungle 15",
-      "tier": "bench",
-      "tcgPlayerId": "45126"
-    },
-    {
-      "key": "jungle-victreebel-14-14",
-      "name": "Victreebel (14)",
-      "set": "Jungle",
-      "number": "14",
-      "era": "WOTC Vintage",
-      "family": "WOTC",
-      "basket": "jungle",
-      "rarity": "Holo Rare",
-      "pooled": true,
-      "query": "Victreebel (14) Jungle 14",
-      "tier": "bench",
-      "tcgPlayerId": "45125"
-    },
-    {
-      "key": "fossil-lapras-10-10",
-      "name": "Lapras (10)",
+      "key": "fossil-gengar-5-5",
+      "name": "Gengar (5)",
       "set": "Fossil",
+      "number": "5",
+      "era": "WOTC Vintage",
+      "family": "WOTC",
+      "basket": "fossil",
+      "rarity": "Holo Rare",
+      "pooled": true,
+      "query": "Gengar (5) Fossil 5",
+      "tier": "bench",
+      "tcgPlayerId": "106521"
+    },
+    {
+      "key": "fossil-dragonite-4-4",
+      "name": "Dragonite (4)",
+      "set": "Fossil",
+      "number": "4",
+      "era": "WOTC Vintage",
+      "family": "WOTC",
+      "basket": "fossil",
+      "rarity": "Holo Rare",
+      "pooled": true,
+      "query": "Dragonite (4) Fossil 4",
+      "tier": "bench",
+      "tcgPlayerId": "106520"
+    },
+    {
+      "key": "fossil-hitmonlee-7-7",
+      "name": "Hitmonlee (7)",
+      "set": "Fossil",
+      "number": "7",
+      "era": "WOTC Vintage",
+      "family": "WOTC",
+      "basket": "fossil",
+      "rarity": "Holo Rare",
+      "pooled": true,
+      "query": "Hitmonlee (7) Fossil 7",
+      "tier": "bench",
+      "tcgPlayerId": "106523"
+    },
+    {
+      "key": "base-set-2-mewtwo-10",
+      "name": "Mewtwo",
+      "set": "Base Set 2",
       "number": "10",
       "era": "WOTC Vintage",
       "family": "WOTC",
-      "basket": "fossil",
+      "basket": "base-set-2",
       "rarity": "Holo Rare",
-      "pooled": true,
-      "query": "Lapras (10) Fossil 10",
+      "pooled": false,
+      "query": "Mewtwo Base Set 2 10",
       "tier": "bench",
-      "tcgPlayerId": "44419"
+      "tcgPlayerId": "42445"
     },
     {
-      "key": "fossil-raichu-14-14",
-      "name": "Raichu (14)",
-      "set": "Fossil",
-      "number": "14",
-      "era": "WOTC Vintage",
-      "family": "WOTC",
-      "basket": "fossil",
-      "rarity": "Holo Rare",
-      "pooled": true,
-      "query": "Raichu (14) Fossil 14",
-      "tier": "bench",
-      "tcgPlayerId": "44423"
-    },
-    {
-      "key": "fossil-aerodactyl-1-1",
-      "name": "Aerodactyl (1)",
-      "set": "Fossil",
+      "key": "base-set-2-alakazam-1",
+      "name": "Alakazam",
+      "set": "Base Set 2",
       "number": "1",
       "era": "WOTC Vintage",
       "family": "WOTC",
-      "basket": "fossil",
+      "basket": "base-set-2",
       "rarity": "Holo Rare",
-      "pooled": true,
-      "query": "Aerodactyl (1) Fossil 1",
+      "pooled": false,
+      "query": "Alakazam Base Set 2 1",
       "tier": "bench",
-      "tcgPlayerId": "44418"
+      "tcgPlayerId": "42444"
     },
     {
-      "key": "base-set-2-clefairy-6",
-      "name": "Clefairy",
+      "key": "base-set-2-gyarados-7",
+      "name": "Gyarados",
       "set": "Base Set 2",
-      "number": "6",
+      "number": "7",
       "era": "WOTC Vintage",
       "family": "WOTC",
       "basket": "base-set-2",
       "rarity": "Holo Rare",
       "pooled": false,
-      "query": "Clefairy Base Set 2 6",
+      "query": "Gyarados Base Set 2 7",
       "tier": "bench",
-      "tcgPlayerId": "42483"
-    },
-    {
-      "key": "base-set-2-chansey-3",
-      "name": "Chansey",
-      "set": "Base Set 2",
-      "number": "3",
-      "era": "WOTC Vintage",
-      "family": "WOTC",
-      "basket": "base-set-2",
-      "rarity": "Holo Rare",
-      "pooled": false,
-      "query": "Chansey Base Set 2 3",
-      "tier": "bench",
-      "tcgPlayerId": "42471"
-    },
-    {
-      "key": "base-set-2-poliwrath-15",
-      "name": "Poliwrath",
-      "set": "Base Set 2",
-      "number": "15",
-      "era": "WOTC Vintage",
-      "family": "WOTC",
-      "basket": "base-set-2",
-      "rarity": "Holo Rare",
-      "pooled": false,
-      "query": "Poliwrath Base Set 2 15",
-      "tier": "bench",
-      "tcgPlayerId": "42459"
+      "tcgPlayerId": "42489"
     },
     {
       "key": "team-rocket-dark-raichu-83",
@@ -1785,18 +1785,18 @@
       "tcgPlayerId": "84559"
     },
     {
-      "key": "team-rocket-dark-magneton-11-11",
-      "name": "Dark Magneton (11)",
+      "key": "team-rocket-dark-gyarados-8-8",
+      "name": "Dark Gyarados (8)",
       "set": "Team Rocket",
-      "number": "11",
+      "number": "8",
       "era": "WOTC Vintage",
       "family": "WOTC",
       "basket": "team-rocket",
       "rarity": "Holo Rare",
       "pooled": true,
-      "query": "Dark Magneton (11) Team Rocket 11",
+      "query": "Dark Gyarados (8) Team Rocket 8",
       "tier": "bench",
-      "tcgPlayerId": "84624"
+      "tcgPlayerId": "84606"
     },
     {
       "key": "gym-heroes-sabrina-s-gengar-14",
@@ -1813,60 +1813,32 @@
       "tcgPlayerId": "88874"
     },
     {
-      "key": "gym-heroes-rocket-s-hitmonchan-11",
-      "name": "Rocket's Hitmonchan",
+      "key": "gym-heroes-erika-s-dragonair-4",
+      "name": "Erika's Dragonair",
       "set": "Gym Heroes",
-      "number": "11",
+      "number": "4",
       "era": "WOTC Vintage",
       "family": "WOTC",
       "basket": "gym-heroes",
       "rarity": "Holo Rare",
       "pooled": true,
-      "query": "Rocket's Hitmonchan Gym Heroes 11",
+      "query": "Erika's Dragonair Gym Heroes 4",
       "tier": "bench",
-      "tcgPlayerId": "88773"
+      "tcgPlayerId": "85290"
     },
     {
-      "key": "gym-heroes-lt-surge-s-magneton-8",
-      "name": "Lt. Surge's Magneton",
+      "key": "gym-heroes-brock-s-rhydon-2",
+      "name": "Brock's Rhydon",
       "set": "Gym Heroes",
-      "number": "8",
+      "number": "2",
       "era": "WOTC Vintage",
       "family": "WOTC",
       "basket": "gym-heroes",
       "rarity": "Holo Rare",
       "pooled": true,
-      "query": "Lt. Surge's Magneton Gym Heroes 8",
+      "query": "Brock's Rhydon Gym Heroes 2",
       "tier": "bench",
-      "tcgPlayerId": "86858"
-    },
-    {
-      "key": "gym-challenge-giovanni-s-gyarados-5",
-      "name": "Giovanni's Gyarados",
-      "set": "Gym Challenge",
-      "number": "5",
-      "era": "WOTC Vintage",
-      "family": "WOTC",
-      "basket": "gym-challenge",
-      "rarity": "Holo Rare",
-      "pooled": true,
-      "query": "Giovanni's Gyarados Gym Challenge 5",
-      "tier": "bench",
-      "tcgPlayerId": "85710"
-    },
-    {
-      "key": "gym-challenge-blaine-s-arcanine-1",
-      "name": "Blaine's Arcanine",
-      "set": "Gym Challenge",
-      "number": "1",
-      "era": "WOTC Vintage",
-      "family": "WOTC",
-      "basket": "gym-challenge",
-      "rarity": "Holo Rare",
-      "pooled": true,
-      "query": "Blaine's Arcanine Gym Challenge 1",
-      "tier": "bench",
-      "tcgPlayerId": "83860"
+      "tcgPlayerId": "83978"
     },
     {
       "key": "gym-challenge-erika-s-venusaur-4",
@@ -1883,6 +1855,34 @@
       "tcgPlayerId": "85307"
     },
     {
+      "key": "gym-challenge-blaine-s-arcanine-1",
+      "name": "Blaine's Arcanine",
+      "set": "Gym Challenge",
+      "number": "1",
+      "era": "WOTC Vintage",
+      "family": "WOTC",
+      "basket": "gym-challenge",
+      "rarity": "Holo Rare",
+      "pooled": true,
+      "query": "Blaine's Arcanine Gym Challenge 1",
+      "tier": "bench",
+      "tcgPlayerId": "83860"
+    },
+    {
+      "key": "gym-challenge-giovanni-s-gyarados-5",
+      "name": "Giovanni's Gyarados",
+      "set": "Gym Challenge",
+      "number": "5",
+      "era": "WOTC Vintage",
+      "family": "WOTC",
+      "basket": "gym-challenge",
+      "rarity": "Holo Rare",
+      "pooled": true,
+      "query": "Giovanni's Gyarados Gym Challenge 5",
+      "tier": "bench",
+      "tcgPlayerId": "85710"
+    },
+    {
       "key": "neo-genesis-lugia-9",
       "name": "Lugia",
       "set": "Neo Genesis",
@@ -1895,20 +1895,6 @@
       "query": "Lugia Neo Genesis 9",
       "tier": "bench",
       "tcgPlayerId": "86903"
-    },
-    {
-      "key": "neo-genesis-slowking-14",
-      "name": "Slowking",
-      "set": "Neo Genesis",
-      "number": "14",
-      "era": "WOTC Neo & e-Card",
-      "family": "WOTC",
-      "basket": "neo-genesis",
-      "rarity": "Holo Rare",
-      "pooled": true,
-      "query": "Slowking Neo Genesis 14",
-      "tier": "bench",
-      "tcgPlayerId": "89311"
     },
     {
       "key": "neo-genesis-meganium-11-11",
@@ -1925,18 +1911,32 @@
       "tcgPlayerId": "87287"
     },
     {
-      "key": "neo-discovery-scizor-10-10",
-      "name": "Scizor (10)",
+      "key": "neo-genesis-feraligatr-5-5",
+      "name": "Feraligatr (5)",
+      "set": "Neo Genesis",
+      "number": "5",
+      "era": "WOTC Neo & e-Card",
+      "family": "WOTC",
+      "basket": "neo-genesis",
+      "rarity": "Holo Rare",
+      "pooled": true,
+      "query": "Feraligatr (5) Neo Genesis 5",
+      "tier": "bench",
+      "tcgPlayerId": "85413"
+    },
+    {
+      "key": "neo-discovery-tyranitar-12-12",
+      "name": "Tyranitar (12)",
       "set": "Neo Discovery",
-      "number": "10",
+      "number": "12",
       "era": "WOTC Neo & e-Card",
       "family": "WOTC",
       "basket": "neo-discovery",
       "rarity": "Holo Rare",
       "pooled": true,
-      "query": "Scizor (10) Neo Discovery 10",
+      "query": "Tyranitar (12) Neo Discovery 12",
       "tier": "bench",
-      "tcgPlayerId": "88956"
+      "tcgPlayerId": "90113"
     },
     {
       "key": "neo-discovery-kabutops-6-6",
@@ -1967,46 +1967,46 @@
       "tcgPlayerId": "86197"
     },
     {
-      "key": "neo-revelation-ampharos-1",
-      "name": "Ampharos",
+      "key": "neo-revelation-houndoom-8",
+      "name": "Houndoom",
       "set": "Neo Revelation",
-      "number": "1",
+      "number": "8",
       "era": "WOTC Neo & e-Card",
       "family": "WOTC",
       "basket": "neo-revelation",
       "rarity": "Holo Rare",
       "pooled": true,
-      "query": "Ampharos Neo Revelation 1",
+      "query": "Houndoom Neo Revelation 8",
       "tier": "bench",
-      "tcgPlayerId": "83535"
+      "tcgPlayerId": "86198"
     },
     {
-      "key": "neo-revelation-celebi-3-3",
-      "name": "Celebi (3)",
+      "key": "neo-revelation-ho-oh-7-7",
+      "name": "Ho-oh (7)",
       "set": "Neo Revelation",
-      "number": "3",
+      "number": "7",
       "era": "WOTC Neo & e-Card",
       "family": "WOTC",
       "basket": "neo-revelation",
       "rarity": "Holo Rare",
       "pooled": true,
-      "query": "Celebi (3) Neo Revelation 3",
+      "query": "Ho-oh (7) Neo Revelation 7",
       "tier": "bench",
-      "tcgPlayerId": "84141"
+      "tcgPlayerId": "86118"
     },
     {
-      "key": "neo-revelation-porygon2-12",
-      "name": "Porygon2",
+      "key": "neo-revelation-entei-6-6",
+      "name": "Entei (6)",
       "set": "Neo Revelation",
-      "number": "12",
+      "number": "6",
       "era": "WOTC Neo & e-Card",
       "family": "WOTC",
       "basket": "neo-revelation",
       "rarity": "Holo Rare",
       "pooled": true,
-      "query": "Porygon2 Neo Revelation 12",
+      "query": "Entei (6) Neo Revelation 6",
       "tier": "bench",
-      "tcgPlayerId": "88322"
+      "tcgPlayerId": "85266"
     },
     {
       "key": "neo-destiny-dark-gengar-6",
@@ -2023,20 +2023,6 @@
       "tcgPlayerId": "84599"
     },
     {
-      "key": "neo-destiny-shining-celebi-106",
-      "name": "Shining Celebi",
-      "set": "Neo Destiny",
-      "number": "106",
-      "era": "WOTC Neo & e-Card",
-      "family": "WOTC",
-      "basket": "neo-destiny",
-      "rarity": "Secret Rare",
-      "pooled": true,
-      "query": "Shining Celebi Neo Destiny 106",
-      "tier": "bench",
-      "tcgPlayerId": "89162"
-    },
-    {
       "key": "neo-destiny-shining-raichu-111",
       "name": "Shining Raichu",
       "set": "Neo Destiny",
@@ -2051,46 +2037,60 @@
       "tcgPlayerId": "89169"
     },
     {
-      "key": "legendary-collection-flareon-10",
-      "name": "Flareon",
-      "set": "Legendary Collection",
-      "number": "10",
+      "key": "neo-destiny-shining-kabutops-108",
+      "name": "Shining Kabutops",
+      "set": "Neo Destiny",
+      "number": "108",
       "era": "WOTC Neo & e-Card",
       "family": "WOTC",
-      "basket": "legendary-collection",
-      "rarity": "Holo Rare",
-      "pooled": false,
-      "query": "Flareon Legendary Collection 10",
+      "basket": "neo-destiny",
+      "rarity": "Secret Rare",
+      "pooled": true,
+      "query": "Shining Kabutops Neo Destiny 108",
       "tier": "bench",
-      "tcgPlayerId": "85492"
+      "tcgPlayerId": "89165"
     },
     {
-      "key": "legendary-collection-dark-raichu-7",
-      "name": "Dark Raichu",
+      "key": "legendary-collection-gengar-11",
+      "name": "Gengar",
       "set": "Legendary Collection",
-      "number": "7",
+      "number": "11",
       "era": "WOTC Neo & e-Card",
       "family": "WOTC",
       "basket": "legendary-collection",
       "rarity": "Holo Rare",
       "pooled": false,
-      "query": "Dark Raichu Legendary Collection 7",
+      "query": "Gengar Legendary Collection 11",
       "tier": "bench",
-      "tcgPlayerId": "84646"
+      "tcgPlayerId": "85670"
     },
     {
-      "key": "legendary-collection-dark-persian-6",
-      "name": "Dark Persian",
+      "key": "legendary-collection-dark-vaporeon-9",
+      "name": "Dark Vaporeon",
       "set": "Legendary Collection",
-      "number": "6",
+      "number": "9",
       "era": "WOTC Neo & e-Card",
       "family": "WOTC",
       "basket": "legendary-collection",
       "rarity": "Holo Rare",
       "pooled": false,
-      "query": "Dark Persian Legendary Collection 6",
+      "query": "Dark Vaporeon Legendary Collection 9",
       "tier": "bench",
-      "tcgPlayerId": "84637"
+      "tcgPlayerId": "84664"
+    },
+    {
+      "key": "legendary-collection-venusaur-18",
+      "name": "Venusaur",
+      "set": "Legendary Collection",
+      "number": "18",
+      "era": "WOTC Neo & e-Card",
+      "family": "WOTC",
+      "basket": "legendary-collection",
+      "rarity": "Holo Rare",
+      "pooled": false,
+      "query": "Venusaur Legendary Collection 18",
+      "tier": "bench",
+      "tcgPlayerId": "90313"
     },
     {
       "key": "expedition-blastoise-4-4",
@@ -2107,46 +2107,32 @@
       "tcgPlayerId": "83888"
     },
     {
-      "key": "expedition-ninetales-21-21",
-      "name": "Ninetales (21)",
+      "key": "expedition-tyranitar-29-29",
+      "name": "Tyranitar (29)",
       "set": "Expedition",
-      "number": "21",
+      "number": "29",
       "era": "WOTC Neo & e-Card",
       "family": "WOTC",
       "basket": "expedition",
       "rarity": "Holo Rare",
       "pooled": false,
-      "query": "Ninetales (21) Expedition 21",
+      "query": "Tyranitar (29) Expedition 29",
       "tier": "bench",
-      "tcgPlayerId": "87765"
+      "tcgPlayerId": "90115"
     },
     {
-      "key": "expedition-fearow-11-11",
-      "name": "Fearow (11)",
+      "key": "expedition-poliwrath-24-24",
+      "name": "Poliwrath (24)",
       "set": "Expedition",
-      "number": "11",
+      "number": "24",
       "era": "WOTC Neo & e-Card",
       "family": "WOTC",
       "basket": "expedition",
       "rarity": "Holo Rare",
       "pooled": false,
-      "query": "Fearow (11) Expedition 11",
+      "query": "Poliwrath (24) Expedition 24",
       "tier": "bench",
-      "tcgPlayerId": "85392"
-    },
-    {
-      "key": "aquapolis-houndoom-h11-H11",
-      "name": "Houndoom (H11)",
-      "set": "Aquapolis",
-      "number": "H11",
-      "era": "WOTC Neo & e-Card",
-      "family": "WOTC",
-      "basket": "aquapolis",
-      "rarity": "Holo Rare",
-      "pooled": false,
-      "query": "Houndoom (H11) Aquapolis H11",
-      "tier": "bench",
-      "tcgPlayerId": "86199"
+      "tcgPlayerId": "88271"
     },
     {
       "key": "aquapolis-tyranitar-h28-H28",
@@ -2163,18 +2149,32 @@
       "tcgPlayerId": "90114"
     },
     {
-      "key": "aquapolis-slowking-h22-H22",
-      "name": "Slowking (H22)",
+      "key": "aquapolis-houndoom-h11-H11",
+      "name": "Houndoom (H11)",
       "set": "Aquapolis",
-      "number": "H22",
+      "number": "H11",
       "era": "WOTC Neo & e-Card",
       "family": "WOTC",
       "basket": "aquapolis",
       "rarity": "Holo Rare",
       "pooled": false,
-      "query": "Slowking (H22) Aquapolis H22",
+      "query": "Houndoom (H11) Aquapolis H11",
       "tier": "bench",
-      "tcgPlayerId": "89312"
+      "tcgPlayerId": "86199"
+    },
+    {
+      "key": "aquapolis-espeon-h9-H09",
+      "name": "Espeon (H9)",
+      "set": "Aquapolis",
+      "number": "H09",
+      "era": "WOTC Neo & e-Card",
+      "family": "WOTC",
+      "basket": "aquapolis",
+      "rarity": "Holo Rare",
+      "pooled": false,
+      "query": "Espeon (H9) Aquapolis H09",
+      "tier": "bench",
+      "tcgPlayerId": "85317"
     },
     {
       "key": "skyridge-gyarados-h10-H10",
@@ -2191,32 +2191,32 @@
       "tcgPlayerId": "85987"
     },
     {
-      "key": "skyridge-articuno-h3-H03",
-      "name": "Articuno (H3)",
+      "key": "skyridge-houndoom-h11-H11",
+      "name": "Houndoom (H11)",
       "set": "Skyridge",
-      "number": "H03",
+      "number": "H11",
       "era": "WOTC Neo & e-Card",
       "family": "WOTC",
       "basket": "skyridge",
       "rarity": "Holo Rare",
       "pooled": false,
-      "query": "Articuno (H3) Skyridge H03",
+      "query": "Houndoom (H11) Skyridge H11",
       "tier": "bench",
-      "tcgPlayerId": "83644"
+      "tcgPlayerId": "86200"
     },
     {
-      "key": "skyridge-crobat-147-147",
-      "name": "Crobat (147)",
+      "key": "skyridge-kabutops-150-150",
+      "name": "Kabutops (150)",
       "set": "Skyridge",
-      "number": "147",
+      "number": "150",
       "era": "WOTC Neo & e-Card",
       "family": "WOTC",
       "basket": "skyridge",
       "rarity": "Secret Rare",
       "pooled": false,
-      "query": "Crobat (147) Skyridge 147",
+      "query": "Kabutops (150) Skyridge 150",
       "tier": "bench",
-      "tcgPlayerId": "84485"
+      "tcgPlayerId": "86396"
     },
     {
       "key": "wotc-black-star-promos-dark-charmeleon-w-stamped-32",
@@ -2233,6 +2233,196 @@
       "tcgPlayerId": "180834"
     },
     {
+      "key": "wotc-black-star-promos-mewtwo-12-12",
+      "name": "Mewtwo (12)",
+      "set": "WOTC Black Star Promos",
+      "number": "12",
+      "era": "WOTC Promo",
+      "family": "WOTC",
+      "basket": "wotc-black-star-promos",
+      "rarity": "Promo",
+      "pooled": false,
+      "query": "Mewtwo (12) WOTC Black Star Promos 12",
+      "tier": "bench",
+      "tcgPlayerId": "87416"
+    },
+    {
+      "key": "wotc-black-star-promos-dark-persian-17",
+      "name": "Dark Persian",
+      "set": "WOTC Black Star Promos",
+      "number": "17",
+      "era": "WOTC Promo",
+      "family": "WOTC",
+      "basket": "wotc-black-star-promos",
+      "rarity": "Promo",
+      "pooled": false,
+      "query": "Dark Persian WOTC Black Star Promos 17",
+      "tier": "bench",
+      "tcgPlayerId": "84638"
+    }
+  ],
+  "extra": [
+    {
+      "key": "expedition-blastoise-4-4",
+      "name": "Blastoise (4)",
+      "set": "Expedition",
+      "number": "4",
+      "era": "WOTC Neo & e-Card",
+      "family": "WOTC",
+      "basket": "expedition",
+      "rarity": "Holo Rare",
+      "query": "Blastoise (4) Expedition 4",
+      "tier": "group",
+      "role": "group",
+      "raw": false,
+      "tcgPlayerId": "83888",
+      "since": "2026-09-30"
+    },
+    {
+      "key": "expedition-venusaur-30-30",
+      "name": "Venusaur (30)",
+      "set": "Expedition",
+      "number": "30",
+      "era": "WOTC Neo & e-Card",
+      "family": "WOTC",
+      "basket": "expedition",
+      "rarity": "Holo Rare",
+      "query": "Venusaur (30) Expedition 30",
+      "tier": "group",
+      "role": "group",
+      "raw": false,
+      "tcgPlayerId": "90314",
+      "since": "2026-09-30"
+    },
+    {
+      "key": "gym-challenge-erika-s-venusaur-4",
+      "name": "Erika's Venusaur",
+      "set": "Gym Challenge",
+      "number": "4",
+      "era": "WOTC Vintage",
+      "family": "WOTC",
+      "basket": "gym-challenge",
+      "rarity": "Holo Rare",
+      "query": "Erika's Venusaur Gym Challenge 4",
+      "tier": "group",
+      "role": "group",
+      "raw": false,
+      "tcgPlayerId": "85307",
+      "since": "2026-09-30"
+    },
+    {
+      "key": "neo-destiny-shining-raichu-111",
+      "name": "Shining Raichu",
+      "set": "Neo Destiny",
+      "number": "111",
+      "era": "WOTC Neo & e-Card",
+      "family": "WOTC",
+      "basket": "neo-destiny",
+      "rarity": "Secret Rare",
+      "query": "Shining Raichu Neo Destiny 111",
+      "tier": "group",
+      "role": "group",
+      "raw": false,
+      "tcgPlayerId": "89169",
+      "since": "2026-09-30"
+    },
+    {
+      "key": "team-rocket-dark-raichu-83",
+      "name": "Dark Raichu",
+      "set": "Team Rocket",
+      "number": "83",
+      "era": "WOTC Vintage",
+      "family": "WOTC",
+      "basket": "team-rocket",
+      "rarity": "Secret Rare",
+      "query": "Dark Raichu Team Rocket 83",
+      "tier": "group",
+      "role": "group",
+      "raw": false,
+      "tcgPlayerId": "84647",
+      "since": "2026-09-30"
+    },
+    {
+      "key": "wotc-black-star-promos-pikachu-corocoro-grey-star-0",
+      "name": "Pikachu (Corocoro Grey Star)",
+      "set": "WOTC Black Star Promos",
+      "number": "0",
+      "era": "WOTC Promo",
+      "family": "WOTC",
+      "basket": "wotc-black-star-promos",
+      "rarity": "Promo",
+      "query": "Pikachu (Corocoro Grey Star) WOTC Black Star Promos 0",
+      "tier": "group",
+      "role": "group",
+      "raw": false,
+      "tcgPlayerId": "696103",
+      "since": "2026-09-30"
+    },
+    {
+      "key": "skyridge-raichu-h25-H25",
+      "name": "Raichu (H25)",
+      "set": "Skyridge",
+      "number": "H25",
+      "era": "WOTC Neo & e-Card",
+      "family": "WOTC",
+      "basket": "skyridge",
+      "rarity": "Holo Rare",
+      "query": "Raichu (H25) Skyridge H25",
+      "tier": "group",
+      "role": "group",
+      "raw": false,
+      "tcgPlayerId": "88502",
+      "since": "2026-09-30"
+    },
+    {
+      "key": "wotc-black-star-promos-mewtwo-12-12",
+      "name": "Mewtwo (12)",
+      "set": "WOTC Black Star Promos",
+      "number": "12",
+      "era": "WOTC Promo",
+      "family": "WOTC",
+      "basket": "wotc-black-star-promos",
+      "rarity": "Promo",
+      "query": "Mewtwo (12) WOTC Black Star Promos 12",
+      "tier": "group",
+      "role": "group",
+      "raw": false,
+      "tcgPlayerId": "87416",
+      "since": "2026-09-30"
+    },
+    {
+      "key": "base-set-mewtwo-10",
+      "name": "Mewtwo",
+      "set": "Base Set",
+      "number": "10",
+      "era": "WOTC Vintage",
+      "family": "WOTC",
+      "basket": "base-set",
+      "rarity": "Holo Rare",
+      "query": "Mewtwo Base Set 10",
+      "tier": "group",
+      "role": "group",
+      "raw": false,
+      "tcgPlayerId": "42347",
+      "since": "2026-09-30"
+    },
+    {
+      "key": "wotc-black-star-promos-mew-47-47",
+      "name": "Mew (47)",
+      "set": "WOTC Black Star Promos",
+      "number": "47",
+      "era": "WOTC Promo",
+      "family": "WOTC",
+      "basket": "wotc-black-star-promos",
+      "rarity": "Promo",
+      "query": "Mew (47) WOTC Black Star Promos 47",
+      "tier": "group",
+      "role": "group",
+      "raw": false,
+      "tcgPlayerId": "87397",
+      "since": "2026-09-30"
+    },
+    {
       "key": "wotc-black-star-promos-mew-9-9",
       "name": "Mew (9)",
       "set": "WOTC Black Star Promos",
@@ -2241,26 +2431,866 @@
       "family": "WOTC",
       "basket": "wotc-black-star-promos",
       "rarity": "Promo",
-      "pooled": false,
       "query": "Mew (9) WOTC Black Star Promos 9",
-      "tier": "bench",
-      "tcgPlayerId": "87395"
+      "tier": "group",
+      "role": "group",
+      "raw": false,
+      "tcgPlayerId": "87395",
+      "since": "2026-09-30"
     },
     {
-      "key": "wotc-black-star-promos-eevee-jr-east-stamp-rally-11",
-      "name": "Eevee (JR East Stamp Rally)",
-      "set": "WOTC Black Star Promos",
+      "key": "neo-destiny-dark-gengar-6",
+      "name": "Dark Gengar",
+      "set": "Neo Destiny",
+      "number": "6",
+      "era": "WOTC Neo & e-Card",
+      "family": "WOTC",
+      "basket": "neo-destiny",
+      "rarity": "Holo Rare",
+      "query": "Dark Gengar Neo Destiny 6",
+      "tier": "group",
+      "role": "group",
+      "raw": false,
+      "tcgPlayerId": "84599",
+      "since": "2026-09-30"
+    },
+    {
+      "key": "legendary-collection-gengar-11",
+      "name": "Gengar",
+      "set": "Legendary Collection",
       "number": "11",
+      "era": "WOTC Neo & e-Card",
+      "family": "WOTC",
+      "basket": "legendary-collection",
+      "rarity": "Holo Rare",
+      "query": "Gengar Legendary Collection 11",
+      "tier": "group",
+      "role": "group",
+      "raw": false,
+      "tcgPlayerId": "85670",
+      "since": "2026-09-30"
+    },
+    {
+      "key": "skyridge-gyarados-h10-H10",
+      "name": "Gyarados (H10)",
+      "set": "Skyridge",
+      "number": "H10",
+      "era": "WOTC Neo & e-Card",
+      "family": "WOTC",
+      "basket": "skyridge",
+      "rarity": "Holo Rare",
+      "query": "Gyarados (H10) Skyridge H10",
+      "tier": "group",
+      "role": "group",
+      "raw": false,
+      "tcgPlayerId": "85987",
+      "since": "2026-09-30"
+    },
+    {
+      "key": "base-set-gyarados-6",
+      "name": "Gyarados",
+      "set": "Base Set",
+      "number": "6",
+      "era": "WOTC Vintage",
+      "family": "WOTC",
+      "basket": "base-set",
+      "rarity": "Holo Rare",
+      "query": "Gyarados Base Set 6",
+      "tier": "group",
+      "role": "group",
+      "raw": false,
+      "tcgPlayerId": "42404",
+      "since": "2026-09-30"
+    },
+    {
+      "key": "neo-destiny-light-dragonite-14",
+      "name": "Light Dragonite",
+      "set": "Neo Destiny",
+      "number": "14",
+      "era": "WOTC Neo & e-Card",
+      "family": "WOTC",
+      "basket": "neo-destiny",
+      "rarity": "Holo Rare",
+      "query": "Light Dragonite Neo Destiny 14",
+      "tier": "group",
+      "role": "group",
+      "raw": false,
+      "tcgPlayerId": "86738",
+      "since": "2026-09-30"
+    },
+    {
+      "key": "neo-genesis-lugia-9",
+      "name": "Lugia",
+      "set": "Neo Genesis",
+      "number": "9",
+      "era": "WOTC Neo & e-Card",
+      "family": "WOTC",
+      "basket": "neo-genesis",
+      "rarity": "Holo Rare",
+      "query": "Lugia Neo Genesis 9",
+      "tier": "group",
+      "role": "group",
+      "raw": false,
+      "tcgPlayerId": "86903",
+      "since": "2026-09-30"
+    },
+    {
+      "key": "wotc-black-star-promos-ho-oh-52",
+      "name": "Ho-oh",
+      "set": "WOTC Black Star Promos",
+      "number": "52",
       "era": "WOTC Promo",
       "family": "WOTC",
       "basket": "wotc-black-star-promos",
       "rarity": "Promo",
-      "pooled": false,
-      "query": "Eevee (JR East Stamp Rally) WOTC Black Star Promos 11",
-      "tier": "bench",
-      "tcgPlayerId": "618732"
+      "query": "Ho-oh WOTC Black Star Promos 52",
+      "tier": "group",
+      "role": "group",
+      "raw": false,
+      "tcgPlayerId": "86120",
+      "since": "2026-09-30"
+    },
+    {
+      "key": "aquapolis-tyranitar-h28-H28",
+      "name": "Tyranitar (H28)",
+      "set": "Aquapolis",
+      "number": "H28",
+      "era": "WOTC Neo & e-Card",
+      "family": "WOTC",
+      "basket": "aquapolis",
+      "rarity": "Holo Rare",
+      "query": "Tyranitar (H28) Aquapolis H28",
+      "tier": "group",
+      "role": "group",
+      "raw": false,
+      "tcgPlayerId": "90114",
+      "since": "2026-09-30"
+    },
+    {
+      "key": "expedition-tyranitar-29-29",
+      "name": "Tyranitar (29)",
+      "set": "Expedition",
+      "number": "29",
+      "era": "WOTC Neo & e-Card",
+      "family": "WOTC",
+      "basket": "expedition",
+      "rarity": "Holo Rare",
+      "query": "Tyranitar (29) Expedition 29",
+      "tier": "group",
+      "role": "group",
+      "raw": false,
+      "tcgPlayerId": "90115",
+      "since": "2026-09-30"
+    },
+    {
+      "key": "neo-discovery-tyranitar-12-12",
+      "name": "Tyranitar (12)",
+      "set": "Neo Discovery",
+      "number": "12",
+      "era": "WOTC Neo & e-Card",
+      "family": "WOTC",
+      "basket": "neo-discovery",
+      "rarity": "Holo Rare",
+      "query": "Tyranitar (12) Neo Discovery 12",
+      "tier": "group",
+      "role": "group",
+      "raw": false,
+      "tcgPlayerId": "90113",
+      "since": "2026-09-30"
+    },
+    {
+      "key": "skyridge-vaporeon-h31-H31",
+      "name": "Vaporeon (H31)",
+      "set": "Skyridge",
+      "number": "H31",
+      "era": "WOTC Neo & e-Card",
+      "family": "WOTC",
+      "basket": "skyridge",
+      "rarity": "Holo Rare",
+      "query": "Vaporeon (H31) Skyridge H31",
+      "tier": "group",
+      "role": "group",
+      "raw": false,
+      "tcgPlayerId": "90280",
+      "since": "2026-09-30"
+    },
+    {
+      "key": "aquapolis-espeon-h9-H09",
+      "name": "Espeon (H9)",
+      "set": "Aquapolis",
+      "number": "H09",
+      "era": "WOTC Neo & e-Card",
+      "family": "WOTC",
+      "basket": "aquapolis",
+      "rarity": "Holo Rare",
+      "query": "Espeon (H9) Aquapolis H09",
+      "tier": "group",
+      "role": "group",
+      "raw": false,
+      "tcgPlayerId": "85317",
+      "since": "2026-09-30"
+    },
+    {
+      "key": "neo-destiny-dark-espeon-4",
+      "name": "Dark Espeon",
+      "set": "Neo Destiny",
+      "number": "4",
+      "era": "WOTC Neo & e-Card",
+      "family": "WOTC",
+      "basket": "neo-destiny",
+      "rarity": "Holo Rare",
+      "query": "Dark Espeon Neo Destiny 4",
+      "tier": "group",
+      "role": "group",
+      "raw": false,
+      "tcgPlayerId": "84592",
+      "since": "2026-09-30"
+    },
+    {
+      "key": "legendary-collection-dark-vaporeon-9",
+      "name": "Dark Vaporeon",
+      "set": "Legendary Collection",
+      "number": "9",
+      "era": "WOTC Neo & e-Card",
+      "family": "WOTC",
+      "basket": "legendary-collection",
+      "rarity": "Holo Rare",
+      "query": "Dark Vaporeon Legendary Collection 9",
+      "tier": "group",
+      "role": "group",
+      "raw": false,
+      "tcgPlayerId": "84664",
+      "since": "2026-09-30"
+    },
+    {
+      "key": "gym-heroes-erika-s-dragonair-4",
+      "name": "Erika's Dragonair",
+      "set": "Gym Heroes",
+      "number": "4",
+      "era": "WOTC Vintage",
+      "family": "WOTC",
+      "basket": "gym-heroes",
+      "rarity": "Holo Rare",
+      "query": "Erika's Dragonair Gym Heroes 4",
+      "tier": "group",
+      "role": "group",
+      "raw": false,
+      "tcgPlayerId": "85290",
+      "since": "2026-09-30"
+    },
+    {
+      "key": "skyridge-articuno-h3-H03",
+      "name": "Articuno (H3)",
+      "set": "Skyridge",
+      "number": "H03",
+      "era": "WOTC Neo & e-Card",
+      "family": "WOTC",
+      "basket": "skyridge",
+      "rarity": "Holo Rare",
+      "query": "Articuno (H3) Skyridge H03",
+      "tier": "group",
+      "role": "group",
+      "raw": false,
+      "tcgPlayerId": "83644",
+      "since": "2026-09-30"
+    },
+    {
+      "key": "aquapolis-zapdos-h32-H32",
+      "name": "Zapdos (H32)",
+      "set": "Aquapolis",
+      "number": "H32",
+      "era": "WOTC Neo & e-Card",
+      "family": "WOTC",
+      "basket": "aquapolis",
+      "rarity": "Holo Rare",
+      "query": "Zapdos (H32) Aquapolis H32",
+      "tier": "group",
+      "role": "group",
+      "raw": false,
+      "tcgPlayerId": "90715",
+      "since": "2026-09-30"
+    },
+    {
+      "key": "skyridge-raikou-h26-H26",
+      "name": "Raikou (H26)",
+      "set": "Skyridge",
+      "number": "H26",
+      "era": "WOTC Neo & e-Card",
+      "family": "WOTC",
+      "basket": "skyridge",
+      "rarity": "Holo Rare",
+      "query": "Raikou (H26) Skyridge H26",
+      "tier": "group",
+      "role": "group",
+      "raw": false,
+      "tcgPlayerId": "88531",
+      "since": "2026-09-30"
+    },
+    {
+      "key": "aquapolis-suicune-h25-H25",
+      "name": "Suicune (H25)",
+      "set": "Aquapolis",
+      "number": "H25",
+      "era": "WOTC Neo & e-Card",
+      "family": "WOTC",
+      "basket": "aquapolis",
+      "rarity": "Holo Rare",
+      "query": "Suicune (H25) Aquapolis H25",
+      "tier": "group",
+      "role": "group",
+      "raw": false,
+      "tcgPlayerId": "89598",
+      "since": "2026-09-30"
+    },
+    {
+      "key": "aquapolis-entei-h8-H08",
+      "name": "Entei (H8)",
+      "set": "Aquapolis",
+      "number": "H08",
+      "era": "WOTC Neo & e-Card",
+      "family": "WOTC",
+      "basket": "aquapolis",
+      "rarity": "Holo Rare",
+      "query": "Entei (H8) Aquapolis H08",
+      "tier": "group",
+      "role": "group",
+      "raw": false,
+      "tcgPlayerId": "85267",
+      "since": "2026-09-30"
+    },
+    {
+      "key": "wotc-black-star-promos-entei-34",
+      "name": "Entei",
+      "set": "WOTC Black Star Promos",
+      "number": "34",
+      "era": "WOTC Promo",
+      "family": "WOTC",
+      "basket": "wotc-black-star-promos",
+      "rarity": "Promo",
+      "query": "Entei WOTC Black Star Promos 34",
+      "tier": "group",
+      "role": "group",
+      "raw": false,
+      "tcgPlayerId": "85270",
+      "since": "2026-09-30"
     }
   ],
-  "extra": [],
-  "groups": []
+  "groups": [
+    {
+      "id": "idx:char:charizard:wotc",
+      "kind": "char",
+      "label": "Charizard · WOTC",
+      "base": "Charizard",
+      "scope": "WOTC",
+      "sprite": "https://img.pokemondb.net/sprites/crystal/normal/charizard.png",
+      "members": [
+        "neo-destiny-shining-charizard-107",
+        "base-set-charizard-4",
+        "gym-challenge-blaine-s-charizard-2",
+        "legendary-collection-charizard-3"
+      ]
+    },
+    {
+      "id": "idx:char:blastoise:wotc",
+      "kind": "char",
+      "label": "Blastoise · WOTC",
+      "base": "Blastoise",
+      "scope": "WOTC",
+      "sprite": "https://img.pokemondb.net/sprites/crystal/normal/blastoise.png",
+      "members": [
+        "expedition-blastoise-4-4",
+        "team-rocket-dark-blastoise-3-3",
+        "base-set-blastoise-2",
+        "legendary-collection-dark-blastoise-4"
+      ]
+    },
+    {
+      "id": "idx:char:venusaur:wotc",
+      "kind": "char",
+      "label": "Venusaur · WOTC",
+      "base": "Venusaur",
+      "scope": "WOTC",
+      "sprite": "https://img.pokemondb.net/sprites/crystal/normal/venusaur.png",
+      "members": [
+        "expedition-venusaur-30-30",
+        "gym-challenge-erika-s-venusaur-4",
+        "base-set-venusaur-15",
+        "base-set-2-venusaur-18"
+      ]
+    },
+    {
+      "id": "idx:char:pikachu-raichu:wotc",
+      "kind": "char",
+      "label": "Pikachu & Raichu · WOTC",
+      "base": "Pikachu & Raichu",
+      "scope": "WOTC",
+      "sprite": "https://img.pokemondb.net/sprites/crystal/normal/pikachu.png",
+      "members": [
+        "neo-destiny-shining-raichu-111",
+        "team-rocket-dark-raichu-83",
+        "wotc-black-star-promos-pikachu-corocoro-grey-star-0",
+        "skyridge-raichu-h25-H25"
+      ]
+    },
+    {
+      "id": "idx:char:mewtwo:wotc",
+      "kind": "char",
+      "label": "Mewtwo · WOTC",
+      "base": "Mewtwo",
+      "scope": "WOTC",
+      "sprite": "https://img.pokemondb.net/sprites/crystal/normal/mewtwo.png",
+      "members": [
+        "neo-destiny-shining-mewtwo-109",
+        "gym-challenge-rocket-s-mewtwo-14",
+        "wotc-black-star-promos-mewtwo-12-12",
+        "base-set-mewtwo-10"
+      ]
+    },
+    {
+      "id": "idx:char:mew:wotc",
+      "kind": "char",
+      "label": "Mew · WOTC",
+      "base": "Mew",
+      "scope": "WOTC",
+      "sprite": "https://img.pokemondb.net/sprites/crystal/normal/mew.png",
+      "members": [
+        "expedition-mew-19-19",
+        "wotc-black-star-promos-mew-47-47",
+        "wotc-black-star-promos-mew-9-9"
+      ]
+    },
+    {
+      "id": "idx:char:gengar:wotc",
+      "kind": "char",
+      "label": "Gengar · WOTC",
+      "base": "Gengar",
+      "scope": "WOTC",
+      "sprite": "https://img.pokemondb.net/sprites/crystal/normal/gengar.png",
+      "members": [
+        "skyridge-gengar-h9-H09",
+        "expedition-gengar-13-13",
+        "neo-destiny-dark-gengar-6",
+        "legendary-collection-gengar-11"
+      ]
+    },
+    {
+      "id": "idx:char:gyarados:wotc",
+      "kind": "char",
+      "label": "Gyarados · WOTC",
+      "base": "Gyarados",
+      "scope": "WOTC",
+      "sprite": "https://img.pokemondb.net/sprites/crystal/normal/gyarados.png",
+      "members": [
+        "neo-revelation-shining-gyarados-65",
+        "skyridge-gyarados-h10-H10",
+        "gym-challenge-misty-s-gyarados-13",
+        "base-set-gyarados-6"
+      ]
+    },
+    {
+      "id": "idx:char:dragonite:wotc",
+      "kind": "char",
+      "label": "Dragonite · WOTC",
+      "base": "Dragonite",
+      "scope": "WOTC",
+      "sprite": "https://img.pokemondb.net/sprites/crystal/normal/dragonite.png",
+      "members": [
+        "expedition-dragonite-9-9",
+        "neo-destiny-light-dragonite-14",
+        "team-rocket-dark-dragonite-5-5",
+        "legendary-collection-dark-dragonite-5"
+      ]
+    },
+    {
+      "id": "idx:char:snorlax:wotc",
+      "kind": "char",
+      "label": "Snorlax · WOTC",
+      "base": "Snorlax",
+      "scope": "WOTC",
+      "sprite": "https://img.pokemondb.net/sprites/crystal/normal/snorlax.png",
+      "members": [
+        "wotc-black-star-promos-snorlax-49",
+        "jungle-snorlax-11-11"
+      ]
+    },
+    {
+      "id": "idx:char:lugia:wotc",
+      "kind": "char",
+      "label": "Lugia · WOTC",
+      "base": "Lugia",
+      "scope": "WOTC",
+      "sprite": "https://img.pokemondb.net/sprites/crystal/normal/lugia.png",
+      "members": [
+        "aquapolis-lugia-149",
+        "neo-genesis-lugia-9"
+      ]
+    },
+    {
+      "id": "idx:char:ho-oh:wotc",
+      "kind": "char",
+      "label": "Ho-Oh · WOTC",
+      "base": "Ho-Oh",
+      "scope": "WOTC",
+      "sprite": "https://img.pokemondb.net/sprites/crystal/normal/ho-oh.png",
+      "members": [
+        "skyridge-ho-oh-149",
+        "wotc-black-star-promos-ho-oh-52"
+      ]
+    },
+    {
+      "id": "idx:char:tyranitar:wotc",
+      "kind": "char",
+      "label": "Tyranitar · WOTC",
+      "base": "Tyranitar",
+      "scope": "WOTC",
+      "sprite": "https://img.pokemondb.net/sprites/crystal/normal/tyranitar.png",
+      "members": [
+        "neo-destiny-shining-tyranitar-113",
+        "aquapolis-tyranitar-h28-H28",
+        "expedition-tyranitar-29-29",
+        "neo-discovery-tyranitar-12-12"
+      ]
+    },
+    {
+      "id": "idx:char:umbreon:wotc",
+      "kind": "char",
+      "label": "Umbreon · WOTC",
+      "base": "Umbreon",
+      "scope": "WOTC",
+      "sprite": "https://img.pokemondb.net/sprites/crystal/normal/umbreon.png",
+      "members": [
+        "skyridge-umbreon-h30-H30",
+        "aquapolis-umbreon-h29-H29",
+        "neo-discovery-umbreon-13-13"
+      ]
+    },
+    {
+      "id": "idx:theme:eeveelutions:wotc",
+      "kind": "theme",
+      "label": "Eeveelutions · WOTC",
+      "base": "Eeveelutions",
+      "scope": "WOTC",
+      "sprite": "https://img.pokemondb.net/sprites/crystal/normal/eevee.png",
+      "members": [
+        "skyridge-umbreon-h30-H30",
+        "aquapolis-umbreon-h29-H29",
+        "skyridge-vaporeon-h31-H31",
+        "aquapolis-espeon-h9-H09",
+        "neo-destiny-dark-espeon-4",
+        "legendary-collection-dark-vaporeon-9"
+      ]
+    },
+    {
+      "id": "idx:theme:dragons:wotc",
+      "kind": "theme",
+      "label": "Dragons · WOTC",
+      "base": "Dragons",
+      "scope": "WOTC",
+      "sprite": "https://img.pokemondb.net/sprites/crystal/normal/dragonite.png",
+      "members": [
+        "neo-destiny-shining-charizard-107",
+        "expedition-dragonite-9-9",
+        "base-set-charizard-4",
+        "neo-destiny-light-dragonite-14",
+        "gym-heroes-erika-s-dragonair-4"
+      ]
+    },
+    {
+      "id": "idx:theme:legendary-birds:wotc",
+      "kind": "theme",
+      "label": "Legendary Birds · WOTC",
+      "base": "Legendary Birds",
+      "scope": "WOTC",
+      "sprite": "https://img.pokemondb.net/sprites/crystal/normal/articuno.png",
+      "members": [
+        "aquapolis-lugia-149",
+        "skyridge-ho-oh-149",
+        "neo-genesis-lugia-9",
+        "skyridge-articuno-h3-H03",
+        "aquapolis-zapdos-h32-H32",
+        "gym-heroes-blaine-s-moltres-1"
+      ]
+    },
+    {
+      "id": "idx:theme:legendary-beasts:wotc",
+      "kind": "theme",
+      "label": "Legendary Beasts · WOTC",
+      "base": "Legendary Beasts",
+      "scope": "WOTC",
+      "sprite": "https://img.pokemondb.net/sprites/crystal/normal/suicune.png",
+      "members": [
+        "skyridge-raikou-h26-H26",
+        "aquapolis-suicune-h25-H25",
+        "neo-revelation-suicune-14-14",
+        "aquapolis-entei-h8-H08",
+        "neo-revelation-raikou-13-13",
+        "wotc-black-star-promos-entei-34"
+      ]
+    },
+    {
+      "id": "idx:char:charizard:all",
+      "kind": "char",
+      "label": "Charizard · all eras",
+      "base": "Charizard",
+      "scope": "all",
+      "sprite": "https://img.pokemondb.net/sprites/crystal/normal/charizard.png",
+      "members": [
+        "neo-destiny-shining-charizard-107",
+        "base-set-charizard-4",
+        "gym-challenge-blaine-s-charizard-2",
+        "legendary-collection-charizard-3",
+        "dragon-frontiers-charizard-star-delta-species-100",
+        "stormfront-charizard-103"
+      ]
+    },
+    {
+      "id": "idx:char:blastoise:all",
+      "kind": "char",
+      "label": "Blastoise · all eras",
+      "base": "Blastoise",
+      "scope": "all",
+      "sprite": "https://img.pokemondb.net/sprites/crystal/normal/blastoise.png",
+      "members": [
+        "expedition-blastoise-4-4",
+        "team-rocket-dark-blastoise-3-3",
+        "base-set-blastoise-2",
+        "legendary-collection-dark-blastoise-4",
+        "crystal-guardians-blastoise-delta-species-2",
+        "secret-wonders-blastoise-2"
+      ]
+    },
+    {
+      "id": "idx:char:venusaur:all",
+      "kind": "char",
+      "label": "Venusaur · all eras",
+      "base": "Venusaur",
+      "scope": "all",
+      "sprite": "https://img.pokemondb.net/sprites/crystal/normal/venusaur.png",
+      "members": [
+        "expedition-venusaur-30-30",
+        "gym-challenge-erika-s-venusaur-4",
+        "base-set-venusaur-15",
+        "base-set-2-venusaur-18",
+        "firered-leafgreen-venusaur-ex-112",
+        "supreme-victors-venusaur-13"
+      ]
+    },
+    {
+      "id": "idx:char:pikachu-raichu:all",
+      "kind": "char",
+      "label": "Pikachu & Raichu · all eras",
+      "base": "Pikachu & Raichu",
+      "scope": "all",
+      "sprite": "https://img.pokemondb.net/sprites/crystal/normal/pikachu.png",
+      "members": [
+        "neo-destiny-shining-raichu-111",
+        "team-rocket-dark-raichu-83",
+        "wotc-black-star-promos-pikachu-corocoro-grey-star-0",
+        "skyridge-raichu-h25-H25",
+        "holon-phantoms-pikachu-star-104",
+        "rising-rivals-pikachu-112"
+      ]
+    },
+    {
+      "id": "idx:char:mewtwo:all",
+      "kind": "char",
+      "label": "Mewtwo · all eras",
+      "base": "Mewtwo",
+      "scope": "all",
+      "sprite": "https://img.pokemondb.net/sprites/crystal/normal/mewtwo.png",
+      "members": [
+        "neo-destiny-shining-mewtwo-109",
+        "gym-challenge-rocket-s-mewtwo-14",
+        "wotc-black-star-promos-mewtwo-12-12",
+        "base-set-mewtwo-10",
+        "holon-phantoms-mewtwo-star-103",
+        "legends-awakened-mewtwo-lv-x-144"
+      ]
+    },
+    {
+      "id": "idx:char:mew:all",
+      "kind": "char",
+      "label": "Mew · all eras",
+      "base": "Mew",
+      "scope": "all",
+      "sprite": "https://img.pokemondb.net/sprites/crystal/normal/mew.png",
+      "members": [
+        "expedition-mew-19-19",
+        "wotc-black-star-promos-mew-47-47",
+        "wotc-black-star-promos-mew-9-9",
+        "dragon-frontiers-mew-star-delta-species-101"
+      ]
+    },
+    {
+      "id": "idx:char:gengar:all",
+      "kind": "char",
+      "label": "Gengar · all eras",
+      "base": "Gengar",
+      "scope": "all",
+      "sprite": "https://img.pokemondb.net/sprites/crystal/normal/gengar.png",
+      "members": [
+        "skyridge-gengar-h9-H09",
+        "expedition-gengar-13-13",
+        "neo-destiny-dark-gengar-6",
+        "legendary-collection-gengar-11",
+        "firered-leafgreen-gengar-ex-108",
+        "arceus-gengar-lv-x-97"
+      ]
+    },
+    {
+      "id": "idx:char:gyarados:all",
+      "kind": "char",
+      "label": "Gyarados · all eras",
+      "base": "Gyarados",
+      "scope": "all",
+      "sprite": "https://img.pokemondb.net/sprites/crystal/normal/gyarados.png",
+      "members": [
+        "neo-revelation-shining-gyarados-65",
+        "skyridge-gyarados-h10-H10",
+        "gym-challenge-misty-s-gyarados-13",
+        "base-set-gyarados-6",
+        "deoxys-gyarados-8"
+      ]
+    },
+    {
+      "id": "idx:char:dragonite:all",
+      "kind": "char",
+      "label": "Dragonite · all eras",
+      "base": "Dragonite",
+      "scope": "all",
+      "sprite": "https://img.pokemondb.net/sprites/crystal/normal/dragonite.png",
+      "members": [
+        "expedition-dragonite-9-9",
+        "neo-destiny-light-dragonite-14",
+        "team-rocket-dark-dragonite-5-5",
+        "legendary-collection-dark-dragonite-5",
+        "dragon-dragonite-ex-90",
+        "legends-awakened-dragonite-2"
+      ]
+    },
+    {
+      "id": "idx:char:snorlax:all",
+      "kind": "char",
+      "label": "Snorlax · all eras",
+      "base": "Snorlax",
+      "scope": "all",
+      "sprite": "https://img.pokemondb.net/sprites/crystal/normal/snorlax.png",
+      "members": [
+        "wotc-black-star-promos-snorlax-49",
+        "jungle-snorlax-11-11",
+        "firered-leafgreen-snorlax-15",
+        "rising-rivals-snorlax-lv-x-111"
+      ]
+    },
+    {
+      "id": "idx:char:lugia:all",
+      "kind": "char",
+      "label": "Lugia · all eras",
+      "base": "Lugia",
+      "scope": "all",
+      "sprite": "https://img.pokemondb.net/sprites/crystal/normal/lugia.png",
+      "members": [
+        "aquapolis-lugia-149",
+        "neo-genesis-lugia-9",
+        "unseen-forces-lugia-ex-105"
+      ]
+    },
+    {
+      "id": "idx:char:ho-oh:all",
+      "kind": "char",
+      "label": "Ho-Oh · all eras",
+      "base": "Ho-Oh",
+      "scope": "all",
+      "sprite": "https://img.pokemondb.net/sprites/crystal/normal/ho-oh.png",
+      "members": [
+        "skyridge-ho-oh-149",
+        "wotc-black-star-promos-ho-oh-52",
+        "unseen-forces-ho-oh-ex-104"
+      ]
+    },
+    {
+      "id": "idx:char:tyranitar:all",
+      "kind": "char",
+      "label": "Tyranitar · all eras",
+      "base": "Tyranitar",
+      "scope": "all",
+      "sprite": "https://img.pokemondb.net/sprites/crystal/normal/tyranitar.png",
+      "members": [
+        "neo-destiny-shining-tyranitar-113",
+        "aquapolis-tyranitar-h28-H28",
+        "expedition-tyranitar-29-29",
+        "neo-discovery-tyranitar-12-12",
+        "unseen-forces-tyranitar-ex-111",
+        "mysterious-treasures-tyranitar-17"
+      ]
+    },
+    {
+      "id": "idx:char:umbreon:all",
+      "kind": "char",
+      "label": "Umbreon · all eras",
+      "base": "Umbreon",
+      "scope": "all",
+      "sprite": "https://img.pokemondb.net/sprites/crystal/normal/umbreon.png",
+      "members": [
+        "skyridge-umbreon-h30-H30",
+        "aquapolis-umbreon-h29-H29",
+        "neo-discovery-umbreon-13-13",
+        "delta-species-umbreon-delta-species-17"
+      ]
+    },
+    {
+      "id": "idx:theme:eeveelutions:all",
+      "kind": "theme",
+      "label": "Eeveelutions · all eras",
+      "base": "Eeveelutions",
+      "scope": "all",
+      "sprite": "https://img.pokemondb.net/sprites/crystal/normal/eevee.png",
+      "members": [
+        "skyridge-umbreon-h30-H30",
+        "aquapolis-umbreon-h29-H29",
+        "skyridge-vaporeon-h31-H31",
+        "aquapolis-espeon-h9-H09",
+        "neo-destiny-dark-espeon-4",
+        "legendary-collection-dark-vaporeon-9",
+        "delta-species-umbreon-delta-species-17"
+      ]
+    },
+    {
+      "id": "idx:theme:dragons:all",
+      "kind": "theme",
+      "label": "Dragons · all eras",
+      "base": "Dragons",
+      "scope": "all",
+      "sprite": "https://img.pokemondb.net/sprites/crystal/normal/dragonite.png",
+      "members": [
+        "neo-destiny-shining-charizard-107",
+        "expedition-dragonite-9-9",
+        "base-set-charizard-4",
+        "neo-destiny-light-dragonite-14",
+        "gym-heroes-erika-s-dragonair-4",
+        "dragon-frontiers-charizard-star-delta-species-100",
+        "dragon-dragonite-ex-90",
+        "stormfront-charizard-103",
+        "legends-awakened-dragonite-2"
+      ]
+    },
+    {
+      "id": "idx:theme:legendary-birds:all",
+      "kind": "theme",
+      "label": "Legendary Birds · all eras",
+      "base": "Legendary Birds",
+      "scope": "all",
+      "sprite": "https://img.pokemondb.net/sprites/crystal/normal/articuno.png",
+      "members": [
+        "aquapolis-lugia-149",
+        "skyridge-ho-oh-149",
+        "neo-genesis-lugia-9",
+        "skyridge-articuno-h3-H03",
+        "aquapolis-zapdos-h32-H32",
+        "gym-heroes-blaine-s-moltres-1",
+        "unseen-forces-lugia-ex-105",
+        "unseen-forces-ho-oh-ex-104"
+      ]
+    }
+  ]
 }

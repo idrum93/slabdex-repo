@@ -1,8 +1,8 @@
 {
-  "lastRun": "2026-09-30T02:17:58.614Z",
+  "lastRun": "2026-09-30T02:56:18.305Z",
   "kind": "discovery",
-  "creditsSpent": 3692,
-  "dailyRemaining": 9888,
+  "creditsSpent": 2,
+  "dailyRemaining": 9847,
   "updated": 78,
   "log": [
     "  gym-challenge-blaine-s-arcanine-1: psa8 27 clean days (Unl; +14 1st Ed), median 221.17",
@@ -62,8 +62,8 @@
     "  wotc-black-star-promos-mewtwo-12-12: psa8 22 clean days, 4 junk, median 285",
     "  wotc-black-star-promos-dark-persian-17: psa8 34 clean days, 10 junk, median 189.99",
     "History reach: earliest point 2026-04-03 (180 days back; requested 180)",
-    "Chose 78 cards across 32 sets.",
-    "Grade depth (cards scoreable / clean sale days, last 90D): psa7 33/679 · psa8 41/892 · psa9 27/578 · psa10 4/126 → default psa8",
-    "Budget after the paid plan: 78 basket cards (EX 18, DP 12, WOTC 48) + 0 index-only ≈ 68 credits/day of 100."
+    "Chose 78 cards across 33 sets.",
+    "Grade depth (cards scoreable / clean sale days, last 90D): psa7 38/758 · psa8 47/1003 · psa9 28/634 · psa10 4/131 → default psa8",
+    "Budget after the paid plan: 78 basket cards (EX 18, DP 12, WOTC 48) + 32 index-only ≈ 89 credits/day of 100."
   ]
 }

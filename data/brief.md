@@ -2,121 +2,121 @@
 
 ## Consensus across grades (RAW NM, PSA 7, PSA 8, PSA 9)
 
-- **Grades agree ▲:** Dragon Frontiers [PSA 7, PSA 8, PSA 9]; Jungle [PSA 7, PSA 8, PSA 9]; Aquapolis [PSA 7, PSA 8, PSA 9]; Unseen Forces [PSA 8, PSA 9]
-- **Grades agree ▼:** WOTC Black Star Promos [PSA 7, PSA 8, PSA 9]
-- **Grades split:** Fossil [▲ PSA 8, PSA 9 / ▼ RAW, PSA 7]; Team Rocket [▲ RAW / ▼ PSA 8]; Gym Challenge [▲ RAW / ▼ PSA 7, PSA 8, PSA 9]
-- **RAW vs graded:** Neo Destiny: graded +11% 30D, RAW -10%
-- **Characters agree ▲:** Lugia · all eras [RAW, PSA 8, PSA 9]; Dragonite · all eras [RAW, PSA 7, PSA 8]; Blastoise · all eras [RAW, PSA 8]; Mewtwo · all eras [PSA 7, PSA 9]
-- **Characters agree ▼:** Pikachu & Raichu · all eras [PSA 7, PSA 8, PSA 9]
+- **Grades agree ▲:** FireRed & LeafGreen [PSA 7, PSA 8, PSA 9]; Aquapolis [PSA 7, PSA 8, PSA 9]; Supreme Victors [PSA 7, PSA 8]; Unseen Forces [PSA 8, PSA 9]
+- **Grades agree ▼:** Rising Rivals [PSA 7, PSA 9]; WOTC Black Star Promos [PSA 8, PSA 9]
+- **Grades split:** Jungle [▲ PSA 8, PSA 9 / ▼ RAW, PSA 7]; Fossil [▲ PSA 9 / ▼ RAW, PSA 7]; Team Rocket [▲ RAW / ▼ PSA 8]
+- **RAW vs graded:** Jungle: graded +19% 30D, RAW -2%; Neo Destiny: graded +11% 30D, RAW -10%; Skyridge: graded +14% 30D, RAW 0%
+- **Characters agree ▲:** Lugia · all eras [RAW, PSA 8, PSA 9]; Dragonite · all eras [RAW, PSA 7, PSA 8]; Mewtwo · all eras [PSA 7, PSA 9]; Blastoise · all eras [RAW, PSA 8]
+- **Characters agree ▼:** Pikachu & Raichu · all eras [PSA 8, PSA 9]
 - **Themes agree ▲:** Dragons · all eras [PSA 7, PSA 8, PSA 9]; Legendary Birds · all eras [RAW, PSA 8, PSA 9]
-- **Eras:** WOTC Neo & e-Card ▲2 ▼0; DP & Platinum ▲2 ▼0; EX Series ▲2 ▼1; WOTC Vintage ▲1 ▼1; WOTC Promo ▲0 ▼3
-- **Cards agree ▲:** Snorlax (11) 1st Ed · Jungle [RAW, PSA 7, PSA 8, PSA 9]; Suicune (14) 1st Ed · Neo Revelation [RAW, PSA 7, PSA 8]; Shining Tyranitar 1st Ed · Neo Destiny [RAW, PSA 8, PSA 9]
-- **Lead-lag check:** No reliable RAW→graded lead yet (25 weeks of data; best PSA 7 at 2w, r 0.49 vs 0.51 needed).
+- **Eras:** EX Series ▲3 ▼0; DP & Platinum ▲2 ▼0; WOTC Vintage ▲1 ▼0; WOTC Neo & e-Card ▲2 ▼1; WOTC Promo ▲0 ▼2
+- **Cards agree ▲:** Suicune (14) 1st Ed · Neo Revelation [RAW, PSA 7, PSA 8]; Shining Tyranitar 1st Ed · Neo Destiny [RAW, PSA 8, PSA 9]; Dragonite ex · Dragon [PSA 7, PSA 8, PSA 9]
+- **Lead-lag check:** No reliable RAW→graded lead yet (25 weeks of data; best PSA 7 at 2w, r 0.37 vs 0.51 needed).
 
-## PSA 8 — as of 2026-09-28 (78 cards, 41 with enough data to score)
+## PSA 8 — as of 2026-09-29 (78 cards, 47 with enough data to score)
 
-- **Market:** All tracked 139 · +15% 30D · +19% 90D
-- **Era families:** EX 197 · +31% 30D; DP & Platinum 151 · +16% 30D; WOTC 119 · +9% 30D
+- **Market:** All tracked 140 · +14% 30D · +19% 90D
+- **Era families:** EX 208 · +32% 30D; DP & Platinum 151 · +17% 30D; WOTC 119 · +7% 30D
 - **Leading set:** Unseen Forces 201, +60% in 30D
-- **Strongest signals:** Legendary Collection 92; FireRed & LeafGreen 85; Fossil 75
-- **Ramping up:** Jungle (30D +29%, +54 pts faster than prior 30D); Unseen Forces (30D +60%, +52 pts faster than prior 30D)
-- **Swings widening:** Base Set (30D volatility 1.5× its 90D); Crystal Guardians (30D volatility 1.5× its 90D)
-- **Lagging:** WOTC Black Star Promos 16; Gym Heroes 26; Gym Challenge -11% 30D
-- **Eras:** EX Series +31%; DP & Platinum +16%; WOTC Neo & e-Card +11%; WOTC Vintage +8%; WOTC Promo -4%
-- **Leading characters:** Lugia · all eras +23% 30D; Tyranitar · all eras +23% 30D; Snorlax · all eras +23% 30D
-- **Characters ramping:** Snorlax · all eras (+35 pts faster than prior 30D); Tyranitar · all eras (+28 pts faster than prior 30D)
-- **Trailing characters:** Gyarados · all eras -10% 30D; Pikachu & Raichu · all eras -2% 30D
-- **Themes:** Dragons · all eras +19%; Legendary Birds · all eras +16%; Eeveelutions · all eras +9%; Legendary Beasts · WOTC +8%
-- **Cards to note:** Dragonite ex (Dragon): extended, +87% 30D, +64% vs its set, sales picking up; Gengar ex (FireRed & LeafGreen): extended, +79% 30D, +41% vs its set, sales picking up; Blastoise (Base Set): momentum turning up on rising sales (not yet extended)
+- **Strongest signals:** Legendary Collection 93; FireRed & LeafGreen 85; Supreme Victors 76
+- **Ramping up:** Jungle (30D +19%, +56 pts faster than prior 30D); Unseen Forces (30D +60%, +52 pts faster than prior 30D)
+- **Swings widening:** Crystal Guardians (30D volatility 1.5× its 90D); Base Set (30D volatility 1.5× its 90D)
+- **Lagging:** Gym Challenge 21; Gym Heroes 26
+- **Eras:** EX Series +32%; DP & Platinum +17%; WOTC Neo & e-Card +11%; WOTC Vintage +3%; WOTC Promo -0%
+- **Leading characters:** Tyranitar · all eras +23% 30D; Lugia · all eras +23% 30D; Blastoise · all eras +18% 30D
+- **Characters ramping:** Tyranitar · all eras (+28 pts faster than prior 30D); Blastoise · all eras (+27 pts faster than prior 30D)
+- **Trailing characters:** Gyarados · WOTC -13% 30D; Pikachu & Raichu · all eras -7% 30D
+- **Themes:** Dragons · all eras +17%; Legendary Birds · all eras +16%; Eeveelutions · all eras +14%; Legendary Beasts · WOTC +6%
+- **Cards to note:** Dragonite ex (Dragon): extended, +87% 30D, +65% vs its set; Rocket's Mewtwo Unl (Gym Challenge): improving, +17% 30D, +32% vs its set; Mew (47) (WOTC Black Star Promos): momentum turning up on rising sales (not yet extended)
 
-## RAW NM — as of 2026-09-29 (47 cards, 47 with enough data to score)
+## RAW NM — as of 2026-09-29 (48 cards, 48 with enough data to score)
 
-- **Market:** All tracked 118 · +5% 30D · +5% 90D
+- **Market:** All tracked 121 · +6% 30D · +6% 90D
 - **Leading set:** Legendary Collection 147, +44% in 30D
-- **Strongest signals:** Team Rocket 67; Gym Challenge 62; Neo Genesis 60
+- **Strongest signals:** Base Set 2 75; Team Rocket 67; Gym Challenge 61
 - **Ramping up:** Aquapolis (30D +12%, +77 pts faster than prior 30D); Legendary Collection (30D +44%, +45 pts faster than prior 30D)
 - **Swings widening:** Expedition (30D volatility 1.7× its 90D); Legendary Collection (30D volatility 1.7× its 90D)
-- **Lagging:** Neo Destiny 10; Fossil 24
-- **Eras:** WOTC Promo +15%; WOTC Neo & e-Card +7%; WOTC Vintage +2%
+- **Lagging:** Neo Destiny 10; Jungle 16
+- **Eras:** WOTC Promo +15%; WOTC Neo & e-Card +7%; WOTC Vintage +3%
 - **Leading characters:** Lugia · all eras +40% 30D; Charizard · all eras +21% 30D; Blastoise · all eras +17% 30D
 - **Characters ramping:** Lugia · all eras (+40 pts faster than prior 30D); Charizard · all eras (+22 pts faster than prior 30D)
 - **Trailing characters:** Tyranitar · all eras -32% 30D; Umbreon · all eras +0% 30D
-- **Themes:** Legendary Birds · all eras +12%; Dragons · all eras +9%; Legendary Beasts · WOTC +4%; Eeveelutions · all eras +0%
-- **Cards to note:** Shining Tyranitar 1st Ed (Neo Destiny): improving, +0% 30D, +11% vs its set; Zapdos (15) 1st Ed (Fossil): extended, +14% 30D, +11% vs its set, sales picking up
+- **Themes:** Legendary Birds · all eras +12%; Dragons · all eras +8%; Legendary Beasts · WOTC +4%; Eeveelutions · all eras +0%
+- **Cards to note:** Vaporeon (12) 1st Ed (Jungle): extended, +68% 30D, +73% vs its set, sales picking up; Mewtwo (Base Set 2): extended, +32% 30D, +20% vs its set, sales picking up
 
-## PSA 7 — as of 2026-09-29 (77 cards, 32 with enough data to score)
+## PSA 7 — as of 2026-09-29 (77 cards, 37 with enough data to score)
 
-- **Market:** All tracked 137 · +8% 30D · +21% 90D
-- **Era families:** DP & Platinum 176 · +32% 30D; EX 162 · +11% 30D; WOTC 119 · +2% 30D
-- **Leading set:** Majestic Dawn 191, +43% in 30D
-- **Strongest signals:** Base Set 75; Jungle 71; Dragon Frontiers 70
-- **Ramping up:** Majestic Dawn (30D +43%, +38 pts faster than prior 30D); Skyridge (30D +5%, +34 pts faster than prior 30D)
-- **Swings widening:** Gym Heroes (30D volatility 1.7× its 90D); Majestic Dawn (30D volatility 1.6× its 90D)
-- **Lagging:** Neo Revelation 13; Neo Genesis 13; Fossil -15% 30D
-- **Eras:** DP & Platinum +32%; EX Series +11%; WOTC Vintage +3%; WOTC Promo +2%; WOTC Neo & e-Card +1%
-- **Leading characters:** Venusaur · all eras +16% 30D; Gengar · all eras +16% 30D; Mewtwo · all eras +14% 30D
-- **Characters ramping:** Gengar · all eras (+24 pts faster than prior 30D); Venusaur · all eras (+18 pts faster than prior 30D)
+- **Market:** All tracked 173 · +6% 30D · +21% 90D
+- **Era families:** DP & Platinum 155 · +18% 30D; EX 164 · +14% 30D; WOTC 150 · -1% 30D
+- **Leading set:** Supreme Victors 148, +39% in 30D
+- **Strongest signals:** Supreme Victors 78; Base Set 75; Dragon Frontiers 73
+- **Ramping up:** Supreme Victors (30D +39%, +39 pts faster than prior 30D); Legends Awakened (30D +35%, +30 pts faster than prior 30D)
+- **Swings widening:** Supreme Victors (30D volatility 1.6× its 90D); Legends Awakened (30D volatility 1.6× its 90D)
+- **Lagging:** Neo Revelation 14; Neo Genesis 15; Jungle -25% 30D; Fossil -15% 30D
+- **Eras:** DP & Platinum +18%; EX Series +14%; WOTC Promo +2%; WOTC Neo & e-Card +1%; WOTC Vintage -3%
+- **Leading characters:** Gengar · all eras +24% 30D; Venusaur · all eras +16% 30D; Mewtwo · all eras +14% 30D
+- **Characters ramping:** Gengar · all eras (+18 pts faster than prior 30D); Venusaur · all eras (+18 pts faster than prior 30D)
 - **Trailing characters:** Tyranitar · all eras -6% 30D; Umbreon · all eras +2% 30D
-- **Themes:** Legendary Birds · all eras +8%; Dragons · all eras +6%; Eeveelutions · all eras +3%; Legendary Beasts · WOTC -3%
+- **Themes:** Eeveelutions · all eras +7%; Legendary Birds · all eras +6%; Dragons · all eras +6%; Legendary Beasts · WOTC -4%
 - **Cards to note:** Suicune (14) 1st Ed (Neo Revelation): extended, +33% 30D, +39% vs its set, sales picking up; Nidoking (150) (Aquapolis): extended, +29% 30D, +23% vs its set; Blaine's Charizard Unl (Gym Challenge): momentum turning up on rising sales (not yet extended)
 
-## PSA 9 — as of 2026-09-29 (78 cards, 27 with enough data to score)
+## PSA 9 — as of 2026-09-29 (78 cards, 28 with enough data to score)
 
-- **Market:** All tracked 134 · +12% 30D · +21% 90D
-- **Era families:** EX 157 · +24% 30D; DP & Platinum 129 · +14% 30D; WOTC 124 · +8% 30D
-- **Leading set:** Unseen Forces 173, +53% in 30D
-- **Strongest signals:** Unseen Forces 84; Jungle 75; Fossil 75
-- **Ramping up:** Jungle (30D +32%, +68 pts faster than prior 30D); Neo Revelation (30D +43%, +55 pts faster than prior 30D)
-- **Swings widening:** Gym Heroes (30D volatility 1.7× its 90D); Majestic Dawn (30D volatility 1.7× its 90D)
+- **Market:** All tracked 136 · +13% 30D · +23% 90D
+- **Era families:** EX 149 · +22% 30D; DP & Platinum 133 · +12% 30D; WOTC 127 · +11% 30D
+- **Leading set:** Jungle 135, +64% in 30D
+- **Strongest signals:** Unseen Forces 84; Jungle 83; Fossil 75
+- **Ramping up:** Jungle (30D +64%, +76 pts faster than prior 30D); Neo Revelation (30D +43%, +55 pts faster than prior 30D)
+- **Swings widening:** Expedition (30D volatility 1.7× its 90D); Supreme Victors (30D volatility 1.7× its 90D)
 - **Lagging:** Gym Challenge 10; Legendary Collection 18
-- **Eras:** EX Series +24%; DP & Platinum +14%; WOTC Neo & e-Card +12%; WOTC Vintage +6%; WOTC Promo -7%
-- **Leading characters:** Snorlax · all eras +60% 30D; Lugia · all eras +45% 30D; Gengar · all eras +38% 30D
-- **Characters ramping:** Snorlax · all eras (+83 pts faster than prior 30D); Gengar · all eras (+25 pts faster than prior 30D)
+- **Eras:** EX Series +22%; WOTC Neo & e-Card +15%; DP & Platinum +12%; WOTC Vintage +8%; WOTC Promo -7%
+- **Leading characters:** Gengar · all eras +62% 30D; Snorlax · all eras +58% 30D; Lugia · all eras +45% 30D
+- **Characters ramping:** Snorlax · all eras (+89 pts faster than prior 30D); Gengar · all eras (+42 pts faster than prior 30D)
 - **Trailing characters:** Mew · all eras -5% 30D; Charizard · all eras -3% 30D
-- **Themes:** Legendary Beasts · WOTC +25%; Legendary Birds · all eras +25%; Dragons · all eras +17%; Eeveelutions · all eras +3%
+- **Themes:** Legendary Beasts · WOTC +30%; Legendary Birds · all eras +22%; Dragons · all eras +17%; Eeveelutions · all eras +8%
 - **Cards to note:** Ho-Oh ex (Unseen Forces): extended, +94% 30D, +27% vs its set, sales picking up; Blaine's Charizard Unl (Gym Challenge): extended, +16% 30D, +26% vs its set; Suicune (14) 1st Ed (Neo Revelation): momentum turning up on rising sales (not yet extended)
 
-## PSA 10 — as of 2026-09-28 (50 cards, 4 with enough data to score)
+## PSA 10 — as of 2026-09-28 (53 cards, 4 with enough data to score)
 
-- **Data:** Too few PSA 10 sales to read momentum yet (4/50 cards scoreable). Try another grade.
+- **Data:** Too few PSA 10 sales to read momentum yet (4/53 cards scoreable). Try another grade.
 
 _Heuristic read of trend, momentum and relative strength from clean eBay graded sales (PSA) and TCGplayer raw Near Mint prices. Not financial advice._
 
 ## Setup backtest · PSA 8 · 30D excess vs market
 
-No setup is confirmed yet. 2 look promising (p < 0.05 alone) but don't survive correction for testing 60 setups, so they may be luck.
+No setup is confirmed yet. 6 look promising (p < 0.05 alone) but don't survive correction for testing 59 setups, so they may be luck.
 
-Baseline (all card-days, entry at next sales): -2.3% vs market on average, 44% beat the market, 17% by 15%+. "vs peers" = versus other tracked cards over the same dates.
+Baseline (all card-days, entry at next sales): -2.3% vs market on average, 45% beat the market, 18% by 15%+. "vs peers" = versus other tracked cards over the same dates.
 
 ### Setups firing now (last 7 days)
 
-- **Venusaur ex** (FireRed & LeafGreen) — Px>SMA50 + Score≥55 within 7d, 1d ago · promising · hist. +7.2% vs peers, 64% beat typical peer, n 44
-- **Umbreon (Delta Species)** (Delta Species) — Px>SMA50 + Score≥55 within 7d, 1d ago · promising · hist. +7.2% vs peers, 64% beat typical peer, n 44
-- **Zapdos (15)** (Fossil) — Px>SMA50 + Score≥55 within 7d, 7d ago · promising · hist. +7.2% vs peers, 64% beat typical peer, n 44
-- **Misty's Gyarados** (Gym Challenge) — Px>SMA50 + Score≥55 within 7d, 6d ago · promising · hist. +7.2% vs peers, 64% beat typical peer, n 44
-- **Shining Gyarados** (Neo Revelation) — Px>SMA50 + Score≥55 within 7d, 6d ago · promising · hist. +7.2% vs peers, 64% beat typical peer, n 44
-- **Raikou (13)** (Neo Revelation) — Px>SMA50 + Score≥55 within 7d, 4d ago · promising · hist. +7.2% vs peers, 64% beat typical peer, n 44
-- **Raikou (13)** (Neo Revelation) — Px>SMA50 + Score≥55 within 7d, 6d ago · promising · hist. +7.2% vs peers, 64% beat typical peer, n 44
-- **Shining Charizard** (Neo Destiny) — Px>SMA50 + Score≥55 within 7d, 6d ago · promising · hist. +7.2% vs peers, 64% beat typical peer, n 44
-- **Charizard** (Legendary Collection) — Px>SMA50 + Score≥55 within 7d, 5d ago · promising · hist. +7.2% vs peers, 64% beat typical peer, n 44
-- **Mewtwo (12)** (WOTC Black Star Promos) — Px>SMA50 + Score≥55 within 7d, 7d ago · promising · hist. +7.2% vs peers, 64% beat typical peer, n 44
-- **Mew (47)** (WOTC Black Star Promos) — Px>SMA50 + Score≥55 within 7d, 5d ago · promising · hist. +7.2% vs peers, 64% beat typical peer, n 44
-- **Light Dragonite** (Neo Destiny) — Px>SMA50 + Score≥55 within 7d, 4d ago · promising · hist. +7.2% vs peers, 64% beat typical peer, n 44
+- **Umbreon (Delta Species) · holo+rev mixed** (Delta Species) — Px>SMA50 + Score≥68 within 7d, 2d ago · promising · hist. +10.6% vs peers, 57% beat typical peer, n 40
+- **Scyther (10) · 1st+Unl mixed** (Jungle) — Px>SMA50 + Score≥68 within 7d, 1d ago · promising · hist. +10.6% vs peers, 57% beat typical peer, n 40
+- **Misty's Gyarados · 1st+Unl mixed** (Gym Challenge) — Px>SMA50 + Score≥68 within 7d, 5d ago · promising · hist. +10.6% vs peers, 57% beat typical peer, n 40
+- **Raikou (13) · 1st Ed** (Neo Revelation) — Px>SMA50 + Score≥68 within 7d, 1d ago · promising · hist. +10.6% vs peers, 57% beat typical peer, n 40
+- **Charizard · holo+rev mixed** (Legendary Collection) — Px>SMA50 + Score≥68 within 7d, 6d ago · promising · hist. +10.6% vs peers, 57% beat typical peer, n 40
+- **Mew (47)** (WOTC Black Star Promos) — Px>SMA50 + Score≥68 within 7d, 6d ago · promising · hist. +10.6% vs peers, 57% beat typical peer, n 40
+- **Light Dragonite · 1st+Unl mixed** (Neo Destiny) — Px>SMA50 + Score≥68 within 7d, 5d ago · promising · hist. +10.6% vs peers, 57% beat typical peer, n 40
+- **Dark Espeon · 1st+Unl mixed** (Neo Destiny) — Px>SMA50 + Score≥68 within 7d, 6d ago · promising · hist. +10.6% vs peers, 57% beat typical peer, n 40
+- **Venusaur ex** (FireRed & LeafGreen) — Px>SMA50 + Score≥55 within 7d, 2d ago · promising · hist. +8.8% vs peers, 62% beat typical peer, n 47
+- **Shining Gyarados · 1st+Unl mixed** (Neo Revelation) — Px>SMA50 + Score≥55 within 7d, 7d ago · promising · hist. +8.8% vs peers, 62% beat typical peer, n 47
+- **Raikou (13) · Unl** (Neo Revelation) — Px>SMA50 + Score≥55 within 7d, 7d ago · promising · hist. +8.8% vs peers, 62% beat typical peer, n 47
+- **Shining Charizard · 1st+Unl mixed** (Neo Destiny) — Px>SMA50 + Score≥55 within 7d, 7d ago · promising · hist. +8.8% vs peers, 62% beat typical peer, n 47
 
 | Setup | Status | Events | Cards | vs peers | vs market | Beat typical peer | 15%+ | p | q | Halves (vs peers) |
 |---|---|---|---|---|---|---|---|---|---|---|
-| Px>SMA50 + Score≥55 within 7d | promising | 44 | 29 | +7.2% | +5.8% | 64% | 32% | 0.038 | 0.57 | +7% / +7% |
-| RS↑ + Score≥55 within 7d | promising | 50 | 33 | +6.5% | +4.2% | 58% | 26% | 0.044 | 0.57 | +5% / +8% |
-| Px>SMA50 + Score≥68 within 7d | none | 37 | 24 | +6.5% | +4.1% | 54% | 32% | 0.055 | 0.57 | +10% / +4% |
-| Price back above SMA50 | none | 50 | 34 | +5.6% | +4.2% | 64% | 30% | 0.078 | 0.57 | +6% / +5% |
-| MACD× + Px>SMA50 within 7d | none | 39 | 27 | +5.4% | +3.4% | 62% | 23% | 0.111 | 0.57 | +13% / +0% |
-| Score to EARLY STRENGTH | none | 51 | 34 | +4.5% | +2.0% | 49% | 24% | 0.113 | 0.57 | +8% / +2% |
-| MACD×<0 + Score≥55 within 7d | none | 25 | 20 | +6.3% | +4.5% | 56% | 24% | 0.118 | 0.57 | +14% / +1% |
-| RSI↑50 + MACD×<0 within 7d | none | 28 | 22 | +5.7% | +2.7% | 57% | 21% | 0.126 | 0.57 | +15% / +0% |
-| RSI↑30 + MACD× within 7d | none | 21 | 20 | +6.3% | +3.8% | 62% | 24% | 0.133 | 0.57 | +11% / +4% |
-| RSI↑50 + Score≥55 within 7d | none | 44 | 28 | +4.8% | +3.4% | 55% | 30% | 0.133 | 0.57 | +2% / +8% |
-| MACD×<0 + Px>SMA50 within 7d | none | 26 | 20 | +5.9% | +3.3% | 58% | 23% | 0.138 | 0.57 | +13% / +1% |
-| RSI↑30 + MACD×<0 within 7d | none | 18 | 18 | +6.0% | +3.9% | 61% | 28% | 0.153 | 0.57 | +9% / +5% |
-| Px>SMA50 + RS↑ within 7d | none | 47 | 31 | +3.9% | +2.0% | 64% | 28% | 0.165 | 0.57 | +2% / +5% |
-| MACD×<0 + Score≥68 within 7d | none | 20 | 16 | +5.8% | +3.5% | 50% | 20% | 0.167 | 0.57 | +16% / -1% |
-| RSI↑50 + MACD× within 7d | none | 43 | 27 | +3.4% | +0.8% | 58% | 21% | 0.171 | 0.57 | +15% / -3% |
+| Px>SMA50 + Score≥68 within 7d | promising | 40 | 25 | +10.6% | +8.1% | 57% | 38% | 0.010 | 0.34 | +13% / +9% |
+| Px>SMA50 + Score≥55 within 7d | promising | 47 | 30 | +8.8% | +7.5% | 62% | 34% | 0.023 | 0.34 | +10% / +7% |
+| RS↑ + Score≥55 within 7d | promising | 52 | 34 | +8.0% | +6.4% | 54% | 29% | 0.026 | 0.34 | +9% / +7% |
+| RSI↑50 + MACD×<0 within 7d | promising | 34 | 25 | +9.0% | +6.5% | 56% | 26% | 0.029 | 0.34 | +25% / -1% |
+| Score to EARLY STRENGTH | promising | 55 | 35 | +6.4% | +4.1% | 49% | 27% | 0.032 | 0.34 | +10% / +3% |
+| Price back above SMA50 | promising | 57 | 37 | +6.3% | +4.9% | 58% | 28% | 0.050 | 0.34 | +5% / +7% |
+| Px>SMA50 + Dip within 7d | none | 20 | 14 | +10.6% | +10.4% | 60% | 35% | 0.051 | 0.34 | +6% / +18% |
+| RSI↑50 + MACD× within 7d | none | 49 | 30 | +6.2% | +3.7% | 57% | 24% | 0.065 | 0.34 | +22% / -3% |
+| MACD× + Px>SMA50 within 7d | none | 44 | 29 | +6.5% | +4.4% | 57% | 25% | 0.069 | 0.34 | +15% / +1% |
+| RSI↑50 + Score≥55 within 7d | none | 47 | 29 | +6.5% | +5.4% | 53% | 32% | 0.070 | 0.34 | +6% / +7% |
+| RSI↑50 + Score≥68 within 7d | none | 42 | 25 | +6.0% | +2.9% | 52% | 29% | 0.072 | 0.34 | +2% / +9% |
+| MACD× + Score≥68 within 7d | none | 37 | 24 | +6.2% | +3.6% | 57% | 27% | 0.075 | 0.34 | +15% / -0% |
+| MACD×<0 + Px>SMA50 within 7d | none | 31 | 22 | +7.5% | +4.8% | 52% | 26% | 0.086 | 0.34 | +16% / +2% |
+| Dip + Score≥68 within 7d | none | 20 | 14 | +9.4% | +8.2% | 50% | 45% | 0.086 | 0.34 | +7% / +12% |
+| RS↑ + Score≥68 within 7d | none | 48 | 29 | +5.5% | +2.5% | 52% | 29% | 0.087 | 0.34 | +1% / +8% |
