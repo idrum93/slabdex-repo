@@ -97,6 +97,10 @@ Run **Actions → Build character & theme indexes** after editing groups.json (d
 
 Only **confirmed** setups get top billing (first tile, ◆ in the card list, a box in the Signal panel, first in BRIEF). Otherwise the BRIEF tab says plainly that nothing has beaten chance yet. It was checked on simulated random prices (no false confirmations) and on planted effects (a +20% effect is usually found, +10% usually isn't yet — the history is still short). With ~180 days, expect "no edge yet" or a few promising setups at first; evidence firms up as history accumulates.
 
+## Grade gap
+
+Each card's price as a share of the next grade up (PSA 7→8, 8→9, 9→10), using recent sales in both grades (≤ 45 days old). Compared with the card's own usual share (120-day median) and its era family's typical share. Measured on this data: WOTC PSA 9 ≈ 16% of PSA 10 (middle half 14–22%), PSA 8 ≈ 50% of PSA 9 (43–62%), PSA 7 ≈ 67% of PSA 8 (63–76%). Shown in the Signal panel, the **Gap** column option (100% = normal, amber below 80%), and a BRIEF section; "cheap vs next grade" is also a backtested setup, and the brief quotes its current result.
+
 ## Sprites and set symbols
 
 - Every card shows its Pokémon's sprite (Poké Ball for trainers): `scripts/sprites.mjs` (run by groups.mjs) downloads missing ones from PokeAPI's sprite repo — Crystal #1–251, Emerald #252–386, Platinum #387–493 — using `data/dex.json`, and writes `sprite` into the watchlist. No credits.

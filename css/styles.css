@@ -99,7 +99,7 @@ button:focus-visible, select:focus-visible, tr:focus-visible { outline: 2px soli
 .panel h2 span { color: var(--fg); letter-spacing: .04em; font: 500 11px var(--f-mono); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .panel h2 .hint { color: var(--muted); font-size: 10px; margin-left: auto; }
 .panel h2 .tabs { margin-left: 4px; }
-.panel h2 .tabs button { font: 600 10px var(--f-disp); letter-spacing: .08em; padding: 3px 6px; }
+.panel h2 .tabs button { font: 600 10px var(--f-disp); letter-spacing: .04em; padding: 3px 5px; }
 select optgroup { font-style: normal; color: var(--muted); }
 
 .score { margin-bottom: 8px; }

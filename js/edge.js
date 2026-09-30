@@ -40,14 +40,15 @@
     ['stUp', 'Supertrend flips up', (x, i) => x.st[i] === 1 && x.st[i - 1] === -1],
     ['vzoX', 'VZO (sales pressure) crosses 0', (x, i) => upTh(x.vz, i, 0)],
     ['rsSetX', 'Beats its own set (RS vs set turns up)', (x, i) => upX(x.rsS, x.rsSm, i)],
+    ['gapLow', 'Cheap vs next grade up (<80% of its usual ratio)', (x, i) => !!x.gap && isN(x.gap[i]) && isN(x.gap[i - 1]) && x.gap[i] < 0.8 && x.gap[i - 1] >= 0.8],
     ['sc55', 'Score to IMPROVING', (x, i) => upTh(x.sc, i, 55)],
     ['sc68', 'Score to EARLY STRENGTH', (x, i) => upTh(x.sc, i, 68)],
   ];
-  const SHORT = { rsi30: 'RSI↑30', rsi50: 'RSI↑50', macdX: 'MACD×', macdX0: 'MACD×<0', px50: 'Px>SMA50', gold: 'SMA20×50', rsX: 'RS↑', volUp: 'Pace↑', dip: 'Dip', hmaUp: 'HMA↑', stUp: 'ST↑', vzoX: 'VZO↑0', rsSetX: 'RS↑set', sc55: 'Score≥55', sc68: 'Score≥68' };
+  const SHORT = { rsi30: 'RSI↑30', rsi50: 'RSI↑50', macdX: 'MACD×', macdX0: 'MACD×<0', px50: 'Px>SMA50', gold: 'SMA20×50', rsX: 'RS↑', volUp: 'Pace↑', dip: 'Dip', hmaUp: 'HMA↑', stUp: 'ST↑', vzoX: 'VZO↑0', rsSetX: 'RS↑set', gapLow: 'Gap↓', sc55: 'Score≥55', sc68: 'Score≥68' };
   const NESTED = new Set(['macdX+macdX0', 'sc55+sc68']);
   const RULES = [
     ...BASE.map(([id, label]) => ({ id, label, parts: [id] })),
-    ...BASE.flatMap(([a], i) => BASE.slice(i + 1).map(([b]) => ({ id: `${a}+${b}`, parts: [a, b] }))).filter((r) => !NESTED.has(r.id))
+    ...BASE.flatMap(([a], i) => BASE.slice(i + 1).map(([b]) => ({ id: `${a}+${b}`, parts: [a, b] }))).filter((r) => !NESTED.has(r.id) && !r.parts.includes('gapLow')) // grade gap is tested on its own (few events)
       .map((r) => ({ ...r, label: `${SHORT[r.parts[0]]} + ${SHORT[r.parts[1]]} within ${PAIR_WIN}d` })),
     { id: 'conf3', label: `${CONF_N}+ setups within ${CONF_WIN}d`, parts: null },
     // Curated combos built from what the pairs keep pointing at (trend turning up + strength), plus filters:
@@ -97,6 +98,7 @@
     const setClose = (m, c) => (m.idx['idx:set:' + (c.basket || Model.slug(c.set))] || m.idx['idx:era:' + Model.slug(c.era || '')])?.close || null;
     const pos = new Map(axis.map((d, i) => [d, i]));
     const others = (opts.others || []).filter((m) => m && m !== model && !m.dense && m.grade !== model.grade);
+    const upModel = others.find((m) => m.grade === Model.NEXT[model.grade]) || null;
     // Base triggers of the same card+printing in the other grades, mapped onto this grade's dates.
     function crossTrig(key, b, first, last) {
       if (!others.length) return null;
@@ -122,6 +124,7 @@
       const first = I.firstIdx(b.close), last = I.lastIdx(b.close);
       const lo = first + WARM, hi = last - H;
       const x = context(b, bench, setClose(model, b.card));
+      if (upModel) x.gap = Model.gapSeries(model, upModel, key)?.gap || null;
       // Base triggers on every day (for live setups too), fwd excess where the outcome is known.
       const trig = {};
       for (const [id, , fn] of BASE) {
@@ -163,7 +166,7 @@
       if (r.parts && r.parts.length === 1) return u.trig[r.id];
       if (r.parts) { const [A, B] = r.parts.map((p) => u.trig[p]); for (let i = 0; i < n; i++) if ((A[i] && within(B, i, PAIR_WIN)) || (B[i] && within(A, i, PAIR_WIN))) out[i] = 1; return out; }
       let prevOn = false; // confluence: distinct base setups in the last CONF_WIN days reaches CONF_N
-      for (let i = 0; i < n; i++) { let k = 0; for (const [id] of BASE) if (id !== 'macdX0' && id !== 'sc55' && within(u.trig[id], i, CONF_WIN)) k++; const on = k >= CONF_N; if (on && !prevOn) out[i] = 1; prevOn = on; }
+      for (let i = 0; i < n; i++) { let k = 0; for (const [id] of BASE) if (id !== 'macdX0' && id !== 'sc55' && id !== 'gapLow' && within(u.trig[id], i, CONF_WIN)) k++; const on = k >= CONF_N; if (on && !prevOn) out[i] = 1; prevOn = on; }
       return out;
     }
     // Baselines over all eligible card-days, and every card's outcome on each date (the peer pool).

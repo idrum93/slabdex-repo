@@ -406,6 +406,48 @@
     return strong ? { dir: d, items: out, now } : null;
   }
 
-  const api = { ladder, trackCorr, changes, buildModel, makeIndex, signals, brief, consensus, leadLag, briefMarkdown, fillDays, slug, GRADE_LABEL, MIN_SALE_DAYS_90 };
+  // ---------- grade gap: a grade's price as a share of the next grade up ----------
+  // PSA 9 usually sells for ~15–20% of a PSA 10 on WOTC, PSA 8 for ~half a 9, PSA 7 for ~2/3 of an 8 — but each card
+  // has its own normal spread (scarce 10s stretch it). So "cheap" means: well below its OWN usual ratio, and below peers.
+  const NEXT = { psa7: 'psa8', psa8: 'psa9', psa9: 'psa10' };
+  function lineIn(m, key, card) { // same card and printing in another grade's model
+    const base = key.replace(/~alt$/, ''), cand = [m.by[base], m.by[base + '~alt']].filter(Boolean);
+    return card?.line && cand.some((y) => y.card.line) ? cand.find((y) => y.card.line === card.line) || null : m.by[key] || null;
+  }
+  function gapSeries(model, up, key, { fresh = 45, window = 120 } = {}) {
+    const b = model.by[key]; if (!b || !up) return null;
+    const u = lineIn(up, key, b.card); if (!u) return null;
+    const pos = new Map(up.axis.map((d, i) => [d, i])), n = model.axis.length;
+    const uc = new Array(n).fill(null), ulast = new Array(n).fill(null);
+    let lastSale = null;
+    const saleDay = new Set(); up.axis.forEach((d, i) => { if (u.sales ? I.isN(u.sales[i]) : I.isN(u.close[i])) saleDay.add(d); });
+    let mySale = null; const mylast = new Array(n).fill(null);
+    for (let i = 0; i < n; i++) {
+      const d = model.axis[i], j = pos.get(d);
+      if (j != null) uc[i] = u.close[j]; else if (i > 0) uc[i] = uc[i - 1];
+      if (saleDay.has(d)) lastSale = i; ulast[i] = lastSale;
+      if (b.sales ? I.isN(b.sales[i]) : I.isN(b.close[i])) mySale = i; mylast[i] = mySale;
+    }
+    const r = b.close.map((v, i) => (I.isN(v) && I.isN(uc[i]) && uc[i] > 0 && ulast[i] != null && i - ulast[i] <= fresh && mylast[i] != null && i - mylast[i] <= fresh ? v / uc[i] : null));
+    const norm = r.map((_, i) => { const w = r.slice(Math.max(0, i - window), i).filter(I.isN); return w.length >= 30 ? C.median(w) : null; });
+    const gap = r.map((v, i) => (I.isN(v) && I.isN(norm[i]) ? v / norm[i] : null));
+    return { up: up.grade, ratio: r, norm, gap, upLine: u };
+  }
+  // Latest grade gap for every card in this grade, with the family's typical ratio as the peer yardstick.
+  function gradeGaps(model, up) {
+    if (!up || model.dense) return [];
+    const rows = [];
+    for (const [key, b] of Object.entries(model.by)) {
+      const g = gapSeries(model, up, key); if (!g) continue;
+      const li = I.lastIdx(g.ratio); if (li < 0 || li < model.axis.length - 8) continue;
+      rows.push({ key, card: b.card, up: up.grade, ratio: g.ratio[li], norm: g.norm[li], gap: g.gap[li], fam: b.card.family || String(b.card.era || '').split(' ')[0] });
+    }
+    const byFam = {};
+    rows.forEach((r) => (byFam[r.fam] ||= []).push(r.ratio));
+    rows.forEach((r) => { r.peer = byFam[r.fam].length >= 4 ? C.median(byFam[r.fam]) : null; r.vsPeer = r.peer ? r.ratio / r.peer : null; });
+    return rows;
+  }
+
+  const api = { gapSeries, gradeGaps, NEXT, lineIn, ladder, trackCorr, changes, buildModel, makeIndex, signals, brief, consensus, leadLag, briefMarkdown, fillDays, slug, GRADE_LABEL, MIN_SALE_DAYS_90 };
   if (isNode) module.exports = api; else root.Model = api;
 })(typeof window !== 'undefined' ? window : globalThis);

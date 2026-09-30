@@ -81,6 +81,9 @@
       idx[x.id] = signals(x.close, x.vol, x.id === 'idx:all' ? null : model.index);
       if (x.id !== 'idx:all') ch[x.id] = Model.changes(x.close, x.vol, model.index, { dense: model.dense });
     }
+    // Grade gap vs the next grade up (PSA 7→8, 8→9, 9→10), with the family's typical ratio as the peer yardstick.
+    const up = Model.NEXT[model.grade];
+    if (up) for (const g of Model.gradeGaps(model, otherModel(up))) if (cards[g.key]) cards[g.key].gap = g;
     return (model._stats = { cards, idx, ch });
   }
   const pct0 = (v) => (v == null ? '—' : `<span class="${v >= 0 ? 'pos' : 'neg'}">${v >= 0 ? '+' : ''}${v.toFixed(0)}%</span>`);
@@ -89,6 +92,7 @@
     dist50: { label: 'vs 50D', get: (s) => s.distS50, fmt: pct0 },
     accel: { label: 'Accel', get: (s) => s.accel, fmt: (v) => (v == null ? '—' : `<span class="${v >= 0 ? 'pos' : 'neg'}">${v >= 0 ? '+' : ''}${v.toFixed(0)}</span>`) },
     volRatio: { label: 'Pace', get: (s) => s.volRatio, fmt: (v) => (v == null ? '—' : `<span class="${v >= 1.2 ? 'pos' : v < 0.8 ? 'neg' : ''}">${v.toFixed(2)}×</span>`) },
+    gap: { label: 'Gap', get: (s) => s.gap?.gap ?? null, fmt: (v) => (v == null ? '—' : `<span class="${v < 0.8 ? 'warn' : ''}" title="Price as a share of the next grade up, vs this card's usual share (100% = normal)">${(v * 100).toFixed(0)}%</span>`) },
     volExp: { label: 'Swing', get: (s) => s.volExp, fmt: (v) => (v == null ? '—' : `<span class="${v >= 1.3 ? 'warn' : ''}">${v.toFixed(2)}×</span>`) },
   };
 
@@ -322,6 +326,7 @@
       ['vs SMA50', fmtP(s.distS50)],
       ['Sales pace 7D/30D', s.volRatio == null ? '—' : `<span class="${s.volRatio >= 1.2 ? 'pos' : s.volRatio < 0.8 ? 'neg' : ''}">${s.volRatio.toFixed(2)}×</span>`],
       ['Drawdown from 1Y high', fmtP(s.dd)],
+      ...(!cur.isIndex && !ratio && stats().cards[cur.id]?.gap ? [(() => { const g = stats().cards[cur.id].gap, L = Model.GRADE_LABEL; return [`vs ${L[g.up]}`, `<span class="${g.gap < 0.8 ? 'warn' : ''}" title="${esc(L[model.grade])} price as a share of ${esc(L[g.up])}: now vs this card's usual (120D median); ${esc(g.fam)} cards typically ${g.peer != null ? (g.peer * 100).toFixed(0) + '%' : '—'}">${(g.ratio * 100).toFixed(0)}% <span class="dim">(usual ${g.norm != null ? (g.norm * 100).toFixed(0) + '%' : '—'})</span></span>`]; })()] : []),
       ['Volatility 30D (ann.)', s.vol30 == null ? '—' : s.vol30.toFixed(0) + '%'],
       ...(ratio ? [] : [[cur.isIndex ? 'Members' : model.dense ? 'Price days' : 'Clean sale days', cur.isIndex ? String(cur.index.members.length) : String(cur.saleN)]]),
       ...(model.dense || ratio ? [] : [['Sale days, last 90D', s.saleDays90 == null ? '—' : `<span class="${s.saleDays90 < Model.MIN_SALE_DAYS_90 ? 'neg' : ''}">${s.saleDays90}</span>`]]),
@@ -677,8 +682,13 @@
     const grp = (title, lines, note) => `<div class="bgroup"><h3>${esc(title)}</h3>${lines.map((l) => `<h4>${esc(l.label)}</h4>${l.items.map(briefRow).join('')}`).join('')}${note ? `<p>${esc(note)}</p>` : ''}</div>`;
     const st = stats(), chg = Object.entries(st.ch).filter(([k, c]) => c && !model.by[k]?.card.custom).map(([k, c]) => ({ k, tone: c.dir > 0 ? 'good' : 'bad', text: `${model.idx[k] ? model.idx[k].name : model.by[k].card.name + (model.by[k].card.line ? ' ' + model.by[k].card.line : '')}: ${c.dir > 0 ? '▲' : '▼'} ${c.items.map((i) => i.text).join('; ')}` })).sort((a, b) => (a.k.startsWith('idx:') ? 0 : 1) - (b.k.startsWith('idx:') ? 0 : 1));
     const eg = edgeGroup(), hot = /bgroup edge hot/.test(eg);
+    const L = Model.GRADE_LABEL, cheap = Object.entries(st.cards).filter(([k, v]) => v.gap && v.gap.gap != null && v.gap.gap < 0.8 && !k.endsWith('~alt')).sort((a, b) => a[1].gap.gap - b[1].gap.gap).slice(0, 8)
+      .map(([k, v]) => ({ k, tone: 'warn', text: `${model.by[k].card.name}${lineTag(model.by[k].card)}: ${(v.gap.ratio * 100).toFixed(0)}% of ${L[v.gap.up]} · usual ${(v.gap.norm * 100).toFixed(0)}%${v.gap.peer ? ` · peers ${(v.gap.peer * 100).toFixed(0)}%` : ''}` }));
+    const gr = EDGE[state.grade]?.results?.find((r) => r.id === 'gapLow');
+    const gapNote = gr && gr.n ? `Backtest so far (${L[state.grade]}): after a card got this cheap vs its next grade, it did ${Edge.pct(gr.vsPeers, 1)} vs other cards over 30 days (${gr.n} times, ${gr.status === 'few' ? 'too few to judge' : gr.status}). A price check, not a buy signal yet.` : 'Not yet backtested for this grade. A price check, not a buy signal.';
+    const gapGrp = cheap.length ? grp(`Grade gaps · ${L[state.grade]} vs ${L[Model.NEXT[state.grade]]}`, [{ label: 'Cheap vs next grade up, compared with the card’s own usual ratio', items: cheap }], gapNote) : '';
     const head = `<div class="bhead"><span></span><span>30D</span><span>Sig</span></div>`;
-    $('briefList').innerHTML = rawNote() + head + (hot ? eg : '') + (chg.length ? grp(`New this week · ${Model.GRADE_LABEL[state.grade]}`, [{ label: 'Changed status', items: chg }]) : '') + grp(`Consensus · ${c.gradeLabels.map((x) => x.replace('RAW NM', 'RAW')).join(' / ')}`, c.lines, c.leadNote ? 'Lead-lag: ' + c.leadNote : '') + grp(`${b.gradeLabel} · ${b.asOf || '—'} · ${b.scoredCards}/${b.cards} scoreable`, b.lines) + (hot ? '' : eg);
+    $('briefList').innerHTML = rawNote() + head + (hot ? eg : '') + (chg.length ? grp(`New this week · ${Model.GRADE_LABEL[state.grade]}`, [{ label: 'Changed status', items: chg }]) : '') + grp(`Consensus · ${c.gradeLabels.map((x) => x.replace('RAW NM', 'RAW')).join(' / ')}`, c.lines, c.leadNote ? 'Lead-lag: ' + c.leadNote : '') + grp(`${b.gradeLabel} · ${b.asOf || '—'} · ${b.scoredCards}/${b.cards} scoreable`, b.lines) + gapGrp + (hot ? '' : eg);
   }
   // RAW only covers WOTC set baskets (EX, DP and index-only cards are fetched without RAW to fit the free tier).
   function rawNote() {
