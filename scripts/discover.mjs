@@ -54,6 +54,8 @@ const ruleOf = (fam) => FAM[fam] || { mode: 'perSet' };
 const defOf = (label) => cfg.sets.find((d) => d.label === label) || {};
 const groupsCfg = existsSync(path.join(DATA, 'groups.json')) ? JSON.parse(await readFile(path.join(DATA, 'groups.json'), 'utf8')) : { characters: [], themes: [] };
 const CHAR_NAMES = [...(groupsCfg.characters || []), ...(groupsCfg.themes || [])].map((g) => ({ label: g.label, names: g.names.map((n) => n.toLowerCase()) }));
+// Final era picks reserve one slot per *character* only; themes (Eeveelutions, birds, …) compete on rarity and price with everything else.
+const CHARS_ONLY = (groupsCfg.characters || []).map((g) => ({ label: g.label, names: g.names.map((n) => n.toLowerCase()) }));
 const GRADES = cfg.grades || ['psa9', 'psa10'];
 const norm = (s) => String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
 const numOf = (c) => String(c.cardNumber ?? c.number ?? '').split('/')[0].replace(/^0+/, '') || '0';
@@ -162,7 +164,8 @@ function finalPick(short) {
     if (rule.mode !== 'top') continue;
     const pool = short.filter((x) => x.family === fam && okC(x)).sort((a, b) => rarityTier(b.rarity, b.name) - rarityTier(a.rarity, a.name) || (b.med ?? rankVal(b)) - (a.med ?? rankVal(a)));
     const picked = [];
-    for (const c of CHAR_NAMES) takeWithCaps(pool.filter((x) => c.names.includes(baseName(x.name))), Math.min(rule.cap, picked.length + 1), rule, picked); // one per character first
+    for (const c of CHARS_ONLY) takeWithCaps(pool.filter((x) => c.names.includes(baseName(x.name))), Math.min(rule.cap, picked.length + 1), rule, picked); // one per character first
+    // then the era's best cards by rarity and price (this is what brings in grails like Rayquaza Star)
     takeWithCaps(pool, rule.cap, rule, picked);
     picked.forEach((x) => chosen.push({ ...x, lead: false }));
   }

@@ -38,7 +38,7 @@
     for (const c of all) {
       const s = SERIES[c.key];
       if (!s) continue;
-      if (grade === 'raw') { lines.push(...rawLines(c, s)); continue; }
+      if (grade === 'raw') { if (c.raw !== false) lines.push(...rawLines(c, s)); continue; } // raw:false cards (EX, DP, index-only) only have backfilled RAW that would go stale
       const pts = s.grades?.[grade];
       if (!pts?.length) continue;
       const demo = s.source === 'demo';
