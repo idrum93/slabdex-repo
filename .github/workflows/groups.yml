@@ -1,0 +1,43 @@
+name: Build character & theme indexes
+
+# Picks cards for the character and theme indexes in data/groups.json from the saved set scan,
+# backfills any that lack history (6 months on the paid plan), and updates the watchlist.
+# Run after editing groups.json. The discovery workflow also runs this at the end.
+on:
+  workflow_dispatch:
+    inputs:
+      days:
+        description: 'History to backfill for new cards (days; paid plan allows up to 180)'
+        default: '180'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: fetch
+  cancel-in-progress: false
+
+jobs:
+  groups:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Build indexes
+        env:
+          PPT_API_KEY: ${{ secrets.PPT_API_KEY }}
+          PPT_DAYS: ${{ github.event.inputs.days }}
+        run: node scripts/groups.mjs
+      - name: Write market brief
+        run: node scripts/brief.mjs || true
+      - name: Commit data
+        run: |
+          git config user.name  "slabdex-bot"
+          git config user.email "slabdex-bot@users.noreply.github.com"
+          git add data
+          git diff --cached --quiet && echo "no changes" && exit 0
+          git commit -m "data: character & theme indexes $(date -u +%F)"
+          git push
