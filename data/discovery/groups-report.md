@@ -4,7 +4,7 @@
 
 == WOTC ==
 ✓ Character Charizard · WOTC: 4 cards
-    basket Shining Charizard — Neo Destiny #107 (Secret Rare, 36 clean days)
+    extra  Shining Charizard — Neo Destiny #107 (Secret Rare, 36 clean days)
     basket Charizard — Base Set #4 (Holo Rare, 12 clean days)
     extra  Blaine's Charizard — Gym Challenge #2 (Holo Rare, 12 clean days)
     basket Charizard — Legendary Collection #3 (Holo Rare, 21 clean days)
@@ -32,10 +32,10 @@
     extra  Mew (47) — WOTC Black Star Promos #47 (Promo, 29 clean days)
     extra  Mew (9) — WOTC Black Star Promos #9 (Promo, 13 clean days)
 ✓ Character Gengar · WOTC: 2 cards · passed over: Gengar (H9) (Skyridge): 6 clean sale days, 22% junk; Sabrina's Gengar (Gym Heroes): 3 clean sale days, 0% junk; Gengar (Legendary Collection): 7 clean sale days, 0% junk; Gengar (5) (Fossil): 0 clean sale days, 0% junk
-    basket Gengar (13) — Expedition #13 (Holo Rare, 10 clean days)
+    extra  Gengar (13) — Expedition #13 (Holo Rare, 10 clean days)
     basket Dark Gengar — Neo Destiny #6 (Holo Rare, 14 clean days)
 ✓ Character Gyarados · WOTC: 4 cards · passed over: Dark Gyarados (8) (Team Rocket): 2 clean sale days, 33% junk
-    basket Shining Gyarados — Neo Revelation #65 (Secret Rare, 61 clean days)
+    extra  Shining Gyarados — Neo Revelation #65 (Secret Rare, 61 clean days)
     extra  Gyarados (H10) — Skyridge #H10 (Holo Rare, 14 clean days)
     extra  Misty's Gyarados — Gym Challenge #13 (Holo Rare, 36 clean days)
     extra  Gyarados — Base Set #6 (Holo Rare, 16 clean days)
@@ -56,7 +56,7 @@
 ✓ Character Tyranitar · WOTC: 4 cards
     extra  Shining Tyranitar — Neo Destiny #113 (Secret Rare, 8 clean days)
     extra  Tyranitar (H28) — Aquapolis #H28 (Holo Rare, 15 clean days)
-    extra  Tyranitar (29) — Expedition #29 (Holo Rare, 10 clean days)
+    basket Tyranitar (29) — Expedition #29 (Holo Rare, 10 clean days)
     basket Tyranitar (12) — Neo Discovery #12 (Holo Rare, 14 clean days)
 ✓ Character Umbreon · WOTC: 3 cards
     basket Umbreon (H30) — Skyridge #H30 (Holo Rare, 13 clean days)
@@ -70,7 +70,7 @@
     basket Espeon (1) — Neo Discovery #1 (Holo Rare, 21 clean days)
     extra  Dark Vaporeon — Legendary Collection #9 (Holo Rare, 19 clean days)
 ✓ Theme Dragons · WOTC: 5 cards
-    basket Shining Charizard — Neo Destiny #107 (Secret Rare, 36 clean days)
+    extra  Shining Charizard — Neo Destiny #107 (Secret Rare, 36 clean days)
     basket Dragonite (9) — Expedition #9 (Holo Rare, 11 clean days)
     basket Charizard — Base Set #4 (Holo Rare, 12 clean days)
     extra  Light Dragonite — Neo Destiny #14 (Holo Rare, 15 clean days)
@@ -147,8 +147,6 @@
     basket Dragonite — Legends Awakened #2 (Holo Rare, 18 clean days)
 · Character Snorlax · DP & Platinum: 1 card (below 2: no DP & Platinum index, still counts toward all eras)
     basket Snorlax Lv.X — Rising Rivals #111 (Ultra Rare, 9 clean days)
-· Character Tyranitar · DP & Platinum: 1 card (below 2: no DP & Platinum index, still counts toward all eras)
-    basket Tyranitar — Mysterious Treasures #17 (Holo Rare, 16 clean days)
 · Theme Dragons · DP & Platinum: 2 cards (below 3: no DP & Platinum index, still counts toward all eras)
     basket Charizard — Stormfront #103 (Secret Rare, 21 clean days)
     basket Dragonite — Legends Awakened #2 (Holo Rare, 18 clean days)
@@ -162,10 +160,6 @@
     basket Gyarados — Call of Legends #7 (Holo Rare, 11 clean days)
 · Character Lugia · HGSS: 1 card (below 2: no HGSS index, still counts toward all eras)
     basket Lugia (Shiny) — Call of Legends #SL7 (Shiny Holo Rare, 14 clean days)
-· Character Umbreon · HGSS: 1 card (below 2: no HGSS index, still counts toward all eras)
-    basket Umbreon — Undaunted #10 (Holo Rare, 29 clean days)
-· Theme Eeveelutions · HGSS: 1 card (below 3: no HGSS index, still counts toward all eras)
-    basket Umbreon — Undaunted #10 (Holo Rare, 29 clean days)
 · Theme Legendary Birds · HGSS: 2 cards (below 3: no HGSS index, still counts toward all eras)
     basket Lugia (Shiny) — Call of Legends #SL7 (Shiny Holo Rare, 14 clean days)
     basket Lugia — Call of Legends #15 (Holo Rare, 18 clean days)
@@ -183,13 +177,13 @@
 ✓ Snorlax · all eras: 3 cards across WOTC, DP & Platinum
 ✓ Lugia · all eras: 4 cards across WOTC, EX, HGSS
 ✓ Ho-Oh · all eras: 3 cards across WOTC, EX
-✓ Tyranitar · all eras: 6 cards across WOTC, EX, DP & Platinum
-✓ Umbreon · all eras: 5 cards across WOTC, EX, HGSS
-✓ Eeveelutions · all eras: 10 cards across WOTC, EX, HGSS
+✓ Tyranitar · all eras: 5 cards across WOTC, EX
+✓ Umbreon · all eras: 4 cards across WOTC, EX
+✓ Eeveelutions · all eras: 9 cards across WOTC, EX
 ✓ Dragons · all eras: 9 cards across WOTC, EX, DP & Platinum
 ✓ Legendary Birds · all eras: 12 cards across WOTC, EX, DP & Platinum, HGSS
 ✓ Legendary Beasts · all eras: 6 cards across WOTC, EX
 Downloaded 8 new sprite(s).
 
-41 indexes (18 all-eras) · 26 index-only cards · ongoing ≈ 83 credits/day of 100 · spent 0 credits
+41 indexes (18 all-eras) · 28 index-only cards · ongoing ≈ 81 credits/day of 100 · spent 0 credits
 ```

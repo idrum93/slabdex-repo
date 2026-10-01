@@ -1119,5 +1119,14 @@
 {"g":"psa10","key":"fossil-zapdos-15-15","rule":"hmaUp@2g","t":"2026-09-22","logged":"2026-10-01","ref":4999,"state":"pending"},
 {"g":"psa10","key":"wotc-black-star-promos-snorlax-49","rule":"hmaUp@2g","t":"2026-09-21","logged":"2026-10-01","ref":5999,"state":"pending"},
 {"g":"psa10","key":"aquapolis-zapdos-h32-H32","rule":"hmaUp@2g","t":"2026-09-20","logged":"2026-10-01","ref":9500,"state":"pending"},
-{"g":"psa10","key":"fossil-zapdos-15-15","rule":"vzoX@2g","t":"2026-09-22","logged":"2026-10-01","ref":4999,"state":"pending"}
+{"g":"psa10","key":"fossil-zapdos-15-15","rule":"vzoX@2g","t":"2026-09-22","logged":"2026-10-01","ref":4999,"state":"pending"},
+{"g":"psa8","key":"undaunted-umbreon-prime-86","rule":"rsSetX@2g","t":"2026-09-29","logged":"2026-10-01","ref":1845.95,"bt":"none","state":"pending"},
+{"g":"psa7","key":"arceus-gengar-lv-x-97","rule":"rsSetX","t":"2026-09-24","logged":"2026-10-01","ref":1200,"state":"pending"},
+{"g":"psa7","key":"expedition-gengar-13-13","rule":"rsSetX","t":"2026-09-24","logged":"2026-10-01","ref":1500,"state":"pending"},
+{"g":"psa7","key":"arceus-gengar-lv-x-97","rule":"rsSetX@2g","t":"2026-09-24","logged":"2026-10-01","ref":1200,"state":"pending"},
+{"g":"psa9","key":"undaunted-umbreon-prime-86","rule":"rsSetX","t":"2026-09-29","logged":"2026-10-01","ref":5140,"state":"pending"},
+{"g":"psa9","key":"jungle-vaporeon-12-12","rule":"rsSetX","t":"2026-09-24","logged":"2026-10-01","ref":1139.05,"state":"pending"},
+{"g":"psa9","key":"team-rocket-dark-alakazam-1-1","rule":"rsSetX","t":"2026-09-24","logged":"2026-10-01","ref":460,"state":"pending"},
+{"g":"psa9","key":"undaunted-umbreon-prime-86","rule":"rsSetX@2g","t":"2026-09-29","logged":"2026-10-01","ref":5140,"state":"pending"},
+{"g":"psa9","key":"jungle-vaporeon-12-12","rule":"rsSetX@2g","t":"2026-09-24","logged":"2026-10-01","ref":1139.05,"state":"pending"}
 ]}

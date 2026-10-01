@@ -6,7 +6,7 @@
    "rule": "rsSetX",
    "label": "Beats its own set (RS vs set turns up)",
    "n": 0,
-   "pending": 89,
+   "pending": 94,
    "void": 0,
    "vsPeers": null,
    "beat": null,
@@ -90,7 +90,7 @@
    "rule": "rsSetX@2g",
    "label": "Beats its own set (RS vs set turns up) · in 2+ grades",
    "n": 0,
-   "pending": 41,
+   "pending": 45,
    "void": 0,
    "vsPeers": null,
    "beat": null,
@@ -437,8 +437,8 @@
  ],
  "updated": "2026-10-01",
  "counts": {
-  "total": 1121,
-  "pending": 1121,
+  "total": 1130,
+  "pending": 1130,
   "scored": 0,
   "void": 0
  }

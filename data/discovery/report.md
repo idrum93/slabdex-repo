@@ -1,6 +1,6 @@
 # SlabDex discovery — 2026-10-01
 
-Credits spent: 1156 · remaining today: 18843 · history window: 180 days · min sale days: 8
+Credits spent: 2 · remaining today: 18841 · history window: 180 days · min sale days: 8
 
 ## Sets
 
@@ -50,18 +50,18 @@ Credits spent: 1156 · remaining today: 18843 · history window: 180 days · min
 | Rising Rivals | (from saved scan) | 120 | 17 | 3 |
 | Supreme Victors | (from saved scan) | 153 | 19 | 3 |
 | Arceus | (from saved scan) | 111 | 25 | 3 |
-| HeartGold & SoulSilver | HeartGold SoulSilver (via `HeartGold SoulSilver`) | 124 | 14 | 3 |
-| Unleashed | Unleashed (via `Unleashed`) | 96 | 19 | 3 |
-| Undaunted | Undaunted (via `Undaunted`) | 91 | 18 | 3 |
-| Triumphant | Triumphant (via `Triumphant`) | 104 | 25 | 3 |
-| Call of Legends | Call of Legends (via `Call of Legends`) | 106 | 31 | 3 |
+| HeartGold & SoulSilver | (from saved scan) | 124 | 14 | 3 |
+| Unleashed | (from saved scan) | 96 | 19 | 3 |
+| Undaunted | (from saved scan) | 91 | 18 | 3 |
+| Triumphant | (from saved scan) | 104 | 25 | 3 |
+| Call of Legends | (from saved scan) | 106 | 31 | 3 |
 
 ## Baskets
 
 | Era | Set | Card | # | Median PSA8 (main line) | Clean sale days | Junk | Line |
 |---|---|---|---|---|---|---|---|
 | EX | Dragon Frontiers | Charizard Star (Delta Species) | 100 | $16,700 | 18 | 0% | single |
-| EX | Crystal Guardians | Blastoise (Delta Species) | 2 | $338 | 31 | 0% | holo+rev mixed |
+| EX | Crystal Guardians | Blastoise (Delta Species) | 2 | $338 | 31 | 0% | holo/rev · one price level |
 | EX | FireRed & LeafGreen | Venusaur ex | 112 | $750 | 17 | 0% | single |
 | EX | Holon Phantoms | Pikachu Star | 104 | $13,500 | 13 | 0% | single |
 | EX | Holon Phantoms | Mewtwo Star | 103 | $11,655 | 24 | 0% | single |
@@ -71,7 +71,7 @@ Credits spent: 1156 · remaining today: 18843 · history window: 180 days · min
 | EX | Unseen Forces | Lugia ex | 105 | $2,769 | 17 | 0% | single |
 | EX | Unseen Forces | Ho-Oh ex | 104 | $625 | 15 | 0% | single |
 | EX | Unseen Forces | Tyranitar ex | 111 | $1,200 | 12 | 0% | single |
-| EX | Delta Species | Umbreon (Delta Species) | 17 | $500 | 19 | 0% | holo+rev mixed |
+| EX | Delta Species | Umbreon (Delta Species) | 17 | $500 | 19 | 0% | holo/rev · one price level |
 | EX | Deoxys | Rayquaza Star | 107 | $59,500 | 8 | 0% | single |
 | EX | Delta Species | Metagross Star | 113 | $4,050 | 13 | 0% | single |
 | EX | Crystal Guardians | Alakazam Star | 99 | $3,850 | 11 | 0% | single |
@@ -85,14 +85,13 @@ Credits spent: 1156 · remaining today: 18843 · history window: 180 days · min
 | EX | Deoxys | Rocket's Raikou ex | 108 | $450 | 31 | 0% | single |
 | EX | Dragon | Charmander | 98 | $350 | 24 | 0% | single |
 | DP | Stormfront | Charizard | 103 | $1,270 | 21 | 0% | single |
-| DP | Secret Wonders | Blastoise | 2 | $280 | 9 | 0% | holo+rev mixed |
-| DP | Supreme Victors | Venusaur | 13 | $109 | 8 | 11% | holo+rev mixed |
+| DP | Secret Wonders | Blastoise | 2 | $280 | 9 | 0% | holo/rev · one price level |
+| DP | Supreme Victors | Venusaur | 13 | $109 | 8 | 11% | holo/rev · one price level |
 | DP | Rising Rivals | Pikachu | 112 | $500 | 9 | 0% | single |
 | DP | Legends Awakened | Mewtwo LV.X | 144 | $650 | 10 | 0% | single |
 | DP | Arceus | Gengar Lv.X | 97 | $1,285 | 29 | 12% | single |
-| DP | Legends Awakened | Dragonite | 2 | $474 | 18 | 22% | holo+rev mixed |
+| DP | Legends Awakened | Dragonite | 2 | $474 | 18 | 22% | holo/rev · one price level |
 | DP | Rising Rivals | Snorlax Lv.X | 111 | $1,520 | 9 | 0% | single |
-| DP | Mysterious Treasures | Tyranitar | 17 | $125 | 16 | 6% | holo+rev mixed |
 | DP | Majestic Dawn | Leafeon LV.X | 99 | $1,789 | 9 | 0% | single |
 | DP | Supreme Victors | Articuno (148) | 148 | $735 | 20 | 0% | single |
 | DP | Rising Rivals | Surfing Pikachu | 114 | $700 | 11 | 0% | single |
@@ -102,60 +101,56 @@ Credits spent: 1156 · remaining today: 18843 · history window: 180 days · min
 | DP | Great Encounters | Darkrai LV.X | 104 | $400 | 17 | 5% | single |
 | DP | Mysterious Treasures | Lucario LV.X | 122 | $400 | 8 | 0% | single |
 | DP | Stormfront | Raichu LV.X | 99 | $375 | 14 | 0% | single |
+| DP | Arceus | Arceus Lv.X (96) | 96 | $350 | 12 | 0% | single |
 | HGSS | Undaunted | Raichu (Prime) | 83 | $480 | 17 | 0% | single |
 | HGSS | Triumphant | Mew (Prime) | 97 | $950 | 40 | 2% | single |
 | HGSS | Triumphant | Gengar (Prime) | 94 | $1,930 | 51 | 0% | single |
-| HGSS | HeartGold & SoulSilver | Gyarados (Red) | 123 | $699 | 11 | 0% | holo+rev mixed |
+| HGSS | HeartGold & SoulSilver | Gyarados (Red) | 123 | $699 | 11 | 0% | holo/rev · one price level |
 | HGSS | Call of Legends | Lugia (Shiny) | SL7 | $2,800 | 14 | 13% | single |
 | HGSS | Unleashed | Tyranitar (Prime) | 88 | $900 | 17 | 0% | single |
-| HGSS | Undaunted | Umbreon | 10 | $325 | 29 | 15% | holo+rev mixed |
-| HGSS | Call of Legends | Lugia | 15 | $500 | 18 | 33% | holo+rev mixed |
-| HGSS | Call of Legends | Gyarados | 7 | $214 | 11 | 21% | holo+rev mixed |
 | HGSS | Undaunted | Umbreon (Prime) | 86 | $1,500 | 66 | 0% | single |
+| HGSS | Call of Legends | Lugia | 15 | $500 | 18 | 33% | holo/rev · one price level |
+| HGSS | Call of Legends | Gyarados | 7 | $214 | 11 | 21% | holo/rev · one price level |
 | WOTC | Base Set | Charizard 📌 | 4 | $1,350 | 12 | 0% | single |
 | WOTC | Base Set | Blastoise | 2 | $399 | 26 | 4% | single |
 | WOTC | Base Set | Venusaur | 15 | $305 | 14 | 0% | single |
-| WOTC | Jungle | Snorlax (11) | 11 | $900 | 36 | 0% | 1st Ed (est.) + 0 Unl (not tracked) |
-| WOTC | Jungle | Vaporeon (12) | 12 | $375 | 25 | 1% | 1st Ed (est.) + 0 Unl (not tracked) |
-| WOTC | Jungle | Scyther (10) | 10 | $154 | 79 | 0% | 1st+Unl mixed |
-| WOTC | Fossil | Zapdos (15) | 15 | $276 | 42 | 0% | 1st Ed (est.) + 0 Unl (not tracked) |
-| WOTC | Fossil | Moltres (12) | 12 | $238 | 43 | 0% | 1st Ed (est.) + 0 Unl (not tracked) |
-| WOTC | Fossil | Hitmonlee (7) | 7 | $130 | 26 | 4% | 1st+Unl mixed |
+| WOTC | Jungle | Snorlax (11) | 11 | $900 | 36 | 0% | 1st Ed (est.) + 52 Unl (not tracked) |
+| WOTC | Jungle | Vaporeon (12) | 12 | $375 | 25 | 1% | 1st Ed (est.) + 66 Unl (not tracked) |
+| WOTC | Fossil | Zapdos (15) | 15 | $276 | 42 | 0% | 1st Ed (est.) + 33 Unl (not tracked) |
+| WOTC | Fossil | Moltres (12) | 12 | $238 | 43 | 0% | 1st Ed (est.) + 46 Unl (not tracked) |
 | WOTC | Base Set 2 | Charizard | 4 | $773 | 15 | 6% | single |
 | WOTC | Base Set 2 | Venusaur | 18 | $200 | 10 | 0% | single |
 | WOTC | Base Set 2 | Mewtwo | 10 | $111 | 9 | 0% | single |
-| WOTC | Team Rocket | Dark Blastoise (3) | 3 | $627 | 11 | 0% | 1st Ed (est.) + 0 Unl (not tracked) |
-| WOTC | Team Rocket | Dark Charizard (4) | 4 | $616 | 10 | 0% | 1st+Unl mixed |
-| WOTC | Team Rocket | Dark Raichu | 83 | $380 | 53 | 0% | 1st Ed (est.) + 0 Unl (not tracked) |
-| WOTC | Gym Heroes | Erika's Dragonair | 4 | $340 | 14 | 0% | 1st Ed (est.) + 0 Unl (not tracked) |
-| WOTC | Gym Heroes | Brock's Rhydon | 2 | $191 | 13 | 0% | 1st Ed (est.) + 0 Unl (not tracked) |
-| WOTC | Gym Challenge | Rocket's Mewtwo | 14 | $950 | 10 | 0% | 1st Ed (est.) + 0 Unl (not tracked) |
-| WOTC | Gym Challenge | Blaine's Arcanine | 1 | $619 | 9 | 0% | 1st Ed (est.) + 0 Unl (not tracked) |
-| WOTC | Gym Challenge | Erika's Venusaur | 4 | $550 | 9 | 0% | 1st Ed (est.) + 0 Unl (not tracked) |
-| WOTC | Neo Genesis | Lugia | 9 | $5,545 | 16 | 0% | 1st Ed (est.) + 0 Unl (not tracked) |
-| WOTC | Neo Genesis | Pichu | 12 | $660 | 23 | 0% | 1st Ed (est.) + 0 Unl (not tracked) |
-| WOTC | Neo Genesis | Slowking | 14 | $440 | 20 | 0% | 1st Ed (est.) + 0 Unl (not tracked) |
-| WOTC | Neo Discovery | Umbreon (13) | 13 | $3,975 | 15 | 0% | 1st Ed (est.) + 0 Unl (not tracked) |
-| WOTC | Neo Discovery | Espeon (1) | 1 | $1,580 | 17 | 0% | 1st Ed (est.) + 0 Unl (not tracked) |
-| WOTC | Neo Discovery | Tyranitar (12) | 12 | $900 | 12 | 0% | 1st Ed (est.) + 0 Unl (not tracked) |
-| WOTC | Neo Revelation | Shining Gyarados | 65 | $2,000 | 61 | 3% | 1st+Unl mixed |
-| WOTC | Neo Revelation | Raikou (13) | 13 | $939 | 24 | 0% | 1st Ed (est.) + 0 Unl (not tracked) |
-| WOTC | Neo Revelation | Suicune (14) | 14 | $830 | 21 | 0% | 1st Ed (est.) + 0 Unl (not tracked) |
-| WOTC | Neo Destiny | Shining Mewtwo | 109 | $4,900 | 9 | 0% | 1st Ed (est.) + 0 Unl (not tracked) |
-| WOTC | Neo Destiny | Shining Charizard | 107 | $3,561 | 36 | 0% | 1st+Unl mixed |
-| WOTC | Neo Destiny | Dark Gengar | 6 | $2,205 | 14 | 0% | 1st Ed (est.) + 0 Unl (not tracked) |
+| WOTC | Team Rocket | Dark Blastoise (3) | 3 | $627 | 11 | 0% | 1st Ed (est.) + 8 Unl (not tracked) |
+| WOTC | Team Rocket | Dark Raichu | 83 | $380 | 53 | 0% | 1st Ed (est.) + 26 Unl (not tracked) |
+| WOTC | Team Rocket | Dark Alakazam (1) | 1 | $250 | 15 | 0% | 1st Ed (est.) + 7 Unl (not tracked) |
+| WOTC | Gym Heroes | Erika's Dragonair | 4 | $340 | 14 | 0% | 1st Ed (est.) + 18 Unl (not tracked) |
+| WOTC | Gym Heroes | Brock's Rhydon | 2 | $191 | 13 | 0% | 1st Ed (est.) + 17 Unl (not tracked) |
+| WOTC | Gym Challenge | Rocket's Mewtwo | 14 | $950 | 10 | 0% | 1st Ed (est.) + 16 Unl (not tracked) |
+| WOTC | Gym Challenge | Blaine's Arcanine | 1 | $619 | 9 | 0% | 1st Ed (est.) + 27 Unl (not tracked) |
+| WOTC | Gym Challenge | Erika's Venusaur | 4 | $550 | 9 | 0% | 1st Ed (est.) + 18 Unl (not tracked) |
+| WOTC | Neo Genesis | Lugia | 9 | $5,545 | 16 | 0% | 1st Ed (est.) + 14 Unl (not tracked) |
+| WOTC | Neo Genesis | Pichu | 12 | $660 | 23 | 0% | 1st Ed (est.) + 10 Unl (not tracked) |
+| WOTC | Neo Genesis | Slowking | 14 | $440 | 20 | 0% | 1st Ed (est.) + 18 Unl (not tracked) |
+| WOTC | Neo Discovery | Umbreon (13) | 13 | $3,975 | 15 | 0% | 1st Ed (est.) + 54 Unl (not tracked) |
+| WOTC | Neo Discovery | Espeon (1) | 1 | $1,580 | 17 | 0% | 1st Ed (est.) + 32 Unl (not tracked) |
+| WOTC | Neo Discovery | Tyranitar (12) | 12 | $900 | 12 | 0% | 1st Ed (est.) + 22 Unl (not tracked) |
+| WOTC | Neo Revelation | Raikou (13) | 13 | $939 | 24 | 0% | 1st Ed (est.) + 19 Unl (not tracked) |
+| WOTC | Neo Revelation | Suicune (14) | 14 | $830 | 21 | 0% | 1st Ed (est.) + 20 Unl (not tracked) |
+| WOTC | Neo Destiny | Shining Mewtwo | 109 | $4,900 | 9 | 0% | 1st Ed (est.) + 25 Unl (not tracked) |
+| WOTC | Neo Destiny | Dark Gengar | 6 | $2,205 | 14 | 0% | 1st Ed (est.) + 18 Unl (not tracked) |
 | WOTC | Legendary Collection | Charizard | 3 | $920 | 15 | 7% | upper tier (est.) + 9 lower tier |
 | WOTC | Legendary Collection | Dark Dragonite | 5 | $300 | 13 | 6% | lower tier (est.) + 2 upper tier |
 | WOTC | Legendary Collection | Dark Blastoise | 4 | $300 | 18 | 11% | upper tier (est.) + 4 lower tier |
-| WOTC | Expedition | Mew (19) | 19 | $2,400 | 11 | 0% | holo+rev mixed |
-| WOTC | Expedition | Gengar (13) | 13 | $2,000 | 10 | 9% | holo+rev mixed |
-| WOTC | Expedition | Dragonite (9) | 9 | $1,600 | 11 | 0% | holo+rev mixed |
+| WOTC | Expedition | Mew (19) | 19 | $2,400 | 11 | 0% | holo/rev · one price level |
+| WOTC | Expedition | Dragonite (9) | 9 | $1,600 | 11 | 0% | holo/rev · one price level |
+| WOTC | Expedition | Tyranitar (29) | 29 | $975 | 10 | 0% | holo/rev · one price level |
 | WOTC | Aquapolis | Lugia | 149 | $11,197 | 27 | 0% | single |
 | WOTC | Aquapolis | Umbreon (H29) | H29 | $3,052 | 9 | 0% | single |
 | WOTC | Aquapolis | Nidoking (150) | 150 | $2,699 | 21 | 0% | single |
 | WOTC | Skyridge | Umbreon (H30) | H30 | $5,726 | 13 | 0% | single |
 | WOTC | Skyridge | Ho-oh | 149 | $5,100 | 8 | 0% | upper tier (est.) + 5 lower tier |
-| WOTC | Skyridge | Kabutops (150) | 150 | $1,995 | 8 | 11% | holo+rev mixed |
+| WOTC | Skyridge | Kabutops (150) | 150 | $1,995 | 8 | 11% | holo/rev · one price level |
 | WOTC | WOTC Black Star Promos | Lucky Stadium | 41 | $2,165 | 18 | 0% | single |
 | WOTC | WOTC Black Star Promos | Pokemon Center | 40 | $1,825 | 11 | 0% | single |
 | WOTC | WOTC Black Star Promos | Snorlax | 49 | $520 | 45 | 2% | single |
@@ -166,7 +161,7 @@ Credits spent: 1156 · remaining today: 18843 · history window: 180 days · min
 |---|---|---|---|---|---|---|
 | Dragon | Charizard | 100 | $1,200 | 27 | 39% | too much junk |
 | Ruby & Sapphire | Mewtwo ex | 101 | $875 | 45 | 0% | ranked lower |
-| Legend Maker | Gengar | 5 | $336 | 44 | 4% | ranked lower |
+| Legend Maker | Gengar | 5 | $336 | 44 | 4% | printings blended (no signal) |
 | Deoxys | Gyarados | 8 | $290 | 6 | 0% | too few sales |
 | Dragon Frontiers | Dragonite ex (Delta Species) | 91 | $700 | 17 | 0% | ranked lower |
 | FireRed & LeafGreen | Snorlax | 15 | $290 | 6 | 0% | too few sales |
@@ -189,13 +184,13 @@ Credits spent: 1156 · remaining today: 18843 · history window: 180 days · min
 | Ruby & Sapphire | Lapras ex | 99 | $300 | 28 | 0% | ranked lower |
 | Ruby & Sapphire | Scyther ex | 102 | $230 | 22 | 0% | ranked lower |
 | Secret Wonders | Charizard | 3 | $471 | 31 | 0% | ranked lower |
-| Platinum | Blastoise | 2 | $140 | 8 | 0% | ranked lower |
-| Secret Wonders | Venusaur | 20 | $93 | 21 | 0% | ranked lower |
+| Platinum | Blastoise | 2 | $140 | 8 | 0% | printings blended (no signal) |
+| Secret Wonders | Venusaur | 20 | $93 | 21 | 0% | printings blended (no signal) |
 | Legends Awakened | Mewtwo | 11 | $500 | 3 | 14% | too few sales |
+| Mysterious Treasures | Tyranitar | 17 | $125 | 16 | 6% | printings blended (no signal) |
 | Majestic Dawn | Glaceon LV.X | 98 | $1,150 | 7 | 13% | too few sales |
 | Majestic Dawn | Garchomp LV.X | 97 | $1,000 | 7 | 13% | too few sales |
 | Great Encounters | Palkia LV.X | 106 | $410 | 6 | 33% | too few sales |
-| Arceus | Arceus Lv.X (96) | 96 | $350 | 12 | 0% | ranked lower |
 | Diamond & Pearl | Infernape LV.X | 121 | $285 | 17 | 6% | ranked lower |
 | Diamond & Pearl | Empoleon LV.X | 120 | $274 | 13 | 0% | ranked lower |
 | Diamond & Pearl | Torterra LV.X | 122 | $226 | 19 | 0% | ranked lower |
@@ -204,6 +199,7 @@ Credits spent: 1156 · remaining today: 18843 · history window: 180 days · min
 | Platinum | Palkia G Lv.X | 125 | $256 | 16 | 0% | ranked lower |
 | Mysterious Treasures | Electivire LV.X | 121 | $170 | 7 | 22% | too few sales |
 | HeartGold & SoulSilver | Raichu | 10 | $120 | 4 | 0% | too few sales |
+| Undaunted | Umbreon | 10 | $325 | 29 | 15% | printings blended (no signal) |
 | Unleashed | Magmortar | 2 | $70 | 6 | 0% | too few sales |
 | Triumphant | Celebi - 3/102 (Non-Holo Movie Exclusive) | 3 | $90 | 4 | 20% | too few sales |
 | Unleashed | Manaphy | 3 | $62 | 1 | 0% | too few sales |
@@ -214,14 +210,16 @@ Credits spent: 1156 · remaining today: 18843 · history window: 180 days · min
 | Jungle | Jolteon (4) | 4 | $500 | 4 | 43% | too much junk |
 | Jungle | Pidgeot (8) | 8 | $184 | 5 | 0% | too few sales |
 | Jungle | Flareon (3) | 3 | $400 | 5 | 0% | too few sales |
+| Jungle | Scyther (10) | 10 | $154 | 79 | 0% | printings blended (no signal) |
 | Fossil | Gengar (5) | 5 | — | 0 | 0% | too few sales |
 | Fossil | Dragonite (4) | 4 | — | 0 | 0% | too few sales |
 | Fossil | Articuno (2) | 2 | $305 | 5 | 0% | too few sales |
+| Fossil | Hitmonlee (7) | 7 | $130 | 26 | 4% | printings blended (no signal) |
 | Base Set 2 | Blastoise | 2 | $250 | 6 | 0% | too few sales |
 | Base Set 2 | Alakazam | 1 | $90 | 24 | 0% | ranked lower |
 | Base Set 2 | Gyarados | 7 | $99 | 5 | 0% | too few sales |
-| Team Rocket | Dark Dragonite (5) | 5 | $371 | 10 | 0% | ranked lower |
-| Team Rocket | Dark Alakazam (1) | 1 | $250 | 15 | 0% | ranked lower |
+| Team Rocket | Dark Charizard (4) | 4 | $616 | 10 | 0% | printings blended (no signal) |
+| Team Rocket | Dark Dragonite (5) | 5 | $371 | 10 | 0% | printings blended (no signal) |
 | Team Rocket | Dark Gyarados (8) | 8 | — | 0 | 0% | too few sales |
 | Gym Heroes | Sabrina's Gengar | 14 | $875 | 3 | 0% | too few sales |
 | Gym Heroes | Blaine's Moltres | 1 | $485 | 4 | 0% | too few sales |
@@ -236,18 +234,20 @@ Credits spent: 1156 · remaining today: 18843 · history window: 180 days · min
 | Neo Discovery | Houndour (5) | 5 | $380 | 25 | 0% | ranked lower |
 | Neo Discovery | Kabutops (6) | 6 | $450 | 15 | 0% | ranked lower |
 | Neo Discovery | Houndoom (4) | 4 | $360 | 10 | 0% | ranked lower |
+| Neo Revelation | Shining Gyarados | 65 | $2,000 | 61 | 3% | printings blended (no signal) |
 | Neo Revelation | Houndoom | 8 | $1,000 | 3 | 0% | too few sales |
 | Neo Revelation | Ho-oh (7) | 7 | $1,000 | 6 | 33% | too few sales |
 | Neo Revelation | Entei (6) | 6 | $400 | 3 | 0% | too few sales |
+| Neo Destiny | Shining Charizard | 107 | $3,561 | 36 | 0% | printings blended (no signal) |
 | Neo Destiny | Shining Tyranitar | 113 | $3,850 | 5 | 0% | too few sales |
-| Neo Destiny | Shining Raichu | 111 | $1,000 | 24 | 0% | ranked lower |
-| Neo Destiny | Shining Kabutops | 108 | $1,013 | 34 | 0% | ranked lower |
+| Neo Destiny | Shining Raichu | 111 | $1,000 | 24 | 0% | printings blended (no signal) |
+| Neo Destiny | Shining Kabutops | 108 | $1,013 | 34 | 0% | printings blended (no signal) |
 | Legendary Collection | Gengar | 11 | $275 | 7 | 0% | too few sales |
 | Legendary Collection | Dark Vaporeon | 9 | $250 | 19 | 0% | ranked lower |
 | Legendary Collection | Venusaur | 18 | $185 | 10 | 0% | ranked lower |
+| Expedition | Gengar (13) | 13 | $2,000 | 10 | 9% | printings blended (no signal) |
 | Expedition | Blastoise (4) | 4 | $1,100 | 3 | 0% | too few sales |
-| Expedition | Tyranitar (29) | 29 | $975 | 10 | 0% | ranked lower |
-| Expedition | Poliwrath (24) | 24 | $400 | 12 | 8% | ranked lower |
+| Expedition | Poliwrath (24) | 24 | $400 | 12 | 8% | printings blended (no signal) |
 | Aquapolis | Tyranitar (H28) | H28 | $2,450 | 15 | 0% | ranked lower |
 | Aquapolis | Houndoom (H11) | H11 | $2,214 | 10 | 0% | ranked lower |
 | Aquapolis | Espeon (H9) | H09 | — | 0 | 0% | too few sales |
@@ -261,11 +261,11 @@ Credits spent: 1156 · remaining today: 18843 · history window: 180 days · min
 ## Notes
 
 - History reach: earliest stored point 2026-04-03, 181 days back (requested 180).
-- Grade depth over the last 90 days (cards with ≥ 8 clean sale days / total clean sale days): PSA7 38/797, PSA8 61/982, PSA9 36/727, PSA10 2/143. Terminal default: PSA8.
-- 25 chosen cards had pooled printings that split cleanly into two price clusters; the larger cluster is the main line and the other is charted separately when it has 4+ sales. Labels (1st Ed / Unl) are estimates from price, not from listings.
-- 20 chosen cards are pooled but did not split (one continuous price range); their line may blend printings.
+- Grade depth over the last 90 days (cards with ≥ 8 clean sale days / total clean sale days): PSA7 34/698, PSA8 56/878, PSA9 32/674, PSA10 2/136. Terminal default: PSA8.
+- 26 chosen cards had pooled printings that split cleanly into two price clusters; the larger cluster is the main line and the other is charted separately when it has 4+ sales. Labels (1st Ed / Unl) are estimates from price, not from listings.
+- 13 chosen cards are pooled but did not split; holo / reverse ones that trade at one price level are kept, blended ones are skipped because the site leaves them out of every signal.
 - Clean-sales rule: cards with more than 35% junk sales are not picked unless pinned. Excluded in sets.json: Skyridge #146.
-- Ongoing cost ≈ 84 credits/day (every card every 3 days, 2 credits each, graded only).
+- Ongoing cost ≈ 80 credits/day (every card every 3 days, 2 credits each, graded only).
 
 ## Log
 
@@ -417,7 +417,7 @@ Credits spent: 1156 · remaining today: 18843 · history window: 180 days · min
   wotc-black-star-promos-mewtwo-12-12: psa8 22 clean days, 2 junk, median 285
   wotc-black-star-promos-dark-persian-17: psa8 34 clean days, 2 junk, median 189.99
 History reach: earliest point 2026-04-03 (181 days back; requested 180)
-Chose 99 cards across 41 sets.
-Grade depth (cards scoreable / clean sale days, last 90D): psa7 38/797 · psa8 61/982 · psa9 36/727 · psa10 2/143 → default psa8
-Budget after the paid plan: 99 basket cards (EX 24, DP 18, HGSS 10, WOTC 47) + 27 index-only ≈ 84 credits/day of 100.
+Chose 94 cards across 41 sets.
+Grade depth (cards scoreable / clean sale days, last 90D): psa7 34/698 · psa8 56/878 · psa9 32/674 · psa10 2/136 → default psa8
+Budget after the paid plan: 94 basket cards (EX 24, DP 18, HGSS 9, WOTC 43) + 26 index-only ≈ 80 credits/day of 100.
 ```
