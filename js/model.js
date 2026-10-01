@@ -383,7 +383,7 @@
       for (const l of b.lines) L.push(`- **${l.label}:** ${l.items.map((i) => i.text).join('; ')}`);
       L.push('');
     }
-    L.push('_Heuristic read of trend, momentum and relative strength from clean eBay graded sales (PSA) and TCGplayer raw Near Mint prices. Not financial advice._', '');
+    L.push('_Heuristic read of trend, momentum and relative strength from clean eBay graded sales (PSA). Not financial advice._', '');
     return L.join('\n');
   }
 

@@ -159,7 +159,7 @@ function eraShortlist(candidates, fam, rule) {
 // Stage 2: after backfill, keep cards with enough real sale days, ranked by median sale price.
 function finalPick(short) {
   const chosen = [];
-  const okC = (x) => (x.days ?? 0) >= MIN_DAYS && (x.outShare ?? 0) <= MAX_OUT;
+  const okC = (x) => (x.days ?? 0) >= MIN_DAYS && (x.outShare ?? 0) <= MAX_OUT && !x.blended; // a blended line feeds no signal, so it isn't worth its credits
   for (const [fam, rule] of Object.entries(FAM)) {
     if (rule.mode !== 'top') continue;
     const pool = short.filter((x) => x.family === fam && okC(x)).sort((a, b) => rarityTier(b.rarity, b.name) - rarityTier(a.rarity, a.name) || (b.med ?? rankVal(b)) - (a.med ?? rankVal(a)));
@@ -172,7 +172,7 @@ function finalPick(short) {
   for (const def of cfg.sets) {
     if (ruleOf(familyOf(def)).mode === 'top') continue;
     const pool = short.filter((x) => x.set === def.label);
-    const ok = (x) => (x.days ?? 0) >= MIN_DAYS && (x.outShare ?? 0) <= MAX_OUT;
+    const ok = okC;
     const ranked = [...pool].sort((a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0) || (ok(b) ? 1 : 0) - (ok(a) ? 1 : 0) || (b.med ?? rankVal(b)) - (a.med ?? rankVal(a)));
     ranked.filter((x) => x.pinned || ok(x)).slice(0, Math.max(PER_SET, pool.filter((x) => x.pinned).length)).forEach((x, i) => chosen.push({ ...x, lead: i === 0 })); // never fill a set with cards that fail the clean-sales rules
   }
@@ -200,13 +200,13 @@ function report(sets, candidates, short, chosen, variantNotes) {
     const pool = candidates.filter((x) => x.set === def.label);
     L.push(`| ${def.label} | ${st.res ? `${st.res.name}${st.via ? ` (via \`${st.via}\`)` : ''}` : pool.length ? '(from saved scan)' : '**not found**'} | ${pool.length} | ${pool.filter((x) => x.pass).length} | ${short.filter((x) => x.set === def.label).length} |`);
   }
-  const lineOf = (x) => (x.split ? `${x.split.mainLabel} (est.) + ${x.altDays} ${x.split.altLabel}` : x.kind === '1st' ? '1st+Unl mixed' : x.kind === 'rev' ? 'holo+rev mixed' : 'single');
+  const lineOf = (x) => (x.split ? `${x.split.mainLabel} (est.) + ${x.altDays} ${x.split.altLabel}` : x.same ? 'holo/rev · one price level' : x.kind === '1st' ? '1st+Unl blended ✗' : x.kind === 'rev' ? 'holo+rev blended ✗' : 'single');
   L.push('', '## Baskets', '', `| Era | Set | Card | # | Median ${PRIMARY.toUpperCase()} (main line) | Clean sale days | Junk | Line |`, '|---|---|---|---|---|---|---|---|');
   for (const x of chosen) L.push(`| ${x.family || ''} | ${x.set} | ${x.name}${x.pinned ? ' 📌' : ''} | ${x.number} | ${fm(x.med)} | ${x.days ?? 0}${(x.days ?? 0) < MIN_DAYS ? ' ⚠' : ''} | ${Math.round((x.outShare ?? 0) * 100)}% | ${lineOf(x)} |`);
   const bench = short.filter((x) => !chosen.some((c) => keyOf(c) === keyOf(x)));
   if (bench.length) {
     L.push('', '## Bench (backfilled, not tracked daily)', '', '| Set | Card | # | Median PSA 9 | Clean days | Junk | Why not picked |', '|---|---|---|---|---|---|---|');
-    for (const x of bench) L.push(`| ${x.set} | ${x.name} | ${x.number} | ${fm(x.med)} | ${x.days ?? 0} | ${Math.round((x.outShare ?? 0) * 100)}% | ${(x.outShare ?? 0) > MAX_OUT ? 'too much junk' : (x.days ?? 0) < MIN_DAYS ? 'too few sales' : 'ranked lower'} |`);
+    for (const x of bench) L.push(`| ${x.set} | ${x.name} | ${x.number} | ${fm(x.med)} | ${x.days ?? 0} | ${Math.round((x.outShare ?? 0) * 100)}% | ${(x.outShare ?? 0) > MAX_OUT ? 'too much junk' : (x.days ?? 0) < MIN_DAYS ? 'too few sales' : x.blended ? 'printings blended (no signal)' : 'ranked lower'} |`);
   }
   L.push('', '## Notes', '', ...variantNotes.map((v) => `- ${v}`), '', '## Log', '', '```', ...log.slice(-150), '```', '');
   return L.join('\n');
@@ -279,7 +279,8 @@ async function main() {
     x.gradeDays = Object.fromEntries(GRADES.map((g) => [g, Clean.classify(s.grades?.[g], kind, Clean.gradedOpts(s, g)).main.filter((p) => p.t >= cut).length])); // clean sale days, last 90D
     const total = (s.grades?.[PRIMARY] || []).length;
     x.days = r.main.length; x.days10 = r10.main.length; x.med = Clean.median(r.main.map((p) => p.p));
-    x.outShare = total ? r.out.length / total : 0; x.split = r.split; x.kind = kind; x.altDays = r.alt.length;
+    x.outShare = total ? r.out.length / total : 0; x.split = r.split; x.kind = kind; x.altDays = r.alt.length || r.unl?.length || 0;
+    x.same = !!r.same; x.blended = !!r.kind && !r.split && !r.same; // pooled printings that couldn't be separated: the site leaves this line out of every signal
     note(`  ${key}: ${PRIMARY} ${x.days} clean days${r.split ? ` (${r.split.mainLabel}; +${r.alt.length} ${r.split.altLabel})` : ''}${r.out.length ? `, ${r.out.length} junk` : ''}, median ${x.med ?? '—'}`);
   }
 
@@ -302,7 +303,7 @@ async function main() {
   variantNotes.push(`Grade depth over the last 90 days (cards with ≥ 8 clean sale days / total clean sale days): ${gradeStats.map((x) => `${x.g.toUpperCase()} ${x.scorable}/${x.days}`).join(', ')}. Terminal default: ${defaultGrade.toUpperCase()}.`);
   const splitN = chosen.filter((x) => x.split).length, mixedN = chosen.filter((x) => x.kind && !x.split).length;
   variantNotes.push(`${splitN} chosen cards had pooled printings that split cleanly into two price clusters; the larger cluster is the main line and the other is charted separately when it has 4+ sales. Labels (1st Ed / Unl) are estimates from price, not from listings.`);
-  variantNotes.push(`${mixedN} chosen cards are pooled but did not split (one continuous price range); their line may blend printings.`);
+  variantNotes.push(`${mixedN} chosen cards are pooled but did not split${chosen.filter((x) => x.blended).length ? ` (${chosen.filter((x) => x.blended).length} pinned and blended)` : ''}; holo / reverse ones that trade at one price level are kept, blended ones are skipped because the site leaves them out of every signal.`);
   variantNotes.push(`Clean-sales rule: cards with more than ${Math.round(MAX_OUT * 100)}% junk sales are not picked unless pinned. Excluded in sets.json: ${(cfg.exclude || []).map((e) => `${e.set} #${e.number}`).join(', ') || 'none'}.`);
 
   // watchlist + cleanup

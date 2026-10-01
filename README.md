@@ -57,6 +57,8 @@ The repo ships with **demo series** (clearly flagged in the UI) so the terminal 
 
 WOTC is covered set by set. Later eras flip it: the era's best cards decide which sets appear, so the budget goes to the cards that matter instead of 27 more set baskets. The EX / DP shortlist gives tracked characters (groups.json) first claim before filling with the rest.
 
+Cards whose PSA 8 sales blend two printings that can't be separated (1st Ed / Unl with no clean split, or holo / reverse at two price levels) are skipped unless pinned: the site leaves those lines out of every signal, so they'd only cost credits. Holo / reverse cards that trade at one price level are kept.
+
 Everything ranks by **PSA 8** (then PSA 9 × 0.6, then PSA 10 × 0.25), holo-or-better, with a real graded market (PSA 8 ≥ 8 or PSA 9 ≥ 8 or PSA 10 ≥ 3 lifetime sales) and clean sales: at least 8 clean PSA 8 sale days in the backfilled history (`minSaleDays`), ≤ 35% junk.
 
 **Run order** — Actions → *Discover baskets + backfill*:
