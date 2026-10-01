@@ -13,6 +13,7 @@
   const isNode = typeof module !== 'undefined' && module.exports;
   const I = isNode ? require('./indicators.js') : root.Ind;
   const Model = isNode ? require('./model.js') : root.Model;
+  const TPI = isNode ? require('./tpi.js') : root.TPI;
   const isN = I.isN;
 
   const H = 30;            // forward window (days)
@@ -46,9 +47,13 @@
     ['squeeze', 'Compressed: priced almost like the grade below', (x, i) => !!x.sq && x.sq[i] === true && x.sq[i - 1] !== true],
     ['sc55', 'Score to IMPROVING', (x, i) => upTh(x.sc, i, 55)],
     ['sc68', 'Score to EARLY STRENGTH', (x, i) => upTh(x.sc, i, 68)],
+    // Trend & value gauges (js/tpi.js): logged so the gauge's own calls get a track record.
+    ['tpiUp', 'Trend gauge up through +0.5', (x, i) => !!x.tpi && upTh(x.tpi.trend, i, 0.5)],
+    ['buyZone', 'Enters buy zone (trend gauge ≥ +0.5, priced fair or cheap)', (x, i) => !!x.tpi && x.tpi.zone[i] === 'buy' && x.tpi.zone[i - 1] !== 'buy'],
+    ['watchZone', 'Undervalued, trend not up yet (watch zone)', (x, i) => !!x.tpi && x.tpi.zone[i] === 'watch' && x.tpi.zone[i - 1] !== 'watch'],
   ];
-  const SHORT = { rsi30: 'RSI↑30', rsi50: 'RSI↑50', macdX: 'MACD×', macdX0: 'MACD×<0', px50: 'Px>SMA50', gold: 'SMA20×50', rsX: 'RS↑', volUp: 'Pace↑', dip: 'Dip', hmaUp: 'HMA↑', stUp: 'ST↑', vzoX: 'VZO↑0', rsSetX: 'RS↑set', gapLow: 'Gap↓', lagUp: 'Lag↑', lagDown: 'Lag↓', squeeze: 'Sqz', sc55: 'Score≥55', sc68: 'Score≥68' };
-  const SOLO = new Set(['gapLow', 'lagUp', 'lagDown', 'squeeze']); // cross-grade price setups: tested on their own (few events)
+  const SHORT = { rsi30: 'RSI↑30', rsi50: 'RSI↑50', macdX: 'MACD×', macdX0: 'MACD×<0', px50: 'Px>SMA50', gold: 'SMA20×50', rsX: 'RS↑', volUp: 'Pace↑', dip: 'Dip', hmaUp: 'HMA↑', stUp: 'ST↑', vzoX: 'VZO↑0', rsSetX: 'RS↑set', gapLow: 'Gap↓', lagUp: 'Lag↑', lagDown: 'Lag↓', squeeze: 'Sqz', sc55: 'Score≥55', sc68: 'Score≥68', tpiUp: 'Gauge↑', buyZone: 'BuyZone', watchZone: 'Watch' };
+  const SOLO = new Set(['gapLow', 'lagUp', 'lagDown', 'squeeze', 'tpiUp', 'buyZone', 'watchZone']); // cross-grade price setups: tested on their own (few events)
   const NESTED = new Set(['macdX+macdX0', 'sc55+sc68']);
   const RULES = [
     ...BASE.map(([id, label]) => ({ id, label, parts: [id] })),
@@ -132,6 +137,7 @@
       if (upModel) x.lagUp = Model.lagSeries(model, upModel, key)?.flag || null;
       if (downModel) x.lagDn = Model.lagSeries(model, downModel, key)?.flag || null;
       if (downModel) x.sq = Model.squeezeSeries(model, downModel, key)?.flag || null;
+      x.tpi = TPI.series(model, key, { gap: x.gap || null, sq: x.sq || null, lagUp: x.lagUp || null, lagDn: x.lagDn || null });
       // Base triggers on every day (for live setups too), fwd excess where the outcome is known.
       const trig = {};
       for (const [id, , fn] of BASE) {
@@ -142,7 +148,7 @@
       // Entry = what you could actually pay: the median of the next (up to) 3 sales after the setup fires,
       // within 14 days — not the market line that fired it. Otherwise a lucky cheap sale "predicts" its own
       // rebound (tested on pure noise: the dip setup passed until this was fixed). Exit = market line at +H.
-      const fwd = new Float64Array(axis.length).fill(NaN);
+      const fwd = new Float64Array(axis.length).fill(NaN), abs = new Float64Array(axis.length).fill(NaN), ex = new Float64Array(axis.length).fill(NaN); // abs = the card's own return, ex = exit price (for the fee hurdle)
       const sales = b.dense ? null : b.sales;
       for (let i = lo; i <= hi; i++) {
         if (!isN(b.close[i + H]) || !isN(bench[i]) || !isN(bench[i + H]) || bench[i] <= 0) continue;
@@ -154,14 +160,15 @@
           let after = false; for (let j = lastJ + 1; j <= i + H && lastJ >= 0; j++) if (isN(sales[j])) { after = true; break; }
           if (got.length >= 2 && after) { got.sort((a, c) => a - c); const h = got.length >> 1; entry = got.length % 2 ? got[h] : Math.sqrt(got[h - 1] * got[h]); } // true median (geometric mean of the middle two)
         }
-        if (isN(entry) && entry > 0) fwd[i] = Math.log(b.close[i + H] / entry) - Math.log(bench[i + H] / bench[i]);
+        if (isN(entry) && entry > 0) { ex[i] = b.close[i + H]; abs[i] = Math.log(b.close[i + H] / entry); fwd[i] = abs[i] - Math.log(bench[i + H] / bench[i]); }
       }
-      units.push({ key, card: b.card, lo, hi, last, trig, fwd, x, cross: crossTrig(key, b, first, last) });
+      units.push({ key, card: b.card, lo, hi, last, trig, fwd, abs, ex, x, cross: crossTrig(key, b, first, last) });
     }
     const usable = units.filter((u) => u.hi - u.lo >= 20);
     // Minimum slab price: an event (and a peer card-day) only counts when the card's market price that day was at
-    // least model.minPrice — what it cost then, not now, so there's no look-ahead.
-    const okP = (u, i) => Model.aboveMin(model, model.by[u.key], i);
+    // least model.minPrice and the slab was liquid (sold on 6+ days in the prior 90, once in the prior 30) —
+    // judged as of that day, so there's no look-ahead.
+    const okP = (u, i) => Model.tradable(model, model.by[u.key], i); // ≥ min price AND liquid that day (Model.RULES)
     if (usable.length < MIN_CARDS) return { ok: false, reason: `needs ${WARM + H + 20}+ days of history on ${MIN_CARDS}+ cards (have ${usable.length})`, horizon: H, tested: 0 };
 
     // Rule event arrays (raw, before cooldown).
@@ -194,13 +201,13 @@
     const R = rng(opts.seed ?? 20261017);
     const results = [];
     for (const r of RULES) {
-      const evs = []; let n = 0, s = 0, hit = 0, boom = 0, edge = 0, beat = 0; const cards = new Set(); const hs = [{ s: 0, n: 0 }, { s: 0, n: 0 }];
+      const evs = []; let n = 0, s = 0, hit = 0, boom = 0, edge = 0, beat = 0, netS = 0, pays = 0; const cards = new Set(); const hs = [{ s: 0, n: 0 }, { s: 0, n: 0 }];
       const live = [];
       for (const u of usable) {
         const t = ruleTrig(u, r);
         for (let i = u.lo, cool = -1; i <= u.hi; i++) if (t[i] && i > cool && isN(u.fwd[i]) && okP(u, i) && pool[i].length >= 5) { // non-overlapping windows, ≥ 5 peers
           const f = u.fwd[i]; evs.push(i); cool = i + H - 1; cards.add(u.key.replace(/~alt$/, ''));
-          n++; s += f; edge += f - dayMean[i]; if (f > dayMed[i]) beat++; if (f > 0) hit++; if (f >= BOOM) boom++;
+          n++; s += f; edge += f - dayMean[i]; { const nr = u.abs[i] + Math.log(1 - Model.feeAt(u.ex[i], model)); netS += nr; if (nr > 0) pays++; } if (f > dayMed[i]) beat++; if (f > 0) hit++; if (f >= BOOM) boom++;
           const h = hs[i < mid ? 0 : 1]; h.s += f - dayMean[i]; h.n++;
         }
         for (let i = Math.max(u.lo, u.last - 7); i <= u.last; i++) if (t[i] && okP(u, i) && okP(u, u.last)) live.push({ key: u.key, ago: u.last - i });
@@ -218,7 +225,7 @@
       }
       const hm = hs.map((h) => (h.n >= 5 ? h.s / h.n : null));
       const holds = hm.every((v) => v != null && v > 0);
-      results.push({ id: r.id, label: r.label, parts: r.parts, n, cards: cards.size, mean, edge: n ? edge / n : null, excess: mean == null ? null : (Math.exp(mean) - 1) * 100, vsPeers: n ? (Math.exp(edge / n) - 1) * 100 : null, hit: n ? hit / n : null, beatPeers: n ? beat / n : null, boom: n ? boom / n : null, p, halves: hm.map((v) => (v == null ? null : (Math.exp(v) - 1) * 100)), holds, live });
+      results.push({ id: r.id, label: r.label, parts: r.parts, n, cards: cards.size, mean, edge: n ? edge / n : null, excess: mean == null ? null : (Math.exp(mean) - 1) * 100, vsPeers: n ? (Math.exp(edge / n) - 1) * 100 : null, hit: n ? hit / n : null, beatPeers: n ? beat / n : null, boom: n ? boom / n : null, p, halves: hm.map((v) => (v == null ? null : (Math.exp(v) - 1) * 100)), holds, live, net: n ? (Math.exp(netS / n) - 1) * 100 : null, pays: n ? pays / n : null });
     }
     // Benjamini–Hochberg over the setups that had enough events.
     const tested = results.filter((r) => r.p != null).sort((a, b) => a.p - b.p), m = tested.length;
@@ -259,13 +266,13 @@
     if (!e?.ok) return `## Setup backtest\n\n${verdict(e)}\n`;
     const L = [`## Setup backtest · ${Model.GRADE_LABEL[e.grade] || e.grade} · ${e.horizon}D excess vs market`, '', verdict(e), '', `Baseline (all card-days, entry at next sales): ${pct((Math.exp(e.base.mean) - 1) * 100, 1)} vs market on average, ${(e.base.hit * 100).toFixed(0)}% beat the market, ${(e.base.boom * 100).toFixed(0)}% by 15%+. "vs peers" = versus other tracked cards over the same dates.`, ''];
     if (e.picks.length) { L.push('### Setups firing now (last 7 days)', ''); e.picks.slice(0, 12).forEach((p) => L.push(`- **${p.card.name}${p.card.line ? ' · ' + p.card.line : ''}** (${p.card.set}) — ${p.best.label}, ${p.best.ago}d ago · ${p.status} · hist. ${pct(p.best.vsPeers, 1)} vs peers, ${(p.best.beatPeers * 100).toFixed(0)}% beat typical peer, n ${p.best.n}`)); L.push(''); }
-    L.push('| Setup | Status | Events | Cards | vs peers | vs market | Beat typical peer | 15%+ | p | q | Halves (vs peers) |', '|---|---|---|---|---|---|---|---|---|---|---|');
-    e.results.filter((r) => r.p != null).slice(0, 15).forEach((r) => L.push(`| ${r.label} | ${r.status} | ${r.n} | ${r.cards} | ${pct(r.vsPeers, 1)} | ${pct(r.excess, 1)} | ${(r.beatPeers * 100).toFixed(0)}% | ${(r.boom * 100).toFixed(0)}% | ${r.p.toFixed(3)} | ${r.q.toFixed(2)} | ${r.halves.map((h) => pct(h, 0)).join(' / ')} |`));
+    L.push('| Setup | Status | Events | Cards | vs peers | vs market | After fees | Paid | Beat typical peer | 15%+ | p | q | Halves (vs peers) |', '|---|---|---|---|---|---|---|---|---|---|---|---|---|');
+    e.results.filter((r) => r.p != null).slice(0, 15).forEach((r) => L.push(`| ${r.label} | ${r.status} | ${r.n} | ${r.cards} | ${pct(r.vsPeers, 1)} | ${pct(r.excess, 1)} | ${pct(r.net, 1)} | ${Math.round((r.pays ?? 0) * 100)}% | ${(r.beatPeers * 100).toFixed(0)}% | ${(r.boom * 100).toFixed(0)}% | ${r.p.toFixed(3)} | ${r.q.toFixed(2)} | ${r.halves.map((h) => pct(h, 0)).join(' / ')} |`));
     return L.join('\n') + '\n';
   }
 
   // One-line stat for a rule, for the UI.
-  const stat = (r) => `${pct(r.vsPeers, 1)} vs peers over ${H}D · ${(r.beatPeers * 100).toFixed(0)}% beat typical peer · n ${r.n}${r.p != null ? ` · p ${r.p < 0.001 ? '<0.001' : r.p.toFixed(3)}` : ''}${r.q != null ? ` · q ${r.q.toFixed(2)}` : ''}`;
+  const stat = (r) => `${pct(r.vsPeers, 1)} vs peers over ${H}D · ${(r.beatPeers * 100).toFixed(0)}% beat typical peer${r.net != null ? ` · after PSA Vault fees ${pct(r.net, 1)} (${Math.round(r.pays * 100)}% paid)` : ''} · n ${r.n}${r.p != null ? ` · p ${r.p < 0.001 ? '<0.001' : r.p.toFixed(3)}` : ''}${r.q != null ? ` · q ${r.q.toFixed(2)}` : ''}`;
   const api = { run, verdict, markdown, stat, pct, RULES, H };
   if (isNode) module.exports = api; else root.Edge = api;
 })(typeof window !== 'undefined' ? window : globalThis);

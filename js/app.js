@@ -6,7 +6,7 @@
   const I = window.Ind;
   const C = window.Clean;
 
-  const state = { v: 3, key: null, grade: 'psa9', vs: 'idx:all', range: 365, res: 'D', ind: { st: 1, sma20: 1, sma50: 1, hma: 0, vol: 1, rs: 1, rsi: 1, macd: 0, vzo: 0 }, guide: 1, sort: 'score', dir: -1, wlView: 'cards', wlMetric: 'c30', merge: false, print: 'main', group: false, collapsed: [], stars: [] };
+  const state = { v: 3, key: null, grade: 'psa9', vs: 'idx:all', range: 365, res: 'D', ind: { st: 1, sma20: 1, sma50: 1, hma: 0, vol: 1, rs: 1, rsi: 1, macd: 0, vzo: 0 }, guide: 1, dash: 0, sort: 'score', dir: -1, wlView: 'cards', wlMetric: 'c30', merge: false, print: 'main', group: false, collapsed: [], stars: [] };
   let hadSaved = false;
   try { const sv = JSON.parse(localStorage.getItem('slabdex') || 'null'); if (sv && sv.v === 3) { Object.assign(state, sv); hadSaved = true; if (!('st' in state.ind)) state.ind.st = 1; } } catch (e) {} // older saved layouts are ignored
   const save = () => { try { localStorage.setItem('slabdex', JSON.stringify(state)); } catch (e) {} };
@@ -327,7 +327,7 @@
       const base = k.replace(/~alt$/, ''), id = base + '|' + (b.card.line || '');
       if (seen.has(id)) continue; seen.add(id);
       const lad = Model.gradeLadder(ms, k, b.card);
-      for (const r of lad) if (r.lagging && (!model.minPrice || (r.price ?? 0) >= model.minPrice)) { // the lagging slab must clear the minimum price
+      for (const r of lad) if (r.lagging && r.tradable) { // the lagging slab must clear the minimum price and be liquid
         const led = r.lagging.map((g) => lad.find((x) => x.grade === g)).sort((a, c) => c.c30 - a.c30)[0];
         rows.push({ k, card: b.card, lag: r, led, spread: led.c30 - r.c30 });
       }
@@ -342,7 +342,7 @@
     const ms = allModels(), rows = [], seen = new Set();
     for (const [k, b] of Object.entries(model.by)) {
       const id = k.replace(/~alt$/, '') + '|' + (b.card.line || ''); if (seen.has(id)) continue; seen.add(id);
-      if (!Model.aboveMin(model, b)) continue; // below the minimum slab price
+      if (!Model.tradable(model, b)) continue; // below the minimum slab price or not liquid
       for (const sq of Model.squeezeNow(ms, k, b.card)) if (!sq.inverted) rows.push({ k, card: b.card, sq });
     }
     rows.sort((a, c) => c.sq.ratio / (c.sq.norm || 1) - a.sq.ratio / (a.sq.norm || 1));
@@ -404,9 +404,13 @@
       ['Volatility 30D (ann.)', s.vol30 == null ? '—' : s.vol30.toFixed(0) + '%'],
       ...(ratio ? [] : [[cur.isIndex ? 'Members' : model.dense ? 'Price days' : 'Clean sale days', cur.isIndex ? String(cur.index.members.length) : String(cur.saleN)]]),
       ...(model.dense || ratio ? [] : [['Sale days, last 90D', s.saleDays90 == null ? '—' : `<span class="${s.saleDays90 < Model.MIN_SALE_DAYS_90 ? 'neg' : ''}">${s.saleDays90}</span>`]]),
+      ...(model.dense || ratio || cur.isIndex ? [] : (() => { const q = Model.liquidity(model, cur), R = q.rules; return [
+        ['Tradable', q.liquid && Model.aboveMin(model, cur) ? '<span class="pos">yes</span>' : `<span class="neg" title="Needs ${R.liqDays}+ sale days in ${R.liqWin}D, a sale within ${R.liqAge}D${model.minPrice ? ` and ${money(model.minPrice)}+` : ''}">no · ${!Model.aboveMin(model, cur) ? 'under ' + money(model.minPrice) : q.days < R.liqDays ? `${q.days}/${R.liqDays} sale days` : `last sale ${q.age}d ago`}</span>`],
+        ['Sales spread 90D', q.spread == null ? '—' : `<span class="${q.wide ? 'warn' : ''}" title="75th ÷ 25th percentile of recent sales. Above ${R.spreadFlag}× the price you pay depends heavily on which listing you catch.">${q.spread.toFixed(2)}×${q.wide ? ' wide' : ''}</span>`],
+      ]; })()),
       ['History', `${s.days} days`],
     ];
-    $('sigCtx').innerHTML = setupLine(cur, ratio) + ladderRows(cur, ratio) + valueRows(cur, ratio) + contextRows(cur, ratio);
+    $('sigCtx').innerHTML = setupLine(cur, ratio) + gaugeRows(cur, ratio) + ladderRows(cur, ratio) + valueRows(cur, ratio) + contextRows(cur, ratio);
     $('metrics').innerHTML = rows.map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join('');
   }
 
@@ -476,9 +480,18 @@
         const picks = e.ok ? e.picks.filter((p) => model.by[p.key]).map((p) => ({ ...p, nRules: p.rules.length })).sort((a, b) => (a.status === 'confirmed' ? 0 : 1) - (b.status === 'confirmed' ? 0 : 1) || b.nRules - a.nRules || (a.best.p ?? 1) - (b.best.p ?? 1)) : [];
         const q = picks.length ? Math.max(...picks.map((p) => p.best.q ?? 1)) : null;
         const note = `<tr class="sec"><td colspan="5"><p class="setupnote">${esc(Edge.verdict(e))}${picks.some((p) => p.status === 'promising') ? ` <b>◇ promising</b> = beat other cards in the past but didn't survive the luck correction${q != null ? ` (up to ~${Math.round(q * 100)}% of these could be flukes)` : ''}; <b>◆ confirmed</b> = did. Sorted by how many setups agree (×N). ${picks.length} of ${Object.keys(model.by).length} card lines — a lead to research, not a buy signal.` : ''}</p></td></tr>`;
-        html = note + (picks.length ? picks.map((p) => { const r = cardRow(model.by[p.key], M, st); r.sub = `${p.status === 'confirmed' ? '◆' : '◇'}${p.nRules > 1 ? '×' + p.nRules : ''} ${p.best.label} · ${p.best.ago === 0 ? 'today' : p.best.ago + 'd ago'} · ${Edge.pct(p.best.vsPeers, 1)} vs peers${(() => { const f = fwdOf(p.best.id); return f?.n ? ` · live ${Edge.pct(f.vsPeers, 0)} (${f.n})` : ''; })()}`; return rowHtml(r, M, p.status === 'confirmed' ? ' setup-conf' : ' setup-prom'); }).join('') : '<tr><td colspan="5" class="empty">No tested setup has fired in the last 7 days.</td></tr>');
+        html = note + (picks.length ? picks.map((p) => { const r = cardRow(model.by[p.key], M, st); r.sub = `${p.status === 'confirmed' ? '◆' : '◇'}${p.nRules > 1 ? '×' + p.nRules : ''} ${p.best.label} · ${p.best.ago === 0 ? 'today' : p.best.ago + 'd ago'} · ${Edge.pct(p.best.vsPeers, 1)} vs peers${(() => { const f = fwdOf(p.best.id); return f?.n ? ` · live ${Edge.pct(f.vsPeers, 0)} (${f.n})` : ''; })()}${(() => { const q = Model.liquidity(model, model.by[p.key]); return q.wide ? ` · ⚠ spread ${q.spread.toFixed(1)}×` : ''; })()}`; return rowHtml(r, M, p.status === 'confirmed' ? ' setup-conf' : ' setup-prom'); }).join('') : '<tr><td colspan="5" class="empty">No tested setup has fired in the last 7 days.</td></tr>');
       }
       html += fwdSection();
+    } else if (view === 'zone') { // tradable slabs by gauge zone, best prospects first
+      const G = tpiAll(), L = Model.GRADE_LABEL[state.grade];
+      const groups = ['buy', 'watch', 'late', 'neutral', 'avoid'].map((z) => [z, G.ranked.filter((c) => c.zone === z)]);
+      const note = `<tr class="sec"><td colspan="5"><p class="setupnote">Tradable ${L} slabs (${model.minPrice ? money(model.minPrice) + '+, ' : ''}liquid) by trend &amp; value gauge. <b>BUY ZONE</b> = trend ≥ +0.5 and priced fair or cheap · <b>WATCH</b> = cheap, trend not up yet · <b>LATE</b> = trend up but pricey. Open ◔ GAUGES for the dashboard. A lead to research until the forward record backs the zones.</p></td></tr>`;
+      html = note + groups.map(([z, xs]) => {
+        if (!xs.length) return '';
+        const tk = 'zone:' + z, open = z === 'buy' || z === 'watch' ? !state.collapsed.includes(tk) : state.collapsed.includes(tk);
+        return `<tr class="sec" data-toggle="${tk}"><td colspan="5">${open ? '▾' : '▸'} ${TPI.ZONES[z].label} <span class="dim">${xs.length} · ${esc(TPI.ZONES[z].note)}</span></td></tr>` + (open ? xs.map((c) => { const r = cardRow(c.b, M, st); r.sub = `trend ${sgn(c.t)} ${c.roc == null ? '' : c.roc > 0.05 ? '▲' : c.roc < -0.05 ? '▼' : '▬'} · value ${sgn(c.v)} (${TPI.vlabel(c.v).toLowerCase()})${c.liq.wide ? ` · ⚠ spread ${c.liq.spread.toFixed(1)}×` : ''}`; return rowHtml(r, M, ' zrow z-' + z); }).join('') : '');
+      }).join('') || '<tr><td colspan="5" class="empty">No tradable slab has a gauge reading yet.</td></tr>';
     } else if (view === 'lag') { // a neighbouring grade jumped, this grade hasn't followed
       const L = Model.GRADE_LABEL, rows = model.dense ? [] : lagList(), e = EDGE[state.grade];
       const bt = ['lagUp', 'lagDown'].map((id) => e?.ok ? e.results.find((r) => r.id === id) : null).filter((x) => x && x.n);
@@ -708,19 +721,117 @@
     const b = p.best, conf = p.status === 'confirmed';
     return `<p class="setupline ${conf ? 'conf' : ''}">${conf ? '◆ BACKTESTED SETUP' : '◇ Promising setup (not confirmed)'} · ${b.ago === 0 ? 'today' : b.ago + 'd ago'}<br><b>${esc(b.label)}</b><br><span class="dim">${esc(Edge.stat(b))}</span></p>`;
   }
+  // ---------- trend & value gauges (js/tpi.js) ----------
+  // Per grade: every card line's gauge series (cached), index gauges, and the ranked prospects.
+  const GZ = {};
+  function tpiAll() {
+    const g = state.grade; if (GZ[g]?.m === model) return GZ[g];
+    const ms = allModels(), up = ms[Model.NEXT[g]] || null, down = ms[Model.PREV[g]] || null;
+    const cards = {}, idx = {};
+    for (const [k, b] of Object.entries(model.by)) {
+      if (b.card.mixed || b.demo) continue;
+      const s = TPI.series(model, k, { up, down }); if (!s || s.last < 0) continue;
+      const i = s.last, q = Model.liquidity(model, b);
+      cards[k] = { k, b, s, t: s.trend[i], v: s.value[i], zone: s.zone[i], roc: s.roc(), tradable: Model.tradable(model, b), liq: q };
+      cards[k].score = TPI.prospect(cards[k].t, cards[k].v, cards[k].roc) - (q.wide ? 0.2 : 0);
+    }
+    for (const id of Object.keys(model.idx)) { const s = TPI.indexSeries(model, id); if (s && s.last >= 0) idx[id] = { id, x: model.idx[id], s, t: s.trend[s.last], v: s.value[s.last], roc: s.roc() }; }
+    const ranked = Object.values(cards).filter((c) => c.tradable && c.t != null).sort((a, b) => b.score - a.score);
+    return (GZ[g] = { m: model, cards, idx, ranked, buy: ranked.filter((c) => c.zone === 'buy'), watch: ranked.filter((c) => c.zone === 'watch').sort((a, b) => b.v - a.v) });
+  }
+  const sgn = (v, d = 2) => (v == null ? '—' : `${v >= 0 ? '+' : ''}${v.toFixed(d)}`);
+  const rocTxt = (r) => (r == null ? '' : r > 0.05 ? `<span class="pos" title="Gauge vs a week ago">▲${Math.abs(r).toFixed(2)}</span>` : r < -0.05 ? `<span class="neg" title="Gauge vs a week ago">▼${Math.abs(r).toFixed(2)}</span>` : '<span class="dim" title="Gauge vs a week ago">▬</span>');
+  // Semicircle gauge, -1 (left, red) … +1 (right, green).
+  function gaugeSvg(v, { size = 120, label = true } = {}) {
+    const w = size, h = size * 0.7, cx = w / 2, cy = size * 0.47, r = w * 0.4, sw = w * 0.085;
+    const pt = (a, rr = r) => [cx + rr * Math.cos(Math.PI * (1 - a)), cy - rr * Math.sin(Math.PI * (1 - a))]; // a: 0 = left … 1 = right
+    const arc = (a0, a1, cls) => { const [x0, y0] = pt(a0), [x1, y1] = pt(a1); return `<path class="${cls}" d="M${x0.toFixed(1)} ${y0.toFixed(1)} A${r} ${r} 0 0 1 ${x1.toFixed(1)} ${y1.toFixed(1)}" stroke-width="${sw}" fill="none"/>`; };
+    const a = v == null ? null : (Math.max(-1, Math.min(1, v)) + 1) / 2, [nx, ny] = a == null ? [cx, cy] : pt(a, r * 0.9);
+    return `<svg class="gsvg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" role="img" aria-label="Trend ${sgn(v)}">${arc(0, 0.375, 'ga-dn')}${arc(0.375, 0.625, 'ga-mid')}${arc(0.625, 1, 'ga-up')}${a == null ? '' : `<line class="ga-needle" x1="${cx}" y1="${cy}" x2="${nx.toFixed(1)}" y2="${ny.toFixed(1)}" stroke-width="${Math.max(2, w / 45)}"/>`}<circle class="ga-hub" cx="${cx}" cy="${cy}" r="${w / 22}"/>${label ? `<text class="ga-val" x="${cx}" y="${(cy + size * 0.2).toFixed(1)}" text-anchor="middle">${v == null ? '—' : sgn(v)}</text>` : ''}</svg>`;
+  }
+  // Value bar, -2 (expensive, red) … +2 (cheap, green).
+  const valueBar = (v) => `<div class="vbar" title="Value ${sgn(v)} (−2 expensive … +2 cheap)"><i style="left:${v == null ? 50 : ((Math.max(-2, Math.min(2, v)) + 2) / 4) * 100}%"${v == null ? ' hidden' : ''}></i></div>`;
+  const zoneChip = (z) => `<span class="zchip z-${z}" title="${esc(TPI.ZONES[z].note)}">${TPI.ZONES[z].label}</span>`;
+  function prospectTile(c) {
+    const card = c.b.card, L = Model.GRADE_LABEL[state.grade];
+    return `<button class="ptile z-${c.zone}" type="button" data-open="${c.k}" title="Open ${esc(card.name)} on the chart">
+      <span class="pt-top">${keyIcon(c.k)}<span class="pt-name"><b>${esc(card.name)}</b><span class="dim">${esc(card.set)} #${esc(card.number)} · ${L}</span></span></span>
+      ${gaugeSvg(c.t, { size: 112 })}
+      <span class="pt-row"><span>${money(c.b.close[c.s.last])}</span>${rocTxt(c.roc)}${zoneChip(c.zone)}</span>
+      <span class="pt-row small"><span class="dim">value</span>${valueBar(c.v)}<span>${esc(TPI.vlabel(c.v))}</span></span>
+      ${c.liq.wide ? `<span class="pt-warn">⚠ wide sales spread ${c.liq.spread.toFixed(1)}×</span>` : ''}
+    </button>`;
+  }
+  function idxTile(o) {
+    const x = o.x;
+    return `<button class="gtile" type="button" data-open="${o.id}" title="Open ${esc(x.name)} on the chart"><span class="gt-name">${icon(x)}${esc(x.kind === 'all' ? 'All tracked' : x.name)}</span>${gaugeSvg(o.t, { size: 104 })}<span class="pt-row small">${rocTxt(o.roc)}<span class="dim">${esc(TPI.label(o.t))}</span></span><span class="pt-row small"><span class="dim">range</span>${valueBar(o.v)}</span></button>`;
+  }
+  // Market gauge and the average tradable card's gauge over time, against the All-tracked index level.
+  function historySvg() {
+    const G = tpiAll(), all = G.idx['idx:all']; if (!all) return '';
+    const n = model.axis.length, from = Math.max(0, n - 240), W = 640, H = 170, P = 26;
+    const avg = model.axis.map((_, i) => { let s = 0, k = 0; for (const c of Object.values(G.cards)) { const t = c.s.trend[i]; if (I.isN(t) && Model.tradable(model, c.b, i)) { s += t; k++; } } return k >= 5 ? s / k : null; });
+    const lvl = model.idx['idx:all'].close, lv = lvl.slice(from).filter(I.isN), lo = Math.min(...lv), hi = Math.max(...lv);
+    const X = (i) => P + ((i - from) / Math.max(1, n - 1 - from)) * (W - 2 * P), Y = (v) => H - P - ((v + 1) / 2) * (H - 2 * P), YL = (v) => H - P - ((v - lo) / Math.max(1e-9, hi - lo)) * (H - 2 * P);
+    const path = (arr, f) => { let d = '', pen = false; for (let i = from; i < n; i++) { const v = arr[i]; if (!I.isN(v)) { pen = false; continue; } d += `${pen ? 'L' : 'M'}${X(i).toFixed(1)} ${f(v).toFixed(1)}`; pen = true; } return d; };
+    const ticks = [0, 0.5, 1].map((f) => Math.round(from + f * (n - 1 - from)));
+    return `<svg class="hsvg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img" aria-label="Trend gauge over time">
+      <line class="h-grid" x1="${P}" x2="${W - P}" y1="${Y(0)}" y2="${Y(0)}"/><line class="h-grid dash" x1="${P}" x2="${W - P}" y1="${Y(0.5)}" y2="${Y(0.5)}"/><line class="h-grid dash" x1="${P}" x2="${W - P}" y1="${Y(-0.5)}" y2="${Y(-0.5)}"/>
+      <text class="h-ax" x="4" y="${Y(1) + 4}">+1</text><text class="h-ax" x="4" y="${Y(0) + 4}">0</text><text class="h-ax" x="4" y="${Y(-1) + 4}">−1</text>
+      <path class="h-lvl" d="${path(lvl, YL)}"/><path class="h-mkt" d="${path(all.s.trend, Y)}"/><path class="h-avg" d="${path(avg, Y)}"/>
+      ${ticks.map((i) => `<text class="h-ax" x="${X(i)}" y="${H - 6}" text-anchor="middle">${model.axis[i]?.slice(5) || ''}</text>`).join('')}
+    </svg><p class="hleg"><i class="k-mkt"></i>Market gauge <i class="k-avg"></i>Average tradable card <i class="k-lvl"></i>All tracked index (level)</p>`;
+  }
+  function renderDash() {
+    const el = $('dash'); if (el.hidden) return;
+    const G = tpiAll(), L = Model.GRADE_LABEL[state.grade], e = EDGE[state.grade];
+    const bt = e?.ok ? ['buyZone', 'tpiUp'].map((id) => e.results.find((r) => r.id === id)).filter((r) => r && r.n) : [];
+    const fw = ['buyZone', 'tpiUp'].map((id) => LEDGER?.summary?.find((s) => s.rule === id)).filter(Boolean);
+    const rec = `${bt.map((r) => `Backtest · ${esc(r.label)}: ${esc(Edge.stat(r))} · ${r.status}`).join('<br>') || 'Backtest: not enough history yet.'}${fw.length ? '<br>' + fw.map((s) => `Forward record · ${esc(s.label)}: ${esc(fwdTxt(s))} · ${esc(fwdVerdict(s))}`).join('<br>') : ''}`;
+    const sec = (title, sub, body) => `<section class="dsec"><h3>${title} <span class="dim">${sub}</span></h3>${body}</section>`;
+    const kinds = (k) => Object.values(G.idx).filter((o) => o.x.kind === k);
+    const chars = Object.values(G.idx).filter((o) => o.x.kind === 'char' && (o.x.scope === 'all' || !Object.values(G.idx).some((p) => p.x.kind === 'char' && p.x.scope === 'all' && p.x.base === o.x.base))).sort((a, b) => (b.t ?? -9) - (a.t ?? -9));
+    const top = G.buy.slice(0, 8);
+    el.innerHTML = `<div class="dash-head"><b>TREND &amp; VALUE GAUGES</b> <span class="dim">${L} · medium term (30–90 day inputs) · long term needs a year of history</span><button class="tbtn" type="button" data-close-dash>✕ chart</button></div>
+      ${sec('★ TOP PROSPECTS', `${L} slabs in the buy zone: tradable (${model.minPrice ? money(model.minPrice) + '+, ' : ''}liquid), trend gauge ≥ +0.5, priced fair or cheap — ranked by trend, value and a rising gauge`,
+        top.length ? `<div class="pgrid">${top.map(prospectTile).join('')}</div>` : `<p class="dim">No tradable ${L} slab is in the buy zone right now.</p>`)}
+      <p class="drec">${rec}<br><span class="dim">A lead to research, not a buy signal, until the forward record shows the buy zone beating other cards after PSA fees.</span></p>
+      ${G.watch.length ? sec('WATCH', 'cheap, trend not up yet — wait for the gauge to turn', `<div class="pgrid">${G.watch.slice(0, 6).map(prospectTile).join('')}</div>`) : ''}
+      ${sec('MARKET', 'All tracked and era families', `<div class="ggrid">${[...kinds('all'), ...kinds('family')].map(idxTile).join('')}</div>`)}
+      ${sec('TREND OVER TIME', L, historySvg())}
+      ${sec('ERAS', '', `<div class="ggrid">${kinds('era').sort((a, b) => (b.t ?? -9) - (a.t ?? -9)).map(idxTile).join('')}</div>`)}
+      ${sec('CHARACTERS', '', `<div class="ggrid">${chars.map(idxTile).join('')}</div>`)}
+      ${sec('SETS', '', `<div class="ggrid">${kinds('set').sort((a, b) => (b.t ?? -9) - (a.t ?? -9)).map(idxTile).join('')}</div>`)}
+      <p class="dim dnote">Trend gauge (−1…+1) = weighted average of ±1 votes: market, era family, set, character and breadth (40%); the card's Supertrend, SMA50, Hull MA, strength vs its set and the market, sales pressure (40%); grade compression or a neighbouring grade jumping first (20%, only when present). Value (−2 expensive … +2 cheap) = price vs its own trailing year, vs its set, and vs the next grade up. Index range bars show where the index sits in its own trailing year. ▲▼ = change in the gauge vs a week ago.</p>`;
+  }
+  // Signal panel block for one card: gauge, value, zone, and the vote-by-vote breakdown.
+  function gaugeRows(cur, ratio) {
+    if (ratio || model.dense) return '';
+    const G = tpiAll();
+    if (cur.isIndex) { const o = G.idx[cur.id]; if (!o) return ''; return `<h3>TREND GAUGE <span class="dim">${esc(TPI.label(o.t))}</span></h3><div class="gblock">${gaugeSvg(o.t, { size: 120 })}<div class="gside">${rocTxt(o.roc)}<span class="dim">range in its year</span>${valueBar(o.v)}</div></div>`; }
+    const c = G.cards[cur.id]; if (!c) return '';
+    const bd = c.s.breakdown(), vote = (v) => (v == null ? '<span class="dim">·</span>' : v > 0.05 ? `<span class="pos">+${v === 1 ? 1 : v.toFixed(1)}</span>` : v < -0.05 ? `<span class="neg">${v === -1 ? -1 : v.toFixed(1)}</span>` : '<span class="dim">0</span>');
+    const rows = (title, arr, w) => arr.length ? `<p class="gbh">${title}${w ? ` <span class="dim">${Math.round(w * 100)}% · ${sgn(bd.groups?.[title.toLowerCase()] ?? null)}</span>` : ''}</p>` + arr.map(([n, v, why]) => `<p class="gbr" title="${esc(why)}"><span>${esc(n)}</span>${vote(v)}</p>`).join('') : '';
+    const open = state.collapsed.includes('gauge:open'); // folded by default
+    return `<h3>TREND &amp; VALUE ${zoneChip(c.zone)}</h3><div class="gblock">${gaugeSvg(c.t, { size: 120 })}<div class="gside"><span>${esc(TPI.label(c.t))} ${rocTxt(c.roc)}</span><span class="dim">value · ${esc(TPI.vlabel(c.v))} ${sgn(c.v)}</span>${valueBar(c.v)}${c.tradable ? '' : '<span class="neg small">not tradable</span>'}</div></div>
+      <button class="ctx-row gbtoggle" type="button" data-gtoggle>${open ? '▾' : '▸'} why <span class="dim">vote by vote</span></button>
+      ${open ? `<div class="gbd">${rows('Context', bd.context, TPI.WEIGHTS.context)}${rows('Card', bd.card, TPI.WEIGHTS.card)}${rows('Grades', bd.grades, TPI.WEIGHTS.grades)}${rows('Value', bd.value)}</div>` : ''}`;
+  }
   // ---------- forward record: setups logged live when they fire, scored 30 days later (data/ledger.json) ----------
-  const FWD_TONE = { 'holding up': 'pos', 'not holding': 'neg', mixed: '', collecting: 'dim' };
+  const FWD_TONE = { 'holding up': 'pos', 'not holding': 'neg', 'beats peers, not fees': 'warn', mixed: '', collecting: 'dim' };
   const fwdOf = (id) => LEDGER?.summary?.find((s) => s.rule === id) || null;
-  const fwdTxt = (s) => (s.n ? `${Edge.pct(s.vsPeers, 1)} vs peers · ${Math.round(s.beat * 100)}% beat · ${s.n} scored` : 'none scored yet') + (s.pending ? ` · ${s.pending} pending` : '');
+  const fwdOne = (s, h) => (s?.n ? `${h}D: ${Edge.pct(s.vsPeers, 1)} vs peers, ${Math.round(s.beat * 100)}% beat · after fees ${Edge.pct(s.net, 1)} (${Math.round((s.pays ?? 0) * 100)}% paid) · ${s.n} scored` : `${h}D: none scored yet`);
+  const fwdTxt = (s) => `${fwdOne(s, LEDGER?.horizon || 30)}${s.h90 ? ` | ${fwdOne(s.h90, 90)}` : ''}${s.pending ? ` · ${s.pending} pending` : ''}`;
+  const fwdVerdict = (s) => (s.h90?.n >= 10 ? s.h90.verdict + ' (90D)' : s.verdict); // 90D decides once it has enough
   function fwdIntro() {
     const c = LEDGER?.counts || {};
-    return `Logged the day a setup fires (since ${LEDGER.since}), scored ${LEDGER.horizon} days later against every other tracked card in that grade — results the backtest never saw${LEDGER.minPrice ? ` (slabs at ${money(LEDGER.minPrice)}+ on the day they fired)` : ''}. ${c.scored || 0} scored · ${c.pending || 0} waiting · ${c.void || 0} void (no buyable sales after the fire). A setup needs 10+ scored before its verdict means anything; "holding up" = beat its peers more often than a coin flip would (sign test p < 0.05).`;
+    return `Logged the day a setup fires (since ${LEDGER.since}) on a slab that was ${LEDGER.minPrice ? `${money(LEDGER.minPrice)}+ and ` : ''}liquid that day (6+ sale days in 90, a sale within 30), then scored ${LEDGER.horizon} and 90 days later against every other such slab in that grade — results the backtest never saw. "After fees" = the slab's own return after the PSA Vault consignment fee for its sale price (13% + $3 under $100 · 13% to $499 · 12% to $999 · 10% to $2,499 · 9% to $4,999 · 7% from $5,000). ${c.scored || 0} scored at ${LEDGER.horizon}D · ${c.scored90 || 0} at 90D · ${c.pending || 0} waiting · ${c.void || 0} void (no buyable sales after the fire). A verdict needs 10+ scored; "holding up" = beat its peers more often than a coin flip (sign test p < 0.05) AND made money after fees; "beats peers, not fees" = a real signal that doesn't pay for a trade. Once 90D has 10+, it decides.`;
   }
   function fwdSection() {
     if (!LEDGER?.summary?.length) return `<tr class="sec"><td colspan="5">FORWARD RECORD <span class="dim">starts after the next daily run</span></td></tr>`;
     const open = !state.collapsed.includes('sec:fwd');
-    const rows = LEDGER.summary.filter((s) => s.n || s.pending).sort((a, b) => b.n - a.n || b.pending - a.pending);
-    return `<tr class="sec" data-toggle="sec:fwd"><td colspan="5">${open ? '▾' : '▸'} FORWARD RECORD <span class="dim">${LEDGER.counts?.scored || 0} scored</span></td></tr>` + (open ? `<tr class="sec"><td colspan="5"><p class="setupnote">${esc(fwdIntro())}</p><div class="fwd">${rows.map((s) => `<p class="fwdrow"><span class="fl">${esc(s.label)}</span><span class="fv ${FWD_TONE[s.verdict] || ''}">${esc(s.verdict)}</span><span class="fs dim">${esc(fwdTxt(s))}</span></p>`).join('')}</div></td></tr>` : '');
+    const rows = LEDGER.summary.filter((s) => s.n || s.pending || s.h90?.n).sort((a, b) => (b.h90?.n || 0) - (a.h90?.n || 0) || b.n - a.n || b.pending - a.pending);
+    return `<tr class="sec" data-toggle="sec:fwd"><td colspan="5">${open ? '▾' : '▸'} FORWARD RECORD <span class="dim">${LEDGER.counts?.scored || 0} scored</span></td></tr>` + (open ? `<tr class="sec"><td colspan="5"><p class="setupnote">${esc(fwdIntro())}</p><div class="fwd">${rows.map((s) => `<p class="fwdrow"><span class="fl">${esc(s.label)}</span><span class="fv ${FWD_TONE[fwdVerdict(s).replace(/ \(90D\)$/, '')] || ''}">${esc(fwdVerdict(s))}</span><span class="fs dim">${esc(fwdTxt(s))}</span></p>`).join('')}</div></td></tr>` : '');
   }
   function edgeGroup() {
     const e = edge();
@@ -811,7 +922,12 @@
   }
   const renderBrief = () => { renderTiles(); if (state.wlView === 'brief') renderBriefList(); };
 
-  function refresh(opts) { save(); syncButtons(); renderWatchlist(); draw(opts); }
+  function refresh(opts) { save(); syncButtons(); renderWatchlist(); draw(opts); showDash(); }
+  function showDash() {
+    const on = !!state.dash; $('dash').hidden = !on; $('gaugesBtn').setAttribute('aria-pressed', String(on)); $('gaugesBtn').classList.toggle('on', on);
+    document.querySelector('.screen').classList.toggle('dash-on', on);
+    if (on) renderDash();
+  }
 
   // Keep the same printing when switching grades (the '~alt' line is 1st Ed in one grade, Unl in another).
   const ptag = (line) => (!line ? '' : /1st/i.test(line) ? '1st' : /unl/i.test(line) ? 'unl' : /reverse|upper/i.test(line) ? 'hi' : /holo|lower/i.test(line) ? 'lo' : '');
@@ -847,8 +963,14 @@
     document.addEventListener('click', (e) => { const g = e.target.closest('[data-grade]'); if (!g) return; e.stopPropagation(); e.preventDefault(); state.grade = g.dataset.grade; rebuild(); }, true); // 'Switch to PSA 8' links
     $('groupBtn').addEventListener('click', () => { state.group = !state.group; renderWatchlist(); save(); });
     $('sigStar').addEventListener('click', () => toggleStar($('sigStar').dataset.k));
-    $('sigCtx').addEventListener('click', (e) => { const b = e.target.closest('.ctx-row[data-k]'); if (b) select(b.dataset.k); });
+    $('sigCtx').addEventListener('click', (e) => { if (e.target.closest('[data-gtoggle]')) { state.collapsed = state.collapsed.includes('gauge:open') ? state.collapsed.filter((x) => x !== 'gauge:open') : [...state.collapsed, 'gauge:open']; save(); draw({ keepView: true }); return; } const b = e.target.closest('.ctx-row[data-k]'); if (b) select(b.dataset.k); });
     $('helpBtn').addEventListener('click', () => { $('help').hidden = !$('help').hidden; });
+    $('gaugesBtn').addEventListener('click', () => { state.dash = state.dash ? 0 : 1; save(); showDash(); });
+    $('dash').addEventListener('click', (e) => {
+      if (e.target.closest('[data-close-dash]')) { state.dash = 0; save(); showDash(); return; }
+      const o = e.target.closest('[data-open]'); if (!o) return;
+      state.dash = 0; select(o.dataset.open);
+    });
     $('help').addEventListener('click', (e) => { if (e.target === $('help') || e.target.closest('[data-close]')) $('help').hidden = true; });
     $('mergeBtn').addEventListener('click', () => { state.merge = !state.merge; refresh({ keepView: true }); });
     $('cmpX').addEventListener('click', () => { state.vs = 'none'; state.merge = false; renderSelects(); refresh({ keepView: true }); });
@@ -889,6 +1011,7 @@
       if (k === '\\') { e.preventDefault(); openPicker('B'); return; }
       if (G[k]) { state.grade = G[k]; rebuild(); return; }
       if (k === 'p' || k === 'P') { if (hasAlt(state.key)) { state.print = { main: 'alt', alt: 'both', both: 'main' }[state.print] || 'main'; refresh({ keepView: true }); } return; }
+      if (k === 'd' || k === 'D') { state.dash = state.dash ? 0 : 1; save(); showDash(); return; }
       if (k === 'm' || k === 'M') { if (state.vs !== 'none') { state.merge = !state.merge; refresh({ keepView: true }); } return; }
       if (k === 'x' || k === 'X') { state.vs = 'none'; state.merge = false; renderSelects(); refresh({ keepView: true }); return; }
       if (k === 'w' || k === 'W') { state.res = state.res === 'W' ? 'D' : 'W'; refresh(); return; }

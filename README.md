@@ -115,6 +115,26 @@ Only **confirmed** setups get top billing (first tile, ◆ in the card list, a b
 - **Leads** — SETUPS, LAG (the lagging / compressed slab's own price), the brief's cards to note and the CARDS list show only slabs at or above it; the CARDS list keeps the rest behind a "slabs under $1,000" row.
 - **Default grade** — discover picks the grade with the most cards that are both deep and above the minimum (PSA 9 on current data).
 
+## Trend & value gauges (◔ GAUGES, ZONE tab)
+
+`js/tpi.js` — a TPI-style read per card line and per index, medium term (30–90 day inputs). Every input votes −1 / 0 / +1:
+
+- **Trend gauge (−1…+1)** — context 40% (market, era family, set, character index trends; breadth = share of the set's cards above their SMA50) · card 40% (Supertrend, price vs SMA50, Hull MA slope, strength vs its set, vs the market, sales pressure) · grades 20% (compressed vs the grade below, or a neighbouring grade jumped first — only when present). Index gauges use the index's own trend (double weight), strength vs the market and breadth.
+- **Value (−2 expensive … +2 cheap)** — price vs its own trailing year (z), strength vs its set vs its 90-day norm, share of the next grade up vs its usual share. For indexes: where it sits in its own trailing year.
+- **Zones** — BUY (trend ≥ +0.5, value ≥ −0.25) · LATE (trend up, pricey) · WATCH (value ≥ +0.75, trend not up) · AVOID (trend ≤ −0.25 and pricey) · NEUTRAL. ▲▼ = change in the gauge vs a week ago.
+
+Where: **◔ GAUGES** (toolbar, or `D`) swaps the chart for the dashboard — ★ TOP PROSPECTS (tradable slabs in the buy zone, ranked by trend + value + a rising gauge, wide spreads penalised), WATCH, market & era-family gauges, trend over time (market gauge and the average tradable card's gauge vs the All-tracked index), eras, characters, sets; click any tile to open it on the chart. **ZONE** tab lists every tradable slab by zone. The Signal panel shows each card's gauge, value bar, zone and the vote-by-vote breakdown ("why"). `brief.md` / `brief.json` list the top prospects per grade.
+
+Weights are equal and fixed for now. The gauge's own calls — *Trend gauge up through +0.5*, *Enters buy zone*, *Undervalued, trend not up yet* — are backtested and logged in the forward record like every setup, so the gauge earns trust (or weight changes) from results it never saw. A long-term gauge (180D+ inputs) is added once there's a year of history.
+
+## Tradable slabs: liquidity, spread, fees
+
+Rules in `js/model.js` (`Model.RULES`, override with `"rules": {…}` in the watchlist), judged as of the day a setup fires:
+
+- **Liquid** — sold on 6+ different days in the prior 90, and at least once in the prior 30. Together with the minimum price this is "tradable": only tradable slabs count as backtest / forward-record events or peers, and only tradable slabs show as leads (SETUPS, LAG, brief). The Signal panel shows *Tradable* and why not.
+- **Spread** — 75th ÷ 25th percentile of the last 90 days' sales. Above 1.6× the price you pay depends on which listing you catch; such slabs are flagged (⚠ in SETUPS, *wide* in the Signal panel), not dropped.
+- **Fees** — every return is also shown after the PSA Vault consignment fee for its sale price (one fee on the whole price, no separate eBay fee: 13% + $3 under $100, 13% to $499, 12% to $999, 10% to $2,499, 9% to $4,999, 7% from $5,000 — `Model.RULES.feeTiers`). The backtest table adds *After fees* and *Paid* (share of events that made money after fees); the forward record scores each fire at 30 **and 90** days, and a setup only reads *holding up* if it beats its peers (sign test) **and** makes money after fees. *Beats peers, not fees* = a real signal that doesn't pay for a trade. Once a setup has 10+ scored at 90D, the 90D verdict decides.
+
 ## Forward record — the live test
 
 `scripts/ledger.mjs` (run by `brief.mjs` after every fetch) logs each setup the day it fires — single setups, curated combos and the 2+-grade versions, in every PSA grade — then scores it 30 days later with the backtest's rules: entry at the median of the next real sales, versus every other tracked card in that grade over the same dates. Scored entries are frozen. Unlike the backtest, nothing here was seen before it was logged, so it can't be overfitted. `data/ledger.json` holds the running record per setup (SETUPS tab → FORWARD RECORD, and the BRIEF); `data/ledger-log.json` holds every logged fire. Verdicts: *collecting* (< 10 scored), *holding up* (beats peers more often than a coin flip, sign test p < 0.05), *mixed*, *not holding*.
