@@ -59,15 +59,16 @@ async function ensureAndCheck(x, allowFetch) {
     if (c) { s = { key, source: 'pokemonpricetracker', grades: {}, snap: {} }; mergeCard(s, c, GRADES, TODAY); s.backfill = { date: TODAY, days: DAYS, v: 3, grades: GRADES }; await saveSeries(s); }
   }
   const kind = Clean.pooledKind(s.printings || x.variants);
-  let best = null, most = { days: 0, junk: 0 };
+  let best = null, most = { days: 0, junk: 0 }, blended = false;
   for (const g of ['psa8', 'psa9']) {
     const tot = (s.grades?.[g] || []).length; if (!tot) continue;
     const r = Clean.classify(s.grades[g], kind, Clean.gradedOpts(s, g)), v = { days: r.main.length, junk: r.out.length / tot };
+    if (r.kind && !r.split && !r.same) { blended = true; continue; } // printings blended in this grade: the site leaves that line out of every index
     if (v.days > most.days) most = v;
     if (v.days >= MIN_DAYS && v.junk <= 0.35 && (!best || v.days > best.days)) best = v;
   }
   const known = s.backfill?.v >= 3, pick = best || most;
-  return { key, inBasket: !!inBasket, ok: known ? !!best : DRY && allowFetch, days: pick.days, junk: pick.junk };
+  return { key, inBasket: !!inBasket, ok: known ? !!best : DRY && allowFetch, days: pick.days, junk: pick.junk, blended: blended && !best };
 }
 
 async function build(kind, def, rule, fam) {
@@ -86,7 +87,7 @@ async function build(kind, def, rule, fam) {
     if (rule.maxPerCharacter && (perChar[baseName(x.name)] || 0) >= rule.maxPerCharacter) continue;
     let chk;
     try { chk = await ensureAndCheck(x, addCards); } catch (e) { if (e instanceof BudgetError) throw e; note(`  ✗ ${x.name} (${x.set}): ${e.message}`); continue; }
-    if (!chk.ok) { rejected.push(`${x.name} (${x.set}): ${chk.days} clean sale days, ${Math.round(chk.junk * 100)}% junk`); continue; }
+    if (!chk.ok) { rejected.push(`${x.name} (${x.set}): ${chk.blended ? 'printings blended' : `${chk.days} clean sale days, ${Math.round(chk.junk * 100)}% junk`}`); continue; }
     members.push({ x, ...chk });
     perSet[x.set] = (perSet[x.set] || 0) + 1; perChar[baseName(x.name)] = (perChar[baseName(x.name)] || 0) + 1;
   }
