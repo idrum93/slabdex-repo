@@ -1,0 +1,6 @@
+{
+  "_comment": "Names for a card's two price tiers when holo and reverse holo sales are pooled (the sale data doesn't say which printing sold, so the tool splits by price and calls them upper / lower tier). Add a card here by its key to name the tiers. Example below: Skyridge Ho-Oh — the frequent, dearer tier is the reverse; the scarce cheaper one is the holo.",
+  "names": {
+    "skyridge-ho-oh-149": { "upper": "Reverse", "lower": "Holo" }
+  }
+}

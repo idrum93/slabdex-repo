@@ -19,7 +19,7 @@
   function pooledKind(printings) {
     const p = printings || [], v = p.join(' ');
     if (/1st/i.test(v) && /unlimited/i.test(v)) return '1st';
-    if (p.some((x) => /reverse/i.test(x)) && p.some((x) => !/reverse/i.test(x) && /holo|normal/i.test(x))) return 'rev';
+    if (p.some((x) => /reverse/i.test(x))) return 'rev'; // holo + reverse — or a record listing only the reverse, whose holo sales often land in it too
     if (p.some((x) => /^normal$/i.test(x.trim())) && p.some((x) => /holo/i.test(x))) return 'holoN'; // holo + non-holo: keep the holo only
     return null;
   }
@@ -69,7 +69,7 @@
 
     let main = rest, alt = [];
     const take = (lo, hi, ratio) => {
-      const highMain = hi.length > lo.length, lab = LABELS[kind]; // 1st Ed is always the dearer printing; holo vs reverse can't be told apart by price, so they are named by tier
+      const highMain = hi.length > lo.length, lab = (kind === 'rev' && opts.names) ? { low: opts.names.lower, high: opts.names.upper } : LABELS[kind]; // 1st Ed is always the dearer printing; holo vs reverse are tiers unless named in data/printings.json
       main = highMain ? hi : lo; alt = highMain ? lo : hi;
       res.split = { ratio: Math.round(ratio * 10) / 10, mainLabel: highMain ? lab.high : lab.low, altLabel: highMain ? lab.low : lab.high };
       res.mainTier = highMain ? 'high' : 'low';
@@ -90,7 +90,7 @@
         const pure = rest.filter((x) => x.n == null || x.n <= 1), b2 = pure.length >= 6 ? otsu(pure) : null;
         const prior = opts.prior; // the split ratio this card shows in its other grades (graded sales only)
         const okPrior = !prior || (b2 && b2.ratio >= prior / 1.8 && b2.ratio <= prior * 1.8);
-        const closeToPrior = prior && b2 && Math.abs(Math.log(b2.ratio / prior)) <= Math.log(1.35); // RAW agrees: no clean gap needed
+        const closeToPrior = prior && b2 && Math.abs(Math.log(b2.ratio / prior)) <= Math.log(1.35); // other grades agree: no clean gap needed
         if (b2 && b2.ratio >= (prior ? 1.7 : 2.0) && (b2.gap >= 1.25 || closeToPrior) && okPrior) {
           const T = b2.T, lo = [], hi = [];
           for (const x of rest) {
@@ -99,14 +99,18 @@
             else if (x.p <= T / 1.2) lo.push(x);
             else res.mixed.push(x); // a day averaging both printings: kept out of both lines, not counted as junk
           }
-          if (lo.length >= 3 && hi.length >= 3 && interleaved(lo, hi)) take(lo, hi, b2.ratio); else res.mixed = [];
+          // Side by side in time — or, failing that, the same price gap this card's printings show in its other grades.
+          const nearPrior = prior && Math.abs(Math.log(b2.ratio / prior)) <= Math.log(1.5);
+          if (lo.length >= 3 && hi.length >= 3 && (interleaved(lo, hi) || nearPrior)) take(lo, hi, b2.ratio); else res.mixed = [];
         }
       }
     }
     // No split, but the single-sale prices show no second printing either (no two price levels selling side by side,
     // ≥ 8 single sales): whatever printing mix there is sells at one price level in this grade, so the line is usable.
     // Judged from this grade's own graded sales only.
-    if (kind === 'rev' && !res.split) { // (1st Ed / Unl: never — only a confirmed 1st Ed line is tracked)
+    // (1st Ed / Unl: never — only a confirmed 1st Ed line is tracked. Holo / reverse: not when the card's other grades
+    // show two printings far apart — then one price level here could be either printing, so it stays out.)
+    if (kind === 'rev' && !res.split && !(opts.prior && opts.prior >= 1.6)) {
       const pure = rest.filter((x) => x.n == null || x.n <= 1), b = pure.length >= 8 ? otsu(pure) : null;
       const twoLevels = b && b.ratio >= 1.6 && interleaved(b.lo, b.hi);
       if (pure.length >= 8 && !twoLevels) { res.same = true; main = rest; alt = []; res.mixed = []; }
@@ -159,7 +163,7 @@
     if (!s?.grades) return {};
     const kind = pooledKind(s.printings), out = {};
     const below = GORD[GORD.indexOf(grade) - 1], pb = below ? (s.grades[below] || []).map((x) => x.p).filter((p) => p > 0) : [];
-    if (pb.length >= 5) out.floor = median(pb) * 0.5;
+    if (pb.length >= 5 && !kind) out.floor = median(pb) * 0.5; // single-printing cards only: with two printings the cheaper one legitimately sits far below
     if (kind && kind !== 'holoN') {
       const rs = [];
       for (const g of GORD) if (g !== grade && (s.grades[g] || []).length >= 6) { const r = classify(s.grades[g], kind); if (r.split) rs.push(r.split.ratio); }

@@ -1,5 +1,5 @@
 {
-  "_comment": "Character and theme indexes, built by scripts/groups.mjs. Names match the Pokémon itself (owner prefixes, Dark/Light/Shining, numbers ignored). Picked rarity first, then PSA 8 price, and must pass the clean-sales rules. Each group gets one index per era family plus an 'all eras' index. WOTC may add index-only cards; later eras only use cards already in their era basket (keeps the free tier safe).",
+  "_comment": "Character and theme indexes, built by scripts/groups.mjs. Names match the Pok\u00e9mon itself (owner prefixes, Dark/Light/Shining, numbers ignored). Picked rarity first, then PSA 8 price, and must pass the clean-sales rules. Each group gets one index per era family plus an 'all eras' index. WOTC may add index-only cards; later eras only use cards already in their era basket (keeps the free tier safe).",
   "_sprites": "Crystal sprites (transparent) from github.com/PokeAPI/sprites, stored in img/sprites/<sprite>.png so the site doesn't depend on another server. To add one: copy sprites/pokemon/versions/generation-ii/crystal/transparent/<dex number>.png from that repo to img/sprites/<name>.png and set \"sprite\": \"<name>\".",
   "spriteBase": "img/sprites/",
   "character": {
@@ -177,6 +177,9 @@
     },
     "DP": {
       "addCards": false
+    },
+    "HGSS": {
+      "addCards": false
     }
   },
   "allEras": {
@@ -189,12 +192,14 @@
       "WOTC Neo & e-Card": "lugia",
       "WOTC Promo": "mew",
       "EX Series": "rayquaza",
-      "DP & Platinum": "giratina"
+      "DP & Platinum": "giratina",
+      "HeartGold SoulSilver": "ho-oh-hgss"
     },
     "families": {
       "WOTC": "charizard",
       "EX": "rayquaza",
-      "DP": "giratina"
+      "DP": "giratina",
+      "HGSS": "ho-oh-hgss"
     },
     "all": "master-ball"
   }

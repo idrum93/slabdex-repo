@@ -3,8 +3,8 @@
 //
 // Strategy: the free tier only returns ~3 days of history, so we take ONE snapshot per card
 // per day and accumulate our own history in data/prices/<key>.json. Git is the database.
-// Cost: 3 credits per set-basket card (base + eBay graded + RAW history), 2 per index-only card,
-// every card every 3 days → 48 + 24 cards ≈ 64 credits/day on the free tier. Long history comes from discover.mjs.
+// Cost: 2 credits per card (base + eBay graded), every card every 3 days → 135 cards ≈ 90 credits/day
+// on the free tier. Graded only: ungraded (RAW) price history is no longer fetched. Long history comes from discover.mjs.
 //
 // Usage:
 //   PPT_API_KEY=xxx node scripts/fetch.mjs              # normal daily run
@@ -46,9 +46,8 @@ async function resolveId(card) {
 }
 
 async function snapshot(card, grades) {
-  // Set-basket cards also carry RAW price history (+1 credit); index-only cards (raw: false) skip it.
-  const raw = card.raw !== false;
-  const j = await api.get('/cards', { tcgPlayerId: card.tcgPlayerId, includeEbay: true, ...(raw ? { includeHistory: true } : {}), days: 4 }, raw ? 3 : 2);
+  // Graded only: base + eBay graded data = 2 credits. (RAW price history was +1 and fed no signal.)
+  const j = await api.get('/cards', { tcgPlayerId: card.tcgPlayerId, includeEbay: true, days: 4 }, 2);
   const c = asList(j)[0];
   if (!c) { note(`  ✗ ${card.key}: empty response`); return false; }
   const s = await loadSeries(card.key);
@@ -80,7 +79,7 @@ async function main() {
     due.push({ c, age });
   }
   due.sort((a, b) => b.age - a.age || (a.c.role === 'group' ? 1 : 0) - (b.c.role === 'group' ? 1 : 0)); // stalest first, baskets before index-only
-  const est = due.reduce((n, m) => n + (m.c.raw === false ? 2 : 3) + (m.c.tcgPlayerId ? 0 : 3), 0);
+  const est = due.reduce((n, m) => n + 2 + (m.c.tcgPlayerId ? 0 : 3), 0);
   note(`SlabDex fetch ${TODAY}: ${due.length} cards due, est ${est} credits, budget ${BUDGET}`);
   if (DRY) { due.forEach((m) => note(`  · ${m.c.key} [${m.c.tier}]${m.c.tcgPlayerId ? '' : ' (needs id)'}`)); return; }
   if (!KEY) throw new Error('PPT_API_KEY not set (add it as a GitHub Actions secret)');

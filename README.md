@@ -25,7 +25,7 @@ Because free history is only 3 days, the strategy is **snapshot, don't query his
 ### Credit budget
 
 - Every card refreshes every 3 days, stalest first (each call asks for 4 days so no sale day is missed).
-- WOTC set-basket cards cost 3 credits (graded + RAW history). EX, DP and index-only cards skip RAW: 2 credits.
+- Every card costs 2 credits (base + eBay graded). The site is graded-only: ungraded (RAW) price history is no longer fetched (it was +1 credit per card and fed no signal). The RAW history already saved stays in the price files but isn't shown.
 - Target ≤ 90 credits/day on the 100/day free tier. `discover` and `groups` print the projected daily cost at the end of each run; anything over 90 is flagged ⚠.
 - The fetcher reads `X-RateLimit-Daily-Remaining` and stops with a reserve. Nothing ever retries into a daily-limit wall.
 
@@ -46,13 +46,14 @@ The repo ships with **demo series** (clearly flagged in the UI) so the terminal 
 
 ## Eras and how cards are picked (run once on a paid plan, before Oct 17)
 
-`data/sets.json` lists 44 sets in three era families:
+`data/sets.json` lists 49 sets in four era families:
 
 | Family | Sets | Rule | Cards |
 |---|---|---|---|
 | **WOTC** | Base Set → Skyridge + Black Star Promos | per set: top 3 per set | ~48 |
-| **EX** | Ruby & Sapphire → Power Keepers | era top: best 18 across the era, ≤ 3 per set, ≤ 2 per character | 18 |
-| **DP & Platinum** | Diamond & Pearl → Arceus | era top: best 12 across the era, ≤ 3 per set, ≤ 2 per character | 12 |
+| **EX** | Ruby & Sapphire → Power Keepers | era top: best 24 across the era, ≤ 3 per set, ≤ 2 per character | 24 |
+| **DP & Platinum** | Diamond & Pearl → Arceus | era top: best 18 across the era, ≤ 3 per set, ≤ 2 per character | 18 |
+| **HGSS** | HeartGold & SoulSilver → Call of Legends | era top: best 12 across the era, ≤ 3 per set, ≤ 2 per character | 12 |
 
 WOTC is covered set by set. Later eras flip it: the era's best cards decide which sets appear, so the budget goes to the cards that matter instead of 27 more set baskets. The EX / DP shortlist gives tracked characters (groups.json) first claim before filling with the rest.
 
@@ -63,6 +64,10 @@ Everything ranks by **PSA 8** (then PSA 9 × 0.6, then PSA 10 × 0.25), holo-or-
 1. Tick *sets only* (about 60 credits) to confirm every set name resolves.
 2. Full run: families `WOTC,EX,DP`, tick *rescan*, budget 15000. It rescans WOTC with PSA 8 summaries, scans EX and DP, re-picks, backfills 180 days, then builds the character & theme indexes. Roughly 10k credits.
 3. Read the summary's budget line (≤ 90/day).
+
+Modern sets (XY onward) are deliberately left out: in-print supply, grading-volume growth and a PSA 9/10-only market behave differently enough that they would swamp and confound the vintage / mid-era signals. HGSS is the last out-of-print era that still trades in PSA 7–9.
+
+Adding HGSS and the bigger EX / DP caps (one run): families `HGSS`, rescan off, days 180, budget 3000. EX and DP refill from the saved scan and their already-backfilled bench, HGSS is scanned fresh (~1.5k credits).
 
 To change baskets later without spending credits, edit `sets.json` (pins, excludes, caps) and run `node scripts/discover.mjs --from-candidates`.
 
@@ -99,6 +104,10 @@ Run **Actions → Build character & theme indexes** after editing groups.json (d
 
 Only **confirmed** setups get top billing (first tile, ◆ in the card list, a box in the Signal panel, first in BRIEF). Otherwise the BRIEF tab says plainly that nothing has beaten chance yet. It was checked on simulated random prices (no false confirmations) and on planted effects (a +20% effect is usually found, +10% usually isn't yet — the history is still short). With ~180 days, expect "no edge yet" or a few promising setups at first; evidence firms up as history accumulates.
 
+## Forward record — the live test
+
+`scripts/ledger.mjs` (run by `brief.mjs` after every fetch) logs each setup the day it fires — single setups, curated combos and the 2+-grade versions, in every PSA grade — then scores it 30 days later with the backtest's rules: entry at the median of the next real sales, versus every other tracked card in that grade over the same dates. Scored entries are frozen. Unlike the backtest, nothing here was seen before it was logged, so it can't be overfitted. `data/ledger.json` holds the running record per setup (SETUPS tab → FORWARD RECORD, and the BRIEF); `data/ledger-log.json` holds every logged fire. Verdicts: *collecting* (< 10 scored), *holding up* (beats peers more often than a coin flip, sign test p < 0.05), *mixed*, *not holding*.
+
 ## Grade gap
 
 Each card's price as a share of the next grade up (PSA 7→8, 8→9, 9→10), using recent sales in both grades (≤ 45 days old). Compared with the card's own usual share (120-day median of its paired sales). When a card doesn't have 30 paired days yet, a peer yardstick stands in — chosen by testing which predicts best on this data: same-set cards for PSA 8÷9 (~14% typical miss vs ~19% for era/family), era family for PSA 7÷8 (all ~13%), and none for PSA 9÷10 (PSA 10 premiums are card-specific; peers miss by ~45%). Labels say which yardstick was used (usual / set norm / WOTC norm). Measured on this data: WOTC PSA 9 ≈ 16% of PSA 10 (middle half 14–22%), PSA 8 ≈ 50% of PSA 9 (43–62%), PSA 7 ≈ 67% of PSA 8 (63–76%). Shown in the Signal panel, the **Gap** column option (100% = normal, amber below 80%), and a BRIEF section; "cheap vs next grade" is also a backtested setup, and the brief quotes its current result.
@@ -111,7 +120,9 @@ Each card's price as a share of the next grade up (PSA 7→8, 8→9, 9→10), us
 - A pooled line that can't be split but whose single sales show only one price level (≥ 8 single sales, no two levels selling side by side) is kept as one usable line ("one price level").
 - Holo + non-holo ("Normal") records: only the holo is tracked; a clearly cheaper cluster is set aside as the non-holo.
 - Only the same printing is compared: a line that blends two printings (pooled 1st Ed + Unl, or holo + reverse, not separable) is never compared across grades.
-- 1st Ed is always labelled the dearer printing; holo vs reverse can't be told apart by price, so they're labelled upper / lower tier.
+- 1st Ed is always labelled the dearer printing. Holo vs reverse can't be told apart from sale data, so the two price tiers are labelled upper / lower — or named per card in `data/printings.json` (e.g. Skyridge Ho-Oh: upper = Reverse, lower = Holo). Records listing only a reverse holo are treated as possibly holding both.
+- A holo / reverse grade that can't be split is only used as one line when the card's other grades show no big printing gap; otherwise it stays out (one price level could be either printing).
+- The junk floor (half the grade below's median) applies to single-printing cards only.
 - A graded sale below half the median sale of the grade below it is treated as an ungraded / mislabeled listing and dropped.
 - If a lower grade prices above a higher one (by > 10%), the card gets a ⚠ in the GRADES block and no lag or compression call.
 - A "jump" must rest on ≥ 2 sales in the 30 days; a compression needs ≥ 2 recent sales in the grade below.
@@ -119,6 +130,10 @@ Each card's price as a share of the next grade up (PSA 7→8, 8→9, 9→10), us
 Every card is fetched in PSA 7–10 in the same call, so comparing grades costs no extra credits. The Signal panel's **GRADES** block shows each grade's price, 30D move, share of the next grade up and last sale; click a grade to switch to it. A grade is marked ⤴ **lagging** when a neighbouring grade rose ≥ 20% in 30 days (with a sale in the last 14 days) while it moved ≤ 5% and still sells. The **LAG** tab lists every current laggard (sorted by how far the jumping grade outran it; the badge is the grade to look at, and clicking opens that grade). "Grade above led" and "grade below led" are backtested setups (lagUp / lagDown), so if catch-up proves real they reach SETUPS on their own.
 
 **Compressed grades (⇅)** head the LAG tab: a grade whose next grade down sells for ≥ 80% of its price and ≥ 1.4× the usual share (≥ 90% when there's no usual yet) — often a grade that hasn't repriced after an upstream move. Each flagged grade also gets an **implied price**: the reference grade's market price × (or ÷) the usual ratio — what it would sell for if the usual spread came back — with the reference grade's 30-day sale count (⚠ under 2). The LAG tab's UPSIDE column is the distance to it. It is only as good as the reference grade's price. Cases where the lower grade is dearer (> 110%) are treated as suspect listings, not opportunities. Also a backtested setup (squeeze).
+
+## Value by grade
+
+The Signal panel's **VALUE BY GRADE** block shows every PSA grade's last sale (with its age, and "blended" if that grade can't be separated by printing) next to an estimate. The estimate walks from the anchor grade — the one with the most recent clean sales — using grade-to-grade spreads: the card's own median spread when it has ≥ 10 paired sale days, else the best tested peer yardstick (same set for PSA 8÷9, era family for 7÷8 and 9÷10). Each step's typical miss on this data compounds (own ±10%, set ±14%, family ±13–19%, PSA 9÷10 family ±45%). The gap column is last sale vs estimate; grey when within the typical miss, green when the last sale was cheaper than that, red when dearer.
 
 ## Sprites and set symbols
 
@@ -160,7 +175,7 @@ data/status.json      last run log + credits left
 
 ## Roadmap
 
-- Modern (SWSH / SV) as an era family: add sets with `family` + a `top` rule in sets.json. Budget allows roughly 8–10 more cards at 2 credits.
+- Modern (XY → SWSH, out of print only) as a small separate cross-check group once the forward record shows which setups are worth checking — never pooled with vintage / mid-era in the backtest.
 - Lead-lag between eras once there are 6+ months of overlap.
 
 ## Notes

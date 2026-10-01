@@ -138,6 +138,14 @@ export function mergeCard(s, c, grades, today) {
       }
     }
   }
+  // Today's ungraded price per printing, if the base record carries it (no history, no extra credit).
+  // Kept only as a hint of how far apart a card's printings trade; never charted or used in signals.
+  const now = {};
+  for (const [printing, v] of Object.entries(c.prices?.variants || c.variants || {})) {
+    const p = num(v?.['Near Mint']?.price) ?? num(v?.['Near Mint']?.market) ?? num(v?.market) ?? num(v?.price);
+    if (p != null && p > 0) now[printing] = round(p);
+  }
+  if (Object.keys(now).length) s.rawNow = { t: today, p: now };
   s.updated = new Date().toISOString();
   s.tcgPlayerId = String(c.tcgPlayerId ?? s.tcgPlayerId ?? '');
   s.printings = c.printingsAvailable || (c.variants ? Object.keys(c.variants) : s.printings || null);

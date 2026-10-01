@@ -129,7 +129,7 @@ const es = cfg.eraSprites || {}, sp = (n) => (n && cfg.spriteBase ? `${cfg.sprit
 const eraSprites = { all: sp(es.all), eras: Object.fromEntries(Object.entries(es.eras || {}).map(([k, v]) => [k, sp(v)])), families: Object.fromEntries(Object.entries(es.families || {}).map(([k, v]) => [k, sp(v)])) };
 const out = { ...wl, extra: [...extra.values()], groups, eraSprites };
 if (!DRY) await ensureSprites([...out.cards, ...out.extra], note); // card sprites (free, from PokeAPI's sprite repo)
-const perDay = (wl.cards.reduce((n, c) => n + (c.raw === false ? 2 : 3), 0) + out.extra.length * 2) / 3;
+const perDay = (wl.cards.reduce((n, c) => n + 2, 0) + out.extra.length * 2) / 3;
 note(`\n${groups.length} indexes (${groups.filter((g) => g.scope === 'all').length} all-eras) · ${out.extra.length} index-only cards · ongoing ≈ ${perDay.toFixed(0)} credits/day of 100${perDay > 90 ? ' ⚠ over the safe limit' : ''}${api ? ` · spent ${api.st.spent} credits` : ''}`);
 if (!DRY) {
   await writeFile(wlPath, JSON.stringify(out, null, 2) + '\n');

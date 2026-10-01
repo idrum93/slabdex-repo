@@ -335,3 +335,12 @@ tr.setup-prom td:first-child { box-shadow: inset 3px 0 0 var(--muted); }
 tr.sec .setupnote { margin-top: 4px; }
 .implied { margin: 0 0 3px 50px; font-size: 10.5px; color: var(--warn); line-height: 1.35; }
 .wl table.lagv th[data-sort="metric"]::after { content: "UPSIDE"; }
+.ctx-row.val { align-items: center; } .ctx-row.val .cn { line-height: 1.35; white-space: normal; } .ctx-row.val.on { border-left-color: var(--accent); background: var(--grid); }
+.ctx-row.val { grid-template-columns: 48px minmax(0, 1fr) auto; } .ctx-row.val .ck { white-space: nowrap; }
+
+/* forward record (SETUPS tab) */
+.fwd { margin: 4px 0 2px; display: grid; gap: 1px; }
+.fwdrow { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0 10px; margin: 0; padding: 3px 0; border-top: 1px solid var(--line); font: 11px/1.35 var(--f-mono); text-transform: none; letter-spacing: 0; white-space: normal; }
+.fwdrow .fl { color: var(--fg); }
+.fwdrow .fv { text-align: right; }
+.fwdrow .fs { grid-column: 1 / -1; }

@@ -11,15 +11,17 @@
   try { const sv = JSON.parse(localStorage.getItem('slabdex') || 'null'); if (sv && sv.v === 3) { Object.assign(state, sv); hadSaved = true; if (!('st' in state.ind)) state.ind.st = 1; } } catch (e) {} // older saved layouts are ignored
   const save = () => { try { localStorage.setItem('slabdex', JSON.stringify(state)); } catch (e) {} };
 
-  let WL = null, SERIES = {}, STATUS = null, chart = null, model = null;
+  let WL = null, SERIES = {}, STATUS = null, LEDGER = null, chart = null, model = null;
   const slug = (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 
   // ---------- data loading (static JSON from the repo, or an inlined bundle) ----------
   async function load() {
-    if (window.__SLABDEX_DATA__) { ({ watchlist: WL, series: SERIES, status: STATUS } = window.__SLABDEX_DATA__); return; }
+    if (window.__SLABDEX_DATA__) { ({ watchlist: WL, series: SERIES, status: STATUS, ledger: LEDGER } = window.__SLABDEX_DATA__); return; }
     const j = (u) => fetch(u, { cache: 'no-cache' }).then((r) => (r.ok ? r.json() : null)).catch(() => null);
     WL = await j('data/watchlist.json');
     STATUS = await j('data/status.json');
+    LEDGER = await j('data/ledger.json'); // forward record of live setups (scripts/ledger.mjs)
+    const pn = await j('data/printings.json'); if (pn?.names) WL.printingNames = pn.names; // names for holo / reverse tiers
     const all = [...WL.cards, ...(WL.extra || [])];
     const res = await Promise.all(all.map((c) => j(`data/prices/${c.key}.json`)));
     all.forEach((c, i) => { if (res[i]) SERIES[c.key] = res[i]; });
@@ -300,6 +302,22 @@
     const lagNote = rows.some((r) => r.lagging) ? (() => { const a = res('lagUp'), b = res('lagDown'); const t = [a, b].filter((x) => x && x.n).map((x) => `${x.id === 'lagUp' ? 'grade above led' : 'grade below led'}: ${Edge.pct(x.vsPeers, 1)} vs peers over 30D (${x.n}×, ${x.status === 'few' ? 'too few' : x.status})`).join(' · '); return `<p class="trk">⇅ = priced almost like the grade below (the grade to look at). ⤴ = a neighbouring grade jumped ≥20% in 30D and this one hasn't followed. Backtest (${L[state.grade]}): ${t || 'not enough history yet'}. Not a buy signal on its own.</p>`; })() : '';
     return `<h3>GRADES <span class="dim">30D · share of next grade</span></h3>` + rows.map((r) => `<button class="ctx-row lad${r.grade === model.grade ? ' on' : ''}${r.lagging ? ' lagging' : ''}" data-grade="${r.grade}" type="button" title="${r.lagging ? `Lagging: ${r.lagging.map((g) => L[g]).join(' & ')} jumped, ${L[r.grade]} hasn't followed · ` : ''}Last sale ${r.age ?? '—'} days ago · click to switch grade"><span class="ck">${L[r.grade]}</span><span class="cn">${money(r.price)} ${r.share != null ? `<span class="dim">${(r.share * 100).toFixed(0)}%</span>` : ''}${r.lagging ? ' <b class="lagm">⤴</b>' : ''}${r.sq ? (r.sq.inverted ? ' <b class="dim" title="Priced above-or-equal to the grade below — usually mixed listings, check sales">⇵?</b>' : ' <b class="sqzm" title="Compressed: the grade below sells for ' + (r.sq.ratio * 100).toFixed(0) + '% of this grade (' + normWord(r.sq.normSrc) + ' ' + (r.sq.norm != null ? (r.sq.norm * 100).toFixed(0) + '%' : '—') + ')">⇅</b>') : ''}</span><span class="cv">${fmtP(r.c30, 0)}</span></button>${r.im ? `<p class="implied">${esc(impliedTxt(r.im))}</p>` : ''}`).join('') + warn + lagNote;
   }
+  // Every grade's last sale next to an estimate built from the card's other grades — including grades that are
+  // blended, thin or stale, where the estimate is the better guide to what a copy should cost.
+  function valueRows(cur, ratio) {
+    if (ratio || cur.isIndex || model.dense) return '';
+    const E = Model.gradeEstimates(allModels(), cur.id, cur.card); if (!E.anchor) return '';
+    const L = Model.GRADE_LABEL, src = (v) => (v === 'own' ? "this card's own grade spread" : v === 'set' ? 'same-set average spread' : `${v} average spread`);
+    const rows = E.rows.map((r) => {
+      const lastTxt = r.last == null ? '<span class="dim">no sale</span>' : `${money(r.last)} <span class="dim">${r.age}d${r.blended ? ' · blended' : ''}</span>`;
+      const estTxt = r.anchor ? '<span class="dim">anchor</span>' : r.est == null ? '<span class="dim">—</span>' : `≈${money(r.est)} <span class="dim">±${Math.round(r.miss * 100)}%</span>`;
+      const gap = r.gap == null ? '' : `<span class="${Math.abs(r.gap) <= r.miss * 100 ? 'dim' : r.gap < 0 ? 'pos' : 'neg'}">${r.gap >= 0 ? '+' : ''}${r.gap.toFixed(0)}%</span>`;
+      const tip = r.anchor ? `Anchor: ${L[r.grade]} market price (median of last 3 clean sales), ${r.n30} sales in 30D` : r.est != null ? `Estimate from ${L[E.anchor]} via ${src(r.via)}; typical miss ±${Math.round(r.miss * 100)}%. Gap = last sale vs estimate (grey = within the typical miss).${r.blended ? ' Last sale may be either printing.' : ''}${r.age != null && r.age > 45 ? ' Last sale is old — the estimate is the better guide.' : ''}` : 'Not enough data to estimate';
+      return `<button class="ctx-row val${r.grade === model.grade ? ' on' : ''}" data-grade="${r.grade}" type="button" title="${esc(tip)}"><span class="ck">${L[r.grade]}</span><span class="cn">${lastTxt}<br>${estTxt}</span><span class="cv">${gap}</span></button>`;
+    }).join('');
+    const bad = Model.gradeLadder(allModels(), cur.id, cur.card).inconsistent ? '<p class="trk">⚠ This card\'s grade prices are out of order (mixed or mislabeled sales), so these estimates are unreliable.</p>' : '';
+    return `<h3>VALUE BY GRADE <span class="dim">last sale · estimate · gap</span></h3>${rows}${bad}<p class="trk">Estimates walk from ${L[E.anchor]} (most recent clean sales) using grade-to-grade spreads. Green gap = last sale below the estimate by more than the usual error. An estimate, not a quote.</p>`;
+  }
   // Cards with a lagging grade right now: the flat grade, the grade that jumped, and the spread between them.
   let LAGS = null;
   function lagList() {
@@ -387,7 +405,7 @@
       ...(model.dense || ratio ? [] : [['Sale days, last 90D', s.saleDays90 == null ? '—' : `<span class="${s.saleDays90 < Model.MIN_SALE_DAYS_90 ? 'neg' : ''}">${s.saleDays90}</span>`]]),
       ['History', `${s.days} days`],
     ];
-    $('sigCtx').innerHTML = setupLine(cur, ratio) + ladderRows(cur, ratio) + contextRows(cur, ratio);
+    $('sigCtx').innerHTML = setupLine(cur, ratio) + ladderRows(cur, ratio) + valueRows(cur, ratio) + contextRows(cur, ratio);
     $('metrics').innerHTML = rows.map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join('');
   }
 
@@ -455,8 +473,9 @@
         const picks = e.ok ? e.picks.filter((p) => model.by[p.key]).map((p) => ({ ...p, nRules: p.rules.length })).sort((a, b) => (a.status === 'confirmed' ? 0 : 1) - (b.status === 'confirmed' ? 0 : 1) || b.nRules - a.nRules || (a.best.p ?? 1) - (b.best.p ?? 1)) : [];
         const q = picks.length ? Math.max(...picks.map((p) => p.best.q ?? 1)) : null;
         const note = `<tr class="sec"><td colspan="5"><p class="setupnote">${esc(Edge.verdict(e))}${picks.some((p) => p.status === 'promising') ? ` <b>◇ promising</b> = beat other cards in the past but didn't survive the luck correction${q != null ? ` (up to ~${Math.round(q * 100)}% of these could be flukes)` : ''}; <b>◆ confirmed</b> = did. Sorted by how many setups agree (×N). ${picks.length} of ${Object.keys(model.by).length} card lines — a lead to research, not a buy signal.` : ''}</p></td></tr>`;
-        html = note + (picks.length ? picks.map((p) => { const r = cardRow(model.by[p.key], M, st); r.sub = `${p.status === 'confirmed' ? '◆' : '◇'}${p.nRules > 1 ? '×' + p.nRules : ''} ${p.best.label} · ${p.best.ago === 0 ? 'today' : p.best.ago + 'd ago'} · ${Edge.pct(p.best.vsPeers, 1)} vs peers`; return rowHtml(r, M, p.status === 'confirmed' ? ' setup-conf' : ' setup-prom'); }).join('') : '<tr><td colspan="5" class="empty">No tested setup has fired in the last 7 days.</td></tr>');
+        html = note + (picks.length ? picks.map((p) => { const r = cardRow(model.by[p.key], M, st); r.sub = `${p.status === 'confirmed' ? '◆' : '◇'}${p.nRules > 1 ? '×' + p.nRules : ''} ${p.best.label} · ${p.best.ago === 0 ? 'today' : p.best.ago + 'd ago'} · ${Edge.pct(p.best.vsPeers, 1)} vs peers${(() => { const f = fwdOf(p.best.id); return f?.n ? ` · live ${Edge.pct(f.vsPeers, 0)} (${f.n})` : ''; })()}`; return rowHtml(r, M, p.status === 'confirmed' ? ' setup-conf' : ' setup-prom'); }).join('') : '<tr><td colspan="5" class="empty">No tested setup has fired in the last 7 days.</td></tr>');
       }
+      html += fwdSection();
     } else if (view === 'lag') { // a neighbouring grade jumped, this grade hasn't followed
       const L = Model.GRADE_LABEL, rows = model.dense ? [] : lagList(), e = EDGE[state.grade];
       const bt = ['lagUp', 'lagDown'].map((id) => e?.ok ? e.results.find((r) => r.id === id) : null).filter((x) => x && x.n);
@@ -644,7 +663,7 @@
   function consensusOnce() {
     if (CONS) return CONS;
     const models = {};
-    for (const g of ['raw', 'psa7', 'psa8', 'psa9', 'psa10']) { const m = g === state.grade ? model : Model.buildModel(WL, SERIES, g); if (Object.keys(m.by).length) models[g] = m; }
+    for (const g of ['psa7', 'psa8', 'psa9', 'psa10']) { const m = g === state.grade ? model : Model.buildModel(WL, SERIES, g); if (Object.keys(m.by).length) models[g] = m; }
     return (CONS = Model.consensus(models));
   }
   // ---------- setup backtest (js/edge.js): once per grade, computed just after first paint ----------
@@ -685,6 +704,20 @@
     const b = p.best, conf = p.status === 'confirmed';
     return `<p class="setupline ${conf ? 'conf' : ''}">${conf ? '◆ BACKTESTED SETUP' : '◇ Promising setup (not confirmed)'} · ${b.ago === 0 ? 'today' : b.ago + 'd ago'}<br><b>${esc(b.label)}</b><br><span class="dim">${esc(Edge.stat(b))}</span></p>`;
   }
+  // ---------- forward record: setups logged live when they fire, scored 30 days later (data/ledger.json) ----------
+  const FWD_TONE = { 'holding up': 'pos', 'not holding': 'neg', mixed: '', collecting: 'dim' };
+  const fwdOf = (id) => LEDGER?.summary?.find((s) => s.rule === id) || null;
+  const fwdTxt = (s) => (s.n ? `${Edge.pct(s.vsPeers, 1)} vs peers · ${Math.round(s.beat * 100)}% beat · ${s.n} scored` : 'none scored yet') + (s.pending ? ` · ${s.pending} pending` : '');
+  function fwdIntro() {
+    const c = LEDGER?.counts || {};
+    return `Logged the day a setup fires (since ${LEDGER.since}), scored ${LEDGER.horizon} days later against every other tracked card in that grade — results the backtest never saw. ${c.scored || 0} scored · ${c.pending || 0} waiting · ${c.void || 0} void (no buyable sales after the fire). A setup needs 10+ scored before its verdict means anything; "holding up" = beat its peers more often than a coin flip would (sign test p < 0.05).`;
+  }
+  function fwdSection() {
+    if (!LEDGER?.summary?.length) return `<tr class="sec"><td colspan="5">FORWARD RECORD <span class="dim">starts after the next daily run</span></td></tr>`;
+    const open = !state.collapsed.includes('sec:fwd');
+    const rows = LEDGER.summary.filter((s) => s.n || s.pending).sort((a, b) => b.n - a.n || b.pending - a.pending);
+    return `<tr class="sec" data-toggle="sec:fwd"><td colspan="5">${open ? '▾' : '▸'} FORWARD RECORD <span class="dim">${LEDGER.counts?.scored || 0} scored</span></td></tr>` + (open ? `<tr class="sec"><td colspan="5"><p class="setupnote">${esc(fwdIntro())}</p><div class="fwd">${rows.map((s) => `<p class="fwdrow"><span class="fl">${esc(s.label)}</span><span class="fv ${FWD_TONE[s.verdict] || ''}">${esc(s.verdict)}</span><span class="fs dim">${esc(fwdTxt(s))}</span></p>`).join('')}</div></td></tr>` : '');
+  }
   function edgeGroup() {
     const e = edge();
     if (!e) return '<div class="bgroup"><h3>Setups · backtest</h3><p>Testing setups against history…</p></div>';
@@ -696,6 +729,8 @@
     if (e.ok) {
       const top = e.results.filter((r) => r.p != null).slice(0, 6);
       if (top.length) h += '<h4>Best tested setups</h4>' + top.map((r) => `<p class="erow"><b>${esc(r.label)}</b> · ${r.status}<br>${esc(Edge.stat(r))} · halves ${r.halves.map((v) => Edge.pct(v, 0)).join(' / ')}</p>`).join('');
+      const fw = (LEDGER?.summary || []).filter((s) => s.n >= 10).sort((a, b) => (a.p ?? 1) - (b.p ?? 1)).slice(0, 4);
+      h += `<h4>Forward record · live since ${esc(LEDGER?.since || '—')}</h4>` + (fw.length ? fw.map((s) => `<p class="erow"><b>${esc(s.label)}</b> · ${esc(s.verdict)}<br>${esc(fwdTxt(s))}${s.p != null ? ` · p ${s.p}` : ''}</p>`).join('') : `<p class="dim">${LEDGER?.counts ? `${LEDGER.counts.scored} scored, ${LEDGER.counts.pending} waiting for their ${LEDGER.horizon} days.` : 'Starts after the next daily run.'} Setups get a live verdict once 10+ are scored.</p>`);
       h += `<p class="dim">Entry = median of the next real sales after a setup fires; outcome = ${e.horizon}D later, versus other tracked cards on the same dates. ${e.tested} setups tested, so single wins are corrected for luck (q ≤ 0.10) and must hold in both halves of the history.</p>`;
     }
     return h + '</div>';
@@ -765,6 +800,7 @@
   }
   // RAW only covers WOTC set baskets (EX, DP and index-only cards are fetched without RAW to fit the free tier).
   function rawNote() {
+    return ''; // RAW (ungraded) is no longer collected: the site is graded-only
     if (!model.dense) return '';
     const n = [...WL.cards, ...(WL.extra || [])].filter((c) => c.raw === false).length;
     return n ? `<p class="rawnote">RAW tracks WOTC set cards only — ${n} EX, DP & index-only cards are graded-only. <button type="button" data-grade="${WL.primaryGrade || 'psa8'}">Switch to ${Model.GRADE_LABEL[WL.primaryGrade || 'psa8']}</button></p>` : '';
@@ -844,7 +880,7 @@
     window.addEventListener('keydown', (e) => { // shortcuts (see the ? panel)
       if (e.target.matches('select, input, textarea') || e.metaKey || e.ctrlKey || e.altKey) return;
       const k = e.key;
-      const G = { 1: 'raw', 2: 'psa7', 3: 'psa8', 4: 'psa9', 5: 'psa10' };
+      const G = { 1: 'psa7', 2: 'psa8', 3: 'psa9', 4: 'psa10' };
       if (k === '/' ) { e.preventDefault(); openPicker('A'); return; }
       if (k === '\\') { e.preventDefault(); openPicker('B'); return; }
       if (G[k]) { state.grade = G[k]; rebuild(); return; }
@@ -876,6 +912,7 @@
     chart.onLayout = (r) => { state.paneRatios = { ...r }; save(); };
     try { await load(); } catch (e) { $('status').textContent = 'Could not load data/ — ' + e.message; return; }
     if (!WL || !Object.keys(SERIES).length) { $('status').textContent = 'NO DATA · run the discovery or fetch workflow'; return; }
+    if (state.grade === 'raw') state.grade = WL.primaryGrade || 'psa8'; // RAW view retired
     if (!hadSaved && WL.primaryGrade) state.grade = WL.primaryGrade; // deepest clean grade, chosen by discover
     bind(); rebuild();
   }

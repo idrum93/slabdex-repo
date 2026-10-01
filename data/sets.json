@@ -447,6 +447,56 @@
       "family": "DP",
       "exact": true,
       "code": "pl4"
+    },
+    {
+      "label": "HeartGold & SoulSilver",
+      "names": [
+        "HeartGold & SoulSilver",
+        "HeartGold SoulSilver"
+      ],
+      "era": "HeartGold SoulSilver",
+      "family": "HGSS",
+      "code": "hgss1"
+    },
+    {
+      "label": "Unleashed",
+      "names": [
+        "Unleashed",
+        "HS\u2014Unleashed",
+        "HS Unleashed"
+      ],
+      "era": "HeartGold SoulSilver",
+      "family": "HGSS",
+      "code": "hgss2"
+    },
+    {
+      "label": "Undaunted",
+      "names": [
+        "Undaunted",
+        "HS\u2014Undaunted"
+      ],
+      "era": "HeartGold SoulSilver",
+      "family": "HGSS",
+      "code": "hgss3"
+    },
+    {
+      "label": "Triumphant",
+      "names": [
+        "Triumphant",
+        "HS\u2014Triumphant"
+      ],
+      "era": "HeartGold SoulSilver",
+      "family": "HGSS",
+      "code": "hgss4"
+    },
+    {
+      "label": "Call of Legends",
+      "names": [
+        "Call of Legends"
+      ],
+      "era": "HeartGold SoulSilver",
+      "family": "HGSS",
+      "code": "col1"
     }
   ],
   "pins": [
@@ -471,14 +521,22 @@
     "EX": {
       "mode": "top",
       "label": "EX",
-      "cap": 18,
-      "shortlist": 36,
+      "cap": 24,
+      "shortlist": 48,
       "maxPerSet": 3,
       "maxPerCharacter": 2
     },
     "DP": {
       "mode": "top",
       "label": "DP & Platinum",
+      "cap": 18,
+      "shortlist": 36,
+      "maxPerSet": 3,
+      "maxPerCharacter": 2
+    },
+    "HGSS": {
+      "mode": "top",
+      "label": "HGSS",
       "cap": 12,
       "shortlist": 24,
       "maxPerSet": 3,

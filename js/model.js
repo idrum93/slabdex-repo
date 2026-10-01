@@ -43,7 +43,7 @@
       if (!pts?.length) continue;
       const demo = s.source === 'demo';
       const kind = demo ? null : C.pooledKind(s.printings);
-      const r = demo ? { main: pts, alt: [], out: [], split: null } : C.classify(pts, kind, C.gradedOpts(s, grade));
+      const r = demo ? { main: pts, alt: [], out: [], split: null } : C.classify(pts, kind, { ...C.gradedOpts(s, grade), names: WL.printingNames?.[c.key] });
       const mixed = r.kind && !r.split && !r.same ? (r.kind === '1st' ? '1st+Unl mixed' : 'holo+rev mixed') : null;
       const same = r.same ? (r.kind === '1st' ? '1st/Unl · one price level' : 'holo/rev · one price level') : null;
       lines.push({ key: c.key, card: { ...c, line: r.split ? r.split.mainLabel : mixed || same, est: !!r.split, mixed: !!mixed }, pts: r.main, demo });
@@ -577,6 +577,61 @@
     return { price, now, upside: now > 0 ? (price / now - 1) * 100 : null, ref, refPrice, refN30: salesIn(br, ri, 30), norm, normSrc: g.normSrc[li] };
   }
 
-  const api = { impliedPrice, peerRatios, squeezeNow, squeezeSeries, SQZ, lagSeries, gradeLadder, PREV, LAG, gapSeries, gradeGaps, NEXT, lineIn, ladder, trackCorr, changes, buildModel, makeIndex, signals, brief, consensus, leadLag, briefMarkdown, fillDays, slug, GRADE_LABEL, MIN_SALE_DAYS_90 };
+  // ---------- value by grade: last sale vs an estimate from the card's other grades ----------
+  // Anchor = the grade with the most clean sales in the last 30 days (a single-printing or properly separated line).
+  // Every other grade is estimated by walking the grade ladder from it with ratios between neighbouring grades:
+  // the card's own median ratio when it has ≥ 10 paired sale days, else the best tested peer yardstick (same set for
+  // PSA 8÷9, era family for 7÷8 and 9÷10). Each step carries its typical miss on this data, compounded along the walk.
+  const MISS = { own: 0.10, set: 0.14, fam78: 0.13, fam89: 0.19, fam910: 0.45 };
+  function ownRatios(model, up) {
+    const ck = '_own_' + up.grade; if (model[ck]) return model[ck];
+    const rows = [];
+    for (const [key, b] of Object.entries(model.by)) {
+      const s = gapSeries(model, up, key, { peer: false }); if (!s) continue;
+      const v = s.ratio.filter(I.isN); if (v.length < 10) continue;
+      rows.push({ key, set: b.card.set, fam: b.card.family || String(b.card.era || '').split(' ')[0], own: C.median(v) });
+    }
+    return (model[ck] = rows);
+  }
+  function pairRatio(ml, mh, key, card) {
+    const fam = card.family || String(card.era || '').split(' ')[0];
+    const lk = lineIn(ml, key, card), rows = ownRatios(ml, mh);
+    const mine = lk ? rows.find((r) => r.key === lk.card.key) : null;
+    if (mine) return { v: mine.own, src: 'own', miss: MISS.own };
+    const others = rows.filter((r) => r.key.replace(/~alt$/, '') !== key.replace(/~alt$/, ''));
+    const inSet = others.filter((r) => r.set === card.set), inFam = others.filter((r) => r.fam === fam);
+    if (ml.grade === 'psa8' && inSet.length >= 2) return { v: C.median(inSet.map((r) => r.own)), src: 'set', miss: MISS.set };
+    if (inFam.length >= 3) return { v: C.median(inFam.map((r) => r.own)), src: fam, miss: ml.grade === 'psa7' ? MISS.fam78 : ml.grade === 'psa8' ? MISS.fam89 : MISS.fam910 };
+    return null;
+  }
+  function gradeEstimates(models, key, card) {
+    const G = ['psa7', 'psa8', 'psa9', 'psa10'].filter((g) => models[g]), rows = [];
+    for (const g of G) {
+      const m = models[g], clean = lineIn(m, key, card), shown = clean || m.by[key.replace(/~alt$/, '')] || null;
+      let last = null, age = null, n30 = 0;
+      if (shown) {
+        const sales = shown.sales || [];
+        for (let i = sales.length - 1; i >= 0; i--) if (I.isN(sales[i])) { last = sales[i]; age = Math.round((Date.parse(m.axis[m.axis.length - 1]) - Date.parse(m.axis[i])) / 864e5); break; }
+        n30 = salesIn(shown, m.axis.length - 1, 30);
+      }
+      const li = clean ? I.lastIdx(clean.close) : -1;
+      rows.push({ grade: g, last, age, n30, blended: !clean && !!shown, mkt: li >= 0 ? clean.close[li] : null, clean: !!clean });
+    }
+    const anc = rows.filter((r) => r.clean && r.mkt && r.age != null && r.age <= 45).sort((a, b) => b.n30 - a.n30 || (a.age - b.age))[0];
+    if (!anc) return { rows, anchor: null };
+    const ai = rows.indexOf(anc); anc.est = anc.mkt; anc.lmiss = 0; anc.anchor = true;
+    for (let k = ai + 1; k < rows.length; k++) { // walk up: higher grade = lower ÷ ratio(lower÷higher)
+      const r = pairRatio(models[rows[k - 1].grade], models[rows[k].grade], key, card); if (!r || rows[k - 1].est == null) break;
+      rows[k].est = rows[k - 1].est / r.v; rows[k].lmiss = Math.hypot(rows[k - 1].lmiss, Math.log(1 + r.miss)); rows[k].via = r.src;
+    }
+    for (let k = ai - 1; k >= 0; k--) { // walk down: lower grade = higher × ratio
+      const r = pairRatio(models[rows[k].grade], models[rows[k + 1].grade], key, card); if (!r || rows[k + 1].est == null) break;
+      rows[k].est = rows[k + 1].est * r.v; rows[k].lmiss = Math.hypot(rows[k + 1].lmiss, Math.log(1 + r.miss)); rows[k].via = r.src;
+    }
+    rows.forEach((r) => { if (r.est != null) { r.miss = Math.exp(r.lmiss) - 1; r.gap = r.last != null && !r.anchor ? (r.last / r.est - 1) * 100 : null; } });
+    return { rows, anchor: anc.grade };
+  }
+
+  const api = { gradeEstimates, pairRatio, impliedPrice, peerRatios, squeezeNow, squeezeSeries, SQZ, lagSeries, gradeLadder, PREV, LAG, gapSeries, gradeGaps, NEXT, lineIn, ladder, trackCorr, changes, buildModel, makeIndex, signals, brief, consensus, leadLag, briefMarkdown, fillDays, slug, GRADE_LABEL, MIN_SALE_DAYS_90 };
   if (isNode) module.exports = api; else root.Model = api;
 })(typeof window !== 'undefined' ? window : globalThis);
