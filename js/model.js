@@ -43,9 +43,10 @@
       if (!pts?.length) continue;
       const demo = s.source === 'demo';
       const kind = demo ? null : C.pooledKind(s.printings);
-      const r = demo ? { main: pts, alt: [], out: [], split: null } : C.classify(pts, kind, { prior: C.priorOf(s), labels: C.labelsOf(s), floor: C.floorOf(s, grade) });
-      const mixed = kind && !r.split ? (kind === '1st' ? '1st+Unl mixed' : 'holo+rev mixed') : null;
-      lines.push({ key: c.key, card: { ...c, line: r.split ? r.split.mainLabel : mixed, est: !!r.split, mixed: !!mixed }, pts: r.main, demo });
+      const r = demo ? { main: pts, alt: [], out: [], split: null } : C.classify(pts, kind, C.gradedOpts(s, grade));
+      const mixed = r.kind && !r.split && !r.same ? (r.kind === '1st' ? '1st+Unl mixed' : 'holo+rev mixed') : null;
+      const same = r.same ? (r.kind === '1st' ? '1st/Unl · one price level' : 'holo/rev · one price level') : null;
+      lines.push({ key: c.key, card: { ...c, line: r.split ? r.split.mainLabel : mixed || same, est: !!r.split, mixed: !!mixed }, pts: r.main, demo });
       if (r.split && r.alt.length >= 4) lines.push({ key: c.key + '~alt', card: { ...c, key: c.key + '~alt', line: r.split.altLabel, est: true, virtual: true }, pts: r.alt, demo });
     }
     const dates = new Set();
