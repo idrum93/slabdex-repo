@@ -1,6 +1,6 @@
 # SlabDex discovery — 2026-10-01
 
-Credits spent: 2 · remaining today: 18841 · history window: 180 days · min sale days: 8
+Credits spent: 2 · remaining today: 18839 · history window: 180 days · min sale days: 8
 
 ## Sets
 
@@ -265,7 +265,7 @@ Credits spent: 2 · remaining today: 18841 · history window: 180 days · min sa
 - 26 chosen cards had pooled printings that split cleanly into two price clusters; the larger cluster is the main line and the other is charted separately when it has 4+ sales. Labels (1st Ed / Unl) are estimates from price, not from listings.
 - 13 chosen cards are pooled but did not split; holo / reverse ones that trade at one price level are kept, blended ones are skipped because the site leaves them out of every signal.
 - Clean-sales rule: cards with more than 35% junk sales are not picked unless pinned. Excluded in sets.json: Skyridge #146.
-- Ongoing cost ≈ 80 credits/day (every card every 3 days, 2 credits each, graded only).
+- Ongoing cost ≈ 81 credits/day (every card every 3 days, 2 credits each, graded only).
 
 ## Log
 
@@ -419,5 +419,5 @@ Credits spent: 2 · remaining today: 18841 · history window: 180 days · min sa
 History reach: earliest point 2026-04-03 (181 days back; requested 180)
 Chose 94 cards across 41 sets.
 Grade depth (cards scoreable / clean sale days, last 90D): psa7 34/698 · psa8 56/878 · psa9 32/674 · psa10 2/136 → default psa8
-Budget after the paid plan: 94 basket cards (EX 24, DP 18, HGSS 9, WOTC 43) + 26 index-only ≈ 80 credits/day of 100.
+Budget after the paid plan: 94 basket cards (EX 24, DP 18, HGSS 9, WOTC 43) + 28 index-only ≈ 81 credits/day of 100.
 ```

@@ -3,25 +3,25 @@
 ```
 
 == WOTC ==
-✓ Character Charizard · WOTC: 4 cards
-    extra  Shining Charizard — Neo Destiny #107 (Secret Rare, 36 clean days)
+✓ Character Charizard · WOTC: 4 cards · passed over: Shining Charizard (Neo Destiny): printings blended
     basket Charizard — Base Set #4 (Holo Rare, 12 clean days)
     extra  Blaine's Charizard — Gym Challenge #2 (Holo Rare, 12 clean days)
-    basket Charizard — Legendary Collection #3 (Holo Rare, 21 clean days)
-✓ Character Blastoise · WOTC: 3 cards · passed over: Blastoise (4) (Expedition): 4 clean sale days, 0% junk; Blastoise (Base Set 2): 6 clean sale days, 0% junk
+    basket Charizard — Legendary Collection #3 (Holo Rare, 15 clean days)
+    basket Charizard — Base Set 2 #4 (Holo Rare, 15 clean days)
+✓ Character Blastoise · WOTC: 3 cards · passed over: Blastoise (4) (Expedition): printings blended; Blastoise (Base Set 2): 6 clean sale days, 0% junk
     basket Dark Blastoise (3) — Team Rocket #3 (Holo Rare, 16 clean days)
     basket Blastoise — Base Set #2 (Holo Rare, 26 clean days)
     basket Dark Blastoise — Legendary Collection #4 (Holo Rare, 18 clean days)
-✓ Character Venusaur · WOTC: 4 cards
-    extra  Venusaur (30) — Expedition #30 (Holo Rare, 8 clean days)
+✓ Character Venusaur · WOTC: 4 cards · passed over: Venusaur (30) (Expedition): printings blended
     basket Erika's Venusaur — Gym Challenge #4 (Holo Rare, 20 clean days)
     basket Venusaur — Base Set #15 (Holo Rare, 14 clean days)
     basket Venusaur — Base Set 2 #18 (Holo Rare, 10 clean days)
-✓ Character Pikachu & Raichu · WOTC: 4 cards
-    extra  Shining Raichu — Neo Destiny #111 (Secret Rare, 25 clean days)
+    extra  Venusaur — Legendary Collection #18 (Holo Rare, 10 clean days)
+✓ Character Pikachu & Raichu · WOTC: 4 cards · passed over: Shining Raichu (Neo Destiny): printings blended; Dark Raichu (Legendary Collection): printings blended
     basket Dark Raichu — Team Rocket #83 (Secret Rare, 53 clean days)
     extra  Pikachu (Corocoro Grey Star) — WOTC Black Star Promos #0 (Promo, 14 clean days)
     extra  Raichu (H25) — Skyridge #H25 (Holo Rare, 9 clean days)
+    extra  Lt. Surge's Raichu — Gym Challenge #11 (Holo Rare, 15 clean days)
 ✓ Character Mewtwo · WOTC: 4 cards
     basket Shining Mewtwo — Neo Destiny #109 (Secret Rare, 12 clean days)
     basket Rocket's Mewtwo — Gym Challenge #14 (Holo Rare, 11 clean days)
@@ -31,26 +31,25 @@
     basket Mew (19) — Expedition #19 (Holo Rare, 11 clean days)
     extra  Mew (47) — WOTC Black Star Promos #47 (Promo, 29 clean days)
     extra  Mew (9) — WOTC Black Star Promos #9 (Promo, 13 clean days)
-✓ Character Gengar · WOTC: 2 cards · passed over: Gengar (H9) (Skyridge): 6 clean sale days, 22% junk; Sabrina's Gengar (Gym Heroes): 3 clean sale days, 0% junk; Gengar (Legendary Collection): 7 clean sale days, 0% junk; Gengar (5) (Fossil): 0 clean sale days, 0% junk
-    extra  Gengar (13) — Expedition #13 (Holo Rare, 10 clean days)
+· Character Gengar · WOTC: 1 card (below 2: no WOTC index, still counts toward all eras) · passed over: Gengar (H9) (Skyridge): 6 clean sale days, 22% junk; Gengar (13) (Expedition): printings blended; Sabrina's Gengar (Gym Heroes): printings blended; Gengar (Legendary Collection): printings blended; Gengar (5) (Fossil): 0 clean sale days, 0% junk
     basket Dark Gengar — Neo Destiny #6 (Holo Rare, 14 clean days)
-✓ Character Gyarados · WOTC: 4 cards · passed over: Dark Gyarados (8) (Team Rocket): 2 clean sale days, 33% junk
-    extra  Shining Gyarados — Neo Revelation #65 (Secret Rare, 61 clean days)
+✓ Character Gyarados · WOTC: 4 cards · passed over: Shining Gyarados (Neo Revelation): printings blended; Dark Gyarados (8) (Team Rocket): printings blended; Gyarados (Base Set 2): 5 clean sale days, 0% junk
     extra  Gyarados (H10) — Skyridge #H10 (Holo Rare, 14 clean days)
     extra  Misty's Gyarados — Gym Challenge #13 (Holo Rare, 36 clean days)
     extra  Gyarados — Base Set #6 (Holo Rare, 16 clean days)
-✓ Character Dragonite · WOTC: 4 cards
+    extra  Dark Gyarados (Prerelease) — WOTC Black Star Promos #8 (Promo, 16 clean days)
+✓ Character Dragonite · WOTC: 4 cards · passed over: Dark Dragonite (5) (Team Rocket): printings blended; Dragonite (4) (Fossil): 0 clean sale days, 0% junk
     basket Dragonite (9) — Expedition #9 (Holo Rare, 11 clean days)
     extra  Light Dragonite — Neo Destiny #14 (Holo Rare, 15 clean days)
-    extra  Dark Dragonite (5) — Team Rocket #5 (Holo Rare, 10 clean days)
     basket Dark Dragonite — Legendary Collection #5 (Holo Rare, 13 clean days)
+    extra  Dragonite (Movie Promo) — WOTC Black Star Promos #5 (Promo, 12 clean days)
 ✓ Character Snorlax · WOTC: 2 cards
     basket Snorlax — WOTC Black Star Promos #49 (Promo, 45 clean days)
     basket Snorlax (11) — Jungle #11 (Holo Rare, 36 clean days)
 ✓ Character Lugia · WOTC: 2 cards
     basket Lugia — Aquapolis #149 (Secret Rare, 27 clean days)
     basket Lugia — Neo Genesis #9 (Holo Rare, 16 clean days)
-✓ Character Ho-Oh · WOTC: 2 cards · passed over: Ho-oh (7) (Neo Revelation): 6 clean sale days, 33% junk
+✓ Character Ho-Oh · WOTC: 2 cards · passed over: Ho-oh (7) (Neo Revelation): printings blended
     basket Ho-oh — Skyridge #149 (Secret Rare, 17 clean days)
     extra  Ho-oh — WOTC Black Star Promos #52 (Promo, 14 clean days)
 ✓ Character Tyranitar · WOTC: 4 cards
@@ -69,13 +68,13 @@
     extra  Dark Espeon — Neo Destiny #4 (Holo Rare, 8 clean days)
     basket Espeon (1) — Neo Discovery #1 (Holo Rare, 21 clean days)
     extra  Dark Vaporeon — Legendary Collection #9 (Holo Rare, 19 clean days)
-✓ Theme Dragons · WOTC: 5 cards
-    extra  Shining Charizard — Neo Destiny #107 (Secret Rare, 36 clean days)
+✓ Theme Dragons · WOTC: 5 cards · passed over: Shining Charizard (Neo Destiny): printings blended
     basket Dragonite (9) — Expedition #9 (Holo Rare, 11 clean days)
     basket Charizard — Base Set #4 (Holo Rare, 12 clean days)
+    extra  Blaine's Charizard — Gym Challenge #2 (Holo Rare, 12 clean days)
     extra  Light Dragonite — Neo Destiny #14 (Holo Rare, 15 clean days)
     basket Erika's Dragonair — Gym Heroes #4 (Holo Rare, 18 clean days)
-✓ Theme Legendary Birds · WOTC: 6 cards · passed over: Ho-oh (7) (Neo Revelation): 6 clean sale days, 33% junk; Blaine's Moltres (Gym Heroes): 4 clean sale days, 0% junk; Articuno (2) (Fossil): 5 clean sale days, 0% junk
+✓ Theme Legendary Birds · WOTC: 6 cards · passed over: Ho-oh (7) (Neo Revelation): printings blended; Blaine's Moltres (Gym Heroes): 4 clean sale days, 0% junk; Articuno (2) (Fossil): 5 clean sale days, 0% junk
     basket Lugia — Aquapolis #149 (Secret Rare, 27 clean days)
     basket Ho-oh — Skyridge #149 (Secret Rare, 17 clean days)
     basket Lugia — Neo Genesis #9 (Holo Rare, 16 clean days)
@@ -171,7 +170,7 @@
 ✓ Pikachu & Raichu · all eras: 8 cards across WOTC, EX, DP & Platinum
 ✓ Mewtwo · all eras: 6 cards across WOTC, EX, DP & Platinum
 ✓ Mew · all eras: 5 cards across WOTC, EX
-✓ Gengar · all eras: 4 cards across WOTC, EX, DP & Platinum
+✓ Gengar · all eras: 3 cards across WOTC, EX, DP & Platinum
 ✓ Gyarados · all eras: 6 cards across WOTC, HGSS
 ✓ Dragonite · all eras: 6 cards across WOTC, EX, DP & Platinum
 ✓ Snorlax · all eras: 3 cards across WOTC, DP & Platinum
@@ -185,5 +184,5 @@
 ✓ Legendary Beasts · all eras: 6 cards across WOTC, EX
 Downloaded 8 new sprite(s).
 
-41 indexes (18 all-eras) · 28 index-only cards · ongoing ≈ 81 credits/day of 100 · spent 0 credits
+40 indexes (18 all-eras) · 26 index-only cards · ongoing ≈ 80 credits/day of 100 · spent 9 credits
 ```

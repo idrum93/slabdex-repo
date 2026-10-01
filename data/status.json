@@ -1,8 +1,8 @@
 {
-  "lastRun": "2026-10-01T04:23:57.903Z",
+  "lastRun": "2026-10-01T04:30:02.244Z",
   "kind": "discovery",
   "creditsSpent": 2,
-  "dailyRemaining": 18841,
+  "dailyRemaining": 18839,
   "updated": 94,
   "log": [
     "  gym-challenge-blaine-s-arcanine-1: psa8 9 clean days (1st Ed; +0 Unl (not tracked)), median 619",
@@ -64,6 +64,6 @@
     "History reach: earliest point 2026-04-03 (181 days back; requested 180)",
     "Chose 94 cards across 41 sets.",
     "Grade depth (cards scoreable / clean sale days, last 90D): psa7 34/698 · psa8 56/878 · psa9 32/674 · psa10 2/136 → default psa8",
-    "Budget after the paid plan: 94 basket cards (EX 24, DP 18, HGSS 9, WOTC 43) + 26 index-only ≈ 80 credits/day of 100."
+    "Budget after the paid plan: 94 basket cards (EX 24, DP 18, HGSS 9, WOTC 43) + 28 index-only ≈ 81 credits/day of 100."
   ]
 }
