@@ -3045,23 +3045,6 @@
   ],
   "extra": [
     {
-      "key": "neo-destiny-shining-charizard-107",
-      "name": "Shining Charizard",
-      "set": "Neo Destiny",
-      "number": "107",
-      "era": "WOTC Neo & e-Card",
-      "family": "WOTC",
-      "basket": "neo-destiny",
-      "rarity": "Secret Rare",
-      "query": "Shining Charizard Neo Destiny 107",
-      "tier": "group",
-      "role": "group",
-      "raw": false,
-      "tcgPlayerId": "89163",
-      "since": "2026-10-01",
-      "sprite": "img/sprites/charizard.png"
-    },
-    {
       "key": "gym-challenge-blaine-s-charizard-2",
       "name": "Blaine's Charizard",
       "set": "Gym Challenge",
@@ -3079,38 +3062,21 @@
       "sprite": "img/sprites/charizard.png"
     },
     {
-      "key": "expedition-venusaur-30-30",
-      "name": "Venusaur (30)",
-      "set": "Expedition",
-      "number": "30",
+      "key": "legendary-collection-venusaur-18",
+      "name": "Venusaur",
+      "set": "Legendary Collection",
+      "number": "18",
       "era": "WOTC Neo & e-Card",
       "family": "WOTC",
-      "basket": "expedition",
+      "basket": "legendary-collection",
       "rarity": "Holo Rare",
-      "query": "Venusaur (30) Expedition 30",
+      "query": "Venusaur Legendary Collection 18",
       "tier": "group",
       "role": "group",
       "raw": false,
-      "tcgPlayerId": "90314",
-      "since": "2026-09-30",
+      "tcgPlayerId": "90313",
+      "since": "2026-10-01",
       "sprite": "img/sprites/venusaur.png"
-    },
-    {
-      "key": "neo-destiny-shining-raichu-111",
-      "name": "Shining Raichu",
-      "set": "Neo Destiny",
-      "number": "111",
-      "era": "WOTC Neo & e-Card",
-      "family": "WOTC",
-      "basket": "neo-destiny",
-      "rarity": "Secret Rare",
-      "query": "Shining Raichu Neo Destiny 111",
-      "tier": "group",
-      "role": "group",
-      "raw": false,
-      "tcgPlayerId": "89169",
-      "since": "2026-09-30",
-      "sprite": "img/sprites/raichu.png"
     },
     {
       "key": "wotc-black-star-promos-pikachu-corocoro-grey-star-0",
@@ -3144,6 +3110,23 @@
       "raw": false,
       "tcgPlayerId": "88502",
       "since": "2026-09-30",
+      "sprite": "img/sprites/raichu.png"
+    },
+    {
+      "key": "gym-challenge-lt-surge-s-raichu-11",
+      "name": "Lt. Surge's Raichu",
+      "set": "Gym Challenge",
+      "number": "11",
+      "era": "WOTC Vintage",
+      "family": "WOTC",
+      "basket": "gym-challenge",
+      "rarity": "Holo Rare",
+      "query": "Lt. Surge's Raichu Gym Challenge 11",
+      "tier": "group",
+      "role": "group",
+      "raw": false,
+      "tcgPlayerId": "86861",
+      "since": "2026-10-01",
       "sprite": "img/sprites/raichu.png"
     },
     {
@@ -3215,40 +3198,6 @@
       "sprite": "img/sprites/mew.png"
     },
     {
-      "key": "expedition-gengar-13-13",
-      "name": "Gengar (13)",
-      "set": "Expedition",
-      "number": "13",
-      "era": "WOTC Neo & e-Card",
-      "family": "WOTC",
-      "basket": "expedition",
-      "rarity": "Holo Rare",
-      "query": "Gengar (13) Expedition 13",
-      "tier": "group",
-      "role": "group",
-      "raw": false,
-      "tcgPlayerId": "85671",
-      "since": "2026-10-01",
-      "sprite": "img/sprites/gengar.png"
-    },
-    {
-      "key": "neo-revelation-shining-gyarados-65",
-      "name": "Shining Gyarados",
-      "set": "Neo Revelation",
-      "number": "65",
-      "era": "WOTC Neo & e-Card",
-      "family": "WOTC",
-      "basket": "neo-revelation",
-      "rarity": "Secret Rare",
-      "query": "Shining Gyarados Neo Revelation 65",
-      "tier": "group",
-      "role": "group",
-      "raw": false,
-      "tcgPlayerId": "89164",
-      "since": "2026-10-01",
-      "sprite": "img/sprites/gyarados.png"
-    },
-    {
       "key": "skyridge-gyarados-h10-H10",
       "name": "Gyarados (H10)",
       "set": "Skyridge",
@@ -3300,6 +3249,23 @@
       "sprite": "img/sprites/gyarados.png"
     },
     {
+      "key": "wotc-black-star-promos-dark-gyarados-prerelease-8",
+      "name": "Dark Gyarados (Prerelease)",
+      "set": "WOTC Black Star Promos",
+      "number": "8",
+      "era": "WOTC Promo",
+      "family": "WOTC",
+      "basket": "wotc-black-star-promos",
+      "rarity": "Promo",
+      "query": "Dark Gyarados (Prerelease) WOTC Black Star Promos 8",
+      "tier": "group",
+      "role": "group",
+      "raw": false,
+      "tcgPlayerId": "118775",
+      "since": "2026-10-01",
+      "sprite": "img/sprites/gyarados.png"
+    },
+    {
       "key": "neo-destiny-light-dragonite-14",
       "name": "Light Dragonite",
       "set": "Neo Destiny",
@@ -3317,19 +3283,19 @@
       "sprite": "img/sprites/dragonite.png"
     },
     {
-      "key": "team-rocket-dark-dragonite-5-5",
-      "name": "Dark Dragonite (5)",
-      "set": "Team Rocket",
+      "key": "wotc-black-star-promos-dragonite-movie-promo-5",
+      "name": "Dragonite (Movie Promo)",
+      "set": "WOTC Black Star Promos",
       "number": "5",
-      "era": "WOTC Vintage",
+      "era": "WOTC Promo",
       "family": "WOTC",
-      "basket": "team-rocket",
-      "rarity": "Holo Rare",
-      "query": "Dark Dragonite (5) Team Rocket 5",
+      "basket": "wotc-black-star-promos",
+      "rarity": "Promo",
+      "query": "Dragonite (Movie Promo) WOTC Black Star Promos 5",
       "tier": "group",
       "role": "group",
       "raw": false,
-      "tcgPlayerId": "84584",
+      "tcgPlayerId": "84909",
       "since": "2026-10-01",
       "sprite": "img/sprites/dragonite.png"
     },
@@ -3530,10 +3496,10 @@
       "scope": "WOTC",
       "sprite": "img/sprites/charizard.png",
       "members": [
-        "neo-destiny-shining-charizard-107",
         "base-set-charizard-4",
         "gym-challenge-blaine-s-charizard-2",
-        "legendary-collection-charizard-3"
+        "legendary-collection-charizard-3",
+        "base-set-2-charizard-4"
       ]
     },
     {
@@ -3557,10 +3523,10 @@
       "scope": "WOTC",
       "sprite": "img/sprites/venusaur.png",
       "members": [
-        "expedition-venusaur-30-30",
         "gym-challenge-erika-s-venusaur-4",
         "base-set-venusaur-15",
-        "base-set-2-venusaur-18"
+        "base-set-2-venusaur-18",
+        "legendary-collection-venusaur-18"
       ]
     },
     {
@@ -3571,10 +3537,10 @@
       "scope": "WOTC",
       "sprite": "img/sprites/pikachu.png",
       "members": [
-        "neo-destiny-shining-raichu-111",
         "team-rocket-dark-raichu-83",
         "wotc-black-star-promos-pikachu-corocoro-grey-star-0",
-        "skyridge-raichu-h25-H25"
+        "skyridge-raichu-h25-H25",
+        "gym-challenge-lt-surge-s-raichu-11"
       ]
     },
     {
@@ -3605,18 +3571,6 @@
       ]
     },
     {
-      "id": "idx:char:gengar:wotc",
-      "kind": "char",
-      "label": "Gengar · WOTC",
-      "base": "Gengar",
-      "scope": "WOTC",
-      "sprite": "img/sprites/gengar.png",
-      "members": [
-        "expedition-gengar-13-13",
-        "neo-destiny-dark-gengar-6"
-      ]
-    },
-    {
       "id": "idx:char:gyarados:wotc",
       "kind": "char",
       "label": "Gyarados · WOTC",
@@ -3624,10 +3578,10 @@
       "scope": "WOTC",
       "sprite": "img/sprites/gyarados.png",
       "members": [
-        "neo-revelation-shining-gyarados-65",
         "skyridge-gyarados-h10-H10",
         "gym-challenge-misty-s-gyarados-13",
-        "base-set-gyarados-6"
+        "base-set-gyarados-6",
+        "wotc-black-star-promos-dark-gyarados-prerelease-8"
       ]
     },
     {
@@ -3640,8 +3594,8 @@
       "members": [
         "expedition-dragonite-9-9",
         "neo-destiny-light-dragonite-14",
-        "team-rocket-dark-dragonite-5-5",
-        "legendary-collection-dark-dragonite-5"
+        "legendary-collection-dark-dragonite-5",
+        "wotc-black-star-promos-dragonite-movie-promo-5"
       ]
     },
     {
@@ -3731,9 +3685,9 @@
       "scope": "WOTC",
       "sprite": "img/sprites/dragonite.png",
       "members": [
-        "neo-destiny-shining-charizard-107",
         "expedition-dragonite-9-9",
         "base-set-charizard-4",
+        "gym-challenge-blaine-s-charizard-2",
         "neo-destiny-light-dragonite-14",
         "gym-heroes-erika-s-dragonair-4"
       ]
@@ -3838,10 +3792,10 @@
       "scope": "all",
       "sprite": "img/sprites/charizard.png",
       "members": [
-        "neo-destiny-shining-charizard-107",
         "base-set-charizard-4",
         "gym-challenge-blaine-s-charizard-2",
         "legendary-collection-charizard-3",
+        "base-set-2-charizard-4",
         "dragon-frontiers-charizard-star-delta-species-100",
         "stormfront-charizard-103"
       ]
@@ -3869,10 +3823,10 @@
       "scope": "all",
       "sprite": "img/sprites/venusaur.png",
       "members": [
-        "expedition-venusaur-30-30",
         "gym-challenge-erika-s-venusaur-4",
         "base-set-venusaur-15",
         "base-set-2-venusaur-18",
+        "legendary-collection-venusaur-18",
         "firered-leafgreen-venusaur-ex-112",
         "supreme-victors-venusaur-13"
       ]
@@ -3885,10 +3839,10 @@
       "scope": "all",
       "sprite": "img/sprites/pikachu.png",
       "members": [
-        "neo-destiny-shining-raichu-111",
         "team-rocket-dark-raichu-83",
         "wotc-black-star-promos-pikachu-corocoro-grey-star-0",
         "skyridge-raichu-h25-H25",
+        "gym-challenge-lt-surge-s-raichu-11",
         "holon-phantoms-pikachu-star-104",
         "legend-maker-pikachu-delta-species-93",
         "rising-rivals-pikachu-112",
@@ -3934,7 +3888,6 @@
       "scope": "all",
       "sprite": "img/sprites/gengar.png",
       "members": [
-        "expedition-gengar-13-13",
         "neo-destiny-dark-gengar-6",
         "firered-leafgreen-gengar-ex-108",
         "arceus-gengar-lv-x-97"
@@ -3948,10 +3901,10 @@
       "scope": "all",
       "sprite": "img/sprites/gyarados.png",
       "members": [
-        "neo-revelation-shining-gyarados-65",
         "skyridge-gyarados-h10-H10",
         "gym-challenge-misty-s-gyarados-13",
         "base-set-gyarados-6",
+        "wotc-black-star-promos-dark-gyarados-prerelease-8",
         "heartgold-soulsilver-gyarados-red-123",
         "call-of-legends-gyarados-7"
       ]
@@ -3966,8 +3919,8 @@
       "members": [
         "expedition-dragonite-9-9",
         "neo-destiny-light-dragonite-14",
-        "team-rocket-dark-dragonite-5-5",
         "legendary-collection-dark-dragonite-5",
+        "wotc-black-star-promos-dragonite-movie-promo-5",
         "dragon-dragonite-ex-90",
         "legends-awakened-dragonite-2"
       ]
@@ -4068,9 +4021,9 @@
       "scope": "all",
       "sprite": "img/sprites/dragonite.png",
       "members": [
-        "neo-destiny-shining-charizard-107",
         "expedition-dragonite-9-9",
         "base-set-charizard-4",
+        "gym-challenge-blaine-s-charizard-2",
         "neo-destiny-light-dragonite-14",
         "gym-heroes-erika-s-dragonair-4",
         "dragon-frontiers-charizard-star-delta-species-100",
