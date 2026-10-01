@@ -174,7 +174,7 @@ function finalPick(short) {
     const pool = short.filter((x) => x.set === def.label);
     const ok = (x) => (x.days ?? 0) >= MIN_DAYS && (x.outShare ?? 0) <= MAX_OUT;
     const ranked = [...pool].sort((a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0) || (ok(b) ? 1 : 0) - (ok(a) ? 1 : 0) || (b.med ?? rankVal(b)) - (a.med ?? rankVal(a)));
-    ranked.slice(0, Math.max(PER_SET, pool.filter((x) => x.pinned).length)).forEach((x, i) => chosen.push({ ...x, lead: i === 0 }));
+    ranked.filter((x) => x.pinned || ok(x)).slice(0, Math.max(PER_SET, pool.filter((x) => x.pinned).length)).forEach((x, i) => chosen.push({ ...x, lead: i === 0 })); // never fill a set with cards that fail the clean-sales rules
   }
   return chosen;
 }

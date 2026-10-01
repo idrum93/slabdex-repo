@@ -60,7 +60,7 @@
     const res = { main: [], alt: [], out: [], mixed: [], foreign: [], split: null, mainTier: null, kind, same: false };
     // Floor: a graded sale far below the card's cheapest RAW Near Mint price is almost always an ungraded or
     // mislabeled listing, not a slab. Those go straight to junk.
-    const all = (points || []).filter((x) => x && x.p > 0 && !(opts.floor && x.p < opts.floor ? res.out.push(x) : false)); // floor comes from the grade below (graded data only)
+    const all = (points || []).filter((x) => x && x.p > 0 && !(opts.floor && x.p < opts.floor ? res.foreign.push(x) : false)); // under the floor (from the grade below): another product's listing, set aside like foreign listings — not counted as junk
     if (!all.length) return res;
     if (kind === 'holoN' && all.length < 6) { kind = null; res.kind = null; }
     const m = median(all.map((x) => x.p));
@@ -106,7 +106,7 @@
     // No split, but the single-sale prices show no second printing either (no two price levels selling side by side,
     // ≥ 8 single sales): whatever printing mix there is sells at one price level in this grade, so the line is usable.
     // Judged from this grade's own graded sales only.
-    if (kind && !res.split) {
+    if (kind === 'rev' && !res.split) { // (1st Ed / Unl: never — only a confirmed 1st Ed line is tracked)
       const pure = rest.filter((x) => x.n == null || x.n <= 1), b = pure.length >= 8 ? otsu(pure) : null;
       const twoLevels = b && b.ratio >= 1.6 && interleaved(b.lo, b.hi);
       if (pure.length >= 8 && !twoLevels) { res.same = true; main = rest; alt = []; res.mixed = []; }
@@ -123,6 +123,13 @@
       for (const x of H) (x.n == null || x.n <= 1 || x.p >= mH / 1.3 ? keepH : res.mixed).push(x);
       for (const x of Lo) (x.n == null || x.n <= 1 || x.p <= mL * 1.3 ? keepL : res.mixed).push(x);
       if (hiSide) { main = keepH; alt = keepL; } else { main = keepL; alt = keepH; }
+    }
+    // 1st Edition only: for 1st Ed / Unlimited records, the 1st Ed cluster is THE line (it's the printing worth
+    // tracking, and keeping Unl out removes its noise). Unlimited sales are set aside, not charted or indexed.
+    if (kind === '1st' && res.split) {
+      if (res.mainTier !== 'high') { const t = main; main = alt; alt = t; }
+      res.unl = alt; alt = []; res.mainTier = 'high';
+      res.split = { ...res.split, mainLabel: '1st Ed', altLabel: 'Unl (not tracked)' };
     }
     // One printing but two clearly separate price clusters selling side by side = another card's listings
     // mixed in (e.g. a cheaper Ho-Oh under the Skyridge crystal). The smaller cluster is set aside as foreign.

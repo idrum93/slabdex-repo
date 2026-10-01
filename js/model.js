@@ -24,7 +24,7 @@
     const first = pick(/1st/i), unl = pick(/unlimited/i), rev = pick(/reverse/i);
     const holo = prs.find((p) => !/reverse|1st|unlimited|normal/i.test(p)) || prs.find((p) => !/reverse/i.test(p));
     let main, alt = null, mainL, altL;
-    if (first && unl) { main = unl; alt = first; mainL = 'Unl'; altL = '1st Ed'; }
+    if (first && unl) { main = first; mainL = '1st Ed'; } // 1st Edition only, same as the graded lines
     else if (rev && holo) { main = holo; alt = rev; mainL = 'Holo'; altL = 'Reverse'; }
     else { main = holo || prs[0]; mainL = null; }
     const out = [{ key: c.key, card: { ...c, line: mainL, est: false }, pts: raw[main], dense: true }];
@@ -70,7 +70,8 @@
       by[l.key] = { card: l.card, close, sales: l.dense ? null : raw, vol, demo: !!l.demo, saleN: l.pts.length, dense: !!l.dense };
     }
     // Set / era / all indexes are the set baskets only; index-only cards (role 'group') feed character & theme indexes.
-    const mains = Object.keys(by).filter((k) => !by[k].card.virtual && by[k].card.role !== 'group');
+    // Lines that blend two printings (couldn't be split) stay viewable but never feed an index — they're noise.
+    const mains = Object.keys(by).filter((k) => !by[k].card.virtual && by[k].card.role !== 'group' && !by[k].card.mixed);
     const idx = {};
     const add = (id, name, kind, keys, extra = {}) => { if (keys.length) idx[id] = { id, name, kind, members: keys, ...makeIndex(axis, keys.map((k) => by[k])), ...extra }; };
     add('idx:all', 'All tracked', 'all', mains, { sprite: WL.eraSprites?.all || null });
@@ -83,7 +84,7 @@
     const famOf = (c) => c.family || String(c.era || '').split(' ')[0];
     const fams = [...new Set(mains.map((k) => famOf(by[k].card)))];
     if (fams.length > 1) fams.forEach((f) => add('idx:fam:' + slug(f), WL.familyLabels?.[f] || f, 'family', mains.filter((k) => famOf(by[k].card) === f), { family: f, sprite: WL.eraSprites?.families?.[f] || null }));
-    for (const g of WL.groups || []) add(g.id, g.label, g.kind, g.members.filter((k) => by[k]), { scope: g.scope, base: g.base || g.label, sprite: g.sprite || null });
+    for (const g of WL.groups || []) add(g.id, g.label, g.kind, g.members.filter((k) => by[k] && !by[k].card.mixed), { scope: g.scope, base: g.base || g.label, sprite: g.sprite || null });
     // Which character / theme indexes each card belongs to (base key, so both printings share it).
     const memberOf = {};
     for (const g of WL.groups || []) for (const k of g.members) (memberOf[k] ||= []).push(g.id);

@@ -124,7 +124,7 @@
     }
     const units = [];
     for (const [key, b] of Object.entries(model.by)) {
-      if (b.demo) continue;
+      if (b.demo || b.card.mixed) continue; // blended-printing lines are not tested
       const first = I.firstIdx(b.close), last = I.lastIdx(b.close);
       const lo = first + WARM, hi = last - H;
       const x = context(b, bench, setClose(model, b.card));
