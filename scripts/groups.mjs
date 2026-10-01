@@ -95,7 +95,7 @@ async function build(kind, def, rule, fam) {
     if (rule.maxPerCharacter && (perChar[baseName(x.name)] || 0) >= rule.maxPerCharacter) continue;
     let chk;
     try { chk = await ensureAndCheck(x, addCards); } catch (e) { if (e instanceof BudgetError) throw e; note(`  ✗ ${x.name} (${x.set}): ${e.message}`); continue; }
-    if (!chk.ok) { rejected.push(`${x.name} (${x.set}): ${chk.cheap != null ? `under $${MIN_PRICE} in every grade (top ~$${Math.round(chk.cheap)})` : chk.blended ? 'printings blended' : `${chk.days} clean sale days, ${Math.round(chk.junk * 100)}% junk`}`); continue; }
+    if (!chk.ok) { rejected.push(`${x.name} (${x.set}): ${chk.cheap != null ? (chk.cheap > 0 ? `under $${MIN_PRICE} in every grade (top ~$${Math.round(chk.cheap)})` : `no grade with ${MIN_DAYS}+ clean sales to price it`) : chk.blended ? 'printings blended' : `${chk.days} clean sale days, ${Math.round(chk.junk * 100)}% junk`}`); continue; }
     members.push({ x, ...chk });
     perSet[x.set] = (perSet[x.set] || 0) + 1; perChar[baseName(x.name)] = (perChar[baseName(x.name)] || 0) + 1;
   }

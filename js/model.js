@@ -88,7 +88,7 @@
     // Which character / theme indexes each card belongs to (base key, so both printings share it).
     const memberOf = {};
     for (const g of WL.groups || []) for (const k of g.members) (memberOf[k] ||= []).push(g.id);
-    return { grade, dense: grade === 'raw', axis, by, idx, memberOf, index: idx['idx:all']?.close || [], minPrice: Number(WL.minPrice) || 0 };
+    return { grade, dense: grade === 'raw', axis, by, idx, memberOf, index: idx['idx:all']?.close || [], minPrice: Number(WL.minPrice) || 0, rules: WL.rules || null };
   }
 
   // One entry per character / theme: its all-eras index where one exists, otherwise its single-era index.
@@ -182,7 +182,7 @@
     // Card-level scoreability decides whether this grade is worth reading at all.
     const cardSig = [];
     for (const [k, b] of Object.entries(model.by)) {
-      if (b.card.custom || !aboveMin(model, b)) continue; // below the minimum slab price: not a lead
+      if (b.card.custom || !tradable(model, b)) continue; // below the minimum slab price or not liquid: not a lead
       const set = model.idx['idx:set:' + (b.card.basket || slug(b.card.set))];
       const s = signals(b.close, b.vol, set?.close || model.index, { dense });
       if (s.score != null) cardSig.push({ k, b, s });
@@ -512,7 +512,7 @@
       const b = lineIn(m, key, card); if (!b) continue;
       const li = I.lastIdx(b.close); if (li < 0) continue;
       let ls = null; for (let i = li; i >= 0; i--) if (I.isN(b.sales?.[i])) { ls = i; break; }
-      rows.push({ grade: g, price: b.close[li], c30: I.chg(b.close, 30), n30: salesIn(b, li, 30), age: ls == null ? null : Math.round((Date.parse(m.axis[m.axis.length - 1]) - Date.parse(m.axis[ls])) / 864e5), key: b.card.key });
+      rows.push({ grade: g, price: b.close[li], tradable: tradable(m, b), c30: I.chg(b.close, 30), n30: salesIn(b, li, 30), age: ls == null ? null : Math.round((Date.parse(m.axis[m.axis.length - 1]) - Date.parse(m.axis[ls])) / 864e5), key: b.card.key });
     }
     rows.forEach((r, k) => { const up = rows[k + 1]; r.share = up && up.grade === NEXT[r.grade] ? r.price / up.price : null; });
     // A lower grade priced well above a higher one means mixed or mislabeled sales somewhere: no lag call on this card.
@@ -635,6 +635,39 @@
   // Minimum slab price (data/sets.json minPrice → watchlist): a line counts only on days its market price is at
   // least this much — for leads (today's price) and for the backtest / forward record (the price on the day a setup fired).
   const aboveMin = (model, b, i) => { const min = model?.minPrice || 0; if (!min) return true; const j = i == null ? I.lastIdx(b.close) : i; return j >= 0 && I.isN(b.close[j]) && b.close[j] >= min; };
-  const api = { aboveMin, gradeEstimates, pairRatio, impliedPrice, peerRatios, squeezeNow, squeezeSeries, SQZ, lagSeries, gradeLadder, PREV, LAG, gapSeries, gradeGaps, NEXT, lineIn, ladder, trackCorr, changes, buildModel, makeIndex, signals, brief, consensus, leadLag, briefMarkdown, fillDays, slug, GRADE_LABEL, MIN_SALE_DAYS_90 };
+  // Tradability rules (override in data/sets.json "rules" → watchlist): a slab you could actually buy and later sell.
+  //  liquid  = sold on ≥ liqDays different days in the last liqWin days, and at least once in the last liqAge days
+  //  spread  = 75th ÷ 25th percentile of those sales; above spreadFlag the "market price" is a guess (flagged, not dropped)
+  //  fees    = PSA Vault consignment (psacard.com/info/consignment-rates, Oct 2026): one fee on the whole sale price,
+  //            by price band, no separate eBay fee. Taken off the exit price when judging whether a buy pays.
+  // All judged as of day i (the day a setup fired), so tests never use information from after the fire.
+  const RULES = { liqDays: 6, liqWin: 90, liqAge: 30, spreadFlag: 1.6,
+    feeTiers: [[0, 0.13, 3], [100, 0.13, 0], [500, 0.12, 0], [1000, 0.10, 0], [2500, 0.09, 0], [5000, 0.07, 0]] }; // [from $, rate, flat $]
+  // Share of a sale price lost to the seller fee (rate for its band + any flat fee).
+  function feeAt(price, model) {
+    const T = (model ? rulesOf(model) : RULES).feeTiers; let r = T[0];
+    for (const t of T) if (price >= t[0]) r = t;
+    return Math.min(0.99, r[1] + (price > 0 ? r[2] / price : 0));
+  }
+  const rulesOf = (model) => ({ ...RULES, ...(model?.rules || {}) });
+  const dayOf = (model, i) => (i == null ? model.axis.length - 1 : i);
+  function saleDaysIn(b, j, win) { const out = []; if (!b.sales) return out; for (let k = Math.max(0, j - win + 1); k <= j; k++) if (I.isN(b.sales[k])) out.push(k); return out; }
+  function liquidAt(model, b, i) {
+    if (!b.sales) return true; // RAW / demo: no sale-day record
+    const R = rulesOf(model), j = dayOf(model, i), d = saleDaysIn(b, j, R.liqWin);
+    return d.length >= R.liqDays && j - d[d.length - 1] <= R.liqAge;
+  }
+  function spreadAt(model, b, i) {
+    const R = rulesOf(model), j = dayOf(model, i), ps = saleDaysIn(b, j, R.liqWin).map((k) => b.sales[k]).sort((x, y) => x - y);
+    if (ps.length < 6) return null;
+    const q = (f) => ps[Math.min(ps.length - 1, Math.floor(f * ps.length))];
+    return q(0.75) / q(0.25);
+  }
+  const tradable = (model, b, i) => aboveMin(model, b, i) && liquidAt(model, b, i);
+  function liquidity(model, b, i) { // for display
+    const R = rulesOf(model), j = dayOf(model, i), d = saleDaysIn(b, j, R.liqWin), sp = spreadAt(model, b, i);
+    return { days: d.length, age: d.length ? j - d[d.length - 1] : null, liquid: liquidAt(model, b, i), spread: sp, wide: sp != null && sp > R.spreadFlag, rules: R };
+  }
+  const api = { aboveMin, tradable, liquidAt, spreadAt, liquidity, rulesOf, RULES, feeAt, gradeEstimates, pairRatio, impliedPrice, peerRatios, squeezeNow, squeezeSeries, SQZ, lagSeries, gradeLadder, PREV, LAG, gapSeries, gradeGaps, NEXT, lineIn, ladder, trackCorr, changes, buildModel, makeIndex, signals, brief, consensus, leadLag, briefMarkdown, fillDays, slug, GRADE_LABEL, MIN_SALE_DAYS_90 };
   if (isNode) module.exports = api; else root.Model = api;
 })(typeof window !== 'undefined' ? window : globalThis);
