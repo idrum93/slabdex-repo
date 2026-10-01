@@ -333,3 +333,5 @@ tr.setup-prom td:first-child { box-shadow: inset 3px 0 0 var(--muted); }
 .wl table.lagv th[data-sort="score"] { font-size: 0; } .wl table.lagv th[data-sort="score"]::after { content: "PSA"; font-size: 10px; }
 .sqzm { color: var(--up); } .pill.sqzp { background: var(--up); color: var(--bg); }
 tr.sec .setupnote { margin-top: 4px; }
+.implied { margin: 0 0 3px 50px; font-size: 10.5px; color: var(--warn); line-height: 1.35; }
+.wl table.lagv th[data-sort="metric"]::after { content: "UPSIDE"; }

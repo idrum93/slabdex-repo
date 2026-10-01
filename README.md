@@ -74,6 +74,7 @@ To change baskets later without spending credits, edit `sets.json` (pins, exclud
 - **▲ / ▼ badges** — a real shift in the last 7 days (2+ signals agreeing, or the tag jumping two levels).
 - **Indicators** — ordered by backtest evidence for the current grade (tooltips show the best tested result): Supertrend 10×3 (close-only), SMA 50 / 20, Hull MA 20, RS, VZO (sales pressure, Fisher line ≈ FSVZO), RSI, sales volume, MACD. **GUIDE** (on by default) adds a line under each pane — what it's for, what's favorable, ✓/✗ now — and shades where it held; the price pane is shaded where every enabled trend check agrees. EMA and Bollinger were dropped: EMA duplicated SMA, and bands on sparse forward-filled sales mostly measure gaps between sales.
 - **Brief** — BRIEF tab rows: sprite / set symbol, name, why, 30D %, signal score. On RAW, a note explains that EX, DP and index-only cards are graded-only.
+- **Line vs dots** — the price line is the market line: the median of the last 3 clean sales, carried forward between sales, so single high or low sales don't whip it around. Dots are each day's average sale price, so they sit above and below the line by design.
 - **Chart** — wheel = zoom time; wheel or drag on the price axis = zoom price; drag = pan; drag a pane divider = resize; double-click or ⟲ = reset. Press `?` for all shortcuts.
 
 ## Character & theme indexes — the ladder
@@ -99,7 +100,7 @@ Only **confirmed** setups get top billing (first tile, ◆ in the card list, a b
 
 ## Grade gap
 
-Each card's price as a share of the next grade up (PSA 7→8, 8→9, 9→10), using recent sales in both grades (≤ 45 days old). Compared with the card's own usual share (120-day median) and its era family's typical share. Measured on this data: WOTC PSA 9 ≈ 16% of PSA 10 (middle half 14–22%), PSA 8 ≈ 50% of PSA 9 (43–62%), PSA 7 ≈ 67% of PSA 8 (63–76%). Shown in the Signal panel, the **Gap** column option (100% = normal, amber below 80%), and a BRIEF section; "cheap vs next grade" is also a backtested setup, and the brief quotes its current result.
+Each card's price as a share of the next grade up (PSA 7→8, 8→9, 9→10), using recent sales in both grades (≤ 45 days old). Compared with the card's own usual share (120-day median of its paired sales). When a card doesn't have 30 paired days yet, a peer yardstick stands in — chosen by testing which predicts best on this data: same-set cards for PSA 8÷9 (~14% typical miss vs ~19% for era/family), era family for PSA 7÷8 (all ~13%), and none for PSA 9÷10 (PSA 10 premiums are card-specific; peers miss by ~45%). Labels say which yardstick was used (usual / set norm / WOTC norm). Measured on this data: WOTC PSA 9 ≈ 16% of PSA 10 (middle half 14–22%), PSA 8 ≈ 50% of PSA 9 (43–62%), PSA 7 ≈ 67% of PSA 8 (63–76%). Shown in the Signal panel, the **Gap** column option (100% = normal, amber below 80%), and a BRIEF section; "cheap vs next grade" is also a backtested setup, and the brief quotes its current result.
 
 ## Lagging grades
 
@@ -112,7 +113,7 @@ Each card's price as a share of the next grade up (PSA 7→8, 8→9, 9→10), us
 
 Every card is fetched in PSA 7–10 in the same call, so comparing grades costs no extra credits. The Signal panel's **GRADES** block shows each grade's price, 30D move, share of the next grade up and last sale; click a grade to switch to it. A grade is marked ⤴ **lagging** when a neighbouring grade rose ≥ 20% in 30 days (with a sale in the last 14 days) while it moved ≤ 5% and still sells. The **LAG** tab lists every current laggard (sorted by how far the jumping grade outran it; the badge is the grade to look at, and clicking opens that grade). "Grade above led" and "grade below led" are backtested setups (lagUp / lagDown), so if catch-up proves real they reach SETUPS on their own.
 
-**Compressed grades (⇅)** head the LAG tab: a grade whose next grade down sells for ≥ 80% of its price and ≥ 1.4× the usual share (≥ 90% when there's no usual yet) — often a grade that hasn't repriced after an upstream move. Cases where the lower grade is dearer (> 110%) are treated as suspect listings, not opportunities. Also a backtested setup (squeeze).
+**Compressed grades (⇅)** head the LAG tab: a grade whose next grade down sells for ≥ 80% of its price and ≥ 1.4× the usual share (≥ 90% when there's no usual yet) — often a grade that hasn't repriced after an upstream move. Each flagged grade also gets an **implied price**: the reference grade's market price × (or ÷) the usual ratio — what it would sell for if the usual spread came back — with the reference grade's 30-day sale count (⚠ under 2). The LAG tab's UPSIDE column is the distance to it. It is only as good as the reference grade's price. Cases where the lower grade is dearer (> 110%) are treated as suspect listings, not opportunities. Also a backtested setup (squeeze).
 
 ## Sprites and set symbols
 

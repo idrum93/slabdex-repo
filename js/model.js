@@ -420,7 +420,28 @@
   }
   // Sales of a line in the `days` before index i.
   const salesIn = (b, i, days) => { let n = 0; for (let k = Math.max(0, i - days + 1); k <= i; k++) if (I.isN(b.sales?.[k])) n++; return n; };
-  function gapSeries(model, up, key, { fresh = 45, window = 120 } = {}) {
+  // Peer yardstick for a card's grade ratio when its own history is too short. Tested on this data (leave-one-out):
+  // PSA 7÷8 — set, era and family all miss by ~13%; PSA 8÷9 — same-set cards are best (~14% vs ~19%);
+  // PSA 9÷10 — nothing predicts it (~45% miss: 10s are card-specific scarcity), so no peer fallback there.
+  function peerRatios(model, up) {
+    const ck = '_peer_' + up.grade; if (model[ck]) return model[ck];
+    const rows = [];
+    for (const [key, b] of Object.entries(model.by)) {
+      const s = gapSeries(model, up, key, { peer: false }); if (!s) continue;
+      const v = s.ratio.filter(I.isN); if (v.length < 10) continue;
+      rows.push({ key, set: b.card.set, fam: b.card.family || String(b.card.era || '').split(' ')[0], own: C.median(v) });
+    }
+    const out = {};
+    for (const [key, b] of Object.entries(model.by)) {
+      const set = b.card.set, fam = b.card.family || String(b.card.era || '').split(' ')[0];
+      const inSet = rows.filter((r) => r.key !== key && r.set === set), inFam = rows.filter((r) => r.key !== key && r.fam === fam);
+      out[key] = model.grade === 'psa9' ? null
+        : model.grade === 'psa8' && inSet.length >= 2 ? { v: C.median(inSet.map((r) => r.own)), src: 'set' }
+        : inFam.length >= 3 ? { v: C.median(inFam.map((r) => r.own)), src: fam } : null;
+    }
+    return (model[ck] = out);
+  }
+  function gapSeries(model, up, key, { fresh = 45, window = 120, peer = true } = {}) {
     const b = model.by[key]; if (!b || !up) return null;
     const u = lineIn(up, key, b.card); if (!u) return null;
     const pos = new Map(up.axis.map((d, i) => [d, i])), n = model.axis.length;
@@ -435,9 +456,11 @@
       if (b.sales ? I.isN(b.sales[i]) : I.isN(b.close[i])) mySale = i; mylast[i] = mySale;
     }
     const r = b.close.map((v, i) => (I.isN(v) && I.isN(uc[i]) && uc[i] > 0 && ulast[i] != null && i - ulast[i] <= fresh && mylast[i] != null && i - mylast[i] <= fresh ? v / uc[i] : null));
-    const norm = r.map((_, i) => { const w = r.slice(Math.max(0, i - window), i).filter(I.isN); return w.length >= 30 ? C.median(w) : null; });
+    const pr = peer ? peerRatios(model, up)[key] : null;
+    const normSrc = r.map(() => null);
+    const norm = r.map((_, i) => { const w = r.slice(Math.max(0, i - window), i).filter(I.isN); if (w.length >= 30) { normSrc[i] = 'own'; return C.median(w); } if (pr) { normSrc[i] = pr.src; return pr.v; } return null; });
     const gap = r.map((v, i) => (I.isN(v) && I.isN(norm[i]) ? v / norm[i] : null));
-    return { up: up.grade, ratio: r, norm, gap, upLine: u };
+    return { up: up.grade, ratio: r, norm, normSrc, gap, upLine: u };
   }
   // Latest grade gap for every card in this grade, with the family's typical ratio as the peer yardstick.
   function gradeGaps(model, up) {
@@ -446,11 +469,10 @@
     for (const [key, b] of Object.entries(model.by)) {
       const g = gapSeries(model, up, key); if (!g) continue;
       const li = I.lastIdx(g.ratio); if (li < 0 || li < model.axis.length - 8) continue;
-      rows.push({ key, card: b.card, up: up.grade, ratio: g.ratio[li], norm: g.norm[li], gap: g.gap[li], fam: b.card.family || String(b.card.era || '').split(' ')[0] });
+      rows.push({ key, card: b.card, up: up.grade, ratio: g.ratio[li], norm: g.norm[li], normSrc: g.normSrc[li], gap: g.gap[li], fam: b.card.family || String(b.card.era || '').split(' ')[0] });
     }
-    const byFam = {};
-    rows.forEach((r) => (byFam[r.fam] ||= []).push(r.ratio));
-    rows.forEach((r) => { r.peer = byFam[r.fam].length >= 4 ? C.median(byFam[r.fam]) : null; r.vsPeer = r.peer ? r.ratio / r.peer : null; });
+    const pr = peerRatios(model, up);
+    rows.forEach((r) => { const p = pr[r.key]; r.peer = p ? p.v : null; r.peerSrc = p ? p.src : null; r.vsPeer = r.peer ? r.ratio / r.peer : null; });
     return rows;
   }
 
@@ -511,15 +533,15 @@
     const d = lineIn(down, key, b.card); if (!d) return null;
     const g = gapSeries(down, model, d.card.key); if (!g) return null;
     const pos = new Map(down.axis.map((x, i) => [x, i])), n = model.axis.length;
-    const ratio = new Array(n).fill(null), norm = new Array(n).fill(null), flag = new Array(n).fill(null);
+    const ratio = new Array(n).fill(null), norm = new Array(n).fill(null), normSrc = new Array(n).fill(null), flag = new Array(n).fill(null);
     for (let i = 0; i < n; i++) {
       const j = pos.get(model.axis[i]); if (j == null) continue;
-      ratio[i] = g.ratio[j]; norm[i] = g.norm[j];
+      ratio[i] = g.ratio[j]; norm[i] = g.norm[j]; normSrc[i] = g.normSrc[j];
       if (!I.isN(ratio[i])) continue;
       if (salesIn(d, j, 30) < 2) { flag[i] = false; continue; } // the grade below's price rests on ≥ 2 recent sales
       flag[i] = ratio[i] <= SQZ.max && (I.isN(norm[i]) ? ratio[i] >= SQZ.ratio && ratio[i] >= norm[i] * SQZ.vsNorm : ratio[i] >= SQZ.bare);
     }
-    return { down: down.grade, ratio, norm, flag };
+    return { down: down.grade, ratio, norm, normSrc, flag };
   }
 
   // Latest compression for a card across its grades (fresh within 8 days); inverted cases are reported as such.
@@ -533,11 +555,26 @@
       const li = I.lastIdx(q.ratio); if (li < 0 || li < m.axis.length - 8) continue;
       const r = q.ratio[li], nm = q.norm[li];
       if (r > SQZ.max) out.push({ grade: g, down: PREV[g], ratio: r, norm: nm, inverted: true, key: b.card.key });
-      else if (q.flag[li]) out.push({ grade: g, down: PREV[g], ratio: r, norm: nm, key: b.card.key, price: b.close[I.lastIdx(b.close)] });
+      else if (q.flag[li]) out.push({ grade: g, down: PREV[g], ratio: r, norm: nm, normSrc: q.normSrc[li], key: b.card.key, price: b.close[I.lastIdx(b.close)] });
     }
     return out;
   }
 
-  const api = { squeezeNow, squeezeSeries, SQZ, lagSeries, gradeLadder, PREV, LAG, gapSeries, gradeGaps, NEXT, lineIn, ladder, trackCorr, changes, buildModel, makeIndex, signals, brief, consensus, leadLag, briefMarkdown, fillDays, slug, GRADE_LABEL, MIN_SALE_DAYS_90 };
+  // ---------- implied price ----------
+  // What `grade` would sell for if its usual ratio to a neighbouring grade `ref` came back:
+  //   ref above → ref price × usual (grade ÷ ref);  ref below → ref price ÷ usual (ref ÷ grade).
+  // Only as good as the reference grade's price, so its recent sale count is returned alongside.
+  function impliedPrice(models, key, card, grade, ref) {
+    const up = GORD[ref] > GORD[grade], lo = up ? grade : ref, hi = up ? ref : grade;
+    const ml = models[lo], mh = models[hi], mg = models[grade], mr = models[ref]; if (!ml || !mh || !mg || !mr) return null;
+    const bl = lineIn(ml, key, card), br = lineIn(mr, key, card), bg = lineIn(mg, key, card); if (!bl || !br || !bg) return null;
+    const g = gapSeries(ml, mh, bl.card.key); if (!g) return null;
+    const li = I.lastIdx(g.norm), norm = li >= 0 ? g.norm[li] : null; if (!I.isN(norm) || norm <= 0) return null;
+    const ri = I.lastIdx(br.close), gi = I.lastIdx(bg.close), refPrice = br.close[ri], now = bg.close[gi];
+    const price = up ? refPrice * norm : refPrice / norm;
+    return { price, now, upside: now > 0 ? (price / now - 1) * 100 : null, ref, refPrice, refN30: salesIn(br, ri, 30), norm, normSrc: g.normSrc[li] };
+  }
+
+  const api = { impliedPrice, peerRatios, squeezeNow, squeezeSeries, SQZ, lagSeries, gradeLadder, PREV, LAG, gapSeries, gradeGaps, NEXT, lineIn, ladder, trackCorr, changes, buildModel, makeIndex, signals, brief, consensus, leadLag, briefMarkdown, fillDays, slug, GRADE_LABEL, MIN_SALE_DAYS_90 };
   if (isNode) module.exports = api; else root.Model = api;
 })(typeof window !== 'undefined' ? window : globalThis);
