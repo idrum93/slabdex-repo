@@ -274,7 +274,7 @@ async function main() {
       }
     }
     const kind = Clean.pooledKind(s.printings || x.variants);
-    const prior = Clean.priorOf(s), labels = Clean.labelsOf(s), r = Clean.classify(s.grades?.[PRIMARY], kind, { prior, labels }), r10 = Clean.classify(s.grades?.psa10, kind, { prior });
+    const prior = Clean.priorOf(s), labels = Clean.labelsOf(s), r = Clean.classify(s.grades?.[PRIMARY], kind, { prior, labels, floor: Clean.floorOf(s, PRIMARY) }), r10 = Clean.classify(s.grades?.psa10, kind, { prior, floor: Clean.floorOf(s, 'psa10') });
     const cut = new Date(Date.parse(TODAY) - 90 * 864e5).toISOString().slice(0, 10);
     x.gradeDays = Object.fromEntries(GRADES.map((g) => [g, Clean.classify(s.grades?.[g], kind, { prior }).main.filter((p) => p.t >= cut).length])); // clean sale days, last 90D
     const total = (s.grades?.[PRIMARY] || []).length;

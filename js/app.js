@@ -281,11 +281,14 @@
   const allModels = () => { const o = {}; for (const g of ['psa7', 'psa8', 'psa9', 'psa10']) o[g] = g === model.grade ? model : otherModel(g); return o; };
   function ladderRows(cur, ratio) {
     if (ratio || cur.isIndex || model.dense) return '';
+    if (cur.card.mixed) return `<h3>GRADES</h3><p class="trk">This line blends two printings (${esc(cur.card.line)}), so it isn't compared across grades.</p>`;
     const rows = Model.gradeLadder(allModels(), cur.id, cur.card); if (rows.length < 2) return '';
+    const sq = Model.squeezeNow(allModels(), cur.id, cur.card); rows.forEach((r) => { r.sq = sq.find((x) => x.grade === r.grade); });
+    const warn = rows.inconsistent ? '<p class="trk">⚠ Grade prices are out of order (a lower grade above a higher one): mixed printings or mislabeled sales in the data, so no lag or compression call is made for this card.</p>' : '';
     const L = Model.GRADE_LABEL, e = EDGE[state.grade];
     const res = (id) => e?.ok ? e.results.find((r) => r.id === id) : null;
-    const lagNote = rows.some((r) => r.lagging) ? (() => { const a = res('lagUp'), b = res('lagDown'); const t = [a, b].filter((x) => x && x.n).map((x) => `${x.id === 'lagUp' ? 'grade above led' : 'grade below led'}: ${Edge.pct(x.vsPeers, 1)} vs peers over 30D (${x.n}×, ${x.status === 'few' ? 'too few' : x.status})`).join(' · '); return `<p class="trk">⤴ = a neighbouring grade jumped ≥20% in 30D and this one hasn't followed. Backtest (${L[state.grade]}): ${t || 'not enough history yet'}. Not a buy signal on its own.</p>`; })() : '';
-    return `<h3>GRADES <span class="dim">30D · share of next grade</span></h3>` + rows.map((r) => `<button class="ctx-row lad${r.grade === model.grade ? ' on' : ''}${r.lagging ? ' lagging' : ''}" data-grade="${r.grade}" type="button" title="${r.lagging ? `Lagging: ${r.lagging.map((g) => L[g]).join(' & ')} jumped, ${L[r.grade]} hasn't followed · ` : ''}Last sale ${r.age ?? '—'} days ago · click to switch grade"><span class="ck">${L[r.grade]}</span><span class="cn">${money(r.price)} ${r.share != null ? `<span class="dim">${(r.share * 100).toFixed(0)}%</span>` : ''}${r.lagging ? ' <b class="lagm">⤴</b>' : ''}</span><span class="cv">${fmtP(r.c30, 0)}</span></button>`).join('') + lagNote;
+    const lagNote = rows.some((r) => r.lagging) ? (() => { const a = res('lagUp'), b = res('lagDown'); const t = [a, b].filter((x) => x && x.n).map((x) => `${x.id === 'lagUp' ? 'grade above led' : 'grade below led'}: ${Edge.pct(x.vsPeers, 1)} vs peers over 30D (${x.n}×, ${x.status === 'few' ? 'too few' : x.status})`).join(' · '); return `<p class="trk">⇅ = priced almost like the grade below (the grade to look at). ⤴ = a neighbouring grade jumped ≥20% in 30D and this one hasn't followed. Backtest (${L[state.grade]}): ${t || 'not enough history yet'}. Not a buy signal on its own.</p>`; })() : '';
+    return `<h3>GRADES <span class="dim">30D · share of next grade</span></h3>` + rows.map((r) => `<button class="ctx-row lad${r.grade === model.grade ? ' on' : ''}${r.lagging ? ' lagging' : ''}" data-grade="${r.grade}" type="button" title="${r.lagging ? `Lagging: ${r.lagging.map((g) => L[g]).join(' & ')} jumped, ${L[r.grade]} hasn't followed · ` : ''}Last sale ${r.age ?? '—'} days ago · click to switch grade"><span class="ck">${L[r.grade]}</span><span class="cn">${money(r.price)} ${r.share != null ? `<span class="dim">${(r.share * 100).toFixed(0)}%</span>` : ''}${r.lagging ? ' <b class="lagm">⤴</b>' : ''}${r.sq ? (r.sq.inverted ? ' <b class="dim" title="Priced above-or-equal to the grade below — usually mixed listings, check sales">⇵?</b>' : ' <b class="sqzm" title="Compressed: the grade below sells for ' + (r.sq.ratio * 100).toFixed(0) + '% of this grade (usual ' + (r.sq.norm != null ? (r.sq.norm * 100).toFixed(0) + '%' : '—') + ')">⇅</b>') : ''}</span><span class="cv">${fmtP(r.c30, 0)}</span></button>`).join('') + warn + lagNote;
   }
   // Cards with a lagging grade right now: the flat grade, the grade that jumped, and the spread between them.
   let LAGS = null;
@@ -303,6 +306,18 @@
     }
     rows.sort((a, c) => c.spread - a.spread);
     LAGS = { m: model, rows };
+    return rows;
+  }
+  let SQS = null;
+  function squeezeList() {
+    if (SQS && SQS.m === model) return SQS.rows;
+    const ms = allModels(), rows = [], seen = new Set();
+    for (const [k, b] of Object.entries(model.by)) {
+      const id = k.replace(/~alt$/, '') + '|' + (b.card.line || ''); if (seen.has(id)) continue; seen.add(id);
+      for (const sq of Model.squeezeNow(ms, k, b.card)) if (!sq.inverted) rows.push({ k, card: b.card, sq });
+    }
+    rows.sort((a, c) => c.sq.ratio / (c.sq.norm || 1) - a.sq.ratio / (a.sq.norm || 1));
+    SQS = { m: model, rows };
     return rows;
   }
   // For a card: how its own set, character and theme indexes moved, and which of them it tracks most.
@@ -436,7 +451,13 @@
       const bt = ['lagUp', 'lagDown'].map((id) => e?.ok ? e.results.find((r) => r.id === id) : null).filter((x) => x && x.n);
       const note = `<tr class="sec"><td colspan="5"><p class="setupnote">⤴ A card's neighbouring grade rose ≥20% in 30 days (with a sale in the last 14 days) while the grade shown stayed within +5% and still sells. Sorted by the gap between the two moves; click to open that grade. Backtest (${L[state.grade]}): ${bt.length ? bt.map((x) => `${x.id === 'lagUp' ? 'grade above led' : 'grade below led'} ${Edge.pct(x.vsPeers, 1)} vs peers over 30D (${x.n}×, ${x.status === 'few' ? 'too few to judge' : x.status})`).join(' · ') : 'not enough history yet'}. Check the jump came from several sales before chasing.</p></td></tr>`;
       const M2 = { fmt: (v) => (v == null ? '—' : `<span class="warn" title="How far the jumping grade outran this one over 30D">+${v.toFixed(0)}</span>`) };
-      html = model.dense ? `<tr class="sec"><td colspan="5">${rawNote()}</td></tr>` : note + (rows.length ? rows.map((x) => {
+      const M3 = { fmt: (v) => (v == null ? '—' : `<span class="sqzm" title="Grade below's price as a share of this grade">${(v * 100).toFixed(0)}%</span>`) };
+      const sqs = model.dense ? [] : squeezeList(), sr = e?.ok ? e.results.find((r) => r.id === 'squeeze') : null;
+      const sqHtml = sqs.length ? `<tr class="sec"><td colspan="5">⇅ Compressed <span class="dim">${sqs.length}</span><p class="setupnote">Priced almost like the grade below: that grade sells for ≥80% of this grade's price and ≥1.4× its usual share: this grade may not have repriced yet. Backtest (${L[state.grade]}): ${sr && sr.n ? `${Edge.pct(sr.vsPeers, 1)} vs peers over 30D (${sr.n}×, ${sr.status === 'few' ? 'too few to judge' : sr.status})` : 'not enough history yet'}.</p></td></tr>` + sqs.map((x) => {
+        const r = { key: x.k, name: x.card.name, sub: `${L[x.sq.down]} = ${(x.sq.ratio * 100).toFixed(0)}% of ${L[x.sq.grade]} · usual ${x.sq.norm != null ? (x.sq.norm * 100).toFixed(0) + '%' : '—'}`, lastTxt: `<span title="${L[x.sq.grade]} price">${money(x.sq.price)}</span>`, metric: x.sq.ratio, score: null, tag: null, sprite: x.card.sprite, isIdx: false };
+        return rowHtml(r, M3, ' sqzrow').replace('<tr class="row', `<tr data-lgrade="${x.sq.grade}" class="row`).replace(/<span class="pill[^"]*"[^>]*>··<\/span>/, `<span class="pill sqzp">${L[x.sq.grade].replace('PSA ', '')}</span>`);
+      }).join('') + `<tr class="sec"><td colspan="5">⤴ Lagging <span class="dim">${rows.length}</span></td></tr>` : '';
+      html = model.dense ? `<tr class="sec"><td colspan="5">${rawNote()}</td></tr>` : sqHtml + note + (rows.length ? rows.map((x) => {
         const r = { key: x.k, name: x.card.name, sub: `${L[x.lag.grade]} ${Edge.pct(x.lag.c30, 0)} · ${L[x.led.grade]} ${Edge.pct(x.led.c30, 0)}${x.card.line ? ' · ' + x.card.line : ''}`, lastTxt: `<span title="${L[x.lag.grade]} price">${money(x.lag.price)}</span>`, metric: x.spread, score: null, tag: null, sprite: x.card.sprite, isIdx: false };
         return rowHtml(r, M2, ' lagrow').replace('<tr class="row', `<tr data-lgrade="${x.lag.grade}" class="row`).replace(/<span class="pill[^"]*"[^>]*>··<\/span>/, `<span class="pill lagg">${L[x.lag.grade].replace('PSA ', '')}</span>`);
       }).join('') : '<tr><td colspan="5" class="empty">No lagging grades right now.</td></tr>');

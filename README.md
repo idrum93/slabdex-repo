@@ -103,7 +103,16 @@ Each card's price as a share of the next grade up (PSA 7→8, 8→9, 9→10), us
 
 ## Lagging grades
 
+**Cross-grade data rules** (lag, compressed and grade gap all use them):
+- Only the same printing is compared: a line that blends two printings (pooled 1st Ed + Unl, or holo + reverse, not separable) is never compared across grades.
+- 1st Ed is always labelled the dearer printing (RAW is only used to name holo vs reverse — RAW 1st/Unl prices are sometimes swapped).
+- Graded sales far below the card's cheapest RAW Near Mint price (× 0.6 for PSA 8+, × 0.4 for PSA 7) are treated as ungraded / mislabeled listings and dropped.
+- If a lower grade prices above a higher one (by > 10%), the card gets a ⚠ in the GRADES block and no lag or compression call.
+- A "jump" must rest on ≥ 2 sales in the 30 days; a compression needs ≥ 2 recent sales in the grade below.
+
 Every card is fetched in PSA 7–10 in the same call, so comparing grades costs no extra credits. The Signal panel's **GRADES** block shows each grade's price, 30D move, share of the next grade up and last sale; click a grade to switch to it. A grade is marked ⤴ **lagging** when a neighbouring grade rose ≥ 20% in 30 days (with a sale in the last 14 days) while it moved ≤ 5% and still sells. The **LAG** tab lists every current laggard (sorted by how far the jumping grade outran it; the badge is the grade to look at, and clicking opens that grade). "Grade above led" and "grade below led" are backtested setups (lagUp / lagDown), so if catch-up proves real they reach SETUPS on their own.
+
+**Compressed grades (⇅)** head the LAG tab: a grade whose next grade down sells for ≥ 80% of its price and ≥ 1.4× the usual share (≥ 90% when there's no usual yet) — often a grade that hasn't repriced after an upstream move. Cases where the lower grade is dearer (> 110%) are treated as suspect listings, not opportunities. Also a backtested setup (squeeze).
 
 ## Sprites and set symbols
 

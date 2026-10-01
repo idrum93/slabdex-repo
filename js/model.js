@@ -43,9 +43,9 @@
       if (!pts?.length) continue;
       const demo = s.source === 'demo';
       const kind = demo ? null : C.pooledKind(s.printings);
-      const r = demo ? { main: pts, alt: [], out: [], split: null } : C.classify(pts, kind, { prior: C.priorOf(s), labels: C.labelsOf(s) });
+      const r = demo ? { main: pts, alt: [], out: [], split: null } : C.classify(pts, kind, { prior: C.priorOf(s), labels: C.labelsOf(s), floor: C.floorOf(s, grade) });
       const mixed = kind && !r.split ? (kind === '1st' ? '1st+Unl mixed' : 'holo+rev mixed') : null;
-      lines.push({ key: c.key, card: { ...c, line: r.split ? r.split.mainLabel : mixed, est: !!r.split }, pts: r.main, demo });
+      lines.push({ key: c.key, card: { ...c, line: r.split ? r.split.mainLabel : mixed, est: !!r.split, mixed: !!mixed }, pts: r.main, demo });
       if (r.split && r.alt.length >= 4) lines.push({ key: c.key + '~alt', card: { ...c, key: c.key + '~alt', line: r.split.altLabel, est: true, virtual: true }, pts: r.alt, demo });
     }
     const dates = new Set();
@@ -410,10 +410,16 @@
   // PSA 9 usually sells for ~15–20% of a PSA 10 on WOTC, PSA 8 for ~half a 9, PSA 7 for ~2/3 of an 8 — but each card
   // has its own normal spread (scarce 10s stretch it). So "cheap" means: well below its OWN usual ratio, and below peers.
   const NEXT = { psa7: 'psa8', psa8: 'psa9', psa9: 'psa10' };
-  function lineIn(m, key, card) { // same card and printing in another grade's model
+  // Same card AND same printing in another grade's model. A line that blends printings (pooled 1st Ed + Unl, or
+  // holo + reverse, that could not be split) is never compared across grades — its price mixes two products.
+  function lineIn(m, key, card) {
+    if (card?.mixed) return null;
     const base = key.replace(/~alt$/, ''), cand = [m.by[base], m.by[base + '~alt']].filter(Boolean);
-    return card?.line && cand.some((y) => y.card.line) ? cand.find((y) => y.card.line === card.line) || null : m.by[key] || null;
+    const hit = card?.line && cand.some((y) => y.card.line) ? cand.find((y) => y.card.line === card.line) || null : m.by[key] || null;
+    return hit && !hit.card.mixed ? hit : null;
   }
+  // Sales of a line in the `days` before index i.
+  const salesIn = (b, i, days) => { let n = 0; for (let k = Math.max(0, i - days + 1); k <= i; k++) if (I.isN(b.sales?.[k])) n++; return n; };
   function gapSeries(model, up, key, { fresh = 45, window = 120 } = {}) {
     const b = model.by[key]; if (!b || !up) return null;
     const u = lineIn(up, key, b.card); if (!u) return null;
@@ -450,6 +456,7 @@
 
   // ---------- lagging grade: a neighbouring grade of the same card jumped, this one hasn't followed yet ----------
   const PREV = { psa8: 'psa7', psa9: 'psa8', psa10: 'psa9' };
+  const GORD = { psa7: 7, psa8: 8, psa9: 9, psa10: 10 };
   const LAG = { lb: 30, jump: 0.2, flat: 0.05, fresh: 14, live: 30 };
   // For each day: did grade `other` of this card rise ≥20% over 30 days (on a sale in the last 14 days) while this
   // grade moved ≤5% (and still trades — a sale in the last 30 days)? Returns the per-day flag and the moves.
@@ -465,9 +472,11 @@
       const a = o.close[j], a0 = o.close[j - LAG.lb], c = b.close[i], c0 = b.close[i - LAG.lb];
       if (!I.isN(a) || !I.isN(a0) || !I.isN(c) || !I.isN(c0) || a0 <= 0 || c0 <= 0) continue;
       let oFresh = false; for (let k = j; k >= 0 && k >= j - LAG.fresh; k--) if (I.isN(o.sales?.[k])) { oFresh = true; break; }
+      oFresh = oFresh && salesIn(o, j, LAG.lb) >= 2; // the jump rests on at least 2 sales, not one outlier
+      const ordered = GORD[other.grade] > GORD[model.grade] ? a >= c * 0.9 : c >= a * 0.9; // grades in price order, else the data is suspect
       const live = mySale != null && i - mySale <= LAG.live;
       oc[i] = a / a0 - 1; mc[i] = c / c0 - 1;
-      flag[i] = oFresh && live ? oc[i] >= LAG.jump && mc[i] <= LAG.flat : false;
+      flag[i] = oFresh && live && ordered ? oc[i] >= LAG.jump && mc[i] <= LAG.flat : false;
     }
     return { other: other.grade, flag, oc, mc };
   }
@@ -479,16 +488,56 @@
       const b = lineIn(m, key, card); if (!b) continue;
       const li = I.lastIdx(b.close); if (li < 0) continue;
       let ls = null; for (let i = li; i >= 0; i--) if (I.isN(b.sales?.[i])) { ls = i; break; }
-      rows.push({ grade: g, price: b.close[li], c30: I.chg(b.close, 30), age: ls == null ? null : Math.round((Date.parse(m.axis[m.axis.length - 1]) - Date.parse(m.axis[ls])) / 864e5), key: b.card.key });
+      rows.push({ grade: g, price: b.close[li], c30: I.chg(b.close, 30), n30: salesIn(b, li, 30), age: ls == null ? null : Math.round((Date.parse(m.axis[m.axis.length - 1]) - Date.parse(m.axis[ls])) / 864e5), key: b.card.key });
     }
     rows.forEach((r, k) => { const up = rows[k + 1]; r.share = up && up.grade === NEXT[r.grade] ? r.price / up.price : null; });
+    // A lower grade priced well above a higher one means mixed or mislabeled sales somewhere: no lag call on this card.
+    rows.inconsistent = rows.some((r, k) => rows[k + 1] && r.price > rows[k + 1].price * 1.1);
+    if (rows.inconsistent) return rows;
     // flag laggards: a neighbour up ≥20% in 30D (with a fresh sale) while this grade is ≤ +5% and still selling
     rows.forEach((r, k) => {
-      for (const nb of [rows[k - 1], rows[k + 1]]) if (nb && nb.c30 != null && r.c30 != null && nb.c30 >= LAG.jump * 100 && r.c30 <= LAG.flat * 100 && nb.age != null && nb.age <= LAG.fresh && r.age != null && r.age <= LAG.live) r.lagging = (r.lagging || []).concat(nb.grade);
+      for (const nb of [rows[k - 1], rows[k + 1]]) if (nb && nb.c30 != null && r.c30 != null && nb.c30 >= LAG.jump * 100 && r.c30 <= LAG.flat * 100 && nb.age != null && nb.age <= LAG.fresh && nb.n30 >= 2 && r.age != null && r.age <= LAG.live) r.lagging = (r.lagging || []).concat(nb.grade);
     });
     return rows;
   }
 
-  const api = { lagSeries, gradeLadder, PREV, LAG, gapSeries, gradeGaps, NEXT, lineIn, ladder, trackCorr, changes, buildModel, makeIndex, signals, brief, consensus, leadLag, briefMarkdown, fillDays, slug, GRADE_LABEL, MIN_SALE_DAYS_90 };
+  // ---------- compressed grade: this grade priced almost like the grade below ----------
+  // After an upstream repricing, a thinly traded grade can sit near the grade below it until a fresh copy sells.
+  // Ratio = (grade below) ÷ (this grade), mapped onto this grade's dates; "compressed" when it is ≥ 0.8 AND
+  // ≥ 1.4× the card's usual ratio (or ≥ 0.9 when there is no usual yet). Both grades need recent sales.
+  const SQZ = { ratio: 0.8, vsNorm: 1.4, bare: 0.9, max: 1.1 }; // above 1.1 = inverted (lower grade dearer): usually mixed listings, not an opportunity
+  function squeezeSeries(model, down, key) {
+    const b = model.by[key]; if (!b || !down || model.dense) return null;
+    const d = lineIn(down, key, b.card); if (!d) return null;
+    const g = gapSeries(down, model, d.card.key); if (!g) return null;
+    const pos = new Map(down.axis.map((x, i) => [x, i])), n = model.axis.length;
+    const ratio = new Array(n).fill(null), norm = new Array(n).fill(null), flag = new Array(n).fill(null);
+    for (let i = 0; i < n; i++) {
+      const j = pos.get(model.axis[i]); if (j == null) continue;
+      ratio[i] = g.ratio[j]; norm[i] = g.norm[j];
+      if (!I.isN(ratio[i])) continue;
+      if (salesIn(d, j, 30) < 2) { flag[i] = false; continue; } // the grade below's price rests on ≥ 2 recent sales
+      flag[i] = ratio[i] <= SQZ.max && (I.isN(norm[i]) ? ratio[i] >= SQZ.ratio && ratio[i] >= norm[i] * SQZ.vsNorm : ratio[i] >= SQZ.bare);
+    }
+    return { down: down.grade, ratio, norm, flag };
+  }
+
+  // Latest compression for a card across its grades (fresh within 8 days); inverted cases are reported as such.
+  function squeezeNow(models, key, card) {
+    const out = [];
+    if (card?.mixed || gradeLadder(models, key, card).inconsistent) return out; // mixed printings or out-of-order grades: no call
+    for (const g of ['psa8', 'psa9', 'psa10']) {
+      const m = models[g], d = models[PREV[g]]; if (!m || !d) continue;
+      const b = lineIn(m, key, card); if (!b) continue;
+      const q = squeezeSeries(m, d, b.card.key); if (!q) continue;
+      const li = I.lastIdx(q.ratio); if (li < 0 || li < m.axis.length - 8) continue;
+      const r = q.ratio[li], nm = q.norm[li];
+      if (r > SQZ.max) out.push({ grade: g, down: PREV[g], ratio: r, norm: nm, inverted: true, key: b.card.key });
+      else if (q.flag[li]) out.push({ grade: g, down: PREV[g], ratio: r, norm: nm, key: b.card.key, price: b.close[I.lastIdx(b.close)] });
+    }
+    return out;
+  }
+
+  const api = { squeezeNow, squeezeSeries, SQZ, lagSeries, gradeLadder, PREV, LAG, gapSeries, gradeGaps, NEXT, lineIn, ladder, trackCorr, changes, buildModel, makeIndex, signals, brief, consensus, leadLag, briefMarkdown, fillDays, slug, GRADE_LABEL, MIN_SALE_DAYS_90 };
   if (isNode) module.exports = api; else root.Model = api;
 })(typeof window !== 'undefined' ? window : globalThis);

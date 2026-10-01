@@ -43,11 +43,12 @@
     ['gapLow', 'Cheap vs next grade up (<80% of its usual ratio)', (x, i) => !!x.gap && isN(x.gap[i]) && isN(x.gap[i - 1]) && x.gap[i] < 0.8 && x.gap[i - 1] >= 0.8],
     ['lagUp', 'Lagging grade: the grade above jumped ≥20%, this one has not', (x, i) => !!x.lagUp && x.lagUp[i] === true && x.lagUp[i - 1] !== true],
     ['lagDown', 'Lagging grade: the grade below jumped ≥20%, this one has not', (x, i) => !!x.lagDn && x.lagDn[i] === true && x.lagDn[i - 1] !== true],
+    ['squeeze', 'Compressed: priced almost like the grade below', (x, i) => !!x.sq && x.sq[i] === true && x.sq[i - 1] !== true],
     ['sc55', 'Score to IMPROVING', (x, i) => upTh(x.sc, i, 55)],
     ['sc68', 'Score to EARLY STRENGTH', (x, i) => upTh(x.sc, i, 68)],
   ];
-  const SHORT = { rsi30: 'RSI↑30', rsi50: 'RSI↑50', macdX: 'MACD×', macdX0: 'MACD×<0', px50: 'Px>SMA50', gold: 'SMA20×50', rsX: 'RS↑', volUp: 'Pace↑', dip: 'Dip', hmaUp: 'HMA↑', stUp: 'ST↑', vzoX: 'VZO↑0', rsSetX: 'RS↑set', gapLow: 'Gap↓', lagUp: 'Lag↑', lagDown: 'Lag↓', sc55: 'Score≥55', sc68: 'Score≥68' };
-  const SOLO = new Set(['gapLow', 'lagUp', 'lagDown']); // cross-grade price setups: tested on their own (few events)
+  const SHORT = { rsi30: 'RSI↑30', rsi50: 'RSI↑50', macdX: 'MACD×', macdX0: 'MACD×<0', px50: 'Px>SMA50', gold: 'SMA20×50', rsX: 'RS↑', volUp: 'Pace↑', dip: 'Dip', hmaUp: 'HMA↑', stUp: 'ST↑', vzoX: 'VZO↑0', rsSetX: 'RS↑set', gapLow: 'Gap↓', lagUp: 'Lag↑', lagDown: 'Lag↓', squeeze: 'Sqz', sc55: 'Score≥55', sc68: 'Score≥68' };
+  const SOLO = new Set(['gapLow', 'lagUp', 'lagDown', 'squeeze']); // cross-grade price setups: tested on their own (few events)
   const NESTED = new Set(['macdX+macdX0', 'sc55+sc68']);
   const RULES = [
     ...BASE.map(([id, label]) => ({ id, label, parts: [id] })),
@@ -130,6 +131,7 @@
       if (upModel) x.gap = Model.gapSeries(model, upModel, key)?.gap || null;
       if (upModel) x.lagUp = Model.lagSeries(model, upModel, key)?.flag || null;
       if (downModel) x.lagDn = Model.lagSeries(model, downModel, key)?.flag || null;
+      if (downModel) x.sq = Model.squeezeSeries(model, downModel, key)?.flag || null;
       // Base triggers on every day (for live setups too), fwd excess where the outcome is known.
       const trig = {};
       for (const [id, , fn] of BASE) {

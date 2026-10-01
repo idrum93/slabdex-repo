@@ -331,3 +331,5 @@ tr.setup-prom td:first-child { box-shadow: inset 3px 0 0 var(--muted); }
 .wl table.lagv th[data-sort="metric"]::after { content: "LEAD"; }
 .wl table.lagv #wlLastCol { font-size: 0; } .wl table.lagv #wlLastCol::after { content: "Price"; font-size: 10px; }
 .wl table.lagv th[data-sort="score"] { font-size: 0; } .wl table.lagv th[data-sort="score"]::after { content: "PSA"; font-size: 10px; }
+.sqzm { color: var(--up); } .pill.sqzp { background: var(--up); color: var(--bg); }
+tr.sec .setupnote { margin-top: 4px; }

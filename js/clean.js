@@ -63,8 +63,10 @@
   }
 
   function classify(points, kind, opts = {}) {
-    const all = (points || []).filter((x) => x && x.p > 0);
     const res = { main: [], alt: [], out: [], mixed: [], foreign: [], split: null, mainTier: null, kind };
+    // Floor: a graded sale far below the card's cheapest RAW Near Mint price is almost always an ungraded or
+    // mislabeled listing, not a slab. Those go straight to junk.
+    const all = (points || []).filter((x) => x && x.p > 0 && !(opts.floor && x.p < opts.floor ? res.out.push(x) : false));
     if (!all.length) return res;
     const m = median(all.map((x) => x.p));
     const rest = [];
@@ -72,7 +74,7 @@
 
     let main = rest, alt = [];
     const take = (lo, hi, ratio) => {
-      const highMain = hi.length > lo.length, lab = opts.labels || LABELS[kind];
+      const highMain = hi.length > lo.length, lab = (kind === 'rev' && opts.labels) || LABELS[kind]; // 1st Ed is always the dearer printing; RAW names only holo vs reverse
       main = highMain ? hi : lo; alt = highMain ? lo : hi;
       res.split = { ratio: Math.round(ratio * 10) / 10, mainLabel: highMain ? lab.high : lab.low, altLabel: highMain ? lab.low : lab.high };
       res.mainTier = highMain ? 'high' : 'low';
@@ -127,7 +129,14 @@
     if (!hi || !lo || !(a > 0) || !(b > 0)) return null;
     return a >= b ? a / b : b / a;
   }
-  const api = { classify, pooledKind, median, priorOf, labelsOf };
+  // Price floor for a grade from RAW: the cheapest printing's latest Near Mint price × 0.6 (PSA 8+) or × 0.4 (PSA 7).
+  function floorOf(s, grade) {
+    const r = s?.raw; if (!r || !/psa/.test(grade)) return null;
+    const lv = (a) => (a && a.length ? a[a.length - 1].p : null), v = Object.values(r).map(lv).filter((x) => x > 0);
+    if (!v.length) return null;
+    return Math.min(...v) * (grade === 'psa7' ? 0.4 : 0.6);
+  }
+  const api = { classify, pooledKind, median, priorOf, labelsOf, floorOf };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else root.Clean = api;
 })(typeof window !== 'undefined' ? window : globalThis);
