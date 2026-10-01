@@ -106,6 +106,15 @@ Run **Actions → Build character & theme indexes** after editing groups.json (d
 
 Only **confirmed** setups get top billing (first tile, ◆ in the card list, a box in the Signal panel, first in BRIEF). Otherwise the BRIEF tab says plainly that nothing has beaten chance yet. It was checked on simulated random prices (no false confirmations) and on planted effects (a +20% effect is usually found, +10% usually isn't yet — the history is still short). With ~180 days, expect "no edge yet" or a few promising setups at first; evidence firms up as history accumulates.
 
+## Minimum slab price ($1,000)
+
+`minPrice` in `data/sets.json` (default 1000) applies everywhere:
+
+- **Tracking** — a card is picked (set baskets and index-only cards) only if at least one PSA grade with enough clean sales (≥ `minSaleDays`) has a recent median at or above it. The scan pre-filters on lifetime medians at 70% of it, so the shortlist only holds cards that can plausibly clear it. A budget guard (`safeDailyCredits`, 85) drops the cheapest unpinned picks if the total would cost more.
+- **Testing** — the backtest and the forward record count an event (and a peer card-day) only when that grade's market price was at or above it *on that day*, so there is no look-ahead. Fewer events than before, but every one is a slab you'd actually buy.
+- **Leads** — SETUPS, LAG (the lagging / compressed slab's own price), the brief's cards to note and the CARDS list show only slabs at or above it; the CARDS list keeps the rest behind a "slabs under $1,000" row.
+- **Default grade** — discover picks the grade with the most cards that are both deep and above the minimum (PSA 9 on current data).
+
 ## Forward record — the live test
 
 `scripts/ledger.mjs` (run by `brief.mjs` after every fetch) logs each setup the day it fires — single setups, curated combos and the 2+-grade versions, in every PSA grade — then scores it 30 days later with the backtest's rules: entry at the median of the next real sales, versus every other tracked card in that grade over the same dates. Scored entries are frozen. Unlike the backtest, nothing here was seen before it was logged, so it can't be overfitted. `data/ledger.json` holds the running record per setup (SETUPS tab → FORWARD RECORD, and the BRIEF); `data/ledger-log.json` holds every logged fire. Verdicts: *collecting* (< 10 scored), *holding up* (beats peers more often than a coin flip, sign test p < 0.05), *mixed*, *not holding*.

@@ -2,9 +2,11 @@
   "_comment": "Sets scanned by scripts/discover.mjs. 'names' are tried in order against the provider's set list ('exact' = only an exact name match). family decides how cards are picked: WOTC = every set gets a basket (perSet); later eras = one budget-capped basket of the era's best cards (top), where each tracked character gets first claim. Pins force a card in; exclude keeps one out.",
   "_symbols": "Set symbols: symbolBase + code + '/symbol.png' (pokemontcg.io set ids). Change symbolBase to host your own copies, e.g. 'img/sets/' with files img/sets/<code>/symbol.png.",
   "symbolBase": "https://images.pokemontcg.io/",
-  "perSet": 3,
-  "shortlist": 6,
+  "perSet": 4,
+  "shortlist": 10,
   "minSaleDays": 8,
+  "minPrice": 1000,
+  "_minPrice": "Minimum slab price (USD). A card is tracked only if at least one PSA grade's median clean sale reaches it; leads, the backtest and the forward record count a grade line only on days its market price is at or above it.",
   "maxOutlierShare": 0.35,
   "primaryGrade": "psa8",
   "grades": [
@@ -521,8 +523,8 @@
     "EX": {
       "mode": "top",
       "label": "EX",
-      "cap": 24,
-      "shortlist": 48,
+      "cap": 34,
+      "shortlist": 60,
       "maxPerSet": 3,
       "maxPerCharacter": 2
     },
@@ -530,7 +532,7 @@
       "mode": "top",
       "label": "DP & Platinum",
       "cap": 18,
-      "shortlist": 36,
+      "shortlist": 40,
       "maxPerSet": 3,
       "maxPerCharacter": 2
     },
@@ -538,9 +540,10 @@
       "mode": "top",
       "label": "HGSS",
       "cap": 12,
-      "shortlist": 24,
+      "shortlist": 30,
       "maxPerSet": 3,
       "maxPerCharacter": 2
     }
-  }
+  },
+  "safeDailyCredits": 85
 }

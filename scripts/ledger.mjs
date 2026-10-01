@@ -41,7 +41,7 @@ function outcome(m, key, i) {
 function peers(m, key, i) {
   const v = [];
   for (const [k, b] of Object.entries(m.by)) {
-    if (k === key || b.demo || b.card.mixed) continue;
+    if (k === key || b.demo || b.card.mixed || !Model.aboveMin(m, b, i)) continue; // peers: same price floor, same day
     const o = outcome(m, k, i); if (o && isN(o.f)) v.push(o.f);
   }
   return v.length >= 5 ? v.reduce((a, c) => a + c, 0) / v.length : null;
@@ -89,8 +89,10 @@ export async function updateLedger(models, primaryEdge, today = new Date().toISO
     scored++;
   }
   // 3. Running record per setup (all grades together, with the split by grade).
-  const by = {};
+  const by = {}, minP = Math.max(0, ...all.map((m) => m.minPrice || 0));
+  L.minPrice = minP;
   for (const x of L.entries) {
+    if (minP && x.ref != null && x.ref < minP) continue; // fired below the minimum slab price (logged before the rule, or under it): not counted
     const s = (by[x.rule] ||= { rule: x.rule, label: labels[x.rule] || x.rule, n: 0, pending: 0, void: 0, wins: 0, sum: 0, grades: {} });
     if (x.state === 'pending') { s.pending++; continue; }
     if (x.state === 'void') { s.void++; continue; }

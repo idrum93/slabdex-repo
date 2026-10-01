@@ -88,7 +88,7 @@
     // Which character / theme indexes each card belongs to (base key, so both printings share it).
     const memberOf = {};
     for (const g of WL.groups || []) for (const k of g.members) (memberOf[k] ||= []).push(g.id);
-    return { grade, dense: grade === 'raw', axis, by, idx, memberOf, index: idx['idx:all']?.close || [] };
+    return { grade, dense: grade === 'raw', axis, by, idx, memberOf, index: idx['idx:all']?.close || [], minPrice: Number(WL.minPrice) || 0 };
   }
 
   // One entry per character / theme: its all-eras index where one exists, otherwise its single-era index.
@@ -182,7 +182,7 @@
     // Card-level scoreability decides whether this grade is worth reading at all.
     const cardSig = [];
     for (const [k, b] of Object.entries(model.by)) {
-      if (b.card.custom) continue;
+      if (b.card.custom || !aboveMin(model, b)) continue; // below the minimum slab price: not a lead
       const set = model.idx['idx:set:' + (b.card.basket || slug(b.card.set))];
       const s = signals(b.close, b.vol, set?.close || model.index, { dense });
       if (s.score != null) cardSig.push({ k, b, s });
@@ -632,6 +632,9 @@
     return { rows, anchor: anc.grade };
   }
 
-  const api = { gradeEstimates, pairRatio, impliedPrice, peerRatios, squeezeNow, squeezeSeries, SQZ, lagSeries, gradeLadder, PREV, LAG, gapSeries, gradeGaps, NEXT, lineIn, ladder, trackCorr, changes, buildModel, makeIndex, signals, brief, consensus, leadLag, briefMarkdown, fillDays, slug, GRADE_LABEL, MIN_SALE_DAYS_90 };
+  // Minimum slab price (data/sets.json minPrice → watchlist): a line counts only on days its market price is at
+  // least this much — for leads (today's price) and for the backtest / forward record (the price on the day a setup fired).
+  const aboveMin = (model, b, i) => { const min = model?.minPrice || 0; if (!min) return true; const j = i == null ? I.lastIdx(b.close) : i; return j >= 0 && I.isN(b.close[j]) && b.close[j] >= min; };
+  const api = { aboveMin, gradeEstimates, pairRatio, impliedPrice, peerRatios, squeezeNow, squeezeSeries, SQZ, lagSeries, gradeLadder, PREV, LAG, gapSeries, gradeGaps, NEXT, lineIn, ladder, trackCorr, changes, buildModel, makeIndex, signals, brief, consensus, leadLag, briefMarkdown, fillDays, slug, GRADE_LABEL, MIN_SALE_DAYS_90 };
   if (isNode) module.exports = api; else root.Model = api;
 })(typeof window !== 'undefined' ? window : globalThis);

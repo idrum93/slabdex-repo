@@ -327,7 +327,7 @@
       const base = k.replace(/~alt$/, ''), id = base + '|' + (b.card.line || '');
       if (seen.has(id)) continue; seen.add(id);
       const lad = Model.gradeLadder(ms, k, b.card);
-      for (const r of lad) if (r.lagging) {
+      for (const r of lad) if (r.lagging && (!model.minPrice || (r.price ?? 0) >= model.minPrice)) { // the lagging slab must clear the minimum price
         const led = r.lagging.map((g) => lad.find((x) => x.grade === g)).sort((a, c) => c.c30 - a.c30)[0];
         rows.push({ k, card: b.card, lag: r, led, spread: led.c30 - r.c30 });
       }
@@ -342,6 +342,7 @@
     const ms = allModels(), rows = [], seen = new Set();
     for (const [k, b] of Object.entries(model.by)) {
       const id = k.replace(/~alt$/, '') + '|' + (b.card.line || ''); if (seen.has(id)) continue; seen.add(id);
+      if (!Model.aboveMin(model, b)) continue; // below the minimum slab price
       for (const sq of Model.squeezeNow(ms, k, b.card)) if (!sq.inverted) rows.push({ k, card: b.card, sq });
     }
     rows.sort((a, c) => c.sq.ratio / (c.sq.norm || 1) - a.sq.ratio / (a.sq.norm || 1));
@@ -443,7 +444,9 @@
     const st = stats();
     const k = state.sort === 'c30' ? 'metric' : state.sort, dir = state.dir;
     const cmp = (a, b) => { const x = a[k], y = b[k]; if (x == null) return y == null ? 0 : 1; if (y == null) return -1; return (x < y ? -1 : x > y ? 1 : 0) * dir; };
-    const mains = Object.values(model.by).filter((b) => !b.card.virtual);
+    const allMains = Object.values(model.by).filter((b) => !b.card.virtual);
+    const showUnder = state.collapsed.includes('under'), under = allMains.filter((b) => !Model.aboveMin(model, b));
+    const mains = showUnder ? allMains : allMains.filter((b) => Model.aboveMin(model, b)); // slabs under the minimum price are hidden unless shown
     let html = '';
     if (view === 'sets') {
       // Ladders = one row per character/theme (its all-eras index when it spans eras); per-era splits sit in collapsible sections.
@@ -513,6 +516,7 @@
     } else {
       html = mains.map((b) => cardRow(b, M, st)).sort(cmp).map((r) => rowHtml(r, M)).join('');
     }
+    if (view === 'cards' && under.length) html += `<tr class="sec" data-toggle="under"><td colspan="5">${showUnder ? '▾' : '▸'} ${under.length} ${Model.GRADE_LABEL[state.grade]} slabs under ${money(model.minPrice)} <span class="dim">${showUnder ? 'shown above · click to hide' : 'hidden · click to show'}</span></td></tr>`;
     if (model.dense && view !== 'brief') html = `<tr class="sec"><td colspan="5">${rawNote()}</td></tr>` + html;
     document.querySelector('.wl table').classList.toggle('lagv', view === 'lag');
     $('wlBody').innerHTML = html;
@@ -710,7 +714,7 @@
   const fwdTxt = (s) => (s.n ? `${Edge.pct(s.vsPeers, 1)} vs peers · ${Math.round(s.beat * 100)}% beat · ${s.n} scored` : 'none scored yet') + (s.pending ? ` · ${s.pending} pending` : '');
   function fwdIntro() {
     const c = LEDGER?.counts || {};
-    return `Logged the day a setup fires (since ${LEDGER.since}), scored ${LEDGER.horizon} days later against every other tracked card in that grade — results the backtest never saw. ${c.scored || 0} scored · ${c.pending || 0} waiting · ${c.void || 0} void (no buyable sales after the fire). A setup needs 10+ scored before its verdict means anything; "holding up" = beat its peers more often than a coin flip would (sign test p < 0.05).`;
+    return `Logged the day a setup fires (since ${LEDGER.since}), scored ${LEDGER.horizon} days later against every other tracked card in that grade — results the backtest never saw${LEDGER.minPrice ? ` (slabs at ${money(LEDGER.minPrice)}+ on the day they fired)` : ''}. ${c.scored || 0} scored · ${c.pending || 0} waiting · ${c.void || 0} void (no buyable sales after the fire). A setup needs 10+ scored before its verdict means anything; "holding up" = beat its peers more often than a coin flip would (sign test p < 0.05).`;
   }
   function fwdSection() {
     if (!LEDGER?.summary?.length) return `<tr class="sec"><td colspan="5">FORWARD RECORD <span class="dim">starts after the next daily run</span></td></tr>`;

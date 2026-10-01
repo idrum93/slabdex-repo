@@ -18,7 +18,7 @@
 //   node scripts/discover.mjs --from-candidates            # re-pick from saved candidates + price files, 0 credits
 
 import { readFile, writeFile, mkdir, unlink, readdir } from 'node:fs/promises';
-import { existsSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { createRequire } from 'node:module';
 import { DATA, PRICES, BudgetError, client, asList, num, slug, gradeBlock, pickPrice, salesOf, loadSeries, saveSeries, mergeCard, baseName, rarityTier } from './lib.mjs';
@@ -46,6 +46,8 @@ const cfg = JSON.parse(await readFile(path.join(DATA, 'sets.json'), 'utf8'));
 const PER_SET = Number(opt('--per-set', cfg.perSet || 3));
 const SHORTLIST = Number(cfg.shortlist || 6);
 const MIN_DAYS = Number(cfg.minSaleDays || 4);
+const SAFE_DAILY = Number(cfg.safeDailyCredits || 85); // leave headroom under the 100/day free tier
+const MIN_PRICE = Number(cfg.minPrice || 0); // minimum slab price: a card needs at least one grade whose median clean sale reaches it
 const MAX_OUT = Number(cfg.maxOutlierShare ?? 0.35); // clean-sales rule: drop cards whose sales are mostly junk
 const PRIMARY = cfg.primaryGrade || 'psa8';
 const FAM = cfg.families || { WOTC: { mode: 'perSet' } };
@@ -101,7 +103,11 @@ function passes(x, def) {
   const liquid = Object.entries(cfg.minSales || { psa9: 8, psa10: 3 }).some(([g, n]) => (x.g[g]?.n ?? 0) >= n); // PSA 8 counts: scarce-at-9 cards still have a market
   const m9 = x.g.psa9?.m ?? x.g.psa9?.p, m10 = x.g.psa10?.m ?? x.g.psa10?.p;
   const gradesAgree = !(m9 && m10 && (x.g.psa9?.n ?? 0) >= 2 && (x.g.psa10?.n ?? 0) >= 2 && m10 < m9 * 0.9); // PSA 10 selling under PSA 9 = mismatched sales
-  return rarityOk && liquid && gradesAgree && !!x.tcgPlayerId;
+  // Minimum slab price, judged loosely from the scan's lifetime medians (prices have risen since); the backfill
+  // then checks recent clean sales properly. Keeps the shortlist to cards that can plausibly clear it.
+  const top = Math.max(0, ...Object.values(x.g).map((v) => v?.m ?? v?.p ?? 0));
+  const priceOk = !MIN_PRICE || top >= MIN_PRICE * 0.7;
+  return rarityOk && liquid && gradesAgree && priceOk && !!x.tcgPlayerId;
 }
 // Rank by PSA 8 median (then PSA 9 scaled down, then PSA 10) so the price scale is comparable across cards.
 const rankVal = (x) => x.g[PRIMARY]?.m ?? x.g[PRIMARY]?.p ?? ((x.g.psa9?.m ?? x.g.psa9?.p) != null ? (x.g.psa9.m ?? x.g.psa9.p) * 0.6 : (x.g.psa10?.m ?? x.g.psa10?.p) != null ? (x.g.psa10.m ?? x.g.psa10.p) * 0.25 : 0);
@@ -159,7 +165,7 @@ function eraShortlist(candidates, fam, rule) {
 // Stage 2: after backfill, keep cards with enough real sale days, ranked by median sale price.
 function finalPick(short) {
   const chosen = [];
-  const okC = (x) => (x.days ?? 0) >= MIN_DAYS && (x.outShare ?? 0) <= MAX_OUT && !x.blended; // a blended line feeds no signal, so it isn't worth its credits
+  const okC = (x) => (x.days ?? 0) >= MIN_DAYS && (x.outShare ?? 0) <= MAX_OUT && !x.blended && (x.topMed ?? 0) >= MIN_PRICE; // under the minimum slab price in every grade: not tracked. A blended line feeds no signal, so it isn't worth its credits
   for (const [fam, rule] of Object.entries(FAM)) {
     if (rule.mode !== 'top') continue;
     const pool = short.filter((x) => x.family === fam && okC(x)).sort((a, b) => rarityTier(b.rarity, b.name) - rarityTier(a.rarity, a.name) || (b.med ?? rankVal(b)) - (a.med ?? rankVal(a)));
@@ -175,6 +181,15 @@ function finalPick(short) {
     const ok = okC;
     const ranked = [...pool].sort((a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0) || (ok(b) ? 1 : 0) - (ok(a) ? 1 : 0) || (b.med ?? rankVal(b)) - (a.med ?? rankVal(a)));
     ranked.filter((x) => x.pinned || ok(x)).slice(0, Math.max(PER_SET, pool.filter((x) => x.pinned).length)).forEach((x, i) => chosen.push({ ...x, lead: i === 0 })); // never fill a set with cards that fail the clean-sales rules
+  }
+  // Free-tier guard: every card costs 2 credits every 3 days, index-only cards included. If the picks would cost
+  // more than the safe daily limit, drop the cheapest unpinned picks (never a set's lead) until it fits.
+  const extraN = existsSync(path.join(DATA, 'watchlist.json')) ? (JSON.parse(readFileSync(path.join(DATA, 'watchlist.json'), 'utf8')).extra || []).length : 0;
+  const maxCards = Math.floor((SAFE_DAILY * 3) / 2) - extraN;
+  if (chosen.length > maxCards) {
+    const drop = chosen.filter((x) => !x.pinned && !x.lead).sort((a, b) => (a.topMed ?? a.med ?? 0) - (b.topMed ?? b.med ?? 0)).slice(0, chosen.length - maxCards);
+    note(`Budget guard: ${chosen.length} picks + ${extraN} index-only would exceed ${SAFE_DAILY} credits/day; dropping ${drop.length} cheapest: ${drop.map((x) => x.name).join(', ')}`);
+    return chosen.filter((x) => !drop.includes(x));
   }
   return chosen;
 }
@@ -206,7 +221,7 @@ function report(sets, candidates, short, chosen, variantNotes) {
   const bench = short.filter((x) => !chosen.some((c) => keyOf(c) === keyOf(x)));
   if (bench.length) {
     L.push('', '## Bench (backfilled, not tracked daily)', '', '| Set | Card | # | Median PSA 9 | Clean days | Junk | Why not picked |', '|---|---|---|---|---|---|---|');
-    for (const x of bench) L.push(`| ${x.set} | ${x.name} | ${x.number} | ${fm(x.med)} | ${x.days ?? 0} | ${Math.round((x.outShare ?? 0) * 100)}% | ${(x.outShare ?? 0) > MAX_OUT ? 'too much junk' : (x.days ?? 0) < MIN_DAYS ? 'too few sales' : x.blended ? 'printings blended (no signal)' : 'ranked lower'} |`);
+    for (const x of bench) L.push(`| ${x.set} | ${x.name} | ${x.number} | ${fm(x.med)} | ${x.days ?? 0} | ${Math.round((x.outShare ?? 0) * 100)}% | ${(x.outShare ?? 0) > MAX_OUT ? 'too much junk' : (x.days ?? 0) < MIN_DAYS ? 'too few sales' : x.blended ? 'printings blended (no signal)' : (x.topMed ?? 0) < MIN_PRICE ? `under $${MIN_PRICE} in every grade` : 'ranked lower'} |`);
   }
   L.push('', '## Notes', '', ...variantNotes.map((v) => `- ${v}`), '', '## Log', '', '```', ...log.slice(-150), '```', '');
   return L.join('\n');
@@ -276,7 +291,10 @@ async function main() {
     const kind = Clean.pooledKind(s.printings || x.variants);
     const r = Clean.classify(s.grades?.[PRIMARY], kind, Clean.gradedOpts(s, PRIMARY)), r10 = Clean.classify(s.grades?.psa10, kind, Clean.gradedOpts(s, 'psa10'));
     const cut = new Date(Date.parse(TODAY) - 90 * 864e5).toISOString().slice(0, 10);
-    x.gradeDays = Object.fromEntries(GRADES.map((g) => [g, Clean.classify(s.grades?.[g], kind, Clean.gradedOpts(s, g)).main.filter((p) => p.t >= cut).length])); // clean sale days, last 90D
+    const byG = Object.fromEntries(GRADES.map((g) => [g, Clean.classify(s.grades?.[g], kind, Clean.gradedOpts(s, g))]));
+    x.gradeDays = Object.fromEntries(GRADES.map((g) => [g, byG[g].main.filter((p) => p.t >= cut).length])); // clean sale days, last 90D
+    x.gradeMed = Object.fromEntries(GRADES.map((g) => [g, byG[g].main.length ? Clean.median(byG[g].main.slice(-10).map((p) => p.p)) : null]));
+    x.topMed = Math.max(0, ...GRADES.map((g) => (byG[g].main.length >= MIN_DAYS && !(byG[g].kind && !byG[g].split && !byG[g].same) ? Clean.median(byG[g].main.slice(-10).map((p) => p.p)) : 0))); // dearest clean grade with enough sales to test (≥ minSaleDays), recent median
     const total = (s.grades?.[PRIMARY] || []).length;
     x.days = r.main.length; x.days10 = r10.main.length; x.med = Clean.median(r.main.map((p) => p.p));
     x.outShare = total ? r.out.length / total : 0; x.split = r.split; x.kind = kind; x.altDays = r.alt.length || r.unl?.length || 0;
@@ -294,7 +312,7 @@ async function main() {
   const chosen = finalPick(short);
   note(`Chose ${chosen.length} cards across ${new Set(chosen.map((x) => x.set)).size} sets.`);
   // Default grade = the one where the most basket cards have enough recent sales to score (≥ 8 sale days / 90D).
-  const gradeStats = GRADES.map((g) => ({ g, scorable: chosen.filter((x) => (x.gradeDays?.[g] ?? 0) >= 8).length, days: chosen.reduce((n, x) => n + (x.gradeDays?.[g] ?? 0), 0) }));
+  const gradeStats = GRADES.map((g) => ({ g, scorable: chosen.filter((x) => (x.gradeDays?.[g] ?? 0) >= 8 && (x.gradeMed?.[g] ?? 0) >= MIN_PRICE).length, days: chosen.reduce((n, x) => n + (x.gradeDays?.[g] ?? 0), 0) })); // scorable = deep AND above the minimum slab price
   const top = Math.max(0, ...gradeStats.map((x) => x.scorable));
   // Highest grade that is nearly as deep as the deepest one (≥ 80% as many scoreable cards).
   const pickG = [...gradeStats].reverse().find((x) => top && x.scorable >= top * 0.8);
@@ -316,7 +334,7 @@ async function main() {
   note(`Budget after the paid plan: ${cards.length} basket cards (${Object.entries(byFam).map(([f, n]) => `${f} ${n}`).join(', ')}) + ${extraN} index-only ≈ ${perDay.toFixed(0)} credits/day of 100${perDay > 90 ? ' ⚠ over the safe limit (90): lower a family cap in sets.json' : ''}.`);
   variantNotes.push(`Ongoing cost ≈ ${perDay.toFixed(0)} credits/day (every card every 3 days, 2 credits each, graded only).`);
   const bench = short.filter((x) => !cards.some((c) => c.key === keyOf(x))).map((x) => ({ ...toWatch(x), tier: 'bench' }));
-  await writeFile(wlPath, JSON.stringify({ _comment: 'Generated by scripts/discover.mjs from data/sets.json. basket = set index group. tier rotate = every 3 days. bench = backfilled runners-up, not fetched.', grades: GRADES, primaryGrade: defaultGrade, selectionGrade: PRIMARY, setSymbols: Object.fromEntries(cfg.sets.filter((d) => d.code && cfg.symbolBase).map((d) => [d.label, `${cfg.symbolBase}${d.code}/symbol.png`])), familyLabels: Object.fromEntries(Object.entries(FAM).map(([f, r]) => [f, r.label || f])), cards, bench, extra: prevWl.extra || [], groups: prevWl.groups || [] }, null, 2) + '\n');
+  await writeFile(wlPath, JSON.stringify({ _comment: 'Generated by scripts/discover.mjs from data/sets.json. basket = set index group. tier rotate = every 3 days. bench = backfilled runners-up, not fetched.', minPrice: MIN_PRICE, grades: GRADES, primaryGrade: defaultGrade, selectionGrade: PRIMARY, setSymbols: Object.fromEntries(cfg.sets.filter((d) => d.code && cfg.symbolBase).map((d) => [d.label, `${cfg.symbolBase}${d.code}/symbol.png`])), familyLabels: Object.fromEntries(Object.entries(FAM).map(([f, r]) => [f, r.label || f])), cards, bench, extra: prevWl.extra || [], groups: prevWl.groups || [] }, null, 2) + '\n');
   const keep = new Set([...cards, ...bench, ...(prevWl.extra || [])].map((c) => c.key));
   for (const f of await readdir(PRICES)) {
     const k = f.replace(/\.json$/, '');

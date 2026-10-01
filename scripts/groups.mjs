@@ -33,6 +33,7 @@ const note = (m) => { console.log(m); log.push(m); };
 const api = DRY ? null : client({ key: process.env.PPT_API_KEY, budget: Number(process.env.PPT_BUDGET || 3000), reserve: 20, pauseMs: 1200, log: note });
 if (!DRY && !process.env.PPT_API_KEY) throw new Error('PPT_API_KEY not set');
 
+const MIN_PRICE = Number(sets.minPrice || 0); // minimum slab price, same rule as the set baskets
 const MIN_DAYS = Number(sets.minSaleDays || 4); // same clean-sales bar as the set baskets
 const FAMS = cfg.families || { WOTC: { addCards: true } };
 const spriteOf = (d) => (d.sprite && cfg.spriteBase ? `${cfg.spriteBase}${d.sprite}.png` : null);
@@ -68,7 +69,14 @@ async function ensureAndCheck(x, allowFetch) {
     if (v.days >= MIN_DAYS && v.junk <= 0.35 && (!best || v.days > best.days)) best = v;
   }
   const known = s.backfill?.v >= 3, pick = best || most;
-  return { key, inBasket: !!inBasket, ok: known ? !!best : DRY && allowFetch, days: pick.days, junk: pick.junk, blended: blended && !best };
+  // Dearest clean grade with enough sales to test (≥ minSaleDays; median of its last 10) must reach the minimum slab price.
+  let top = 0;
+  for (const g of Object.keys(s.grades || {})) {
+    const r = Clean.classify(s.grades[g], kind, Clean.gradedOpts(s, g));
+    if (r.main.length >= MIN_DAYS && !(r.kind && !r.split && !r.same)) top = Math.max(top, Clean.median(r.main.slice(-10).map((p) => p.p)));
+  }
+  const cheap = known && MIN_PRICE && top < MIN_PRICE && !inBasket;
+  return { key, inBasket: !!inBasket, ok: (known ? !!best : DRY && allowFetch) && !cheap, days: pick.days, junk: pick.junk, blended: blended && !best, cheap: cheap ? top : null };
 }
 
 async function build(kind, def, rule, fam) {
@@ -87,7 +95,7 @@ async function build(kind, def, rule, fam) {
     if (rule.maxPerCharacter && (perChar[baseName(x.name)] || 0) >= rule.maxPerCharacter) continue;
     let chk;
     try { chk = await ensureAndCheck(x, addCards); } catch (e) { if (e instanceof BudgetError) throw e; note(`  ✗ ${x.name} (${x.set}): ${e.message}`); continue; }
-    if (!chk.ok) { rejected.push(`${x.name} (${x.set}): ${chk.blended ? 'printings blended' : `${chk.days} clean sale days, ${Math.round(chk.junk * 100)}% junk`}`); continue; }
+    if (!chk.ok) { rejected.push(`${x.name} (${x.set}): ${chk.cheap != null ? `under $${MIN_PRICE} in every grade (top ~$${Math.round(chk.cheap)})` : chk.blended ? 'printings blended' : `${chk.days} clean sale days, ${Math.round(chk.junk * 100)}% junk`}`); continue; }
     members.push({ x, ...chk });
     perSet[x.set] = (perSet[x.set] || 0) + 1; perChar[baseName(x.name)] = (perChar[baseName(x.name)] || 0) + 1;
   }

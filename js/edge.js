@@ -159,6 +159,9 @@
       units.push({ key, card: b.card, lo, hi, last, trig, fwd, x, cross: crossTrig(key, b, first, last) });
     }
     const usable = units.filter((u) => u.hi - u.lo >= 20);
+    // Minimum slab price: an event (and a peer card-day) only counts when the card's market price that day was at
+    // least model.minPrice — what it cost then, not now, so there's no look-ahead.
+    const okP = (u, i) => Model.aboveMin(model, model.by[u.key], i);
     if (usable.length < MIN_CARDS) return { ok: false, reason: `needs ${WARM + H + 20}+ days of history on ${MIN_CARDS}+ cards (have ${usable.length})`, horizon: H, tested: 0 };
 
     // Rule event arrays (raw, before cooldown).
@@ -179,7 +182,7 @@
     // Baselines over all eligible card-days, and every card's outcome on each date (the peer pool).
     let bs = 0, bn = 0, bh = 0, bb = 0; const mid = Math.round((Math.min(...usable.map((u) => u.lo)) + Math.max(...usable.map((u) => u.hi))) / 2);
     const pool = axis.map(() => []);
-    for (const u of usable) for (let i = u.lo; i <= u.hi; i++) { const f = u.fwd[i]; if (!isN(f)) continue; bs += f; bn++; if (f > 0) bh++; if (f >= BOOM) bb++; pool[i].push(f); }
+    for (const u of usable) for (let i = u.lo; i <= u.hi; i++) { const f = u.fwd[i]; if (!isN(f) || !okP(u, i)) continue; bs += f; bn++; if (f > 0) bh++; if (f >= BOOM) bb++; pool[i].push(f); }
     const dayMean = pool.map((v) => (v.length ? v.reduce((a, b) => a + b, 0) / v.length : null));
     const dayMed = pool.map((v) => { if (!v.length) return null; const w = [...v].sort((a, b) => a - b), h = w.length >> 1; return w.length % 2 ? w[h] : (w[h - 1] + w[h]) / 2; });
     const base = { mean: bs / bn, hit: bh / bn, boom: bb / bn, n: bn };
@@ -195,12 +198,12 @@
       const live = [];
       for (const u of usable) {
         const t = ruleTrig(u, r);
-        for (let i = u.lo, cool = -1; i <= u.hi; i++) if (t[i] && i > cool && isN(u.fwd[i]) && pool[i].length >= 5) { // non-overlapping windows, ≥ 5 peers
+        for (let i = u.lo, cool = -1; i <= u.hi; i++) if (t[i] && i > cool && isN(u.fwd[i]) && okP(u, i) && pool[i].length >= 5) { // non-overlapping windows, ≥ 5 peers
           const f = u.fwd[i]; evs.push(i); cool = i + H - 1; cards.add(u.key.replace(/~alt$/, ''));
           n++; s += f; edge += f - dayMean[i]; if (f > dayMed[i]) beat++; if (f > 0) hit++; if (f >= BOOM) boom++;
           const h = hs[i < mid ? 0 : 1]; h.s += f - dayMean[i]; h.n++;
         }
-        for (let i = Math.max(u.lo, u.last - 7); i <= u.last; i++) if (t[i]) live.push({ key: u.key, ago: u.last - i });
+        for (let i = Math.max(u.lo, u.last - 7); i <= u.last; i++) if (t[i] && okP(u, i) && okP(u, u.last)) live.push({ key: u.key, ago: u.last - i });
       }
       const mean = n ? s / n : null;
       let p = null;
