@@ -105,6 +105,7 @@ Each card's price as a share of the next grade up (PSA 7→8, 8→9, 9→10), us
 ## Lagging grades
 
 **Cross-grade data rules** (lag, compressed and grade gap all use them):
+- Days with 2+ sales are the day's average; when a card's printings are split, such a day is only kept if it sits clearly inside one printing's own range (within 1.3× of that printing's single-sale median) — an average of a 1st Ed and an Unl sale is set aside, never counted as either.
 - Only the same printing is compared: a line that blends two printings (pooled 1st Ed + Unl, or holo + reverse, not separable) is never compared across grades.
 - 1st Ed is always labelled the dearer printing (RAW is only used to name holo vs reverse — RAW 1st/Unl prices are sometimes swapped).
 - Graded sales far below the card's cheapest RAW Near Mint price (× 0.6 for PSA 8+, × 0.4 for PSA 7) are treated as ungraded / mislabeled listings and dropped.

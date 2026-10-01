@@ -101,6 +101,19 @@
         }
       }
     }
+    // After any printing split: a day with 2+ sales is that day's AVERAGE, and an average of one 1st Ed and one Unl
+    // sale lands between the clusters (often just above the cut, since the cut is a geometric midpoint). Keep such
+    // a day only when it sits clearly inside one printing's own range (within 1.3× of that printing's single-sale
+    // median); otherwise set it aside as mixed. Single-sale days are always one printing.
+    if (res.split) {
+      const hiSide = res.mainTier === 'high', H = hiSide ? main : alt, Lo = hiSide ? alt : main;
+      const pm = (a) => { const p = a.filter((x) => x.n == null || x.n <= 1); return median((p.length >= 3 ? p : a).map((x) => x.p)); };
+      const mH = pm(H), mL = pm(Lo);
+      const keepH = [], keepL = [];
+      for (const x of H) (x.n == null || x.n <= 1 || x.p >= mH / 1.3 ? keepH : res.mixed).push(x);
+      for (const x of Lo) (x.n == null || x.n <= 1 || x.p <= mL * 1.3 ? keepL : res.mixed).push(x);
+      if (hiSide) { main = keepH; alt = keepL; } else { main = keepL; alt = keepH; }
+    }
     // One printing but two clearly separate price clusters selling side by side = another card's listings
     // mixed in (e.g. a cheaper Ho-Oh under the Skyridge crystal). The smaller cluster is set aside as foreign.
     if (!kind && rest.length >= 8) {
