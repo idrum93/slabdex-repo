@@ -404,3 +404,12 @@ tr.zrow.z-buy td:first-child { box-shadow: inset 2px 0 0 var(--up); }
 tr.zrow.z-watch td:first-child { box-shadow: inset 2px 0 0 var(--cmp); }
 @media (max-width: 700px) { .dash { padding: 8px; } .pgrid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; } .ggrid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .dash-head .tbtn { margin-left: 0; } }
 .ptile, .gtile, .dash { box-sizing: border-box; }
+
+/* what-if (Signal panel, VALUE BY GRADE) */
+.wi-tog { float: right; margin-left: 6px; padding: 0 6px; font: 700 9px/16px var(--f-mono); letter-spacing: .05em; color: var(--muted); background: transparent; border: 1px solid var(--line); border-radius: 3px; cursor: pointer; }
+.wi-tog.on { color: #111; background: var(--warn); border-color: var(--warn); }
+.wi-note { margin: 4px 0 6px; padding: 4px 6px; font-size: 10px; line-height: 1.4; border-left: 2px solid var(--warn); background: var(--panel); }
+.ctx-row.val.wi { box-shadow: inset 2px 0 0 var(--warn); }
+.wiv { color: var(--warn); font-weight: 700; }
+.wi-in { display: block; width: 100%; box-sizing: border-box; margin: 0 0 6px; padding: 3px 6px; font: 11px var(--f-mono); color: var(--fg); background: var(--bg); border: 1px dashed var(--line); border-radius: 3px; }
+.wi-in:focus { outline: none; border-color: var(--warn); border-style: solid; }

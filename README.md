@@ -135,6 +135,10 @@ The provider posts eBay sales days after they happen, dated on the sale day, and
 - **Overdue / behind** — a grade line is treated as missing its newest sales when its last sale is older than 3× its usual gap between sales (median over 90 days, at least a week), or older than 2× that gap while another grade of the same card sold 5+ days more recently. Such a line gets no grade gap, lag, compression, value or zone call, isn't tradable (so it's out of leads and tests), and the Signal panel says so (⧗).
 - **Parity rule** — a lag, compression or grade-gap call needs the two grades' newest sales within 7 days (lag) / 10 days (gap, compression) of each other; otherwise no call. VALUE BY GRADE marks a gap ⧗ when that grade's newest sale is 8+ days older than the anchor's.
 
+## What-if prices (Signal panel → VALUE BY GRADE → WHAT-IF)
+
+Toggle **WHAT-IF** on and each grade gets a box for sold prices you found outside the tool (eBay, Alt…): `695 750 644 600` — dates like `9/30` and `$` are ignored; the median is used, or type one average. That grade is then treated as the current, freshest price and becomes the anchor, so the other grades' estimates and gaps are redrawn from it. Inputs are saved per card in this browser only and are display-only: collected data, charts, signals, gauges, the backtest and the forward record never see them. Toggle off to hide them (they're kept for next time); clear a box to remove its input.
+
 ## Tradable slabs: liquidity, spread, fees
 
 Rules in `js/model.js` (`Model.RULES`, override with `"rules": {…}` in the watchlist), judged as of the day a setup fires:

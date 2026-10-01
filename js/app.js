@@ -6,7 +6,7 @@
   const I = window.Ind;
   const C = window.Clean;
 
-  const state = { v: 3, key: null, grade: 'psa9', vs: 'idx:all', range: 365, res: 'D', ind: { st: 1, sma20: 1, sma50: 1, hma: 0, vol: 1, rs: 1, rsi: 1, macd: 0, vzo: 0 }, guide: 1, dash: 0, sort: 'score', dir: -1, wlView: 'cards', wlMetric: 'c30', merge: false, print: 'main', group: false, collapsed: [], stars: [] };
+  const state = { v: 3, key: null, grade: 'psa9', vs: 'idx:all', range: 365, res: 'D', ind: { st: 1, sma20: 1, sma50: 1, hma: 0, vol: 1, rs: 1, rsi: 1, macd: 0, vzo: 0 }, guide: 1, dash: 0, whatIf: 0, wi: {}, sort: 'score', dir: -1, wlView: 'cards', wlMetric: 'c30', merge: false, print: 'main', group: false, collapsed: [], stars: [] };
   let hadSaved = false;
   try { const sv = JSON.parse(localStorage.getItem('slabdex') || 'null'); if (sv && sv.v === 3) { Object.assign(state, sv); hadSaved = true; if (!('st' in state.ind)) state.ind.st = 1; } } catch (e) {} // older saved layouts are ignored
   const save = () => { try { localStorage.setItem('slabdex', JSON.stringify(state)); } catch (e) {} };
@@ -304,21 +304,37 @@
   }
   // Every grade's last sale next to an estimate built from the card's other grades — including grades that are
   // blended, thin or stale, where the estimate is the better guide to what a copy should cost.
+  // What-if prices typed in the Signal panel: "695 750 644 600" (dates like 9/30 and $ signs are ignored).
+  function parseWi(txt) {
+    const s = String(txt || '').replace(/\b\d{1,2}\/\d{1,2}(\/\d{2,4})?\b/g, ' ').replace(/\$/g, '');
+    const v = (s.match(/\d{1,3}(?:,\d{3})+(?:\.\d+)?|\d+(?:\.\d+)?/g) || []).map((x) => +x.replace(/,/g, '')).filter((x) => x >= 5);
+    if (!v.length) return null;
+    const w = [...v].sort((a, b) => a - b), h = w.length >> 1;
+    return { price: w.length % 2 ? w[h] : (w[h - 1] + w[h]) / 2, n: v.length, vals: v };
+  }
+  const wiKey = (id, g) => `${id.replace(/~alt$/, '')}|${g}`;
+  function wiOverrides(id) {
+    if (!state.whatIf) return null;
+    const o = {}; for (const g of ['psa7', 'psa8', 'psa9', 'psa10']) { const p = parseWi(state.wi?.[wiKey(id, g)]); if (p) o[g] = p; }
+    return Object.keys(o).length ? o : null;
+  }
   function valueRows(cur, ratio) {
     if (ratio || cur.isIndex || model.dense) return '';
-    const E = Model.gradeEstimates(allModels(), cur.id, cur.card); if (!E.anchor) return '';
+    const ov = wiOverrides(cur.id);
+    const E = Model.gradeEstimates(allModels(), cur.id, cur.card, ov); if (!E.anchor) return '';
     const L = Model.GRADE_LABEL, src = (v) => (v === 'own' ? "this card's own grade spread" : v === 'set' ? 'same-set average spread' : `${v} average spread`);
     const aAge = E.rows.find((r) => r.anchor)?.age ?? null;
     const rows = E.rows.map((r) => {
       const stale = !r.anchor && (r.stale || (r.age != null && aAge != null && r.age - aAge > 7)); // overdue for its usual pace, or much older than the anchor's newest sale: newer sales may be missing
-      const lastTxt = r.last == null ? '<span class="dim">no sale</span>' : `${money(r.last)} <span class="dim">${r.age}d${r.blended ? ' · blended' : ''}</span>`;
+      const lastTxt = r.user ? `<span class="wiv">${money(r.user.price)} <span class="dim">your ${r.user.n > 1 ? 'median of ' + r.user.n : 'price'}</span></span>${r.dataLast != null ? ` <span class="dim">(data ${money(r.dataLast)} ${r.dataAge}d)</span>` : ''}` : r.last == null ? '<span class="dim">no sale</span>' : `${money(r.last)} <span class="dim">${r.age}d${r.blended ? ' · blended' : ''}</span>`;
       const estTxt = r.anchor ? '<span class="dim">anchor</span>' : r.est == null ? '<span class="dim">—</span>' : `≈${money(r.est)} <span class="dim">±${Math.round(r.miss * 100)}%</span>`;
       const gap = r.gap == null ? '' : stale ? `<span class="dim" title="Newest sales likely missing from the data — gap not reliable">⧗ stale</span>` : `<span class="${Math.abs(r.gap) <= r.miss * 100 ? 'dim' : r.gap < 0 ? 'pos' : 'neg'}">${r.gap >= 0 ? '+' : ''}${r.gap.toFixed(0)}%</span>`;
       const tip = r.anchor ? `Anchor: ${L[r.grade]} market price (median of last 3 clean sales), ${r.n30} sales in 30D` : r.est != null ? `Estimate from ${L[E.anchor]} via ${src(r.via)}; typical miss ±${Math.round(r.miss * 100)}%. Gap = last sale vs estimate (grey = within the typical miss).${r.blended ? ' Last sale may be either printing.' : ''}${r.age != null && r.age > 45 ? ' Last sale is old — the estimate is the better guide.' : ''}${stale ? ` ⧗ This grade's newest sales are likely missing: last sale ${r.age}d ago${r.typ ? ` though it usually sells every ~${r.typ}d` : ''}${aAge != null ? `, ${L[E.anchor]}'s ${aAge}d ago` : ''}. The provider posts sales late, so the gap isn't shown.` : ''}` : 'Not enough data to estimate';
-      return `<button class="ctx-row val${r.grade === model.grade ? ' on' : ''}" data-grade="${r.grade}" type="button" title="${esc(tip)}"><span class="ck">${L[r.grade]}</span><span class="cn">${lastTxt}<br>${estTxt}</span><span class="cv">${gap}</span></button>`;
+      return `<button class="ctx-row val${r.grade === model.grade ? ' on' : ''}${r.user ? ' wi' : ''}" data-grade="${r.grade}" type="button" title="${esc(tip)}"><span class="ck">${L[r.grade]}</span><span class="cn">${lastTxt}<br>${estTxt}</span><span class="cv">${gap}</span></button>` + (state.whatIf ? `<input class="wi-in" data-wi="${esc(wiKey(cur.id, r.grade))}" type="text" inputmode="decimal" placeholder="${L[r.grade]} prices you found, e.g. 695 750 644" value="${esc(state.wi?.[wiKey(cur.id, r.grade)] || '')}" aria-label="What-if ${L[r.grade]} prices">` : '');
     }).join('');
     const bad = Model.gradeLadder(allModels(), cur.id, cur.card).inconsistent ? '<p class="trk">⚠ This card\'s grade prices are out of order (mixed or mislabeled sales), so these estimates are unreliable.</p>' : '';
-    return `<h3>VALUE BY GRADE <span class="dim">last sale · estimate · gap</span></h3>${rows}${bad}<p class="trk">Estimates walk from ${L[E.anchor]} (most recent clean sales) using grade-to-grade spreads. Green gap = last sale below the estimate by more than the usual error. ⧗ stale = that grade is overdue for a sale at its usual pace (or 8+ days behind the anchor), so its newest sales are probably not in the data yet and no gap is shown. An estimate, not a quote.</p>`;
+    const wiNote = state.whatIf ? `<p class="wi-note">WHAT-IF ${ov ? `· using your ${Object.keys(ov).map((g) => `${L[g]} ${money(ov[g].price)}`).join(', ')} as the current price${E.anchor && ov[E.anchor] ? ` (anchor: ${L[E.anchor]})` : ''}` : '· type prices you found outside the tool (eBay, Alt…) under any grade'}. Estimates only — your inputs are saved on this device and never touch the collected data, signals, backtest or forward record.</p>` : '';
+    return `<h3>VALUE BY GRADE <span class="dim">last sale · estimate · gap</span><button class="wi-tog${state.whatIf ? ' on' : ''}" type="button" data-witog title="What-if: enter sold prices you found elsewhere to see adjusted estimates. Display only.">WHAT-IF ${state.whatIf ? '●' : '○'}</button></h3>${wiNote}${rows}${bad}<p class="trk">Estimates walk from ${L[E.anchor]} (most recent clean sales) using grade-to-grade spreads. Green gap = last sale below the estimate by more than the usual error. ⧗ stale = that grade is overdue for a sale at its usual pace (or 8+ days behind the anchor), so its newest sales are probably not in the data yet and no gap is shown. An estimate, not a quote.</p>`;
   }
   // Cards with a lagging grade right now: the flat grade, the grade that jumped, and the spread between them.
   let LAGS = null;
@@ -967,7 +983,9 @@
     document.addEventListener('click', (e) => { const g = e.target.closest('[data-grade]'); if (!g) return; e.stopPropagation(); e.preventDefault(); state.grade = g.dataset.grade; rebuild(); }, true); // 'Switch to PSA 8' links
     $('groupBtn').addEventListener('click', () => { state.group = !state.group; renderWatchlist(); save(); });
     $('sigStar').addEventListener('click', () => toggleStar($('sigStar').dataset.k));
-    $('sigCtx').addEventListener('click', (e) => { if (e.target.closest('[data-gtoggle]')) { state.collapsed = state.collapsed.includes('gauge:open') ? state.collapsed.filter((x) => x !== 'gauge:open') : [...state.collapsed, 'gauge:open']; save(); draw({ keepView: true }); return; } const b = e.target.closest('.ctx-row[data-k]'); if (b) select(b.dataset.k); });
+    $('sigCtx').addEventListener('change', (e) => { const inp = e.target.closest('input[data-wi]'); if (!inp) return; const k = inp.dataset.wi; state.wi = { ...(state.wi || {}) }; if (inp.value.trim()) state.wi[k] = inp.value.trim(); else delete state.wi[k]; save(); draw({ keepView: true }); });
+    $('sigCtx').addEventListener('keydown', (e) => { if (e.key === 'Enter' && e.target.matches('input[data-wi]')) e.target.blur(); e.stopPropagation(); });
+    $('sigCtx').addEventListener('click', (e) => { if (e.target.closest('input[data-wi]')) { e.stopPropagation(); return; } if (e.target.closest('[data-witog]')) { e.stopPropagation(); state.whatIf = state.whatIf ? 0 : 1; save(); draw({ keepView: true }); return; } if (e.target.closest('[data-gtoggle]')) { state.collapsed = state.collapsed.includes('gauge:open') ? state.collapsed.filter((x) => x !== 'gauge:open') : [...state.collapsed, 'gauge:open']; save(); draw({ keepView: true }); return; } const b = e.target.closest('.ctx-row[data-k]'); if (b) select(b.dataset.k); });
     $('helpBtn').addEventListener('click', () => { $('help').hidden = !$('help').hidden; });
     $('gaugesBtn').addEventListener('click', () => { state.dash = state.dash ? 0 : 1; save(); showDash(); });
     $('dash').addEventListener('click', (e) => {

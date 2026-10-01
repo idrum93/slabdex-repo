@@ -648,7 +648,9 @@
     if (inFam.length >= 3) return { v: C.median(inFam.map((r) => r.own)), src: fam, miss: ml.grade === 'psa7' ? MISS.fam78 : ml.grade === 'psa8' ? MISS.fam89 : MISS.fam910 };
     return null;
   }
-  function gradeEstimates(models, key, card) {
+  // overrides (what-if, from the Signal panel): { psa7: { price, n } } — treated as that grade's current market price,
+  // fresh, and preferred as the anchor. Display only: nothing here feeds collected data, signals or tests.
+  function gradeEstimates(models, key, card, overrides = null) {
     const G = ['psa7', 'psa8', 'psa9', 'psa10'].filter((g) => models[g]), rows = [];
     for (const g of G) {
       const m = models[g], clean = lineIn(m, key, card), shown = clean || m.by[key.replace(/~alt$/, '')] || null;
@@ -663,7 +665,8 @@
       rows.push({ grade: g, last, age, n30, blended: !clean && !!shown, mkt: li >= 0 ? clean.close[li] : null, clean: !!clean, stale: !!si?.stale, typ: si?.typ ?? null });
     }
     markBehind(models, key, card, rows);
-    const anc = rows.filter((r) => r.clean && r.mkt && r.age != null && r.age <= 45 && !r.stale).sort((a, b) => b.n30 - a.n30 || (a.age - b.age))[0];
+    if (overrides) for (const r of rows) { const o = overrides[r.grade]; if (!o || !(o.price > 0)) continue; Object.assign(r, { user: o, dataLast: r.last, dataAge: r.age, last: o.price, mkt: o.price, age: 0, stale: false, clean: true, n30: Math.max(r.n30, o.n || 1) }); }
+    const anc = rows.filter((r) => r.clean && r.mkt && r.age != null && r.age <= 45 && !r.stale).sort((a, b) => (b.user ? 1 : 0) - (a.user ? 1 : 0) || b.n30 - a.n30 || (a.age - b.age))[0];
     if (!anc) return { rows, anchor: null };
     const ai = rows.indexOf(anc); anc.est = anc.mkt; anc.lmiss = 0; anc.anchor = true;
     for (let k = ai + 1; k < rows.length; k++) { // walk up: higher grade = lower ÷ ratio(lower÷higher)
