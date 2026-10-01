@@ -308,15 +308,17 @@
     if (ratio || cur.isIndex || model.dense) return '';
     const E = Model.gradeEstimates(allModels(), cur.id, cur.card); if (!E.anchor) return '';
     const L = Model.GRADE_LABEL, src = (v) => (v === 'own' ? "this card's own grade spread" : v === 'set' ? 'same-set average spread' : `${v} average spread`);
+    const aAge = E.rows.find((r) => r.anchor)?.age ?? null;
     const rows = E.rows.map((r) => {
+      const stale = !r.anchor && r.age != null && aAge != null && r.age - aAge > 7; // much older than the anchor's newest sale: newer sales may be missing
       const lastTxt = r.last == null ? '<span class="dim">no sale</span>' : `${money(r.last)} <span class="dim">${r.age}d${r.blended ? ' · blended' : ''}</span>`;
       const estTxt = r.anchor ? '<span class="dim">anchor</span>' : r.est == null ? '<span class="dim">—</span>' : `≈${money(r.est)} <span class="dim">±${Math.round(r.miss * 100)}%</span>`;
-      const gap = r.gap == null ? '' : `<span class="${Math.abs(r.gap) <= r.miss * 100 ? 'dim' : r.gap < 0 ? 'pos' : 'neg'}">${r.gap >= 0 ? '+' : ''}${r.gap.toFixed(0)}%</span>`;
-      const tip = r.anchor ? `Anchor: ${L[r.grade]} market price (median of last 3 clean sales), ${r.n30} sales in 30D` : r.est != null ? `Estimate from ${L[E.anchor]} via ${src(r.via)}; typical miss ±${Math.round(r.miss * 100)}%. Gap = last sale vs estimate (grey = within the typical miss).${r.blended ? ' Last sale may be either printing.' : ''}${r.age != null && r.age > 45 ? ' Last sale is old — the estimate is the better guide.' : ''}` : 'Not enough data to estimate';
+      const gap = r.gap == null ? '' : stale ? `<span class="dim" title="Last sale is ${r.age - aAge} days older than the anchor's — newer sales may not be in the data yet">${r.gap >= 0 ? '+' : ''}${r.gap.toFixed(0)}% ⧗</span>` : `<span class="${Math.abs(r.gap) <= r.miss * 100 ? 'dim' : r.gap < 0 ? 'pos' : 'neg'}">${r.gap >= 0 ? '+' : ''}${r.gap.toFixed(0)}%</span>`;
+      const tip = r.anchor ? `Anchor: ${L[r.grade]} market price (median of last 3 clean sales), ${r.n30} sales in 30D` : r.est != null ? `Estimate from ${L[E.anchor]} via ${src(r.via)}; typical miss ±${Math.round(r.miss * 100)}%. Gap = last sale vs estimate (grey = within the typical miss).${r.blended ? ' Last sale may be either printing.' : ''}${r.age != null && r.age > 45 ? ' Last sale is old — the estimate is the better guide.' : ''}${stale ? ` ⧗ This grade's last sale is ${r.age - aAge} days older than ${L[E.anchor]}'s: newer sales may not have reached the data yet, so the gap may just be missing data.` : ''}` : 'Not enough data to estimate';
       return `<button class="ctx-row val${r.grade === model.grade ? ' on' : ''}" data-grade="${r.grade}" type="button" title="${esc(tip)}"><span class="ck">${L[r.grade]}</span><span class="cn">${lastTxt}<br>${estTxt}</span><span class="cv">${gap}</span></button>`;
     }).join('');
     const bad = Model.gradeLadder(allModels(), cur.id, cur.card).inconsistent ? '<p class="trk">⚠ This card\'s grade prices are out of order (mixed or mislabeled sales), so these estimates are unreliable.</p>' : '';
-    return `<h3>VALUE BY GRADE <span class="dim">last sale · estimate · gap</span></h3>${rows}${bad}<p class="trk">Estimates walk from ${L[E.anchor]} (most recent clean sales) using grade-to-grade spreads. Green gap = last sale below the estimate by more than the usual error. An estimate, not a quote.</p>`;
+    return `<h3>VALUE BY GRADE <span class="dim">last sale · estimate · gap</span></h3>${rows}${bad}<p class="trk">Estimates walk from ${L[E.anchor]} (most recent clean sales) using grade-to-grade spreads. Green gap = last sale below the estimate by more than the usual error. ⧗ = that grade's newest sale is 8+ days older than the anchor's, so the gap may just be sales the data doesn't have yet. An estimate, not a quote.</p>`;
   }
   // Cards with a lagging grade right now: the flat grade, the grade that jumped, and the spread between them.
   let LAGS = null;

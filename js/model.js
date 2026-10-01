@@ -443,7 +443,9 @@
     }
     return (model[ck] = out);
   }
-  function gapSeries(model, up, key, { fresh = 45, window = 120, peer = true } = {}) {
+  // fresh: both grades sold within this many days; parity: their latest sales at most this many days apart (a grade whose
+  // newest sales haven't reached the data yet would otherwise look cheap or dear against the other).
+  function gapSeries(model, up, key, { fresh = 30, parity = 10, window = 120, peer = true } = {}) {
     const b = model.by[key]; if (!b || !up) return null;
     const u = lineIn(up, key, b.card); if (!u) return null;
     const pos = new Map(up.axis.map((d, i) => [d, i])), n = model.axis.length;
@@ -457,7 +459,7 @@
       if (saleDay.has(d)) lastSale = i; ulast[i] = lastSale;
       if (b.sales ? I.isN(b.sales[i]) : I.isN(b.close[i])) mySale = i; mylast[i] = mySale;
     }
-    const r = b.close.map((v, i) => (I.isN(v) && I.isN(uc[i]) && uc[i] > 0 && ulast[i] != null && i - ulast[i] <= fresh && mylast[i] != null && i - mylast[i] <= fresh ? v / uc[i] : null));
+    const r = b.close.map((v, i) => (I.isN(v) && I.isN(uc[i]) && uc[i] > 0 && ulast[i] != null && i - ulast[i] <= fresh && mylast[i] != null && i - mylast[i] <= fresh && Math.abs(ulast[i] - mylast[i]) <= parity ? v / uc[i] : null));
     const pr = peer ? peerRatios(model, up)[key] : null;
     const normSrc = r.map(() => null);
     const norm = r.map((_, i) => { const w = r.slice(Math.max(0, i - window), i).filter(I.isN); if (w.length >= 30) { normSrc[i] = 'own'; return C.median(w); } if (pr) { normSrc[i] = pr.src; return pr.v; } return null; });
@@ -481,7 +483,9 @@
   // ---------- lagging grade: a neighbouring grade of the same card jumped, this one hasn't followed yet ----------
   const PREV = { psa8: 'psa7', psa9: 'psa8', psa10: 'psa9' };
   const GORD = { psa7: 7, psa8: 8, psa9: 9, psa10: 10 };
-  const LAG = { lb: 30, jump: 0.2, flat: 0.05, fresh: 14, live: 30 };
+  // parity: the flat grade's latest sale may be at most this many days older than the jumping grade's latest sale —
+  // otherwise the "lag" is usually just newer sales the data doesn't have yet (the provider posts sales days late).
+  const LAG = { lb: 30, jump: 0.2, flat: 0.05, fresh: 14, live: 30, parity: 7 };
   // For each day: did grade `other` of this card rise ≥20% over 30 days (on a sale in the last 14 days) while this
   // grade moved ≤5% (and still trades — a sale in the last 30 days)? Returns the per-day flag and the moves.
   function lagSeries(model, other, key) {
@@ -495,10 +499,10 @@
       const j = pos.get(model.axis[i]); if (j == null || j < LAG.lb || i < LAG.lb) continue;
       const a = o.close[j], a0 = o.close[j - LAG.lb], c = b.close[i], c0 = b.close[i - LAG.lb];
       if (!I.isN(a) || !I.isN(a0) || !I.isN(c) || !I.isN(c0) || a0 <= 0 || c0 <= 0) continue;
-      let oFresh = false; for (let k = j; k >= 0 && k >= j - LAG.fresh; k--) if (I.isN(o.sales?.[k])) { oFresh = true; break; }
+      let oFresh = false, oLast = null; for (let k = j; k >= 0 && k >= j - LAG.fresh; k--) if (I.isN(o.sales?.[k])) { oFresh = true; oLast = k; break; }
       oFresh = oFresh && salesIn(o, j, LAG.lb) >= 2; // the jump rests on at least 2 sales, not one outlier
       const ordered = GORD[other.grade] > GORD[model.grade] ? a >= c * 0.9 : c >= a * 0.9; // grades in price order, else the data is suspect
-      const live = mySale != null && i - mySale <= LAG.live;
+      const live = mySale != null && i - mySale <= LAG.live && (oLast == null || (Date.parse(other.axis[oLast]) - Date.parse(model.axis[mySale])) / 864e5 <= LAG.parity);
       oc[i] = a / a0 - 1; mc[i] = c / c0 - 1;
       flag[i] = oFresh && live && ordered ? oc[i] >= LAG.jump && mc[i] <= LAG.flat : false;
     }
@@ -520,7 +524,7 @@
     if (rows.inconsistent) return rows;
     // flag laggards: a neighbour up ≥20% in 30D (with a fresh sale) while this grade is ≤ +5% and still selling
     rows.forEach((r, k) => {
-      for (const nb of [rows[k - 1], rows[k + 1]]) if (nb && nb.c30 != null && r.c30 != null && nb.c30 >= LAG.jump * 100 && r.c30 <= LAG.flat * 100 && nb.age != null && nb.age <= LAG.fresh && nb.n30 >= 2 && r.age != null && r.age <= LAG.live) r.lagging = (r.lagging || []).concat(nb.grade);
+      for (const nb of [rows[k - 1], rows[k + 1]]) if (nb && nb.c30 != null && r.c30 != null && nb.c30 >= LAG.jump * 100 && r.c30 <= LAG.flat * 100 && nb.age != null && nb.age <= LAG.fresh && nb.n30 >= 2 && r.age != null && r.age <= LAG.live && r.age - nb.age <= LAG.parity) r.lagging = (r.lagging || []).concat(nb.grade); // parity: not just missing newer sales
     });
     return rows;
   }

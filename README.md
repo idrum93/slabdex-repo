@@ -127,6 +127,13 @@ Where: **◔ GAUGES** (toolbar, or `D`) swaps the chart for the dashboard — �
 
 Weights are equal and fixed for now. The gauge's own calls — *Trend gauge up through +0.5*, *Enters buy zone*, *Undervalued, trend not up yet* — are backtested and logged in the forward record like every setup, so the gauge earns trust (or weight changes) from results it never saw. A long-term gauge (180D+ inputs) is added once there's a year of history.
 
+## Late-posted sales (data freshness)
+
+The provider posts eBay sales days after they happen, dated on the sale day, and per grade at different speeds (on Oct 1, Mew Prime's PSA 8/9 data ran to Sep 27 but PSA 7 stopped at Sep 19 while PSA 7s kept selling). So a grade can look "behind" its neighbour only because its newest sales aren't in yet.
+
+- **Fetch window** — `fetch.mjs` asks for 30 days of sales while the paid plan lasts (`PPT_PAID_UNTIL`, default 2026-10-17), then the free tier's 3 days; `days` doesn't change the credit cost. Every run logs how many late-posted sales it caught and how late (status.json `late`, `lateMedianDays`, `revised`) — that measures what the free tier's 3-day window will miss.
+- **Parity rule** — a lag, compression or grade-gap call needs the two grades' newest sales within 7 days (lag) / 10 days (gap, compression) of each other; otherwise no call. VALUE BY GRADE marks a gap ⧗ when that grade's newest sale is 8+ days older than the anchor's.
+
 ## Tradable slabs: liquidity, spread, fees
 
 Rules in `js/model.js` (`Model.RULES`, override with `"rules": {…}` in the watchlist), judged as of the day a setup fires:

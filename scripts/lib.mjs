@@ -109,13 +109,21 @@ export function upsert(arr, pt) {
 // Merge one API card record into a series.
 //  grades[g]: actual sale days {t, p (avg sale price), n (sales that day), x (outlier flag)} — what the chart draws.
 //  snap[g]:   the provider's daily market read {t, sm (smart price), conf, med, cnt (lifetime), v7} — context only.
+// Late arrivals: the provider often posts eBay sales days after they happen, dated on the sale day. A sale that shows
+// up dated more than 3 days back would be missed by a 3-day window, so every merge counts them (new = a day we didn't
+// have, revised = a day whose average or count changed because more of its sales arrived).
+export const mergeStats = { late: 0, revised: 0, lateDays: [] };
 export function mergeCard(s, c, grades, today) {
   if (s.source === 'demo') { s.grades = {}; s.source = 'pokemonpricetracker'; }
   s.snap ||= {};
   let wrote = 0;
   for (const g of grades) {
     const arr = (s.grades[g] ||= []).filter((x) => x.n != null && x.v7 === undefined); // drop legacy snapshot points
-    for (const hp of historyPoints(c, g)) { upsert(arr, hp); wrote++; }
+    for (const hp of historyPoints(c, g)) {
+      const prev = arr.find((x) => x.t === hp.t), age = (Date.parse(today) - Date.parse(hp.t)) / 864e5;
+      if (age > 3 && s.backfill) { if (!prev) { mergeStats.late++; mergeStats.lateDays.push(age); } else if (prev.p !== hp.p || prev.n !== hp.n) mergeStats.revised++; }
+      upsert(arr, hp); wrote++;
+    }
     flagOutliers(arr);
     s.grades[g] = arr;
     const blk = gradeBlock(c, g);

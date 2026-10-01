@@ -15,7 +15,7 @@
 
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import path from 'node:path';
-import { DATA, PRICES, BudgetError, client, asList, loadSeries, saveSeries, mergeCard, gradeBlock, pickPrice } from './lib.mjs';
+import { DATA, PRICES, BudgetError, client, asList, loadSeries, saveSeries, mergeCard, mergeStats, gradeBlock, pickPrice } from './lib.mjs';
 
 const args = process.argv.slice(2);
 const flag = (n) => args.includes(n);
@@ -27,7 +27,11 @@ const DRY = flag('--dry-run');
 const ONLY = opt('--only', null);
 const PROBE = opt('--probe', null);
 const TODAY = new Date().toISOString().slice(0, 10);
-const STALE_DAYS = 3; // every card every 3 days; each call asks for the last 4 days so no sale or price day is missed
+const STALE_DAYS = 3;
+// History window per call. The free tier returns 3 days; while the paid plan lasts, ask for 30 so sales the provider
+// posts late (dated days back) are still collected. days doesn't change the credit cost.
+const PAID_UNTIL = process.env.PPT_PAID_UNTIL || '2026-10-17';
+const WINDOW = Number(opt('--days', process.env.PPT_FETCH_DAYS || (TODAY < PAID_UNTIL ? 30 : 3))); // every card every 3 days; each call asks for the last 4 days so no sale or price day is missed
 
 const log = [];
 const note = (m) => { console.log(m); log.push(m); };
@@ -47,7 +51,7 @@ async function resolveId(card) {
 
 async function snapshot(card, grades) {
   // Graded only: base + eBay graded data = 2 credits. (RAW price history was +1 and fed no signal.)
-  const j = await api.get('/cards', { tcgPlayerId: card.tcgPlayerId, includeEbay: true, days: 4 }, 2);
+  const j = await api.get('/cards', { tcgPlayerId: card.tcgPlayerId, includeEbay: true, days: WINDOW }, 2);
   const c = asList(j)[0];
   if (!c) { note(`  ✗ ${card.key}: empty response`); return false; }
   const s = await loadSeries(card.key);
@@ -98,9 +102,10 @@ async function main() {
     }
   }
   if (dirtyWl) await writeFile(wlPath, JSON.stringify(wl, null, 2) + '\n');
+  const ld = [...mergeStats.lateDays].sort((a, b) => a - b), lm = ld.length ? ld[ld.length >> 1] : null;
   const rem = api.st.dailyRemaining;
-  await writeFile(path.join(DATA, 'status.json'), JSON.stringify({ lastRun: new Date().toISOString(), creditsSpent: api.st.spent, dailyRemaining: isFinite(rem) ? rem : null, updated: done, skipped, log: log.slice(-60) }, null, 2) + '\n');
-  note(`Done: ${done} updated, ${skipped} skipped, ${api.st.spent} credits spent.`);
+  await writeFile(path.join(DATA, 'status.json'), JSON.stringify({ lastRun: new Date().toISOString(), window: WINDOW, late: mergeStats.late, lateMedianDays: lm, revised: mergeStats.revised, creditsSpent: api.st.spent, dailyRemaining: isFinite(rem) ? rem : null, updated: done, skipped, log: log.slice(-60) }, null, 2) + '\n');
+  note(`Done: ${done} updated, ${skipped} skipped, ${api.st.spent} credits spent. Window ${WINDOW}d · late-posted sales caught: ${mergeStats.late}${lm != null ? ` (median ${lm}d after the sale, max ${ld[ld.length - 1]}d)` : ''} · days revised with more sales: ${mergeStats.revised}.`);
 }
 
 main().catch((e) => { console.error(e); process.exit(1); });
