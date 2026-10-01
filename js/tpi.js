@@ -129,11 +129,23 @@
       const vv = cm.value.map((x) => x[1]).filter(isN);
       return { trend: ws >= 0.6 ? s / ws : null, value: vv.length ? clip(mean(vv), -2, 2) : null, groups: g };
     }
-    const first = I.firstIdx(c);
-    for (let i = Math.max(1, first); i < n && first >= 0; i++) { const r = combine(compsAt(i)); trend[i] = r.trend; value[i] = r.value; zone[i] = zoneOf(r.trend, r.value); }
+    const first = I.firstIdx(c), st0 = Model.staleSeries ? Model.staleSeries(b) : null;
+    // Sibling grades' "days since last sale", mapped onto this grade's dates (for the behind-its-siblings check).
+    const sib = new Array(n).fill(null);
+    for (const om of [o.up, o.down]) {
+      const ol = om && Model.lineIn(om, key, b.card), os = ol && Model.staleSeries(ol); if (!os) continue;
+      const pos = new Map(om.axis.map((d, j) => [d, j]));
+      for (let i = 0; i < n; i++) { const j = pos.get(model.axis[i]); const v = j != null ? os.since[j] : null; if (v != null && (sib[i] == null || v < sib[i])) sib[i] = v; }
+    }
+    const st = st0 ? model.axis.map((_, i) => Model.behindAt(st0, i, sib[i])) : null;
+    for (let i = Math.max(1, first); i < n && first >= 0; i++) {
+      const r = combine(compsAt(i)); trend[i] = r.trend;
+      if (st && st[i]) { value[i] = null; zone[i] = 'neutral'; continue; } // overdue: price frozen while the newest sales are missing — no value or zone call
+      value[i] = r.value; zone[i] = zoneOf(r.trend, r.value);
+    }
     const last = I.lastIdx(c);
     return {
-      trend, value, zone, last,
+      trend, value, zone, last, stale: (i = last) => !!(st && st[i]),
       roc: (i = last, k = 7) => (isN(trend[i]) && isN(trend[i - k]) ? trend[i] - trend[i - k] : null),
       breakdown: (i = last) => { const cm = compsAt(i); return { ...cm, ...combine(cm) }; },
     };

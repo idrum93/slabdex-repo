@@ -310,15 +310,15 @@
     const L = Model.GRADE_LABEL, src = (v) => (v === 'own' ? "this card's own grade spread" : v === 'set' ? 'same-set average spread' : `${v} average spread`);
     const aAge = E.rows.find((r) => r.anchor)?.age ?? null;
     const rows = E.rows.map((r) => {
-      const stale = !r.anchor && r.age != null && aAge != null && r.age - aAge > 7; // much older than the anchor's newest sale: newer sales may be missing
+      const stale = !r.anchor && (r.stale || (r.age != null && aAge != null && r.age - aAge > 7)); // overdue for its usual pace, or much older than the anchor's newest sale: newer sales may be missing
       const lastTxt = r.last == null ? '<span class="dim">no sale</span>' : `${money(r.last)} <span class="dim">${r.age}d${r.blended ? ' · blended' : ''}</span>`;
       const estTxt = r.anchor ? '<span class="dim">anchor</span>' : r.est == null ? '<span class="dim">—</span>' : `≈${money(r.est)} <span class="dim">±${Math.round(r.miss * 100)}%</span>`;
-      const gap = r.gap == null ? '' : stale ? `<span class="dim" title="Last sale is ${r.age - aAge} days older than the anchor's — newer sales may not be in the data yet">${r.gap >= 0 ? '+' : ''}${r.gap.toFixed(0)}% ⧗</span>` : `<span class="${Math.abs(r.gap) <= r.miss * 100 ? 'dim' : r.gap < 0 ? 'pos' : 'neg'}">${r.gap >= 0 ? '+' : ''}${r.gap.toFixed(0)}%</span>`;
-      const tip = r.anchor ? `Anchor: ${L[r.grade]} market price (median of last 3 clean sales), ${r.n30} sales in 30D` : r.est != null ? `Estimate from ${L[E.anchor]} via ${src(r.via)}; typical miss ±${Math.round(r.miss * 100)}%. Gap = last sale vs estimate (grey = within the typical miss).${r.blended ? ' Last sale may be either printing.' : ''}${r.age != null && r.age > 45 ? ' Last sale is old — the estimate is the better guide.' : ''}${stale ? ` ⧗ This grade's last sale is ${r.age - aAge} days older than ${L[E.anchor]}'s: newer sales may not have reached the data yet, so the gap may just be missing data.` : ''}` : 'Not enough data to estimate';
+      const gap = r.gap == null ? '' : stale ? `<span class="dim" title="Newest sales likely missing from the data — gap not reliable">⧗ stale</span>` : `<span class="${Math.abs(r.gap) <= r.miss * 100 ? 'dim' : r.gap < 0 ? 'pos' : 'neg'}">${r.gap >= 0 ? '+' : ''}${r.gap.toFixed(0)}%</span>`;
+      const tip = r.anchor ? `Anchor: ${L[r.grade]} market price (median of last 3 clean sales), ${r.n30} sales in 30D` : r.est != null ? `Estimate from ${L[E.anchor]} via ${src(r.via)}; typical miss ±${Math.round(r.miss * 100)}%. Gap = last sale vs estimate (grey = within the typical miss).${r.blended ? ' Last sale may be either printing.' : ''}${r.age != null && r.age > 45 ? ' Last sale is old — the estimate is the better guide.' : ''}${stale ? ` ⧗ This grade's newest sales are likely missing: last sale ${r.age}d ago${r.typ ? ` though it usually sells every ~${r.typ}d` : ''}${aAge != null ? `, ${L[E.anchor]}'s ${aAge}d ago` : ''}. The provider posts sales late, so the gap isn't shown.` : ''}` : 'Not enough data to estimate';
       return `<button class="ctx-row val${r.grade === model.grade ? ' on' : ''}" data-grade="${r.grade}" type="button" title="${esc(tip)}"><span class="ck">${L[r.grade]}</span><span class="cn">${lastTxt}<br>${estTxt}</span><span class="cv">${gap}</span></button>`;
     }).join('');
     const bad = Model.gradeLadder(allModels(), cur.id, cur.card).inconsistent ? '<p class="trk">⚠ This card\'s grade prices are out of order (mixed or mislabeled sales), so these estimates are unreliable.</p>' : '';
-    return `<h3>VALUE BY GRADE <span class="dim">last sale · estimate · gap</span></h3>${rows}${bad}<p class="trk">Estimates walk from ${L[E.anchor]} (most recent clean sales) using grade-to-grade spreads. Green gap = last sale below the estimate by more than the usual error. ⧗ = that grade's newest sale is 8+ days older than the anchor's, so the gap may just be sales the data doesn't have yet. An estimate, not a quote.</p>`;
+    return `<h3>VALUE BY GRADE <span class="dim">last sale · estimate · gap</span></h3>${rows}${bad}<p class="trk">Estimates walk from ${L[E.anchor]} (most recent clean sales) using grade-to-grade spreads. Green gap = last sale below the estimate by more than the usual error. ⧗ stale = that grade is overdue for a sale at its usual pace (or 8+ days behind the anchor), so its newest sales are probably not in the data yet and no gap is shown. An estimate, not a quote.</p>`;
   }
   // Cards with a lagging grade right now: the flat grade, the grade that jumped, and the spread between them.
   let LAGS = null;
@@ -386,7 +386,9 @@
     $('sigStar').hidden = !base; if (base) { const on = isStar(base); $('sigStar').textContent = on ? '★' : '☆'; $('sigStar').classList.toggle('on', on); $('sigStar').dataset.k = base; }
     const chg = !ratio && stats().ch[cur.id];
     $('sigChange').innerHTML = chg ? `<span class="${chg.dir > 0 ? 'pos' : 'neg'}">${chg.dir > 0 ? '▲' : '▼'} this week:</span> ${esc(chg.items.map((i) => i.text).join(' · '))}` : '';
-    $('sigChange').hidden = !chg;
+    const gz = !ratio && !cur.isIndex && !model.dense ? tpiAll().cards[cur.id] : null, ov = gz?.s.stale() ? gz.liq.overdue : null;
+    if (ov) $('sigChange').innerHTML = `<span class="warn">⧗ Newest ${Model.GRADE_LABEL[state.grade]} sales likely missing</span> — last sale ${ov.since}d ago${ov.typ ? `, usually every ~${ov.typ}d` : ''}. The provider posts sales late; readings below may lag the real market.` + (chg ? '<br>' + $('sigChange').innerHTML : '');
+    $('sigChange').hidden = !chg && !ov;
     $('scoreVal').textContent = s.score == null ? '—' : s.score;
     $('scoreBar').style.width = (s.score ?? 0) + '%';
     const tag = $('scoreTag'); tag.textContent = s.tag?.[0] || '—'; tag.className = 'tag ' + (s.tag?.[1] || 'mid');
@@ -407,7 +409,7 @@
       ...(ratio ? [] : [[cur.isIndex ? 'Members' : model.dense ? 'Price days' : 'Clean sale days', cur.isIndex ? String(cur.index.members.length) : String(cur.saleN)]]),
       ...(model.dense || ratio ? [] : [['Sale days, last 90D', s.saleDays90 == null ? '—' : `<span class="${s.saleDays90 < Model.MIN_SALE_DAYS_90 ? 'neg' : ''}">${s.saleDays90}</span>`]]),
       ...(model.dense || ratio || cur.isIndex ? [] : (() => { const q = Model.liquidity(model, cur), R = q.rules; return [
-        ['Tradable', q.liquid && Model.aboveMin(model, cur) ? '<span class="pos">yes</span>' : `<span class="neg" title="Needs ${R.liqDays}+ sale days in ${R.liqWin}D, a sale within ${R.liqAge}D${model.minPrice ? ` and ${money(model.minPrice)}+` : ''}">no · ${!Model.aboveMin(model, cur) ? 'under ' + money(model.minPrice) : q.days < R.liqDays ? `${q.days}/${R.liqDays} sale days` : `last sale ${q.age}d ago`}</span>`],
+        ['Tradable', Model.tradable(model, cur) ? '<span class="pos">yes</span>' : q.overdue?.stale && q.liquid && Model.aboveMin(model, cur) ? `<span class="warn" title="Last sale ${q.overdue.since}d ago; usually sells every ~${q.overdue.typ}d. The provider posts sales late, so newer sales are probably missing.">⧗ newest sales missing</span>` : `<span class="neg" title="Needs ${R.liqDays}+ sale days in ${R.liqWin}D, a sale within ${R.liqAge}D${model.minPrice ? ` and ${money(model.minPrice)}+` : ''}">no · ${!Model.aboveMin(model, cur) ? 'under ' + money(model.minPrice) : q.days < R.liqDays ? `${q.days}/${R.liqDays} sale days` : `last sale ${q.age}d ago`}</span>`],
         ['Sales spread 90D', q.spread == null ? '—' : `<span class="${q.wide ? 'warn' : ''}" title="75th ÷ 25th percentile of recent sales. Above ${R.spreadFlag}× the price you pay depends heavily on which listing you catch.">${q.spread.toFixed(2)}×${q.wide ? ' wide' : ''}</span>`],
       ]; })()),
       ['History', `${s.days} days`],
@@ -815,7 +817,7 @@
     const bd = c.s.breakdown(), vote = (v) => (v == null ? '<span class="dim">·</span>' : v > 0.05 ? `<span class="pos">+${v === 1 ? 1 : v.toFixed(1)}</span>` : v < -0.05 ? `<span class="neg">${v === -1 ? -1 : v.toFixed(1)}</span>` : '<span class="dim">0</span>');
     const rows = (title, arr, w) => arr.length ? `<p class="gbh">${title}${w ? ` <span class="dim">${Math.round(w * 100)}% · ${sgn(bd.groups?.[title.toLowerCase()] ?? null)}</span>` : ''}</p>` + arr.map(([n, v, why]) => `<p class="gbr" title="${esc(why)}"><span>${esc(n)}</span>${vote(v)}</p>`).join('') : '';
     const open = state.collapsed.includes('gauge:open'); // folded by default
-    return `<h3>TREND &amp; VALUE ${zoneChip(c.zone)}</h3><div class="gblock">${gaugeSvg(c.t, { size: 120 })}<div class="gside"><span>${esc(TPI.label(c.t))} ${rocTxt(c.roc)}</span><span class="dim">value · ${esc(TPI.vlabel(c.v))} ${sgn(c.v)}</span>${valueBar(c.v)}${c.tradable ? '' : '<span class="neg small">not tradable</span>'}</div></div>
+    return `<h3>TREND &amp; VALUE ${zoneChip(c.zone)}</h3><div class="gblock">${gaugeSvg(c.t, { size: 120 })}<div class="gside"><span>${esc(TPI.label(c.t))} ${rocTxt(c.roc)}</span><span class="dim">value · ${esc(TPI.vlabel(c.v))} ${sgn(c.v)}</span>${valueBar(c.v)}${c.s.stale() ? `<span class="warn small" title="Last sale ${c.liq.overdue?.since}d ago; usually sells every ~${c.liq.overdue?.typ}d. The provider posts sales late, so the price is frozen — no value or zone call.">⧗ newest sales missing</span>` : c.tradable ? '' : '<span class="neg small">not tradable</span>'}</div></div>
       <button class="ctx-row gbtoggle" type="button" data-gtoggle>${open ? '▾' : '▸'} why <span class="dim">vote by vote</span></button>
       ${open ? `<div class="gbd">${rows('Context', bd.context, TPI.WEIGHTS.context)}${rows('Card', bd.card, TPI.WEIGHTS.card)}${rows('Grades', bd.grades, TPI.WEIGHTS.grades)}${rows('Value', bd.value)}</div>` : ''}`;
   }

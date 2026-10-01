@@ -132,6 +132,7 @@ Weights are equal and fixed for now. The gauge's own calls — *Trend gauge up t
 The provider posts eBay sales days after they happen, dated on the sale day, and per grade at different speeds (on Oct 1, Mew Prime's PSA 8/9 data ran to Sep 27 but PSA 7 stopped at Sep 19 while PSA 7s kept selling). So a grade can look "behind" its neighbour only because its newest sales aren't in yet.
 
 - **Fetch window** — `fetch.mjs` asks for 30 days of sales while the paid plan lasts (`PPT_PAID_UNTIL`, default 2026-10-17), then the free tier's 3 days; `days` doesn't change the credit cost. Every run logs how many late-posted sales it caught and how late (status.json `late`, `lateMedianDays`, `revised`) — that measures what the free tier's 3-day window will miss.
+- **Overdue / behind** — a grade line is treated as missing its newest sales when its last sale is older than 3× its usual gap between sales (median over 90 days, at least a week), or older than 2× that gap while another grade of the same card sold 5+ days more recently. Such a line gets no grade gap, lag, compression, value or zone call, isn't tradable (so it's out of leads and tests), and the Signal panel says so (⧗).
 - **Parity rule** — a lag, compression or grade-gap call needs the two grades' newest sales within 7 days (lag) / 10 days (gap, compression) of each other; otherwise no call. VALUE BY GRADE marks a gap ⧗ when that grade's newest sale is 8+ days older than the anchor's.
 
 ## Tradable slabs: liquidity, spread, fees

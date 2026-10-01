@@ -443,6 +443,41 @@
     }
     return (model[ck] = out);
   }
+  // Overdue = probably missing data, not a quiet market: a grade line whose last sale is older than 3× its usual gap
+  // between sales (median over the prior 90 days, ≥ 4 sale days) and at least a week. The provider posts sales days late
+  // and unevenly by grade, so such a line's price is frozen while the real market moved on. Judged as of each day.
+  const STALE = { win: 90, minSales: 4, mult: 3, floor: 7 };
+  const staleCache = new WeakMap();
+  function staleSeries(b) {
+    if (!b?.sales) return null;
+    let s = staleCache.get(b); if (s) return s;
+    const n = b.sales.length, days = []; s = new Array(n).fill(false); s.since = new Array(n).fill(null); s.typ = new Array(n).fill(null);
+    let start = 0;
+    for (let i = 0; i < n; i++) {
+      if (I.isN(b.sales[i])) days.push(i);
+      if (!days.length) continue;
+      while (start < days.length && days[start] <= i - STALE.win) start++;
+      const w = days.slice(start), last = days[days.length - 1];
+      s.since[i] = i - last;
+      if (w.length >= STALE.minSales) {
+        const gaps = []; for (let k = 1; k < w.length; k++) gaps.push(w[k] - w[k - 1]);
+        gaps.sort((a, c) => a - c); const typ = gaps[gaps.length >> 1]; s.typ[i] = typ;
+        s[i] = i - last > Math.max(STALE.floor, STALE.mult * typ);
+      }
+    }
+    staleCache.set(b, s);
+    return s;
+  }
+  // Behind its sibling grades: overdue at 2× its usual gap while another grade of the same card sold 5+ days more
+  // recently — the provider lags per grade, so this is usually that grade's newest sales not having arrived yet.
+  const behindAt = (s, i, otherSince) => !!s && (!!s[i] || (s.since[i] != null && s.typ[i] != null && otherSince != null && s.since[i] > Math.max(STALE.floor, 2 * s.typ[i]) && s.since[i] - otherSince >= 5));
+  const staleAt = (model, b, i) => { const s = staleSeries(b); if (!s) return false; return !!s[i == null ? model.axis.length - 1 : i]; };
+  function staleInfo(model, b, i) { const s = staleSeries(b); if (!s) return null; const j = i == null ? model.axis.length - 1 : i; return { stale: !!s[j], since: s.since[j], typ: s.typ[j] }; }
+  // For a card's rows across grades (each with .grade): mark .stale when that grade is overdue or behind its siblings.
+  function markBehind(models, key, card, rows) {
+    const info = rows.map((r) => { const m = models[r.grade], b = m && (lineIn(m, key, card) || m.by[key.replace(/~alt$/, '')]); const s = b ? staleSeries(b) : null, i = m ? m.axis.length - 1 : null; return { s, i, since: s && i != null ? s.since[i] : null }; });
+    rows.forEach((r, k) => { const z = info[k]; if (!z.s) return; const others = info.filter((_, q) => q !== k).map((o) => o.since).filter((v) => v != null); r.stale = behindAt(z.s, z.i, others.length ? Math.min(...others) : null); r.typ = z.s.typ[z.i]; });
+  }
   // fresh: both grades sold within this many days; parity: their latest sales at most this many days apart (a grade whose
   // newest sales haven't reached the data yet would otherwise look cheap or dear against the other).
   function gapSeries(model, up, key, { fresh = 30, parity = 10, window = 120, peer = true } = {}) {
@@ -459,7 +494,9 @@
       if (saleDay.has(d)) lastSale = i; ulast[i] = lastSale;
       if (b.sales ? I.isN(b.sales[i]) : I.isN(b.close[i])) mySale = i; mylast[i] = mySale;
     }
-    const r = b.close.map((v, i) => (I.isN(v) && I.isN(uc[i]) && uc[i] > 0 && ulast[i] != null && i - ulast[i] <= fresh && mylast[i] != null && i - mylast[i] <= fresh && Math.abs(ulast[i] - mylast[i]) <= parity ? v / uc[i] : null));
+    const mySt = staleSeries(b), uSt = staleSeries(u), bad = new Array(n).fill(false);
+    for (let i = 0; i < n; i++) { const j = pos.get(model.axis[i]); const us = j != null && uSt ? uSt.since[j] : null, ms = mySt ? mySt.since[i] : null; bad[i] = behindAt(mySt, i, us) || (j != null && behindAt(uSt, j, ms)); }
+    const r = b.close.map((v, i) => (!bad[i] && I.isN(v) && I.isN(uc[i]) && uc[i] > 0 && ulast[i] != null && i - ulast[i] <= fresh && mylast[i] != null && i - mylast[i] <= fresh && Math.abs(ulast[i] - mylast[i]) <= parity ? v / uc[i] : null));
     const pr = peer ? peerRatios(model, up)[key] : null;
     const normSrc = r.map(() => null);
     const norm = r.map((_, i) => { const w = r.slice(Math.max(0, i - window), i).filter(I.isN); if (w.length >= 30) { normSrc[i] = 'own'; return C.median(w); } if (pr) { normSrc[i] = pr.src; return pr.v; } return null; });
@@ -472,7 +509,7 @@
     const rows = [];
     for (const [key, b] of Object.entries(model.by)) {
       const g = gapSeries(model, up, key); if (!g) continue;
-      const li = I.lastIdx(g.ratio); if (li < 0 || li < model.axis.length - 8) continue;
+      const li = I.lastIdx(g.ratio); if (li < 0 || li < model.axis.length - 2) continue; // must hold today (a gap that just went missing = stale data, not a gap)
       rows.push({ key, card: b.card, up: up.grade, ratio: g.ratio[li], norm: g.norm[li], normSrc: g.normSrc[li], gap: g.gap[li], fam: b.card.family || String(b.card.era || '').split(' ')[0] });
     }
     const pr = peerRatios(model, up);
@@ -504,7 +541,9 @@
       const ordered = GORD[other.grade] > GORD[model.grade] ? a >= c * 0.9 : c >= a * 0.9; // grades in price order, else the data is suspect
       const live = mySale != null && i - mySale <= LAG.live && (oLast == null || (Date.parse(other.axis[oLast]) - Date.parse(model.axis[mySale])) / 864e5 <= LAG.parity);
       oc[i] = a / a0 - 1; mc[i] = c / c0 - 1;
-      flag[i] = oFresh && live && ordered ? oc[i] >= LAG.jump && mc[i] <= LAG.flat : false;
+      const sB = staleSeries(b), sO = staleSeries(o);
+      const fresh2 = !behindAt(sB, i, sO?.since[j] ?? null) && !behindAt(sO, j, sB?.since[i] ?? null); // neither grade is overdue / behind (missing newer sales)
+      flag[i] = oFresh && live && ordered && fresh2 ? oc[i] >= LAG.jump && mc[i] <= LAG.flat : false;
     }
     return { other: other.grade, flag, oc, mc };
   }
@@ -516,15 +555,16 @@
       const b = lineIn(m, key, card); if (!b) continue;
       const li = I.lastIdx(b.close); if (li < 0) continue;
       let ls = null; for (let i = li; i >= 0; i--) if (I.isN(b.sales?.[i])) { ls = i; break; }
-      rows.push({ grade: g, price: b.close[li], tradable: tradable(m, b), c30: I.chg(b.close, 30), n30: salesIn(b, li, 30), age: ls == null ? null : Math.round((Date.parse(m.axis[m.axis.length - 1]) - Date.parse(m.axis[ls])) / 864e5), key: b.card.key });
+      rows.push({ grade: g, price: b.close[li], tradable: tradable(m, b), stale: staleAt(m, b), c30: I.chg(b.close, 30), n30: salesIn(b, li, 30), age: ls == null ? null : Math.round((Date.parse(m.axis[m.axis.length - 1]) - Date.parse(m.axis[ls])) / 864e5), key: b.card.key });
     }
     rows.forEach((r, k) => { const up = rows[k + 1]; r.share = up && up.grade === NEXT[r.grade] ? r.price / up.price : null; });
+    markBehind(models, key, card, rows);
     // A lower grade priced well above a higher one means mixed or mislabeled sales somewhere: no lag call on this card.
     rows.inconsistent = rows.some((r, k) => rows[k + 1] && r.price > rows[k + 1].price * 1.1);
     if (rows.inconsistent) return rows;
     // flag laggards: a neighbour up ≥20% in 30D (with a fresh sale) while this grade is ≤ +5% and still selling
     rows.forEach((r, k) => {
-      for (const nb of [rows[k - 1], rows[k + 1]]) if (nb && nb.c30 != null && r.c30 != null && nb.c30 >= LAG.jump * 100 && r.c30 <= LAG.flat * 100 && nb.age != null && nb.age <= LAG.fresh && nb.n30 >= 2 && r.age != null && r.age <= LAG.live && r.age - nb.age <= LAG.parity) r.lagging = (r.lagging || []).concat(nb.grade); // parity: not just missing newer sales
+      for (const nb of [rows[k - 1], rows[k + 1]]) if (nb && nb.c30 != null && r.c30 != null && nb.c30 >= LAG.jump * 100 && r.c30 <= LAG.flat * 100 && nb.age != null && nb.age <= LAG.fresh && nb.n30 >= 2 && r.age != null && r.age <= LAG.live && r.age - nb.age <= LAG.parity && !r.stale && !nb.stale) r.lagging = (r.lagging || []).concat(nb.grade); // parity: not just missing newer sales
     });
     return rows;
   }
@@ -558,7 +598,7 @@
       const m = models[g], d = models[PREV[g]]; if (!m || !d) continue;
       const b = lineIn(m, key, card); if (!b) continue;
       const q = squeezeSeries(m, d, b.card.key); if (!q) continue;
-      const li = I.lastIdx(q.ratio); if (li < 0 || li < m.axis.length - 8) continue;
+      const li = I.lastIdx(q.ratio); if (li < 0 || li < m.axis.length - 2) continue;
       const r = q.ratio[li], nm = q.norm[li];
       if (r > SQZ.max) out.push({ grade: g, down: PREV[g], ratio: r, norm: nm, inverted: true, key: b.card.key });
       else if (q.flag[li]) out.push({ grade: g, down: PREV[g], ratio: r, norm: nm, normSrc: q.normSrc[li], key: b.card.key, price: b.close[I.lastIdx(b.close)] });
@@ -619,9 +659,11 @@
         n30 = salesIn(shown, m.axis.length - 1, 30);
       }
       const li = clean ? I.lastIdx(clean.close) : -1;
-      rows.push({ grade: g, last, age, n30, blended: !clean && !!shown, mkt: li >= 0 ? clean.close[li] : null, clean: !!clean });
+      const si = shown ? staleInfo(m, shown) : null;
+      rows.push({ grade: g, last, age, n30, blended: !clean && !!shown, mkt: li >= 0 ? clean.close[li] : null, clean: !!clean, stale: !!si?.stale, typ: si?.typ ?? null });
     }
-    const anc = rows.filter((r) => r.clean && r.mkt && r.age != null && r.age <= 45).sort((a, b) => b.n30 - a.n30 || (a.age - b.age))[0];
+    markBehind(models, key, card, rows);
+    const anc = rows.filter((r) => r.clean && r.mkt && r.age != null && r.age <= 45 && !r.stale).sort((a, b) => b.n30 - a.n30 || (a.age - b.age))[0];
     if (!anc) return { rows, anchor: null };
     const ai = rows.indexOf(anc); anc.est = anc.mkt; anc.lmiss = 0; anc.anchor = true;
     for (let k = ai + 1; k < rows.length; k++) { // walk up: higher grade = lower ÷ ratio(lower÷higher)
@@ -667,11 +709,11 @@
     const q = (f) => ps[Math.min(ps.length - 1, Math.floor(f * ps.length))];
     return q(0.75) / q(0.25);
   }
-  const tradable = (model, b, i) => aboveMin(model, b, i) && liquidAt(model, b, i);
+  const tradable = (model, b, i) => aboveMin(model, b, i) && liquidAt(model, b, i) && !staleAt(model, b, i); // overdue = newest sales likely missing
   function liquidity(model, b, i) { // for display
     const R = rulesOf(model), j = dayOf(model, i), d = saleDaysIn(b, j, R.liqWin), sp = spreadAt(model, b, i);
-    return { days: d.length, age: d.length ? j - d[d.length - 1] : null, liquid: liquidAt(model, b, i), spread: sp, wide: sp != null && sp > R.spreadFlag, rules: R };
+    return { days: d.length, age: d.length ? j - d[d.length - 1] : null, liquid: liquidAt(model, b, i), spread: sp, wide: sp != null && sp > R.spreadFlag, rules: R, overdue: staleInfo(model, b, i) };
   }
-  const api = { aboveMin, tradable, liquidAt, spreadAt, liquidity, rulesOf, RULES, feeAt, gradeEstimates, pairRatio, impliedPrice, peerRatios, squeezeNow, squeezeSeries, SQZ, lagSeries, gradeLadder, PREV, LAG, gapSeries, gradeGaps, NEXT, lineIn, ladder, trackCorr, changes, buildModel, makeIndex, signals, brief, consensus, leadLag, briefMarkdown, fillDays, slug, GRADE_LABEL, MIN_SALE_DAYS_90 };
+  const api = { behindAt, staleAt, staleInfo, staleSeries, STALE, aboveMin, tradable, liquidAt, spreadAt, liquidity, rulesOf, RULES, feeAt, gradeEstimates, pairRatio, impliedPrice, peerRatios, squeezeNow, squeezeSeries, SQZ, lagSeries, gradeLadder, PREV, LAG, gapSeries, gradeGaps, NEXT, lineIn, ladder, trackCorr, changes, buildModel, makeIndex, signals, brief, consensus, leadLag, briefMarkdown, fillDays, slug, GRADE_LABEL, MIN_SALE_DAYS_90 };
   if (isNode) module.exports = api; else root.Model = api;
 })(typeof window !== 'undefined' ? window : globalThis);
