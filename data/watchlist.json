@@ -1202,9 +1202,7 @@
       "raw": false,
       "tcgPlayerId": "87397",
       "sprite": "img/sprites/mew.png"
-    }
-  ],
-  "bench": [
+    },
     {
       "key": "dragon-charizard-100",
       "name": "Charizard",
@@ -1216,10 +1214,12 @@
       "rarity": "Secret Rare",
       "pooled": false,
       "query": "Charizard Dragon 100",
-      "tier": "bench",
+      "tier": "rotate",
       "raw": false,
       "tcgPlayerId": "84187"
-    },
+    }
+  ],
+  "bench": [
     {
       "key": "crystal-guardians-blastoise-delta-species-2",
       "name": "Blastoise (Delta Species)",

@@ -1,0 +1,34 @@
+{
+ "fails": {
+  "base-set-charizard-4": {
+   "since": "2026-10-02",
+   "last": "2026-10-02"
+  }
+ },
+ "checked": {
+  "dragon-charizard-100": "2026-10-02",
+  "crystal-guardians-blastoise-delta-species-2": "2026-10-02",
+  "legend-maker-gengar-5": "2026-10-02",
+  "deoxys-gyarados-8": "2026-10-02"
+ },
+ "history": [
+  {
+   "t": "2026-10-02",
+   "action": "promote",
+   "key": "dragon-charizard-100",
+   "name": "Charizard",
+   "set": "Dragon",
+   "basket": "fam:EX",
+   "reason": "liquid at PSA8/PSA9/PSA10 · open slot in EX",
+   "liq": [
+    "psa8",
+    "psa9",
+    "psa10"
+   ],
+   "price": 20000
+  }
+ ],
+ "updated": "2026-10-02T16:38:04.980Z",
+ "bench": 180,
+ "tracked": 72
+}
