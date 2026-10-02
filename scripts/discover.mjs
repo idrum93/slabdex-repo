@@ -48,6 +48,7 @@ const SHORTLIST = Number(cfg.shortlist || 6);
 const MIN_DAYS = Number(cfg.minSaleDays || 4);
 const SAFE_DAILY = Number(cfg.safeDailyCredits || 85); // leave headroom under the 100/day free tier
 const MIN_PRICE = Number(cfg.minPrice || 0); // minimum slab price: a card needs at least one grade whose median clean sale reaches it
+const LIQ = { days: Number(cfg.rules?.liqDays ?? 6), win: Number(cfg.rules?.liqWin ?? 90), age: Number(cfg.rules?.liqAge ?? 30) }; // same liquidity rule as the site's 'tradable'
 const MAX_OUT = Number(cfg.maxOutlierShare ?? 0.35); // clean-sales rule: drop cards whose sales are mostly junk
 const PRIMARY = cfg.primaryGrade || 'psa8';
 const FAM = cfg.families || { WOTC: { mode: 'perSet' } };
@@ -165,7 +166,7 @@ function eraShortlist(candidates, fam, rule) {
 // Stage 2: after backfill, keep cards with enough real sale days, ranked by median sale price.
 function finalPick(short) {
   const chosen = [];
-  const okC = (x) => (x.days ?? 0) >= MIN_DAYS && (x.outShare ?? 0) <= MAX_OUT && !x.blended && (x.topMed ?? 0) >= MIN_PRICE; // under the minimum slab price in every grade: not tracked. A blended line feeds no signal, so it isn't worth its credits
+  const okC = (x) => (x.days ?? 0) >= MIN_DAYS && (x.outShare ?? 0) <= MAX_OUT && !x.blended && (x.topMed ?? 0) >= MIN_PRICE && (x.liqGrades == null || x.liqGrades.length > 0); // no grade liquid at the minimum price: not tracked.  under the minimum slab price in every grade: not tracked. A blended line feeds no signal, so it isn't worth its credits
   for (const [fam, rule] of Object.entries(FAM)) {
     if (rule.mode !== 'top') continue;
     const pool = short.filter((x) => x.family === fam && okC(x)).sort((a, b) => rarityTier(b.rarity, b.name) - rarityTier(a.rarity, a.name) || (b.med ?? rankVal(b)) - (a.med ?? rankVal(a)));
@@ -221,7 +222,7 @@ function report(sets, candidates, short, chosen, variantNotes) {
   const bench = short.filter((x) => !chosen.some((c) => keyOf(c) === keyOf(x)));
   if (bench.length) {
     L.push('', '## Bench (backfilled, not tracked daily)', '', '| Set | Card | # | Median PSA 9 | Clean days | Junk | Why not picked |', '|---|---|---|---|---|---|---|');
-    for (const x of bench) L.push(`| ${x.set} | ${x.name} | ${x.number} | ${fm(x.med)} | ${x.days ?? 0} | ${Math.round((x.outShare ?? 0) * 100)}% | ${(x.outShare ?? 0) > MAX_OUT ? 'too much junk' : (x.days ?? 0) < MIN_DAYS ? 'too few sales' : x.blended ? 'printings blended (no signal)' : (x.topMed ?? 0) < MIN_PRICE ? `under $${MIN_PRICE} in every grade` : 'ranked lower'} |`);
+    for (const x of bench) L.push(`| ${x.set} | ${x.name} | ${x.number} | ${fm(x.med)} | ${x.days ?? 0} | ${Math.round((x.outShare ?? 0) * 100)}% | ${(x.outShare ?? 0) > MAX_OUT ? 'too much junk' : (x.days ?? 0) < MIN_DAYS ? 'too few sales' : x.blended ? 'printings blended (no signal)' : (x.topMed ?? 0) < MIN_PRICE ? `under $${MIN_PRICE} in every grade` : x.liqGrades && !x.liqGrades.length ? `no grade liquid at $${MIN_PRICE}+ (${LIQ.days}+ sale days in ${LIQ.win}, one in ${LIQ.age})` : 'ranked lower'} |`);
   }
   L.push('', '## Notes', '', ...variantNotes.map((v) => `- ${v}`), '', '## Log', '', '```', ...log.slice(-150), '```', '');
   return L.join('\n');
@@ -294,6 +295,10 @@ async function main() {
     const byG = Object.fromEntries(GRADES.map((g) => [g, Clean.classify(s.grades?.[g], kind, Clean.gradedOpts(s, g))]));
     x.gradeDays = Object.fromEntries(GRADES.map((g) => [g, byG[g].main.filter((p) => p.t >= cut).length])); // clean sale days, last 90D
     x.gradeMed = Object.fromEntries(GRADES.map((g) => [g, byG[g].main.length ? Clean.median(byG[g].main.slice(-10).map((p) => p.p)) : null]));
+    // Liquid grades: clean (not blended), median of recent sales ≥ minPrice, 6+ sale days in the last 90 and a sale in the last 30.
+    // A card is tracked only if at least one grade passes; its other grades may be thin.
+    const liqCut = new Date(Date.parse(TODAY) - LIQ.win * 864e5).toISOString().slice(0, 10), ageCut = new Date(Date.parse(TODAY) - LIQ.age * 864e5).toISOString().slice(0, 10);
+    x.liqGrades = GRADES.filter((g) => { const m = byG[g].main; if (!m.length || (byG[g].kind && !byG[g].split && !byG[g].same)) return false; const rec = m.filter((p) => p.t >= liqCut); return rec.length >= LIQ.days && m[m.length - 1].t >= ageCut && Clean.median(m.slice(-10).map((p) => p.p)) >= MIN_PRICE; });
     x.topMed = Math.max(0, ...GRADES.map((g) => (byG[g].main.length >= MIN_DAYS && !(byG[g].kind && !byG[g].split && !byG[g].same) ? Clean.median(byG[g].main.slice(-10).map((p) => p.p)) : 0))); // dearest clean grade with enough sales to test (≥ minSaleDays), recent median
     const total = (s.grades?.[PRIMARY] || []).length;
     x.days = r.main.length; x.days10 = r10.main.length; x.med = Clean.median(r.main.map((p) => p.p));

@@ -417,14 +417,24 @@
   // Cards priced below their own scarcity curve: PSA 8 / 9 whose current price (yours, with USE IN READINGS) sits under
   // the curve by more than the card's scatter. PSA 7 stays in the fit as a reference point but isn't featured (low-grade
   // pops are skewed by what gets submitted, and 7s are thin and often mixed printings); PSA 10 is the curve's far end.
+  // Grades where a card qualifies on collected data alone (your prices never count here): $1,000+ and liquid
+  // (6+ sale days in 90, a sale within 30). A card needs at least one to be a candidate; its other grades may be thin.
+  const SITEM = {};
+  const siteModels = () => { const o = {}; for (const g of ['psa7', 'psa8', 'psa9', 'psa10']) o[g] = mineCount() ? (SITEM[g] ||= siteModel(g)) : g === model.grade ? model : otherModel(g); return o; };
+  function liquidGrades(base) {
+    const out = [];
+    for (const [g, m] of Object.entries(siteModels())) { const b = m.by[base]; if (b && !b.card.mixed && Model.aboveMin(m, b) && Model.liquidAt(m, b)) out.push(g); }
+    return out;
+  }
   function belowCurveList() {
     const out = [], seen = new Set(), min = WL?.minPrice || model.minPrice || 0;
     for (const base of Object.keys(popsAll())) {
       if (seen.has(base)) continue; seen.add(base);
       const ms = allModels(), b = Object.values(ms).map((m) => m.by[base]).find(Boolean); if (!b) continue;
+      const liq = liquidGrades(base); if (!liq.length) continue; // not liquid at $1,000+ in any grade: not a candidate
       const d = curveData(base, b.card, null); if (!d?.sc.ok) continue;
       const band = Math.max(0.1, d.sc.se ?? 0.1);
-      for (const r of d.sc.rows) if ((r.grade === 'psa8' || r.grade === 'psa9') && r.loo < -band && r.price >= min) out.push({ key: base, card: b.card, grade: r.grade, price: r.price, fitted: r.fitted, loo: r.loo, band, end: r.end, mine: d.pts.find((p) => p.grade === r.grade)?.mine, n: d.sc.n });
+      for (const r of d.sc.rows) if ((r.grade === 'psa8' || r.grade === 'psa9') && r.loo < -band && r.price >= min) out.push({ key: base, card: b.card, grade: r.grade, price: r.price, fitted: r.fitted, loo: r.loo, band, end: r.end, mine: d.pts.find((p) => p.grade === r.grade)?.mine, n: d.sc.n, thin: !liq.includes(r.grade), liq });
     }
     return out.sort((a, b) => a.loo - b.loo);
   }
@@ -612,10 +622,10 @@
     const nPop = Object.keys(popsAll()).length, tk = 'zone:curve', open = !state.collapsed.includes(tk), L = Model.GRADE_LABEL;
     const head = `<tr class="sec" data-toggle="${tk}"><td colspan="5">${open ? '▾' : '▸'} BELOW SCARCITY CURVE <span class="dim">${xs.length} · PSA 8 / 9 priced under where the card's pops put them</span></td></tr>`;
     if (!open) return head;
-    const note = `<tr class="sec"><td colspan="5"><p class="setupnote">From the ${nPop} card${nPop === 1 ? '' : 's'} with pops entered: a PSA 8 or 9 whose current price (✎ your prices when USE IN READINGS is on) sits below its scarcity curve by more than the card's scatter, and is ${money(WL?.minPrice || 0)}+. Biggest discount first; click to open that grade. PSA 7 stays in the curve as a reference point but isn't listed. Enter pops for more cards to widen this list. A lead to research — not yet in the forward record.</p></td></tr>`;
+    const note = `<tr class="sec"><td colspan="5"><p class="setupnote">From the ${nPop} card${nPop === 1 ? '' : 's'} with pops entered that qualify on collected data ($1,000+ and liquid — 6+ sale days in 90, a sale within 30 — in at least one grade): a PSA 8 or 9 whose current price (✎ your prices when USE IN READINGS is on) sits below its scarcity curve by more than the card's scatter, and is ${money(WL?.minPrice || 0)}+. Biggest discount first; click to open that grade. PSA 7 stays in the curve as a reference point but isn't listed. Enter pops for more cards to widen this list. A lead to research — not yet in the forward record.</p></td></tr>`;
     const M = { fmt: (v) => `<span class="pos" title="Price vs the curve">${(v * 100).toFixed(0)}%</span>` };
     const rows = xs.map((x) => {
-      const r = { key: x.key, name: x.card.name, sub: `${x.mine ? '✎ ' : ''}${x.card.set} #${x.card.number} · ${L[x.grade]} ${money(x.price)} vs curve ≈${money(x.fitted)}${x.end ? ' (end of curve)' : ''}${x.n < 4 ? ' · 3 grades: rough' : ''}`, lastTxt: money(x.price), metric: x.loo, score: null, tag: ['', 'na'] };
+      const r = { key: x.key, name: x.card.name, sub: `${x.mine ? '✎ ' : ''}${x.card.set} #${x.card.number} · ${L[x.grade]} ${money(x.price)} vs curve ≈${money(x.fitted)}${x.end ? ' (end of curve)' : ''}${x.n < 4 ? ' · 3 grades: rough' : ''}${x.thin ? ` · thin at ${L[x.grade]} (card qualifies at ${x.liq.map((g) => L[g].replace('PSA ', '')).join('/')})` : ''}`, lastTxt: money(x.price), metric: x.loo, score: null, tag: ['', 'na'] };
       return rowHtml(r, M, ' crow').replace('<tr class="row', `<tr data-lgrade="${x.grade}" class="row`).replace(/<span class="pill[^"]*"[^>]*>··<\/span>/, `<span class="pill lagg">${L[x.grade].replace('PSA ', '')}</span>`);
     }).join('');
     return head + note + (rows || `<tr><td colspan="5" class="empty">${nPop ? 'No PSA 8 or 9 is below its curve right now.' : 'Enter PSA pops for a card (Signal panel → POPULATION) to start this list.'}</td></tr>`);
