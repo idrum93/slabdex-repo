@@ -443,6 +443,18 @@
     }
     return (model[ck] = out);
   }
+  // Memo for the cross-grade series (the same card/grade pair is asked for by the panel, lists, gauges and backtest).
+  // Keyed on the model object, so a rebuilt model starts fresh; the other grade's model is checked by identity.
+  const MEMO = new WeakMap();
+  function memo(model, kind, other, key, extra, fn) {
+    let m = MEMO.get(model); if (!m) { m = new Map(); MEMO.set(model, m); }
+    const k = kind + '|' + (other?.grade || '') + '|' + key + '|' + (extra || ''), hit = m.get(k);
+    if (hit && hit.other === other) return hit.v;
+    const v = fn(); m.set(k, { other, v }); return v;
+  }
+  const gapSeries = (model, up, key, opts) => (opts && Object.keys(opts).some((x) => x !== 'peer') ? gapSeriesRaw(model, up, key, opts) : memo(model, 'gap', up, key, opts?.peer === false ? 'np' : '', () => gapSeriesRaw(model, up, key, opts)));
+  const lagSeries = (model, other, key) => memo(model, 'lag', other, key, '', () => lagSeriesRaw(model, other, key));
+  const squeezeSeries = (model, down, key) => memo(model, 'sqz', down, key, '', () => squeezeSeriesRaw(model, down, key));
   // Overdue = probably missing data, not a quiet market: a grade line whose last sale is older than 3× its usual gap
   // between sales (median over the prior 90 days, ≥ 4 sale days) and at least a week. The provider posts sales days late
   // and unevenly by grade, so such a line's price is frozen while the real market moved on. Judged as of each day.
@@ -480,7 +492,7 @@
   }
   // fresh: both grades sold within this many days; parity: their latest sales at most this many days apart (a grade whose
   // newest sales haven't reached the data yet would otherwise look cheap or dear against the other).
-  function gapSeries(model, up, key, { fresh = 30, parity = 10, window = 120, peer = true } = {}) {
+  function gapSeriesRaw(model, up, key, { fresh = 30, parity = 10, window = 120, peer = true } = {}) {
     const b = model.by[key]; if (!b || !up) return null;
     const u = lineIn(up, key, b.card); if (!u) return null;
     const pos = new Map(up.axis.map((d, i) => [d, i])), n = model.axis.length;
@@ -499,7 +511,15 @@
     const r = b.close.map((v, i) => (!bad[i] && I.isN(v) && I.isN(uc[i]) && uc[i] > 0 && ulast[i] != null && i - ulast[i] <= fresh && mylast[i] != null && i - mylast[i] <= fresh && Math.abs(ulast[i] - mylast[i]) <= parity ? v / uc[i] : null));
     const pr = peer ? peerRatios(model, up)[key] : null;
     const normSrc = r.map(() => null);
-    const norm = r.map((_, i) => { const w = r.slice(Math.max(0, i - window), i).filter(I.isN); if (w.length >= 30) { normSrc[i] = 'own'; return C.median(w); } if (pr) { normSrc[i] = pr.src; return pr.v; } return null; });
+    // Rolling median of the trailing `window` ratios (excluding today), kept as a sorted window: O(n·window), not O(n·window·log).
+    const sw = [], ins = (v) => { let lo = 0, hi = sw.length; while (lo < hi) { const mid = (lo + hi) >> 1; if (sw[mid] < v) lo = mid + 1; else hi = mid; } sw.splice(lo, 0, v); };
+    const del = (v) => { let lo = 0, hi = sw.length; while (lo < hi) { const mid = (lo + hi) >> 1; if (sw[mid] < v) lo = mid + 1; else hi = mid; } if (sw[lo] === v) sw.splice(lo, 1); };
+    const norm = new Array(n).fill(null);
+    for (let i = 0; i < n; i++) {
+      if (i > 0 && I.isN(r[i - 1])) ins(r[i - 1]);
+      const out = i - window - 1; if (out >= 0 && I.isN(r[out])) del(r[out]);
+      if (sw.length >= 30) { normSrc[i] = 'own'; norm[i] = sw[Math.floor(sw.length / 2)]; } else if (pr) { normSrc[i] = pr.src; norm[i] = pr.v; }
+    }
     const gap = r.map((v, i) => (I.isN(v) && I.isN(norm[i]) ? v / norm[i] : null));
     return { up: up.grade, ratio: r, norm, normSrc, gap, upLine: u };
   }
@@ -525,7 +545,7 @@
   const LAG = { lb: 30, jump: 0.2, flat: 0.05, fresh: 14, live: 30, parity: 7 };
   // For each day: did grade `other` of this card rise ≥20% over 30 days (on a sale in the last 14 days) while this
   // grade moved ≤5% (and still trades — a sale in the last 30 days)? Returns the per-day flag and the moves.
-  function lagSeries(model, other, key) {
+  function lagSeriesRaw(model, other, key) {
     const b = model.by[key]; if (!b || !other || model.dense || other.dense) return null;
     const o = lineIn(other, key, b.card); if (!o) return null;
     const pos = new Map(other.axis.map((d, i) => [d, i])), n = model.axis.length;
@@ -574,7 +594,7 @@
   // Ratio = (grade below) ÷ (this grade), mapped onto this grade's dates; "compressed" when it is ≥ 0.8 AND
   // ≥ 1.4× the card's usual ratio (or ≥ 0.9 when there is no usual yet). Both grades need recent sales.
   const SQZ = { ratio: 0.8, vsNorm: 1.4, bare: 0.9, max: 1.1 }; // above 1.1 = inverted (lower grade dearer): usually mixed listings, not an opportunity
-  function squeezeSeries(model, down, key) {
+  function squeezeSeriesRaw(model, down, key) {
     const b = model.by[key]; if (!b || !down || model.dense) return null;
     const d = lineIn(down, key, b.card); if (!d) return null;
     const g = gapSeries(down, model, d.card.key); if (!g) return null;

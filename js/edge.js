@@ -137,7 +137,7 @@
       if (upModel) x.lagUp = Model.lagSeries(model, upModel, key)?.flag || null;
       if (downModel) x.lagDn = Model.lagSeries(model, downModel, key)?.flag || null;
       if (downModel) x.sq = Model.squeezeSeries(model, downModel, key)?.flag || null;
-      x.tpi = TPI.series(model, key, { gap: x.gap || null, sq: x.sq || null, lagUp: x.lagUp || null, lagDn: x.lagDn || null });
+      x.tpi = TPI.series(model, key, { up: upModel, down: downModel }); // memoized, shares the cross-grade series above
       // Base triggers on every day (for live setups too), fwd excess where the outcome is known.
       const trig = {};
       for (const [id, , fn] of BASE) {

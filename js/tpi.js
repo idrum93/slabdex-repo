@@ -83,7 +83,15 @@
   };
 
   // Full daily series for one card line. o: { up, down } neighbouring grade models (or precomputed gap / sq / lagUp / lagDn arrays).
-  function series(model, key, o = {}) {
+  const SMEMO = new WeakMap();
+  function series(model, key, o = {}) { // memoized when called with neighbouring models only
+    if (o.gap !== undefined || o.sq !== undefined || o.lagUp !== undefined || o.lagDn !== undefined) return seriesRaw(model, key, o);
+    let m = SMEMO.get(model); if (!m) { m = new Map(); SMEMO.set(model, m); }
+    const k = key + '|' + (o.up?.grade || '') + '|' + (o.down?.grade || ''), hit = m.get(k);
+    if (hit && hit.up === o.up && hit.down === o.down) return hit.v;
+    const v = seriesRaw(model, key, o); m.set(k, { up: o.up, down: o.down, v }); return v;
+  }
+  function seriesRaw(model, key, o = {}) {
     const b = model.by[key]; if (!b) return null;
     const n = model.axis.length, c = b.close, ctx = contextOf(model, key), p = parts(c);
     const ratio = (x, y) => x.map((v, i) => (isN(v) && isN(y?.[i]) && y[i] > 0 ? v / y[i] : null));

@@ -402,7 +402,7 @@
     $('sigStar').hidden = !base; if (base) { const on = isStar(base); $('sigStar').textContent = on ? '★' : '☆'; $('sigStar').classList.toggle('on', on); $('sigStar').dataset.k = base; }
     const chg = !ratio && stats().ch[cur.id];
     $('sigChange').innerHTML = chg ? `<span class="${chg.dir > 0 ? 'pos' : 'neg'}">${chg.dir > 0 ? '▲' : '▼'} this week:</span> ${esc(chg.items.map((i) => i.text).join(' · '))}` : '';
-    const gz = !ratio && !cur.isIndex && !model.dense ? tpiAll().cards[cur.id] : null, ov = gz?.s.stale() ? gz.liq.overdue : null;
+    const gz = !ratio && !cur.isIndex && !model.dense ? tpiCard(cur.id) : null, ov = gz?.s.stale() ? gz.liq.overdue : null;
     if (ov) $('sigChange').innerHTML = `<span class="warn">⧗ Newest ${Model.GRADE_LABEL[state.grade]} sales likely missing</span> — last sale ${ov.since}d ago${ov.typ ? `, usually every ~${ov.typ}d` : ''}. The provider posts sales late; readings below may lag the real market.` + (chg ? '<br>' + $('sigChange').innerHTML : '');
     $('sigChange').hidden = !chg && !ov;
     $('scoreVal').textContent = s.score == null ? '—' : s.score;
@@ -704,17 +704,34 @@
     return (CONS = Model.consensus(models));
   }
   // ---------- setup backtest (js/edge.js): once per grade, computed just after first paint ----------
-  const EDGE = {}; let edgePending = null;
+  const EDGE = {}; let edgePending = null, EW = undefined; const WORKQ = {};
+  function edgeWorker() {
+    if (EW !== undefined) return EW;
+    try {
+      if (window.__SLABDEX_DATA__ || typeof Worker === 'undefined') return (EW = null);
+      EW = new Worker('js/edge-worker.js');
+      EW.onmessage = (e) => { const d = e.data, q = WORKQ[d.grade]; if (!q) return; delete WORKQ[d.grade]; if (d.type === 'done') q.done(d.result); else q.fallback(); };
+      EW.onerror = (e) => { console.warn('edge worker failed, using the main thread', e.message); const qs = Object.values(WORKQ); for (const k in WORKQ) delete WORKQ[k]; EW.terminate(); EW = null; qs.forEach((q) => q.fallback()); };
+      EW.postMessage({ type: 'init', WL, SERIES });
+    } catch (err) { console.warn(err); EW = null; }
+    return EW;
+  }
   function edge() {
     const g = state.grade;
     if (EDGE[g] || typeof Edge === 'undefined') return EDGE[g] || null;
     if (edgePending !== g) {
       edgePending = g;
-      setTimeout(() => {
+      const done = (res) => { EDGE[g] = res; edgePending = null; if (model.grade === g) { rankIndicators(); renderBrief(); refresh({ keepView: true }); } };
+      const onMain = () => setTimeout(() => {
         if (model.grade !== g) { edgePending = null; return; }
-        try { EDGE[g] = Edge.run(model, { others: ['psa7', 'psa8', 'psa9', 'psa10'].filter((x) => x !== g).map(otherModel) }); } catch (err) { console.error(err); EDGE[g] = { ok: false, reason: 'backtest failed' }; }
-        edgePending = null; rankIndicators(); renderBrief(); refresh({ keepView: true });
+        let res; try { res = Edge.run(model, { others: ['psa7', 'psa8', 'psa9', 'psa10'].filter((x) => x !== g).map(otherModel) }); } catch (err) { console.error(err); res = { ok: false, reason: 'backtest failed' }; }
+        done(res);
       }, 40);
+      // The backtest is the heaviest job (~1 s on a fast laptop, several on a phone): run it in a background worker so
+      // the page stays responsive. Falls back to the main thread where workers aren't available (the offline preview).
+      const w = edgeWorker();
+      if (!w) onMain();
+      else { WORKQ[g] = { done, fallback: onMain }; w.postMessage({ type: 'run', grade: g }); }
     }
     return null;
   }
@@ -743,19 +760,25 @@
   }
   // ---------- trend & value gauges (js/tpi.js) ----------
   // Per grade: every card line's gauge series (cached), index gauges, and the ranked prospects.
-  const GZ = {};
+  const GZ = {}, GC = new WeakMap();
+  function idxGauge(id) { let c = GC.get(model); if (!c) { c = {}; GC.set(model, c); } const k = '#' + id; if (k in c) return c[k]; const s = TPI.indexSeries(model, id); return (c[k] = s && s.last >= 0 ? { id, x: model.idx[id], s, t: s.trend[s.last], v: s.value[s.last], roc: s.roc() } : null); }
+  // One card's gauge (cached per model) — the Signal panel needs only this, not every card.
+  function tpiCard(k) {
+    let c = GC.get(model); if (!c) { c = {}; GC.set(model, c); }
+    if (k in c) return c[k];
+    const b = model.by[k]; if (!b || b.card.mixed || b.demo) return (c[k] = null);
+    const g = model.grade, up = Model.NEXT[g] ? otherModel(Model.NEXT[g]) : null, down = Model.PREV[g] ? otherModel(Model.PREV[g]) : null;
+    const s = TPI.series(model, k, { up, down }); if (!s || s.last < 0) return (c[k] = null);
+    const i = s.last, q = Model.liquidity(model, b);
+    const o = { k, b, s, t: s.trend[i], v: s.value[i], zone: s.zone[i], roc: s.roc(), tradable: Model.tradable(model, b), liq: q };
+    o.score = TPI.prospect(o.t, o.v, o.roc) - (q.wide ? 0.2 : 0);
+    return (c[k] = o);
+  }
   function tpiAll() {
     const g = state.grade; if (GZ[g]?.m === model) return GZ[g];
-    const ms = allModels(), up = ms[Model.NEXT[g]] || null, down = ms[Model.PREV[g]] || null;
     const cards = {}, idx = {};
-    for (const [k, b] of Object.entries(model.by)) {
-      if (b.card.mixed || b.demo) continue;
-      const s = TPI.series(model, k, { up, down }); if (!s || s.last < 0) continue;
-      const i = s.last, q = Model.liquidity(model, b);
-      cards[k] = { k, b, s, t: s.trend[i], v: s.value[i], zone: s.zone[i], roc: s.roc(), tradable: Model.tradable(model, b), liq: q };
-      cards[k].score = TPI.prospect(cards[k].t, cards[k].v, cards[k].roc) - (q.wide ? 0.2 : 0);
-    }
-    for (const id of Object.keys(model.idx)) { const s = TPI.indexSeries(model, id); if (s && s.last >= 0) idx[id] = { id, x: model.idx[id], s, t: s.trend[s.last], v: s.value[s.last], roc: s.roc() }; }
+    for (const k of Object.keys(model.by)) { const o = tpiCard(k); if (o) cards[k] = o; }
+    for (const id of Object.keys(model.idx)) { const o = idxGauge(id); if (o) idx[id] = o; }
     const ranked = Object.values(cards).filter((c) => c.tradable && c.t != null).sort((a, b) => b.score - a.score);
     return (GZ[g] = { m: model, cards, idx, ranked, buy: ranked.filter((c) => c.zone === 'buy'), watch: ranked.filter((c) => c.zone === 'watch').sort((a, b) => b.v - a.v) });
   }
@@ -827,9 +850,8 @@
   // Signal panel block for one card: gauge, value, zone, and the vote-by-vote breakdown.
   function gaugeRows(cur, ratio) {
     if (ratio || model.dense) return '';
-    const G = tpiAll();
-    if (cur.isIndex) { const o = G.idx[cur.id]; if (!o) return ''; return `<h3>TREND GAUGE <span class="dim">${esc(TPI.label(o.t))}</span></h3><div class="gblock">${gaugeSvg(o.t, { size: 120 })}<div class="gside">${rocTxt(o.roc)}<span class="dim">range in its year</span>${valueBar(o.v)}</div></div>`; }
-    const c = G.cards[cur.id]; if (!c) return '';
+    if (cur.isIndex) { const o = idxGauge(cur.id); if (!o) return ''; return `<h3>TREND GAUGE <span class="dim">${esc(TPI.label(o.t))}</span></h3><div class="gblock">${gaugeSvg(o.t, { size: 120 })}<div class="gside">${rocTxt(o.roc)}<span class="dim">range in its year</span>${valueBar(o.v)}</div></div>`; }
+    const c = tpiCard(cur.id); if (!c) return '';
     const bd = c.s.breakdown(), vote = (v) => (v == null ? '<span class="dim">·</span>' : v > 0.05 ? `<span class="pos">+${v === 1 ? 1 : v.toFixed(1)}</span>` : v < -0.05 ? `<span class="neg">${v === -1 ? -1 : v.toFixed(1)}</span>` : '<span class="dim">0</span>');
     const rows = (title, arr, w) => arr.length ? `<p class="gbh">${title}${w ? ` <span class="dim">${Math.round(w * 100)}% · ${sgn(bd.groups?.[title.toLowerCase()] ?? null)}</span>` : ''}</p>` + arr.map(([n, v, why]) => `<p class="gbr" title="${esc(why)}"><span>${esc(n)}</span>${vote(v)}</p>`).join('') : '';
     const open = state.collapsed.includes('gauge:open'); // folded by default

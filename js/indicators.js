@@ -152,5 +152,5 @@
   }
 
   const api = { sma, ema, wma, hma, supertrend, vzo, stdev, bollinger, rsi, macd, roc, ffill, lastN, lastIdx, firstIdx, chg, volatility, isN };
-  if (typeof module !== "undefined" && module.exports) module.exports = api; else window.Ind = api;
+  if (typeof module !== "undefined" && module.exports) module.exports = api; else (typeof window !== "undefined" ? window : self).Ind = api;
 })();

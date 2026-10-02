@@ -184,6 +184,10 @@ The Signal panel's **VALUE BY GRADE** block shows every PSA grade's last sale (w
 - Character and theme indexes use transparent Crystal sprites from [PokeAPI/sprites](https://github.com/PokeAPI/sprites), stored in `img/sprites/` (groups.json: `spriteBase` + `sprite`). They show in the lists, the picker and as the Signal panel image.
 - Set indexes use set symbols from pokemontcg.io (`symbolBase` + each set's `code` in sets.json), written into the watchlist by discover. Missing images are simply hidden.
 
+## Performance
+
+The setup backtest (the heaviest job) runs in a background worker (`js/edge-worker.js`) so the page stays responsive while it works; the offline preview falls back to the main thread. Cross-grade series (grade gaps, lags, compression) and gauge series are cached per model, the Signal panel computes only the selected card's gauge, and the full gauge set is built only when ◔ GAUGES or the ZONE tab is opened.
+
 ## Local use
 
 ```sh
