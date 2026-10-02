@@ -115,7 +115,7 @@ Only **confirmed** setups get top billing (first tile, ◆ in the card list, a b
 - **Leads** — SETUPS, LAG (the lagging / compressed slab's own price), the brief's cards to note and the CARDS list show only slabs at or above it; the CARDS list keeps the rest behind a "slabs under $1,000" row.
 - **Default grade** — discover picks the grade with the most cards that are both deep and above the minimum (PSA 9 on current data).
 
-## Trend & value gauges (◔ GAUGES, ZONE tab)
+## Trend & value gauges (◔ GAUGES, ★ TOP tab)
 
 `js/tpi.js` — a TPI-style read per card line and per index, medium term (30–90 day inputs). Every input votes −1 / 0 / +1:
 
@@ -123,7 +123,7 @@ Only **confirmed** setups get top billing (first tile, ◆ in the card list, a b
 - **Value (−2 expensive … +2 cheap)** — price vs its own trailing year (z), strength vs its set vs its 90-day norm, share of the next grade up vs its usual share. For indexes: where it sits in its own trailing year.
 - **Zones** — BUY (trend ≥ +0.5, value ≥ −0.25) · LATE (trend up, pricey) · WATCH (value ≥ +0.75, trend not up) · AVOID (trend ≤ −0.25 and pricey) · NEUTRAL. ▲▼ = change in the gauge vs a week ago.
 
-Where: **◔ GAUGES** (toolbar, or `D`) swaps the chart for the dashboard — ★ TOP PROSPECTS (tradable slabs in the buy zone, ranked by trend + value + a rising gauge, wide spreads penalised), WATCH, market & era-family gauges, trend over time (market gauge and the average tradable card's gauge vs the All-tracked index), eras, characters, sets; click any tile to open it on the chart. **ZONE** tab lists every tradable slab by zone. The Signal panel shows each card's gauge, value bar, zone and the vote-by-vote breakdown ("why"). `brief.md` / `brief.json` list the top prospects per grade.
+Where: **◔ GAUGES** (toolbar, or `D`) swaps the chart for the dashboard — ★ TOP PROSPECTS (tradable slabs in the buy zone, ranked by trend + value + a rising gauge, wide spreads penalised), WATCH, market & era-family gauges, trend over time (market gauge and the average tradable card's gauge vs the All-tracked index), eras, characters, sets; click any tile to open it on the chart. **★ TOP** tab (the first tab, and where every visit starts, with the #1 prospect on the chart) lists every tradable slab by zone — buy zone first, ranked by trend + value + a rising gauge — then setups firing (the old SETUPS tab) and the forward record. The Signal panel shows each card's gauge, value bar, zone and the vote-by-vote breakdown ("why"). `brief.md` / `brief.json` list the top prospects per grade.
 
 Weights are equal and fixed for now. The gauge's own calls — *Trend gauge up through +0.5*, *Enters buy zone*, *Undervalued, trend not up yet* — are backtested and logged in the forward record like every setup, so the gauge earns trust (or weight changes) from results it never saw. A long-term gauge (180D+ inputs) is added once there's a year of history.
 
@@ -139,15 +139,21 @@ The provider posts eBay sales days after they happen, dated on the sale day, and
 
 Toggle **WHAT-IF** on and each grade gets a box for sold prices you found outside the tool (eBay, Alt…): `695 750 644 600` — dates like `9/30` and `$` are ignored; the median is used, or type one average. That grade is then treated as the current, freshest price and becomes the anchor, so the other grades' estimates and gaps are redrawn from it. Inputs are saved per card in this browser only and are display-only: collected data, charts, signals, gauges, the backtest and the forward record never see them. Toggle off to hide them (they're kept for next time); clear a box to remove its input.
 
+### ✎ MY PRICES (toolbar)
+
+Turn it on and your what-if prices become real sales for those cards and grades everywhere on the page: market line, chart, signals, lists, ZONE, gauges, top prospects, estimates, scarcity curve — so a card with sales on Goldin or Fanatics Collect that never reach the eBay data can move up or down the lists. Entries take dates: `695 10/1, 750 9/30, 644 9/30` (one date per comma group; no date = the latest data day; dates after the latest data day are counted on that day so other cards' freshness isn't shifted; several prices on one day count as several sales). Rows using your prices are marked ✎ and the status line shows ✎ MY PRICES (n). Off = collected data only. The setup backtest and the forward record always use collected data only, so your inputs can't bias the tests.
+
 ## Population counts (hand-entered)
 
-PSA pop counts aren't available free by API, so they're typed in from psacard.com's pop report pages (they change slowly — monthly is plenty). With WHAT-IF on, the Signal panel's POPULATION section takes PSA 7/8/9/10 counts for the card (saved on this device), and **⧉ copy for pops.json** gives a line to paste into `data/pops.json`'s `entries` in GitHub's editor so it applies everywhere (a trailing comma is fine). The newest date per card is used.
+PSA pop counts aren't available free by API, so they're typed in from psacard.com's pop report pages (they change slowly — monthly is plenty). The Signal panel's POPULATION section takes PSA 7/8/9/10 counts for the card (saved on this device), and **⧉ copy for pops.json** gives a line to paste into `data/pops.json`'s `entries` in GitHub's editor so it applies everywhere (a trailing comma is fine). The newest date per card is used.
 
 What they do: a grade-to-grade step estimated from *peer* cards (same set / era family — e.g. most PSA 9 → 10 steps, which miss by ~45%) is scaled by this card's scarcity: the 9÷10 price ratio is taken to move with (10s per 9)^β, relative to the typical 10s-per-9 of other cards with pops (same era family if 3+, else all). β is 0.5 until 8 cards have both pops and their own price spread, then it's fitted on them. Steps based on the card's own price spread are left alone (they already reflect its pops). Adjusted estimates are tagged *pop-adj*.
 
+**Saved on this device:** pop counts and what-if prices are kept in the browser (their own storage, separate from the layout), so they survive reloads and `?reset`. Pops are card facts and always apply; what-if prices only while WHAT-IF is on. Entries for cards that drop out of the tracked set are removed automatically on load. To share pops across devices, use ⧉ copy for pops.json.
+
 ### Scarcity curve
 
-With pops entered, the POPULATION section draws the card's own scarcity curve: log price against log *copies at that grade or higher* (a PSA 8 competes with every 9 and 10 too; pop at the grade alone isn't monotone because low grades are rarely submitted). Each middle grade is judged against the line through the other grades — its neighbours — and the lowest / highest grade (ᵉ) against the line through all of them. Green = priced below where its scarcity puts it, red = above, grey = within the card's own scatter (shown, min ±10%). Needs 3+ grades with a current price and pops for that grade and every grade above it; ⧗ stale grades are left out unless you give them a what-if price (marked *). Display only.
+With pops entered, the POPULATION section draws the card's own scarcity curve: log price against log *copies at that grade or higher* (a PSA 8 competes with every 9 and 10 too; pop at the grade alone isn't monotone because low grades are rarely submitted). It's drawn from the collected data, and — when WHAT-IF has prices for the card — a second time with your prices, so you can compare. Each middle grade is judged against the line through the other grades — its neighbours — and the lowest / highest grade (ᵉ) against the line through all of them. Green = priced below where its scarcity puts it, red = above, grey = within the card's own scatter (shown, min ±10%). Needs 3+ grades with a current price and pops for that grade and every grade above it; ⧗ stale grades are left out unless you give them a what-if price (marked *). Display only.
 
 ## Tradable slabs: liquidity, spread, fees
 

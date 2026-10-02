@@ -6,10 +6,10 @@
 <title>SlabDex</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="css/styles.css?v=20261001c">
+<link rel="stylesheet" href="css/styles.css?v=20261001e">
 <script>
   // Build stamp + on-screen error reporter: if anything breaks, the page says what and where instead of going blank.
-  window.SLABDEX_BUILD = '20261001c';
+  window.SLABDEX_BUILD = '20261001e';
   (function () {
     function show(msg) {
       var b = document.getElementById('errbar');
@@ -35,6 +35,7 @@
       <button class="pk-btn" type="button" aria-haspopup="listbox"><span class="lbl">CARD</span><span class="pk-val">—</span><span class="pk-caret">▾</span></button>
       <div class="pk-pop" hidden><input class="pk-q" type="search" placeholder="Search cards, sets, characters…   ( / )" aria-label="Search" autocomplete="off"><div class="pk-list" role="listbox"></div></div>
     </div>
+    <button class="tbtn mine-btn" id="mineBtn" type="button" aria-pressed="false" title="Use your what-if prices as sales everywhere">✎ MY PRICES</button>
     <button class="tbtn gauges-btn" id="gaugesBtn" type="button" title="Trend &amp; value gauges: top prospects, market, eras, characters, sets (D)" aria-pressed="false">◔ GAUGES</button>
     <div class="seg" id="grade" role="group" aria-label="Grade">
       <button data-v="psa7">PSA 7</button><button data-v="psa8">PSA 8</button><button data-v="psa9" class="on">PSA 9</button><button data-v="psa10">PSA 10</button>
@@ -88,7 +89,7 @@
     </aside>
     <aside class="side side-b">
       <section class="panel wl" aria-labelledby="wlH">
-        <h2 id="wlH"><span class="seg tabs" id="wlTabs" role="group" aria-label="Watchlist view"><button data-v="cards" class="on">CARDS</button><button data-v="sets">INDEX</button><button data-v="setups" title="Cards where a tested indicator setup fired in the last 7 days">SETUPS</button><button data-v="zone" title="Trend &amp; value gauge zones for tradable slabs: buy zone first">ZONE</button><button data-v="lag" title="Lagging grades: a neighbouring grade jumped, this one has not followed yet">LAG</button><button data-v="mine">MINE</button><button data-v="brief">BRIEF</button></span><button class="tbtn grp-btn" id="groupBtn" type="button" title="Group cards by set (g)" aria-pressed="false">⊞</button></h2>
+        <h2 id="wlH"><span class="seg tabs" id="wlTabs" role="group" aria-label="Watchlist view"><button data-v="zone" class="on" title="Best prospects first: tradable slabs in the buy zone (trend up, priced fair or cheap), then watch, late, neutral, avoid — plus setups firing and the forward record">★ TOP</button><button data-v="cards">CARDS</button><button data-v="lag" title="Lagging & compressed grades: a neighbouring grade moved, this one has not followed yet">LAG</button><button data-v="sets">INDEX</button><button data-v="mine">MINE</button><button data-v="brief">BRIEF</button></span><button class="tbtn grp-btn" id="groupBtn" type="button" title="Group cards by set (g)" aria-pressed="false">⊞</button></h2>
         <div class="wl-scroll" id="wlScroll">
           <table>
             <thead><tr><th data-sort="name" id="wlFirstCol">Card</th><th data-sort="last" class="n" id="wlLastCol">Last</th><th data-sort="metric" class="n"><select id="wlMetric" aria-label="Metric column"><option value="c30">30D</option><option value="dist50">vs 50D</option><option value="accel">Accel</option><option value="volRatio">Pace</option><option value="gap">Gap</option><option value="volExp">Swing</option></select></th><th data-sort="score" class="n">Sig</th><th></th></tr></thead>
@@ -120,12 +121,12 @@
     <p>On the chart: wheel = zoom time · wheel or drag on the price axis = zoom price · drag = pan · drag a pane divider = resize · double-click = reset.</p>
   </div>
 </div>
-<script src="js/indicators.js?v=20261001c"></script>
-<script src="js/chart.js?v=20261001c"></script>
-<script src="js/clean.js?v=20261001c"></script>
-<script src="js/model.js?v=20261001c"></script>
-<script src="js/tpi.js?v=20261001c"></script>
-<script src="js/edge.js?v=20261001c"></script>
-<script src="js/app.js?v=20261001c"></script>
+<script src="js/indicators.js?v=20261001e"></script>
+<script src="js/chart.js?v=20261001e"></script>
+<script src="js/clean.js?v=20261001e"></script>
+<script src="js/model.js?v=20261001e"></script>
+<script src="js/tpi.js?v=20261001e"></script>
+<script src="js/edge.js?v=20261001e"></script>
+<script src="js/app.js?v=20261001e"></script>
 </body>
 </html>

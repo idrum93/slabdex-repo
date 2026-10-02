@@ -6,11 +6,22 @@
   const I = window.Ind;
   const C = window.Clean;
 
-  const state = { v: 3, key: null, grade: 'psa9', vs: 'idx:all', range: 365, res: 'D', ind: { st: 1, sma20: 1, sma50: 1, hma: 0, vol: 1, rs: 1, rsi: 1, macd: 0, vzo: 0 }, guide: 1, dash: 0, whatIf: 0, wi: {}, pops: {}, sort: 'score', dir: -1, wlView: 'cards', wlMetric: 'c30', merge: false, print: 'main', group: false, collapsed: [], stars: [] };
+  const state = { v: 3, key: null, grade: 'psa9', vs: 'idx:all', range: 365, res: 'D', ind: { st: 1, sma20: 1, sma50: 1, hma: 0, vol: 1, rs: 1, rsi: 1, macd: 0, vzo: 0 }, guide: 1, dash: 0, mine: 0, whatIf: 0, wi: {}, pops: {}, sort: 'score', dir: -1, wlView: 'cards', wlMetric: 'c30', merge: false, print: 'main', group: false, collapsed: [], stars: [] };
   let hadSaved = false;
-  try { if (/[?&]reset\b/.test(location.search)) localStorage.removeItem('slabdex'); } catch (e) {} // ?reset = start from the default layout
+  try { if (/[?&]reset\b/.test(location.search)) localStorage.removeItem('slabdex'); } catch (e) {} // ?reset = default layout (your pops and what-if prices are kept: they live under 'slabdex-notes')
   try { const sv = JSON.parse(localStorage.getItem('slabdex') || 'null'); if (sv && sv.v === 3) { Object.assign(state, sv); hadSaved = true; if (!('st' in state.ind)) state.ind.st = 1; } } catch (e) {} // older saved layouts are ignored
-  const save = () => { try { localStorage.setItem('slabdex', JSON.stringify(state)); } catch (e) {} };
+  // Your notes — hand-entered pop counts and what-if prices — live under their own key, so a layout reset (?reset) or a
+  // display error never wipes them. Entries for cards that leave the tracked set are dropped on load (pruneNotes).
+  try { const nt = JSON.parse(localStorage.getItem('slabdex-notes') || 'null'); if (nt) { state.pops = { ...(nt.pops || {}), ...(state.pops || {}) }; state.wi = { ...(nt.wi || {}), ...(state.wi || {}) }; } } catch (e) {}
+  const save = () => { try { localStorage.setItem('slabdex', JSON.stringify(state)); localStorage.setItem('slabdex-notes', JSON.stringify({ pops: state.pops || {}, wi: state.wi || {} })); } catch (e) {} };
+  function pruneNotes() {
+    const keep = new Set([...(WL?.cards || []), ...(WL?.extra || [])].map((c) => c.key));
+    if (keep.size < 10) return; // a partial / failed load must never wipe your notes
+    let n = 0;
+    for (const k of Object.keys(state.pops || {})) if (!keep.has(k)) { delete state.pops[k]; n++; }
+    for (const k of Object.keys(state.wi || {})) if (!keep.has(k.split('|')[0])) { delete state.wi[k]; n++; }
+    if (n) { console.info(`notes: dropped ${n} entr${n === 1 ? 'y' : 'ies'} for cards no longer tracked`); save(); }
+  }
 
   let WL = null, SERIES = {}, STATUS = null, LEDGER = null, POPFILE = null, chart = null, model = null;
   const slug = (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
@@ -30,7 +41,32 @@
     all.forEach((c, i) => { if (res[i]) SERIES[c.key] = res[i]; });
   }
 
-  const buildModel = (grade) => Model.buildModel(WL, SERIES, grade);
+  // ---------- MY PRICES: your what-if sold prices used as real sales everywhere on the page ----------
+  // Entries like "695 10/1, 750 9/30, 644" → sales on those dates (no date = the latest data day). Dates after the latest
+  // data day are clamped to it so the shared date axis — and every other card's freshness — doesn't move.
+  let DMAX = null;
+  function dataMaxDate() { if (DMAX) return DMAX; let m = ''; for (const s of Object.values(SERIES)) for (const a of Object.values(s.grades || {})) { const t = a?.length ? a[a.length - 1].t : ''; if (t > m) m = t; } return (DMAX = m || new Date().toLocaleDateString('en-CA')); }
+  function parseWiEntries(txt) {
+    const end = dataMaxDate(), yr = +end.slice(0, 4), out = [];
+    for (const chunk of String(txt || '').split(/[;\n]|,(?=\s)|,(?!\d{3}\b)/)) {
+      const dm = chunk.match(/\b(\d{1,2})\/(\d{1,2})(?:\/(\d{2,4}))?\b/);
+      let t = end;
+      if (dm) { let y = dm[3] ? +dm[3] : yr; if (y < 100) y += 2000; const d = `${y}-${String(+dm[1]).padStart(2, '0')}-${String(+dm[2]).padStart(2, '0')}`; const today = new Date().toLocaleDateString('en-CA'); t = !dm[3] && d > today ? `${+d.slice(0, 4) - 1}${d.slice(4)}` : d; if (t > end) t = end; } // a date later than today = last year; later than the data = clamped to the latest data day
+      const rest = chunk.replace(/\b\d{1,2}\/\d{1,2}(\/\d{2,4})?\b/g, ' ').replace(/\$/g, '');
+      for (const v of (rest.match(/\d{1,3}(?:,\d{3})+(?:\.\d+)?|\d+(?:\.\d+)?/g) || []).map((x) => +x.replace(/,/g, '')).filter((x) => x >= 5)) out.push({ t, p: v });
+    }
+    const by = {}; for (const e of out) (by[e.t] ||= []).push(e.p); // same day → one point (average, with the count), like the provider's daily records
+    return Object.entries(by).map(([t, ps]) => ({ t, p: Math.round((ps.reduce((a, b) => a + b, 0) / ps.length) * 100) / 100, n: ps.length, ps })).sort((a, b) => (a.t < b.t ? -1 : 1));
+  }
+  function manualMap() {
+    const m = {};
+    for (const [k, txt] of Object.entries(state.wi || {})) { const [key, g] = k.split('|'); const e = parseWiEntries(txt); if (e.length) (m[key] ||= {})[g] = e; }
+    return m;
+  }
+  const mineCount = () => Object.values(manualMap()).reduce((s, o) => s + Object.keys(o).length, 0);
+  const WLX = () => (state.mine ? { ...WL, manual: manualMap() } : WL); // the watchlist the page's models are built from
+  const buildModel = (grade) => Model.buildModel(WLX(), SERIES, grade);
+  const siteModel = (grade) => Model.buildModel(WL, SERIES, grade); // collected data only (backtest)
   const signals = (close, vol, bench) => Model.signals(close, vol, bench, { dense: model?.dense });
 
   // Resolve a symbol id to a drawable series. 'set' / 'era' are relative to the main symbol.
@@ -307,6 +343,16 @@
   }
   // Every grade's last sale next to an estimate built from the card's other grades — including grades that are
   // blended, thin or stale, where the estimate is the better guide to what a copy should cost.
+  // Redraw the panel after an input changes without stealing focus from the box the user moved to next.
+  function redrawKeepFocus(fn = null) {
+    setTimeout(() => {
+      const a = document.activeElement, sel = a && a.matches?.('#sigCtx input[data-wi], #sigCtx input[data-pop]') ? (a.dataset.wi != null ? `input[data-wi="${CSS.escape(a.dataset.wi)}"]` : `input[data-pop="${CSS.escape(a.dataset.pop)}"]`) : null;
+      const s0 = sel ? a.selectionStart : null, s1 = sel ? a.selectionEnd : null, sc = $('sigCtx').closest('.side')?.scrollTop;
+      if (fn) fn(); else draw({ keepView: true });
+      if (sel) { const el = $('sigCtx').querySelector(sel); if (el) { el.focus(); try { el.setSelectionRange(s0, s1); } catch (e) {} } } // same caret / selection (Tab selects the whole box)
+      const side = $('sigCtx').closest('.side'); if (side && sc != null) side.scrollTop = sc;
+    }, 0);
+  }
   // What-if prices typed in the Signal panel: "695 750 644 600" (dates like 9/30 and $ signs are ignored).
   function parseWi(txt) {
     const s = String(txt || '').replace(/\b\d{1,2}\/\d{1,2}(\/\d{2,4})?\b/g, ' ').replace(/\$/g, '');
@@ -317,7 +363,7 @@
   }
   const wiKey = (id, g) => `${id.replace(/~alt$/, '')}|${g}`;
   function wiOverrides(id) {
-    if (!state.whatIf) return null;
+    if (!state.whatIf || state.mine) return null; // with MY PRICES on, your prices are already in the data as sales
     const o = {}; for (const g of ['psa7', 'psa8', 'psa9', 'psa10']) { const p = parseWi(state.wi?.[wiKey(id, g)]); if (p) o[g] = p; }
     return Object.keys(o).length ? o : null;
   }
@@ -326,7 +372,7 @@
   function popsAll() {
     const out = {};
     for (const e of POPFILE?.entries || []) { const k = String(e.key || '').replace(/~alt$/, ''); if (k && (!out[k] || (e.t || '') >= (out[k].t || ''))) out[k] = { ...e, src: 'file' }; }
-    for (const [k, e] of Object.entries(state.pops || {})) if (state.whatIf && e && PG.some((g) => e[g] > 0)) out[k] = { ...e, src: 'local' };
+    for (const [k, e] of Object.entries(state.pops || {})) if (e && PG.some((g) => e[g] > 0)) out[k] = { ...e, src: 'local' }; // pops are card facts: always on, independent of WHAT-IF
     return out;
   }
   // Population-adjusted grade step: the ratio lo÷hi is assumed to scale with (pop hi ÷ pop lo)^β — more 10s per 9 means
@@ -360,26 +406,31 @@
     const counts = me ? PG.filter((g) => me[g] > 0).map((g) => `${L[g].replace('PSA ', '')}: ${Number(me[g]).toLocaleString('en-US')}`).join(' · ') : '';
     const adj = popAdjFor(cur), a910 = adj ? adj('psa9', 'psa10') : null;
     const note = !me ? 'No population counts for this card yet.' : a910?.need ? `10s per 9: ${a910.sCard.toFixed(2)}. Enter pops for ${a910.need} more card${a910.need > 1 ? 's' : ''} (same era) to adjust estimates.` : a910 ? `10s per 9: ${a910.sCard.toFixed(2)} vs ${a910.sRef.toFixed(2)} typical (${a910.nRef} cards${a910.refFam !== 'all' ? ', ' + a910.refFam : ''}) → 9÷10 spread ×${a910.mult.toFixed(2)} (β ${a910.beta.toFixed(2)}${a910.fitted ? `, fitted on ${a910.nFit}` : ', assumed until 8 cards have pops'}). Only peer-based steps are adjusted; a card's own price spread already reflects its pops.` : '';
-    const inputs = state.whatIf ? `<div class="pop-in">${PG.map((g) => `<label>${L[g]}<input data-pop="${esc(base)}|${g}" type="text" inputmode="numeric" value="${local[g] ?? ''}" placeholder="${me?.[g] ?? ''}"></label>`).join('')}</div><button class="tbtn pop-copy" type="button" data-popcopy="${esc(base)}" title="Copy a line for data/pops.json (paste it into the entries list in GitHub's editor)">⧉ copy for pops.json</button>` : '';
+    const inputs = `<div class="pop-in">${PG.map((g) => `<label>${L[g]}<input data-pop="${esc(base)}|${g}" type="text" inputmode="numeric" value="${local[g] ?? ''}" placeholder="${me?.[g] ?? ''}"></label>`).join('')}</div>${me ? `<button class="tbtn pop-copy" type="button" data-popcopy="${esc(base)}" title="Copy a line for data/pops.json (paste it into the entries list in GitHub's editor)">⧉ copy for pops.json</button>` : ''}`;
     // Scarcity curve: each grade vs the price its scarcity implies, judged against its neighbouring grades.
-    let curve = '';
-    if (me) {
-      const E = Model.gradeEstimates(allModels(), cur.id, cur.card, wiOverrides(cur.id));
+    // Scarcity curve, drawn twice when WHAT-IF has prices for this card: once from the collected data, once with your prices.
+    const curveBlock = (ov, title) => {
+      const E = Model.gradeEstimates(allModels(), cur.id, cur.card, ov);
       // Scarcity of a grade = copies at that grade OR HIGHER (a PSA 8 buyer is also competing with every 9 and 10 that
       // exists). Pop at the grade alone isn't monotone — low grades often have small pops because few are submitted.
       const cum = (g) => { const hi = PG.slice(PG.indexOf(g)); return hi.every((x) => me[x] > 0) ? hi.reduce((s, x) => s + Number(me[x]), 0) : null; };
       const pts = E.rows.filter((r) => !r.stale && r.mkt > 0 && cum(r.grade)).map((r) => ({ grade: r.grade, price: r.user ? r.user.price : r.mkt, pop: cum(r.grade), own: Number(me[r.grade]), user: !!r.user }));
       const sc = Model.scarcityCurve(pts), skipped = E.rows.filter((r) => r.stale && me[r.grade] > 0).map((r) => L[r.grade]);
-      if (!sc.ok) curve = `<p class="trk">Scarcity curve needs 3+ grades with a current price and pops for that grade and every grade above it (have ${sc.n}${skipped.length ? `; ${skipped.join(', ')} left out as ⧗ stale — add a what-if price` : ''}).</p>`;
-      else {
-        const band = Math.max(0.1, sc.se ?? 0.1), small = sc.n < 4;
-        curve = `<h3>SCARCITY CURVE <span class="dim">price vs copies at grade or higher · each grade vs its neighbours</span></h3>` + sc.rows.map((r) => {
-          const tone = Math.abs(r.loo) <= band ? 'dim' : r.loo < 0 ? 'pos' : 'neg';
-          return `<p class="sc-row" title="Line through the other grades says ${L[r.grade]} (${r.pop.toLocaleString('en-US')} copies at this grade or higher) should be about ${money(r.fitted)}${r.user ? ' (price = your what-if input)' : ''}. Green = below the curve (cheap for its scarcity), red = above, grey = within the usual scatter."><span class="ck">${L[r.grade]}<small title="copies at this grade or higher">≥${r.pop.toLocaleString('en-US')}</small></span><span>${money(r.price)}${r.user ? '*' : ''}</span><span class="dim" title="where the curve puts it">≈${money(r.fitted)}</span><b class="${tone}"${r.end ? ' title="End of the curve: judged against the line through all grades"' : ''}>${r.loo >= 0 ? '+' : ''}${(r.loo * 100).toFixed(0)}%${r.end ? '<sup>e</sup>' : ''}</b></p>`;
-        }).join('') + `<p class="trk">${sc.monotone ? `Each halving of the copies at a grade or higher adds about ${((Math.pow(2, -sc.slope) - 1) * 100).toFixed(0)}% to the price on this card.` : '⚠ Prices don\'t fall as the pop rises here — check the pops and recent sales (mixed listings?).'} Scatter ±${Math.round(band * 100)}%${small ? ' (only 3 grades: rough — one grade decides the line for the others)' : ''}. Grey = within the scatter; ᵉ = lowest / highest grade, judged against the whole curve (the middle grades are judged against their neighbours).${skipped.length ? ` Left out: ${skipped.join(', ')} (⧗ stale).` : ''}${pts.some((p) => p.user) ? ' * = your what-if price.' : ''}</p>`;
-      }
+      const head = `<h3>SCARCITY CURVE <span class="dim">${title}</span></h3>`;
+      if (!sc.ok) return head + `<p class="trk">Needs 3+ grades with a current price and pops for that grade and every grade above it (have ${sc.n}${skipped.length ? `; ${skipped.join(', ')} left out as ⧗ stale${ov ? '' : ' — a what-if price can stand in'}` : ''}).</p>`;
+      const band = Math.max(0.1, sc.se ?? 0.1), small = sc.n < 4;
+      return head + sc.rows.map((r) => {
+        const tone = Math.abs(r.loo) <= band ? 'dim' : r.loo < 0 ? 'pos' : 'neg';
+        return `<p class="sc-row" title="The curve puts ${L[r.grade]} (${r.pop.toLocaleString('en-US')} copies at this grade or higher) at about ${money(r.fitted)}${r.user ? ' (price = your what-if input)' : ''}. Green = below the curve (cheap for its scarcity), red = above, grey = within the usual scatter."><span class="ck">${L[r.grade]}<small title="copies at this grade or higher">≥${r.pop.toLocaleString('en-US')}</small></span><span>${money(r.price)}${r.user ? '*' : ''}</span><span class="dim" title="where the curve puts it">≈${money(r.fitted)}</span><b class="${tone}"${r.end ? ' title="End of the curve: judged against the line through all grades"' : ''}>${r.loo >= 0 ? '+' : ''}${(r.loo * 100).toFixed(0)}%${r.end ? '<sup>e</sup>' : ''}</b></p>`;
+      }).join('') + `<p class="trk">${sc.monotone ? `Each halving of the copies at a grade or higher adds about ${((Math.pow(2, -sc.slope) - 1) * 100).toFixed(0)}% to the price.` : '⚠ Prices don\'t fall as the pop rises here — check the pops and recent sales (mixed listings?).'} Scatter ±${Math.round(band * 100)}%${small ? ' (only 3 grades: rough)' : ''}.${skipped.length ? ` Left out: ${skipped.join(', ')} (⧗ stale).` : ''}${pts.some((p) => p.user) ? ' * = your what-if price.' : ''}</p>`;
+    };
+    let curve = '';
+    if (me) {
+      const ov = wiOverrides(cur.id);
+      curve = curveBlock(null, state.mine && cur.card.mine ? '✎ with your prices (MY PRICES on) · each grade vs its neighbours' : 'collected data · each grade vs its neighbours') + (ov ? `<div class="wi-curve">${curveBlock(ov, 'WHAT-IF · with your prices')}</div>` : '');
+      curve += `<p class="trk dim">Green = cheap for its scarcity, red = rich, grey = within the scatter; ᵉ = lowest / highest grade, judged against the whole curve (the middle grades against their neighbours).</p>`;
     }
-    return `<h3>POPULATION <span class="dim">PSA pop · hand-entered${me ? ` · ${esc(me.t || '')}${me.src === 'local' ? ' · this device' : ''}` : ''}</span></h3>${counts ? `<p class="trk">${counts}</p>` : ''}<p class="trk">${esc(note)}${state.whatIf ? '' : ' Turn on WHAT-IF to enter counts.'}</p>${curve}${inputs}`;
+    return `<h3>POPULATION <span class="dim">PSA pop · hand-entered${me ? ` · ${esc(me.t || '')}${me.src === 'local' ? ' · this device' : ''}` : ''}</span></h3>${counts ? `<p class="trk">${counts}</p>` : ''}<p class="trk">${esc(note)}</p>${inputs}${curve}`;
   }
   function valueRows(cur, ratio) {
     if (ratio || cur.isIndex || model.dense) return '';
@@ -393,10 +444,10 @@
       const estTxt = r.anchor ? '<span class="dim">anchor</span>' : r.est == null ? '<span class="dim">—</span>' : `≈${money(r.est)} <span class="dim">±${Math.round(r.miss * 100)}%</span>${r.popAdj ? ` <span class="popm" title="Adjusted for this card's population: spread ×${r.popAdj.mult.toFixed(2)}">pop-adj</span>` : ''}`;
       const gap = r.gap == null ? '' : stale ? `<span class="dim" title="Newest sales likely missing from the data — gap not reliable">⧗ stale</span>` : `<span class="${Math.abs(r.gap) <= r.miss * 100 ? 'dim' : r.gap < 0 ? 'pos' : 'neg'}">${r.gap >= 0 ? '+' : ''}${r.gap.toFixed(0)}%</span>`;
       const tip = r.anchor ? `Anchor: ${L[r.grade]} market price (median of last 3 clean sales), ${r.n30} sales in 30D` : r.est != null ? `Estimate from ${L[E.anchor]} via ${src(r.via)}; typical miss ±${Math.round(r.miss * 100)}%. Gap = last sale vs estimate (grey = within the typical miss).${r.blended ? ' Last sale may be either printing.' : ''}${r.age != null && r.age > 45 ? ' Last sale is old — the estimate is the better guide.' : ''}${stale ? ` ⧗ This grade's newest sales are likely missing: last sale ${r.age}d ago${r.typ ? ` though it usually sells every ~${r.typ}d` : ''}${aAge != null ? `, ${L[E.anchor]}'s ${aAge}d ago` : ''}. The provider posts sales late, so the gap isn't shown.` : ''}` : 'Not enough data to estimate';
-      return `<button class="ctx-row val${r.grade === model.grade ? ' on' : ''}${r.user ? ' wi' : ''}" data-grade="${r.grade}" type="button" title="${esc(tip)}"><span class="ck">${L[r.grade]}</span><span class="cn">${lastTxt}<br>${estTxt}</span><span class="cv">${gap}</span></button>` + (state.whatIf ? `<input class="wi-in" data-wi="${esc(wiKey(cur.id, r.grade))}" type="text" inputmode="decimal" placeholder="${L[r.grade]} prices you found, e.g. 695 750 644" value="${esc(state.wi?.[wiKey(cur.id, r.grade)] || '')}" aria-label="What-if ${L[r.grade]} prices">` : '');
+      return `<button class="ctx-row val${r.grade === model.grade ? ' on' : ''}${r.user ? ' wi' : ''}" data-grade="${r.grade}" type="button" title="${esc(tip)}"><span class="ck">${L[r.grade]}</span><span class="cn">${lastTxt}<br>${estTxt}</span><span class="cv">${gap}</span></button>` + (state.whatIf || state.mine ? `<input class="wi-in" data-wi="${esc(wiKey(cur.id, r.grade))}" type="text" inputmode="decimal" placeholder="${L[r.grade]} prices you found, e.g. 695 750 644" value="${esc(state.wi?.[wiKey(cur.id, r.grade)] || '')}" aria-label="What-if ${L[r.grade]} prices">` : '');
     }).join('');
     const bad = Model.gradeLadder(allModels(), cur.id, cur.card).inconsistent ? '<p class="trk">⚠ This card\'s grade prices are out of order (mixed or mislabeled sales), so these estimates are unreliable.</p>' : '';
-    const wiNote = state.whatIf ? `<p class="wi-note">WHAT-IF ${ov ? `· using your ${Object.keys(ov).map((g) => `${L[g]} ${money(ov[g].price)}`).join(', ')} as the current price${E.anchor && ov[E.anchor] ? ` (anchor: ${L[E.anchor]})` : ''}` : '· type prices you found outside the tool (eBay, Alt…) under any grade'}. Estimates only — your inputs are saved on this device and never touch the collected data, signals, backtest or forward record.</p>` : '';
+    const wiNote = state.mine ? `<p class="wi-note">✎ MY PRICES on · your prices for this card are used as sales everywhere — market line, lists, gauges, zones, estimates. The backtest and forward record still use collected data only.</p>` : state.whatIf ? `<p class="wi-note">WHAT-IF ${ov ? `· using your ${Object.keys(ov).map((g) => `${L[g]} ${money(ov[g].price)}`).join(', ')} as the current price${E.anchor && ov[E.anchor] ? ` (anchor: ${L[E.anchor]})` : ''}` : '· type prices you found outside the tool (eBay, Alt…) under any grade'}. Estimates only — your inputs are saved on this device and never touch the collected data, signals, backtest or forward record.</p>` : '';
     return `<h3>VALUE BY GRADE <span class="dim">last sale · estimate · gap</span><button class="wi-tog${state.whatIf ? ' on' : ''}" type="button" data-witog title="What-if: enter sold prices you found elsewhere to see adjusted estimates. Display only.">WHAT-IF ${state.whatIf ? '●' : '○'}</button></h3>${wiNote}${rows}${bad}<p class="trk">Estimates walk from ${L[E.anchor]} (most recent clean sales) using grade-to-grade spreads. Green gap = last sale below the estimate by more than the usual error. ⧗ stale = that grade is overdue for a sale at its usual pace (or 8+ days behind the anchor), so its newest sales are probably not in the data yet and no gap is shown. An estimate, not a quote.</p>`;
   }
   // Cards with a lagging grade right now: the flat grade, the grade that jumped, and the spread between them.
@@ -504,7 +555,7 @@
   const chgBadge = (c) => (c ? `<span class="chg ${c.dir > 0 ? 'up' : 'dn'}" title="This week: ${esc(c.items.map((i) => i.text).join('; '))}">${c.dir > 0 ? '▲' : '▼'}</span>` : '');
   function cardRow(b, M, st) {
     const c = b.card, s = st.cards[c.key], alt = model.by[c.key + '~alt']?.card;
-    return { key: c.key, name: c.name, set: c.set, custom: !!c.custom, sub: `${c.role === 'group' ? 'idx-only · ' : ''}${c.set} #${c.number}${alt ? ` · ${c.line}/${alt.line}${c.est ? '*' : ''}` : c.line ? ' · ' + c.line : ''}`, last: s.last, lastTxt: s.last != null ? money(s.last) : '—', metric: M.get(s), score: s.score, tag: s.tag, ch: st.ch[c.key], basket: c.basket || slug(c.set), setup: edgeLive(c.key), sprite: c.sprite };
+    return { key: c.key, name: c.name, set: c.set, custom: !!c.custom, sub: `${c.mine ? '✎ ' : ''}${c.role === 'group' ? 'idx-only · ' : ''}${c.set} #${c.number}${alt ? ` · ${c.line}/${alt.line}${c.est ? '*' : ''}` : c.line ? ' · ' + c.line : ''}`, last: s.last, lastTxt: s.last != null ? money(s.last) : '—', metric: M.get(s), score: s.score, tag: s.tag, ch: st.ch[c.key], basket: c.basket || slug(c.set), setup: edgeLive(c.key), sprite: c.sprite };
   }
   function idxRow(x, M, st) {
     const s = st.idx[x.id];
@@ -538,6 +589,20 @@
     const showUnder = state.collapsed.includes('under'), under = allMains.filter((b) => !Model.aboveMin(model, b));
     const mains = showUnder ? allMains : allMains.filter((b) => Model.aboveMin(model, b)); // slabs under the minimum price are hidden unless shown
     let html = '';
+    // Setups firing (backtest-supported), shown inside ★ TOP
+    const setupsBlock = () => {
+      let h = '';
+      const e = edge();
+      if (!e) h = '<tr><td colspan="5" class="empty">Testing setups against history…</td></tr>';
+      else {
+        // Rank: confirmed first, then how many separate setups are firing on the card, then the best one's evidence.
+        const picks = e.ok ? e.picks.filter((p) => model.by[p.key]).map((p) => ({ ...p, nRules: p.rules.length })).sort((a, b) => (a.status === 'confirmed' ? 0 : 1) - (b.status === 'confirmed' ? 0 : 1) || b.nRules - a.nRules || (a.best.p ?? 1) - (b.best.p ?? 1)) : [];
+        const q = picks.length ? Math.max(...picks.map((p) => p.best.q ?? 1)) : null;
+        const note = `<tr class="sec"><td colspan="5"><p class="setupnote">${esc(Edge.verdict(e))}${picks.some((p) => p.status === 'promising') ? ` <b>◇ promising</b> = beat other cards in the past but didn't survive the luck correction${q != null ? ` (up to ~${Math.round(q * 100)}% of these could be flukes)` : ''}; <b>◆ confirmed</b> = did. Sorted by how many setups agree (×N). ${picks.length} of ${Object.keys(model.by).length} card lines — a lead to research, not a buy signal.` : ''}</p></td></tr>`;
+        h = note + (picks.length ? picks.map((p) => { const r = cardRow(model.by[p.key], M, st); r.sub = `${p.status === 'confirmed' ? '◆' : '◇'}${p.nRules > 1 ? '×' + p.nRules : ''} ${p.best.label} · ${p.best.ago === 0 ? 'today' : p.best.ago + 'd ago'} · ${Edge.pct(p.best.vsPeers, 1)} vs peers${(() => { const f = fwdOf(p.best.id); return f?.n ? ` · live ${Edge.pct(f.vsPeers, 0)} (${f.n})` : ''; })()}${(() => { const q = Model.liquidity(model, model.by[p.key]); return q.wide ? ` · ⚠ spread ${q.spread.toFixed(1)}×` : ''; })()}`; return rowHtml(r, M, p.status === 'confirmed' ? ' setup-conf' : ' setup-prom'); }).join('') : '<tr><td colspan="5" class="empty">No tested setup has fired in the last 7 days.</td></tr>');
+      }
+      return h;
+    };
     if (view === 'sets') {
       // Ladders = one row per character/theme (its all-eras index when it spans eras); per-era splits sit in collapsible sections.
       const all = Object.values(model.idx), lad = { char: Model.ladder(model, 'char'), theme: Model.ladder(model, 'theme') };
@@ -558,17 +623,6 @@
         const tk = 'sec:' + key, open = fold ? state.collapsed.includes(tk) : !state.collapsed.includes(tk); // folded sections: toggled = open
         return `<tr class="sec" data-toggle="${tk}"><td colspan="5">${open ? '▾' : '▸'} ${title} <span class="dim">${xs.length}</span></td></tr>` + (open ? rows.map((r) => rowHtml(r, M)).join('') : '');
       }).join('');
-    } else if (view === 'setups') { // cards where a tested setup fired in the last 7 days
-      const e = edge();
-      if (!e) html = '<tr><td colspan="5" class="empty">Testing setups against history…</td></tr>';
-      else {
-        // Rank: confirmed first, then how many separate setups are firing on the card, then the best one's evidence.
-        const picks = e.ok ? e.picks.filter((p) => model.by[p.key]).map((p) => ({ ...p, nRules: p.rules.length })).sort((a, b) => (a.status === 'confirmed' ? 0 : 1) - (b.status === 'confirmed' ? 0 : 1) || b.nRules - a.nRules || (a.best.p ?? 1) - (b.best.p ?? 1)) : [];
-        const q = picks.length ? Math.max(...picks.map((p) => p.best.q ?? 1)) : null;
-        const note = `<tr class="sec"><td colspan="5"><p class="setupnote">${esc(Edge.verdict(e))}${picks.some((p) => p.status === 'promising') ? ` <b>◇ promising</b> = beat other cards in the past but didn't survive the luck correction${q != null ? ` (up to ~${Math.round(q * 100)}% of these could be flukes)` : ''}; <b>◆ confirmed</b> = did. Sorted by how many setups agree (×N). ${picks.length} of ${Object.keys(model.by).length} card lines — a lead to research, not a buy signal.` : ''}</p></td></tr>`;
-        html = note + (picks.length ? picks.map((p) => { const r = cardRow(model.by[p.key], M, st); r.sub = `${p.status === 'confirmed' ? '◆' : '◇'}${p.nRules > 1 ? '×' + p.nRules : ''} ${p.best.label} · ${p.best.ago === 0 ? 'today' : p.best.ago + 'd ago'} · ${Edge.pct(p.best.vsPeers, 1)} vs peers${(() => { const f = fwdOf(p.best.id); return f?.n ? ` · live ${Edge.pct(f.vsPeers, 0)} (${f.n})` : ''; })()}${(() => { const q = Model.liquidity(model, model.by[p.key]); return q.wide ? ` · ⚠ spread ${q.spread.toFixed(1)}×` : ''; })()}`; return rowHtml(r, M, p.status === 'confirmed' ? ' setup-conf' : ' setup-prom'); }).join('') : '<tr><td colspan="5" class="empty">No tested setup has fired in the last 7 days.</td></tr>');
-      }
-      html += fwdSection();
     } else if (view === 'zone') { // tradable slabs by gauge zone, best prospects first
       const G = tpiAll(), L = Model.GRADE_LABEL[state.grade];
       const groups = ['buy', 'watch', 'late', 'neutral', 'avoid'].map((z) => [z, G.ranked.filter((c) => c.zone === z)]);
@@ -578,6 +632,8 @@
         const tk = 'zone:' + z, open = z === 'buy' || z === 'watch' ? !state.collapsed.includes(tk) : state.collapsed.includes(tk);
         return `<tr class="sec" data-toggle="${tk}"><td colspan="5">${open ? '▾' : '▸'} ${TPI.ZONES[z].label} <span class="dim">${xs.length} · ${esc(TPI.ZONES[z].note)}</span></td></tr>` + (open ? xs.map((c) => { const r = cardRow(c.b, M, st); r.sub = `trend ${sgn(c.t)} ${c.roc == null ? '' : c.roc > 0.05 ? '▲' : c.roc < -0.05 ? '▼' : '▬'} · value ${sgn(c.v)} (${TPI.vlabel(c.v).toLowerCase()})${c.liq.wide ? ` · ⚠ spread ${c.liq.spread.toFixed(1)}×` : ''}`; return rowHtml(r, M, ' zrow z-' + z); }).join('') : '');
       }).join('') || '<tr><td colspan="5" class="empty">No tradable slab has a gauge reading yet.</td></tr>';
+      const so = state.collapsed.includes('zone:setups');
+      html += `<tr class="sec" data-toggle="zone:setups"><td colspan="5">${so ? '▾' : '▸'} SETUPS FIRING <span class="dim">backtested indicator setups in the last 7 days</span></td></tr>` + (so ? setupsBlock() : '') + fwdSection();
     } else if (view === 'lag') { // a neighbouring grade jumped, this grade hasn't followed
       const L = Model.GRADE_LABEL, rows = model.dense ? [] : lagList(), e = EDGE[state.grade];
       const bt = ['lagUp', 'lagDown'].map((id) => e?.ok ? e.results.find((r) => r.id === id) : null).filter((x) => x && x.n);
@@ -758,7 +814,7 @@
     const nSets = Object.values(model.idx).filter((x) => x.kind === 'set').length;
     $('status').textContent = anyDemo
       ? `DEMO · ${all.filter((b) => !b.demo).length}/${all.length} cards live${last ? ' · last fetch ' + last : ''}`
-      : `LIVE · ${all.length} cards · ${nSets} sets · ${last || 'no fetch log'}${STATUS?.dailyRemaining != null ? ' · ' + STATUS.dailyRemaining + ' credits left' : ''}${window.SLABDEX_BUILD ? ' · build ' + window.SLABDEX_BUILD : ''}`;
+      : `LIVE · ${all.length} cards · ${nSets} sets · ${last || 'no fetch log'}${STATUS?.dailyRemaining != null ? ' · ' + STATUS.dailyRemaining + ' credits left' : ''}${window.SLABDEX_BUILD ? ' · build ' + window.SLABDEX_BUILD : ''}${state.mine ? ` · ✎ MY PRICES (${mineCount()})` : ''}`;
   }
 
   // Consensus across grades is grade-independent, so it's computed once per data load.
@@ -766,7 +822,7 @@
   function consensusOnce() {
     if (CONS) return CONS;
     const models = {};
-    for (const g of ['psa7', 'psa8', 'psa9', 'psa10']) { const m = g === state.grade ? model : Model.buildModel(WL, SERIES, g); if (Object.keys(m.by).length) models[g] = m; }
+    for (const g of ['psa7', 'psa8', 'psa9', 'psa10']) { const m = g === state.grade ? model : buildModel(g); if (Object.keys(m.by).length) models[g] = m; }
     return (CONS = Model.consensus(models));
   }
   // ---------- setup backtest (js/edge.js): once per grade, computed just after first paint ----------
@@ -790,7 +846,7 @@
       const done = (res) => { EDGE[g] = res; edgePending = null; if (model.grade === g) { rankIndicators(); renderBrief(); refresh({ keepView: true }); } };
       const onMain = () => setTimeout(() => {
         if (model.grade !== g) { edgePending = null; return; }
-        let res; try { res = Edge.run(model, { others: ['psa7', 'psa8', 'psa9', 'psa10'].filter((x) => x !== g).map(otherModel) }); } catch (err) { console.error(err); res = { ok: false, reason: 'backtest failed' }; }
+        let res; try { const sm = state.mine ? siteModel(g) : model; res = Edge.run(sm, { others: ['psa7', 'psa8', 'psa9', 'psa10'].filter((x) => x !== g).map((x) => (state.mine ? siteModel(x) : otherModel(x))) }); } /* collected data only: your prices never enter the backtest */ catch (err) { console.error(err); res = { ok: false, reason: 'backtest failed' }; }
         done(res);
       }, 40);
       // The backtest is the heaviest job (~1 s on a fast laptop, several on a phone): run it in a background worker so
@@ -816,7 +872,7 @@
     btns.sort((a, b) => (b.dataset.v === 'guide') - (a.dataset.v === 'guide') || (ev[b.dataset.v] ?? 0) - (ev[a.dataset.v] ?? 0)).forEach((b) => bar.appendChild(b));
   }
   const OTHER = {};
-  const otherModel = (g) => (OTHER[g] ||= Model.buildModel(WL, SERIES, g)); // other grades, for cross-grade setups
+  const otherModel = (g) => (OTHER[g] ||= buildModel(g)); // other grades, for cross-grade setups
   const edgeLive = (k) => { const e = EDGE[state.grade]; return e?.ok ? e.picks.find((p) => p.key === k) || null : null; };
   function setupLine(cur, ratio) {
     if (ratio || cur.isIndex) return '';
@@ -864,7 +920,7 @@
   function prospectTile(c) {
     const card = c.b.card, L = Model.GRADE_LABEL[state.grade];
     return `<button class="ptile z-${c.zone}" type="button" data-open="${c.k}" title="Open ${esc(card.name)} on the chart">
-      <span class="pt-top">${keyIcon(c.k)}<span class="pt-name"><b>${esc(card.name)}</b><span class="dim">${esc(card.set)} #${esc(card.number)} · ${L}</span></span></span>
+      <span class="pt-top">${keyIcon(c.k)}<span class="pt-name"><b>${card.mine ? '✎ ' : ''}${esc(card.name)}</b><span class="dim">${esc(card.set)} #${esc(card.number)} · ${L}</span></span></span>
       ${gaugeSvg(c.t, { size: 112 })}
       <span class="pt-row"><span>${money(c.b.close[c.s.last])}</span>${rocTxt(c.roc)}${zoneChip(c.zone)}</span>
       <span class="pt-row small"><span class="dim">value</span>${valueBar(c.v)}<span>${esc(TPI.vlabel(c.v))}</span></span>
@@ -1039,6 +1095,14 @@
 
   // Keep the same printing when switching grades (the '~alt' line is 1st Ed in one grade, Unl in another).
   const ptag = (line) => (!line ? '' : /1st/i.test(line) ? '1st' : /unl/i.test(line) ? 'unl' : /reverse|upper/i.test(line) ? 'hi' : /holo|lower/i.test(line) ? 'lo' : '');
+  // MY PRICES changed (toggle or an edited price while it's on): every model and cache is rebuilt from the new data.
+  function syncMine() { const b = $('mineBtn'); if (!b) return; b.classList.toggle('on', !!state.mine); b.setAttribute('aria-pressed', String(!!state.mine)); const n = mineCount(); b.textContent = `✎ MY PRICES${n ? ' ' + n : ''}`; b.title = state.mine ? `Using your ${n} what-if price entr${n === 1 ? 'y' : 'ies'} as sales everywhere (lists, gauges, zones, estimates). Click to go back to collected data only.` : `Use your what-if prices (${n}) as sales everywhere on the page — lists, gauges, zones, estimates. The backtest and forward record always use collected data only.`; }
+  function reloadData() {
+    for (const k of Object.keys(OTHER)) delete OTHER[k];
+    for (const k of Object.keys(GZ)) delete GZ[k];
+    CONS = null; LAGS = null; SQS = null;
+    rebuild();
+  }
   function rebuild() {
     const shown = model?.by[curKey()]?.card;
     model = buildModel(state.grade);
@@ -1071,12 +1135,13 @@
     document.addEventListener('click', (e) => { const g = e.target.closest('[data-grade]'); if (!g) return; e.stopPropagation(); e.preventDefault(); state.grade = g.dataset.grade; rebuild(); }, true); // 'Switch to PSA 8' links
     $('groupBtn').addEventListener('click', () => { state.group = !state.group; renderWatchlist(); save(); });
     $('sigStar').addEventListener('click', () => toggleStar($('sigStar').dataset.k));
-    $('sigCtx').addEventListener('change', (e) => { const pi = e.target.closest('input[data-pop]'); if (!pi) return; const [k, g] = pi.dataset.pop.split('|'); const v = Number(String(pi.value).replace(/[^0-9]/g, '')); state.pops = { ...(state.pops || {}) }; const cur = { ...(state.pops[k] || {}) }; if (v > 0) cur[g] = v; else delete cur[g]; cur.t = new Date().toISOString().slice(0, 10); if (PG.some((x) => cur[x] > 0)) state.pops[k] = cur; else delete state.pops[k]; save(); draw({ keepView: true }); });
-    $('sigCtx').addEventListener('click', (e) => { const b = e.target.closest('[data-popcopy]'); if (!b) return; e.stopPropagation(); const k = b.dataset.popcopy, me = popsAll()[k]; if (!me) return; const line = JSON.stringify({ key: k, t: me.t || new Date().toISOString().slice(0, 10), psa7: me.psa7 ?? null, psa8: me.psa8 ?? null, psa9: me.psa9 ?? null, psa10: me.psa10 ?? null }) + ','; (navigator.clipboard?.writeText(line) || Promise.reject()).then(() => { b.textContent = '✓ copied — paste into data/pops.json'; }, () => { window.prompt('Copy this line into data/pops.json:', line); }); }, true);
-    $('sigCtx').addEventListener('change', (e) => { const inp = e.target.closest('input[data-wi]'); if (!inp) return; const k = inp.dataset.wi; state.wi = { ...(state.wi || {}) }; if (inp.value.trim()) state.wi[k] = inp.value.trim(); else delete state.wi[k]; save(); draw({ keepView: true }); });
+    $('sigCtx').addEventListener('change', (e) => { const pi = e.target.closest('input[data-pop]'); if (!pi) return; const [k, g] = pi.dataset.pop.split('|'); const v = Number(String(pi.value).replace(/[^0-9]/g, '')); state.pops = { ...(state.pops || {}) }; const cur = { ...(state.pops[k] || {}) }; if (v > 0) cur[g] = v; else delete cur[g]; cur.t = new Date().toLocaleDateString('en-CA'); if (PG.some((x) => cur[x] > 0)) state.pops[k] = cur; else delete state.pops[k]; save(); redrawKeepFocus(); });
+    $('sigCtx').addEventListener('click', (e) => { const b = e.target.closest('[data-popcopy]'); if (!b) return; e.stopPropagation(); const k = b.dataset.popcopy, me = popsAll()[k]; if (!me) return; const line = JSON.stringify({ key: k, t: me.t || new Date().toLocaleDateString('en-CA'), psa7: me.psa7 ?? null, psa8: me.psa8 ?? null, psa9: me.psa9 ?? null, psa10: me.psa10 ?? null }) + ','; (navigator.clipboard?.writeText(line) || Promise.reject()).then(() => { b.textContent = '✓ copied — paste into data/pops.json'; }, () => { window.prompt('Copy this line into data/pops.json:', line); }); }, true);
+    $('sigCtx').addEventListener('change', (e) => { const inp = e.target.closest('input[data-wi]'); if (!inp) return; const k = inp.dataset.wi; state.wi = { ...(state.wi || {}) }; if (inp.value.trim()) state.wi[k] = inp.value.trim(); else delete state.wi[k]; save(); redrawKeepFocus(state.mine ? reloadData : null); });
     $('sigCtx').addEventListener('keydown', (e) => { if (e.key === 'Enter' && e.target.matches('input[data-wi], input[data-pop]')) e.target.blur(); e.stopPropagation(); });
     $('sigCtx').addEventListener('click', (e) => { if (e.target.closest('input[data-wi], input[data-pop]')) { e.stopPropagation(); return; } if (e.target.closest('[data-witog]')) { e.stopPropagation(); state.whatIf = state.whatIf ? 0 : 1; save(); draw({ keepView: true }); return; } if (e.target.closest('[data-gtoggle]')) { state.collapsed = state.collapsed.includes('gauge:open') ? state.collapsed.filter((x) => x !== 'gauge:open') : [...state.collapsed, 'gauge:open']; save(); draw({ keepView: true }); return; } const b = e.target.closest('.ctx-row[data-k]'); if (b) select(b.dataset.k); });
     $('helpBtn').addEventListener('click', () => { $('help').hidden = !$('help').hidden; });
+    $('mineBtn').addEventListener('click', () => { state.mine = state.mine ? 0 : 1; save(); syncMine(); reloadData(); });
     $('gaugesBtn').addEventListener('click', () => { state.dash = state.dash ? 0 : 1; save(); showDash(); });
     $('dash').addEventListener('click', (e) => {
       if (e.target.closest('[data-close-dash]')) { state.dash = 0; save(); showDash(); return; }
@@ -1151,10 +1216,13 @@
     chart.onLayout = (r) => { state.paneRatios = { ...r }; save(); };
     try { await load(); } catch (e) { $('status').textContent = 'Could not load data/ — ' + e.message; return; }
     if (!WL || !Object.keys(SERIES).length) { $('status').textContent = 'NO DATA · run the discovery or fetch workflow'; return; }
+    pruneNotes(); syncMine();
     if (state.grade === 'raw') state.grade = WL.primaryGrade || 'psa8'; // RAW view retired
+    if (state.wlView === 'setups') state.wlView = 'zone'; // SETUPS now lives inside ★ TOP
     if (!hadSaved && WL.primaryGrade) state.grade = WL.primaryGrade; // deepest clean grade, chosen by discover
+    state.wlView = 'zone'; state.dash = 0; // every visit opens on ★ TOP (best prospects), chart showing the #1 prospect
     bind();
-    try { rebuild(); } catch (err) { console.error(err); $('status').textContent = 'Display error — ' + err.message + ' (try Shift-reload; if it persists, the saved layout is reset next load)'; try { localStorage.removeItem('slabdex'); } catch (e) {} }
+    try { rebuild(); const top = tpiAll().buy[0]; if (top && top.k !== state.key) select(top.k); } catch (err) { console.error(err); $('status').textContent = 'Display error — ' + err.message + ' (try Shift-reload; if it persists, the saved layout is reset next load)'; try { localStorage.removeItem('slabdex'); } catch (e) {} }
   }
   start();
 })();
