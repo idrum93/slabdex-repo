@@ -39,14 +39,19 @@
       const s = SERIES[c.key];
       if (!s) continue;
       if (grade === 'raw') { if (c.raw !== false) lines.push(...rawLines(c, s)); continue; } // raw:false cards (EX, DP, index-only) only have backfilled RAW that would go stale
-      const pts = s.grades?.[grade];
-      if (!pts?.length) continue;
+      // WL.manual[key][grade] = [{ t, p }]: your own sold prices (MY PRICES mode in the page). They join the main line as
+      // sales (a same-day site point is replaced) so every reading — market line, gauges, zones, lists — uses them.
+      const man = WL.manual?.[c.key]?.[grade] || null;
+      const pts = s.grades?.[grade] || [];
+      if (!pts.length && !man?.length) continue;
       const demo = s.source === 'demo';
       const kind = demo ? null : C.pooledKind(s.printings);
       const r = demo ? { main: pts, alt: [], out: [], split: null } : C.classify(pts, kind, { ...C.gradedOpts(s, grade), names: WL.printingNames?.[c.key] });
       const mixed = r.kind && !r.split && !r.same ? (r.kind === '1st' ? '1st+Unl mixed' : 'holo+rev mixed') : null;
       const same = r.same ? (r.kind === '1st' ? '1st/Unl · one price level' : 'holo/rev · one price level') : null;
-      lines.push({ key: c.key, card: { ...c, line: r.split ? r.split.mainLabel : mixed || same, est: !!r.split, mixed: !!mixed }, pts: r.main, demo });
+      let main = r.main;
+      if (man?.length) { const md = new Set(man.map((x) => x.t)); main = [...main.filter((x) => !md.has(x.t)), ...man.map((x) => ({ t: x.t, p: x.p, n: x.n || 1, m: 1, ps: x.ps || null }))].sort((a, b) => (a.t < b.t ? -1 : a.t > b.t ? 1 : 0)); }
+      lines.push({ key: c.key, card: { ...c, line: r.split ? r.split.mainLabel : mixed || same, est: !!r.split, mixed: !!mixed, mine: man?.length || 0 }, pts: main, demo });
       if (r.split && r.alt.length >= 4) lines.push({ key: c.key + '~alt', card: { ...c, key: c.key + '~alt', line: r.split.altLabel, est: true, virtual: true }, pts: r.alt, demo });
     }
     const dates = new Set();
@@ -56,7 +61,8 @@
     const by = {};
     for (const l of lines) {
       const raw = new Array(axis.length).fill(null), vol = new Array(axis.length).fill(null);
-      l.pts.forEach((p) => { const i = pos.get(p.t); if (i == null) return; raw[i] = p.p; vol[i] = p.n ?? p.v7 ?? null; });
+      const each = new Map(); // your own prices: the individual sales of a day, so several entered on one day count as several sales
+      l.pts.forEach((p) => { const i = pos.get(p.t); if (i == null) return; raw[i] = p.p; vol[i] = p.n ?? p.v7 ?? null; if (p.ps) each.set(i, p.ps); });
       const first = I.firstIdx(raw);
       if (!l.demo) for (let i = Math.max(0, first); i < vol.length; i++) if (vol[i] == null) vol[i] = 0;
       // Graded: market line = median of the last 3 sales, carried forward. Raw: provider's daily market price.
@@ -64,7 +70,7 @@
       if (l.dense || l.demo) close = I.ffill(raw).map((v, i) => (i < first ? null : v));
       else {
         const mkt = new Array(axis.length).fill(null), last3 = [];
-        raw.forEach((v, i) => { if (!I.isN(v)) return; last3.push(v); if (last3.length > 3) last3.shift(); mkt[i] = C.median(last3); });
+        raw.forEach((v, i) => { if (!I.isN(v)) return; for (const x of each.get(i) || [v]) { last3.push(x); if (last3.length > 3) last3.shift(); } mkt[i] = C.median(last3); });
         close = I.ffill(mkt).map((v, i) => (i < first ? null : v));
       }
       by[l.key] = { card: l.card, close, sales: l.dense ? null : raw, vol, demo: !!l.demo, saleN: l.pts.length, dense: !!l.dense };
@@ -661,7 +667,7 @@
   // price ratio already reflects its own scarcity, so it's left alone.
   function pairRatio(ml, mh, key, card, popAdj = null) {
     const r = pairRatioBase(ml, mh, key, card); if (!r || r.src === 'own' || !popAdj) return r;
-    const a = popAdj(ml.grade, mh.grade); return a ? { ...r, v: r.v * a.mult, popAdj: a } : r;
+    const a = popAdj(ml.grade, mh.grade); return a && Number.isFinite(a.mult) ? { ...r, v: r.v * a.mult, popAdj: a } : r; // not enough reference cards yet → unadjusted
   }
   function pairRatioBase(ml, mh, key, card) {
     const fam = card.family || String(card.era || '').split(' ')[0];
