@@ -6,20 +6,21 @@
   const I = window.Ind;
   const C = window.Clean;
 
-  const state = { v: 3, key: null, grade: 'psa9', vs: 'idx:all', range: 365, res: 'D', ind: { st: 1, sma20: 1, sma50: 1, hma: 0, vol: 1, rs: 1, rsi: 1, macd: 0, vzo: 0 }, guide: 1, dash: 0, mine: 0, whatIf: 0, wi: {}, pops: {}, sort: 'score', dir: -1, wlView: 'cards', wlMetric: 'c30', merge: false, print: 'main', group: false, collapsed: [], stars: [] };
+  const state = { v: 3, key: null, grade: 'psa9', vs: 'idx:all', range: 365, res: 'D', ind: { st: 1, sma20: 1, sma50: 1, hma: 0, vol: 1, rs: 1, rsi: 1, macd: 0, vzo: 0 }, guide: 1, dash: 0, mine: 1, use: {}, whatIf: 0, wi: {}, pops: {}, sort: 'score', dir: -1, wlView: 'cards', wlMetric: 'c30', merge: false, print: 'main', group: false, collapsed: [], stars: [] };
   let hadSaved = false;
   try { if (/[?&]reset\b/.test(location.search)) localStorage.removeItem('slabdex'); } catch (e) {} // ?reset = default layout (your pops and what-if prices are kept: they live under 'slabdex-notes')
   try { const sv = JSON.parse(localStorage.getItem('slabdex') || 'null'); if (sv && sv.v === 3) { Object.assign(state, sv); hadSaved = true; if (!('st' in state.ind)) state.ind.st = 1; } } catch (e) {} // older saved layouts are ignored
   // Your notes — hand-entered pop counts and what-if prices — live under their own key, so a layout reset (?reset) or a
   // display error never wipes them. Entries for cards that leave the tracked set are dropped on load (pruneNotes).
-  try { const nt = JSON.parse(localStorage.getItem('slabdex-notes') || 'null'); if (nt) { state.pops = { ...(nt.pops || {}), ...(state.pops || {}) }; state.wi = { ...(nt.wi || {}), ...(state.wi || {}) }; } } catch (e) {}
-  const save = () => { try { localStorage.setItem('slabdex', JSON.stringify(state)); localStorage.setItem('slabdex-notes', JSON.stringify({ pops: state.pops || {}, wi: state.wi || {} })); } catch (e) {} };
+  try { const nt = JSON.parse(localStorage.getItem('slabdex-notes') || 'null'); if (nt) { state.pops = { ...(nt.pops || {}), ...(state.pops || {}) }; state.wi = { ...(nt.wi || {}), ...(state.wi || {}) }; state.use = { ...(nt.use || {}), ...(state.use || {}) }; } } catch (e) {}
+  const save = () => { try { localStorage.setItem('slabdex', JSON.stringify(state)); localStorage.setItem('slabdex-notes', JSON.stringify({ pops: state.pops || {}, wi: state.wi || {}, use: state.use || {} })); } catch (e) {} };
   function pruneNotes() {
     const keep = new Set([...(WL?.cards || []), ...(WL?.extra || [])].map((c) => c.key));
     if (keep.size < 10) return; // a partial / failed load must never wipe your notes
     let n = 0;
     for (const k of Object.keys(state.pops || {})) if (!keep.has(k)) { delete state.pops[k]; n++; }
     for (const k of Object.keys(state.wi || {})) if (!keep.has(k.split('|')[0])) { delete state.wi[k]; n++; }
+    for (const k of Object.keys(state.use || {})) if (!keep.has(k)) { delete state.use[k]; n++; }
     if (n) { console.info(`notes: dropped ${n} entr${n === 1 ? 'y' : 'ies'} for cards no longer tracked`); save(); }
   }
 
@@ -60,11 +61,13 @@
   }
   function manualMap() {
     const m = {};
-    for (const [k, txt] of Object.entries(state.wi || {})) { const [key, g] = k.split('|'); const e = parseWiEntries(txt); if (e.length) (m[key] ||= {})[g] = e; }
+    if (!state.mine) return m; // master switch (toolbar) paused
+    for (const [k, txt] of Object.entries(state.wi || {})) { const [key, g] = k.split('|'); if (!state.use?.[key]) continue; const e = parseWiEntries(txt); if (e.length) (m[key] ||= {})[g] = e; } // only cards you switched to USE IN READINGS
     return m;
   }
-  const mineCount = () => Object.values(manualMap()).reduce((s, o) => s + Object.keys(o).length, 0);
-  const WLX = () => (state.mine ? { ...WL, manual: manualMap() } : WL); // the watchlist the page's models are built from
+  const mineCount = () => Object.keys(manualMap()).length; // cards whose readings use your prices
+  const usingMine = (id) => !!(state.mine && state.use?.[String(id || '').replace(/~alt$/, '')]);
+  const WLX = () => { const m = manualMap(); return Object.keys(m).length ? { ...WL, manual: m } : WL; }; // the watchlist the page's models are built from
   const buildModel = (grade) => Model.buildModel(WLX(), SERIES, grade);
   const siteModel = (grade) => Model.buildModel(WL, SERIES, grade); // collected data only (backtest)
   const signals = (close, vol, bench) => Model.signals(close, vol, bench, { dense: model?.dense });
@@ -363,7 +366,7 @@
   }
   const wiKey = (id, g) => `${id.replace(/~alt$/, '')}|${g}`;
   function wiOverrides(id) {
-    if (!state.whatIf || state.mine) return null; // with MY PRICES on, your prices are already in the data as sales
+    if (!state.whatIf || usingMine(id)) return null; // this card uses your prices in its readings: they're already in the data as sales
     const o = {}; for (const g of ['psa7', 'psa8', 'psa9', 'psa10']) { const p = parseWi(state.wi?.[wiKey(id, g)]); if (p) o[g] = p; }
     return Object.keys(o).length ? o : null;
   }
@@ -427,7 +430,7 @@
     let curve = '';
     if (me) {
       const ov = wiOverrides(cur.id);
-      curve = curveBlock(null, state.mine && cur.card.mine ? '✎ with your prices (MY PRICES on) · each grade vs its neighbours' : 'collected data · each grade vs its neighbours') + (ov ? `<div class="wi-curve">${curveBlock(ov, 'WHAT-IF · with your prices')}</div>` : '');
+      curve = curveBlock(null, usingMine(cur.id) ? '✎ with your prices (USE IN READINGS on) · each grade vs its neighbours' : 'collected data · each grade vs its neighbours') + (ov ? `<div class="wi-curve">${curveBlock(ov, 'WHAT-IF · with your prices')}</div>` : '');
       curve += `<p class="trk dim">Green = cheap for its scarcity, red = rich, grey = within the scatter; ᵉ = lowest / highest grade, judged against the whole curve (the middle grades against their neighbours).</p>`;
     }
     return `<h3>POPULATION <span class="dim">PSA pop · hand-entered${me ? ` · ${esc(me.t || '')}${me.src === 'local' ? ' · this device' : ''}` : ''}</span></h3>${counts ? `<p class="trk">${counts}</p>` : ''}<p class="trk">${esc(note)}</p>${inputs}${curve}`;
@@ -447,8 +450,8 @@
       return `<button class="ctx-row val${r.grade === model.grade ? ' on' : ''}${r.user ? ' wi' : ''}" data-grade="${r.grade}" type="button" title="${esc(tip)}"><span class="ck">${L[r.grade]}</span><span class="cn">${lastTxt}<br>${estTxt}</span><span class="cv">${gap}</span></button>` + (state.whatIf || state.mine ? `<input class="wi-in" data-wi="${esc(wiKey(cur.id, r.grade))}" type="text" inputmode="decimal" placeholder="${L[r.grade]} prices you found, e.g. 695 750 644" value="${esc(state.wi?.[wiKey(cur.id, r.grade)] || '')}" aria-label="What-if ${L[r.grade]} prices">` : '');
     }).join('');
     const bad = Model.gradeLadder(allModels(), cur.id, cur.card).inconsistent ? '<p class="trk">⚠ This card\'s grade prices are out of order (mixed or mislabeled sales), so these estimates are unreliable.</p>' : '';
-    const wiNote = state.mine ? `<p class="wi-note">✎ MY PRICES on · your prices for this card are used as sales everywhere — market line, lists, gauges, zones, estimates. The backtest and forward record still use collected data only.</p>` : state.whatIf ? `<p class="wi-note">WHAT-IF ${ov ? `· using your ${Object.keys(ov).map((g) => `${L[g]} ${money(ov[g].price)}`).join(', ')} as the current price${E.anchor && ov[E.anchor] ? ` (anchor: ${L[E.anchor]})` : ''}` : '· type prices you found outside the tool (eBay, Alt…) under any grade'}. Estimates only — your inputs are saved on this device and never touch the collected data, signals, backtest or forward record.</p>` : '';
-    return `<h3>VALUE BY GRADE <span class="dim">last sale · estimate · gap</span><button class="wi-tog${state.whatIf ? ' on' : ''}" type="button" data-witog title="What-if: enter sold prices you found elsewhere to see adjusted estimates. Display only.">WHAT-IF ${state.whatIf ? '●' : '○'}</button>${state.whatIf || state.mine ? `<button class="wi-tog mine-tog${state.mine ? ' on' : ''}" type="button" data-minetog title="Use your what-if prices as real sales in this card's readings and everywhere else on the site (lists, gauges, zones, top prospects). Same as ✎ MY PRICES in the toolbar.">USE IN READINGS ${state.mine ? '●' : '○'}</button>` : ''}</h3>${wiNote}${rows}${bad}<p class="trk">Estimates walk from ${L[E.anchor]} (most recent clean sales) using grade-to-grade spreads. Green gap = last sale below the estimate by more than the usual error. ⧗ stale = that grade is overdue for a sale at its usual pace (or 8+ days behind the anchor), so its newest sales are probably not in the data yet and no gap is shown. An estimate, not a quote.</p>`;
+    const wiNote = usingMine(cur.id) ? `<p class="wi-note">✎ USE IN READINGS on for this card · its readings — market price, chart, signal score, gauge, zone, list position, estimates — use your prices; other cards are unaffected (indexes stay on collected data). The backtest and forward record still use collected data only.</p>` : state.whatIf ? `<p class="wi-note">WHAT-IF ${ov ? `· using your ${Object.keys(ov).map((g) => `${L[g]} ${money(ov[g].price)}`).join(', ')} as the current price${E.anchor && ov[E.anchor] ? ` (anchor: ${L[E.anchor]})` : ''}` : '· type prices you found outside the tool (eBay, Alt…) under any grade'}. Estimates only — your inputs are saved on this device and never touch the collected data, signals, backtest or forward record.</p>` : '';
+    return `<h3>VALUE BY GRADE <span class="dim">last sale · estimate · gap</span><button class="wi-tog${state.whatIf ? ' on' : ''}" type="button" data-witog title="What-if: enter sold prices you found elsewhere to see adjusted estimates. Display only.">WHAT-IF ${state.whatIf ? '●' : '○'}</button>${state.whatIf || usingMine(cur.id) ? `<button class="wi-tog mine-tog${usingMine(cur.id) ? ' on' : ''}" type="button" data-minetog="${esc(cur.id.replace(/~alt$/, ''))}" title="Use your what-if prices as this card's real sales — its market price, chart, signal score, gauge, zone and place in the lists. Only this card changes.">USE IN READINGS ${usingMine(cur.id) ? '●' : '○'}</button>` : ''}</h3>${wiNote}${rows}${bad}<p class="trk">Estimates walk from ${L[E.anchor]} (most recent clean sales) using grade-to-grade spreads. Green gap = last sale below the estimate by more than the usual error. ⧗ stale = that grade is overdue for a sale at its usual pace (or 8+ days behind the anchor), so its newest sales are probably not in the data yet and no gap is shown. An estimate, not a quote.</p>`;
   }
   // Cards with a lagging grade right now: the flat grade, the grade that jumped, and the spread between them.
   let LAGS = null;
@@ -814,7 +817,7 @@
     const nSets = Object.values(model.idx).filter((x) => x.kind === 'set').length;
     $('status').textContent = anyDemo
       ? `DEMO · ${all.filter((b) => !b.demo).length}/${all.length} cards live${last ? ' · last fetch ' + last : ''}`
-      : `LIVE · ${all.length} cards · ${nSets} sets · ${last || 'no fetch log'}${STATUS?.dailyRemaining != null ? ' · ' + STATUS.dailyRemaining + ' credits left' : ''}${window.SLABDEX_BUILD ? ' · build ' + window.SLABDEX_BUILD : ''}${state.mine ? ` · ✎ MY PRICES (${mineCount()})` : ''}`;
+      : `LIVE · ${all.length} cards · ${nSets} sets · ${last || 'no fetch log'}${STATUS?.dailyRemaining != null ? ' · ' + STATUS.dailyRemaining + ' credits left' : ''}${window.SLABDEX_BUILD ? ' · build ' + window.SLABDEX_BUILD : ''}${mineCount() ? ` · ✎ your prices on ${mineCount()} card${mineCount() > 1 ? 's' : ''}` : ''}`;
   }
 
   // Consensus across grades is grade-independent, so it's computed once per data load.
@@ -846,7 +849,7 @@
       const done = (res) => { EDGE[g] = res; edgePending = null; if (model.grade === g) { rankIndicators(); renderBrief(); refresh({ keepView: true }); } };
       const onMain = () => setTimeout(() => {
         if (model.grade !== g) { edgePending = null; return; }
-        let res; try { const sm = state.mine ? siteModel(g) : model; res = Edge.run(sm, { others: ['psa7', 'psa8', 'psa9', 'psa10'].filter((x) => x !== g).map((x) => (state.mine ? siteModel(x) : otherModel(x))) }); } /* collected data only: your prices never enter the backtest */ catch (err) { console.error(err); res = { ok: false, reason: 'backtest failed' }; }
+        let res; try { const mine = mineCount() > 0, sm = mine ? siteModel(g) : model; res = Edge.run(sm, { others: ['psa7', 'psa8', 'psa9', 'psa10'].filter((x) => x !== g).map((x) => (mine ? siteModel(x) : otherModel(x))) }); } /* collected data only: your prices never enter the backtest */ catch (err) { console.error(err); res = { ok: false, reason: 'backtest failed' }; }
         done(res);
       }, 40);
       // The backtest is the heaviest job (~1 s on a fast laptop, several on a phone): run it in a background worker so
@@ -1096,7 +1099,13 @@
   // Keep the same printing when switching grades (the '~alt' line is 1st Ed in one grade, Unl in another).
   const ptag = (line) => (!line ? '' : /1st/i.test(line) ? '1st' : /unl/i.test(line) ? 'unl' : /reverse|upper/i.test(line) ? 'hi' : /holo|lower/i.test(line) ? 'lo' : '');
   // MY PRICES changed (toggle or an edited price while it's on): every model and cache is rebuilt from the new data.
-  function syncMine() { const b = $('mineBtn'); if (!b) return; b.classList.toggle('on', !!state.mine); b.setAttribute('aria-pressed', String(!!state.mine)); const n = mineCount(); b.textContent = `✎ MY PRICES${n ? ' ' + n : ''}`; b.title = state.mine ? `Using your ${n} what-if price entr${n === 1 ? 'y' : 'ies'} as sales everywhere (lists, gauges, zones, estimates). Click to go back to collected data only.` : `Use your what-if prices (${n}) as sales everywhere on the page — lists, gauges, zones, estimates. The backtest and forward record always use collected data only.`; }
+  function syncMine() { // toolbar: master switch for every card you set to USE IN READINGS
+    const b = $('mineBtn'); if (!b) return;
+    const n = Object.keys(state.use || {}).filter((k) => Object.keys(state.wi || {}).some((w) => w.startsWith(k + '|'))).length, on = !!state.mine && n > 0;
+    b.classList.toggle('on', on); b.setAttribute('aria-pressed', String(on)); b.hidden = !n;
+    b.textContent = `✎ MY PRICES ${n}${state.mine ? '' : ' (paused)'}`;
+    b.title = state.mine ? `${n} card${n === 1 ? '' : 's'} use your what-if prices in their readings (set per card with USE IN READINGS in the Signal panel). Click to pause all and show collected data only.` : `Paused: every card shows collected data. Click to turn your prices back on for the ${n} card${n === 1 ? '' : 's'} set to USE IN READINGS.`;
+  }
   function reloadData() {
     for (const k of Object.keys(OTHER)) delete OTHER[k];
     for (const k of Object.keys(GZ)) delete GZ[k];
@@ -1137,9 +1146,9 @@
     $('sigStar').addEventListener('click', () => toggleStar($('sigStar').dataset.k));
     $('sigCtx').addEventListener('change', (e) => { const pi = e.target.closest('input[data-pop]'); if (!pi) return; const [k, g] = pi.dataset.pop.split('|'); const v = Number(String(pi.value).replace(/[^0-9]/g, '')); state.pops = { ...(state.pops || {}) }; const cur = { ...(state.pops[k] || {}) }; if (v > 0) cur[g] = v; else delete cur[g]; cur.t = new Date().toLocaleDateString('en-CA'); if (PG.some((x) => cur[x] > 0)) state.pops[k] = cur; else delete state.pops[k]; save(); redrawKeepFocus(); });
     $('sigCtx').addEventListener('click', (e) => { const b = e.target.closest('[data-popcopy]'); if (!b) return; e.stopPropagation(); const k = b.dataset.popcopy, me = popsAll()[k]; if (!me) return; const line = JSON.stringify({ key: k, t: me.t || new Date().toLocaleDateString('en-CA'), psa7: me.psa7 ?? null, psa8: me.psa8 ?? null, psa9: me.psa9 ?? null, psa10: me.psa10 ?? null }) + ','; (navigator.clipboard?.writeText(line) || Promise.reject()).then(() => { b.textContent = '✓ copied — paste into data/pops.json'; }, () => { window.prompt('Copy this line into data/pops.json:', line); }); }, true);
-    $('sigCtx').addEventListener('change', (e) => { const inp = e.target.closest('input[data-wi]'); if (!inp) return; const k = inp.dataset.wi; state.wi = { ...(state.wi || {}) }; if (inp.value.trim()) state.wi[k] = inp.value.trim(); else delete state.wi[k]; save(); redrawKeepFocus(state.mine ? reloadData : null); });
+    $('sigCtx').addEventListener('change', (e) => { const inp = e.target.closest('input[data-wi]'); if (!inp) return; const k = inp.dataset.wi; state.wi = { ...(state.wi || {}) }; if (inp.value.trim()) state.wi[k] = inp.value.trim(); else delete state.wi[k]; save(); redrawKeepFocus(usingMine(k.split('|')[0]) ? reloadData : null); });
     $('sigCtx').addEventListener('keydown', (e) => { if (e.key === 'Enter' && e.target.matches('input[data-wi], input[data-pop]')) e.target.blur(); e.stopPropagation(); });
-    $('sigCtx').addEventListener('click', (e) => { if (e.target.closest('input[data-wi], input[data-pop]')) { e.stopPropagation(); return; } if (e.target.closest('[data-minetog]')) { e.stopPropagation(); state.mine = state.mine ? 0 : 1; save(); syncMine(); reloadData(); return; } if (e.target.closest('[data-witog]')) { e.stopPropagation(); state.whatIf = state.whatIf ? 0 : 1; save(); draw({ keepView: true }); return; } if (e.target.closest('[data-gtoggle]')) { state.collapsed = state.collapsed.includes('gauge:open') ? state.collapsed.filter((x) => x !== 'gauge:open') : [...state.collapsed, 'gauge:open']; save(); draw({ keepView: true }); return; } const b = e.target.closest('.ctx-row[data-k]'); if (b) select(b.dataset.k); });
+    $('sigCtx').addEventListener('click', (e) => { if (e.target.closest('input[data-wi], input[data-pop]')) { e.stopPropagation(); return; } { const mt = e.target.closest('[data-minetog]'); if (mt) { e.stopPropagation(); const k = mt.dataset.minetog; state.use = { ...(state.use || {}) }; if (usingMine(k)) delete state.use[k]; else { state.use[k] = 1; state.mine = 1; } save(); syncMine(); reloadData(); return; } } if (e.target.closest('[data-witog]')) { e.stopPropagation(); state.whatIf = state.whatIf ? 0 : 1; save(); draw({ keepView: true }); return; } if (e.target.closest('[data-gtoggle]')) { state.collapsed = state.collapsed.includes('gauge:open') ? state.collapsed.filter((x) => x !== 'gauge:open') : [...state.collapsed, 'gauge:open']; save(); draw({ keepView: true }); return; } const b = e.target.closest('.ctx-row[data-k]'); if (b) select(b.dataset.k); });
     $('helpBtn').addEventListener('click', () => { $('help').hidden = !$('help').hidden; });
     $('mineBtn').addEventListener('click', () => { state.mine = state.mine ? 0 : 1; save(); syncMine(); reloadData(); });
     $('gaugesBtn').addEventListener('click', () => { state.dash = state.dash ? 0 : 1; save(); showDash(); });

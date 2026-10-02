@@ -51,7 +51,7 @@
       const same = r.same ? (r.kind === '1st' ? '1st/Unl · one price level' : 'holo/rev · one price level') : null;
       let main = r.main;
       if (man?.length) { const md = new Set(man.map((x) => x.t)); main = [...main.filter((x) => !md.has(x.t)), ...man.map((x) => ({ t: x.t, p: x.p, n: x.n || 1, m: 1, ps: x.ps || null }))].sort((a, b) => (a.t < b.t ? -1 : a.t > b.t ? 1 : 0)); }
-      lines.push({ key: c.key, card: { ...c, line: r.split ? r.split.mainLabel : mixed || same, est: !!r.split, mixed: !!mixed, mine: man?.length || 0 }, pts: main, demo });
+      lines.push({ key: c.key, card: { ...c, line: r.split ? r.split.mainLabel : mixed || same, est: !!r.split, mixed: !!mixed, mine: man?.length || 0 }, pts: main, site: man?.length ? r.main : null, demo });
       if (r.split && r.alt.length >= 4) lines.push({ key: c.key + '~alt', card: { ...c, key: c.key + '~alt', line: r.split.altLabel, est: true, virtual: true }, pts: r.alt, demo });
     }
     const dates = new Set();
@@ -59,27 +59,34 @@
     const axis = fillDays([...dates].sort());
     const pos = new Map(axis.map((d, i) => [d, i]));
     const by = {};
-    for (const l of lines) {
+    // One line's daily series. Your own prices (points with ps) set the market price on their day outright — the median of
+    // what you entered — instead of being averaged in with older site sales; later site sales then roll in as usual.
+    function series(l, pts) {
       const raw = new Array(axis.length).fill(null), vol = new Array(axis.length).fill(null);
-      const each = new Map(); // your own prices: the individual sales of a day, so several entered on one day count as several sales
-      l.pts.forEach((p) => { const i = pos.get(p.t); if (i == null) return; raw[i] = p.p; vol[i] = p.n ?? p.v7 ?? null; if (p.ps) each.set(i, p.ps); });
+      const each = new Map();
+      pts.forEach((p) => { const i = pos.get(p.t); if (i == null) return; raw[i] = p.p; vol[i] = p.n ?? p.v7 ?? null; if (p.ps) each.set(i, p.ps); });
       const first = I.firstIdx(raw);
       if (!l.demo) for (let i = Math.max(0, first); i < vol.length; i++) if (vol[i] == null) vol[i] = 0;
       // Graded: market line = median of the last 3 sales, carried forward. Raw: provider's daily market price.
       let close;
       if (l.dense || l.demo) close = I.ffill(raw).map((v, i) => (i < first ? null : v));
       else {
-        const mkt = new Array(axis.length).fill(null), last3 = [];
-        raw.forEach((v, i) => { if (!I.isN(v)) return; for (const x of each.get(i) || [v]) { last3.push(x); if (last3.length > 3) last3.shift(); } mkt[i] = C.median(last3); });
+        const mkt = new Array(axis.length).fill(null); let last3 = [];
+        raw.forEach((v, i) => { if (!I.isN(v)) return; const ps = each.get(i); if (ps) last3 = ps.slice(-3); else { last3.push(v); if (last3.length > 3) last3.shift(); } mkt[i] = C.median(ps ? [...ps].sort((a, b) => a - b) : last3); });
         close = I.ffill(mkt).map((v, i) => (i < first ? null : v));
       }
-      by[l.key] = { card: l.card, close, sales: l.dense ? null : raw, vol, demo: !!l.demo, saleN: l.pts.length, dense: !!l.dense };
+      return { raw, vol, close };
+    }
+    for (const l of lines) {
+      const S = series(l, l.pts);
+      by[l.key] = { card: l.card, close: S.close, sales: l.dense ? null : S.raw, vol: S.vol, demo: !!l.demo, saleN: l.pts.length, dense: !!l.dense };
+      if (l.site) { const T = series(l, l.site); by[l.key].site = { close: T.close, vol: T.vol }; } // collected-data copy: indexes use this, so your prices only move this card
     }
     // Set / era / all indexes are the set baskets only; index-only cards (role 'group') feed character & theme indexes.
     // Lines that blend two printings (couldn't be split) stay viewable but never feed an index — they're noise.
     const mains = Object.keys(by).filter((k) => !by[k].card.virtual && by[k].card.role !== 'group' && !by[k].card.mixed);
     const idx = {};
-    const add = (id, name, kind, keys, extra = {}) => { if (keys.length) idx[id] = { id, name, kind, members: keys, ...makeIndex(axis, keys.map((k) => by[k])), ...extra }; };
+    const add = (id, name, kind, keys, extra = {}) => { if (keys.length) idx[id] = { id, name, kind, members: keys, ...makeIndex(axis, keys.map((k) => by[k].site || by[k])), ...extra }; };
     add('idx:all', 'All tracked', 'all', mains, { sprite: WL.eraSprites?.all || null });
     [...new Set(mains.map((k) => by[k].card.era))].forEach((e) => add('idx:era:' + slug(e), e, 'era', mains.filter((k) => by[k].card.era === e), { sprite: WL.eraSprites?.eras?.[e] || null }));
     [...new Set(mains.map((k) => by[k].card.basket || slug(by[k].card.set)))].forEach((b) => {
