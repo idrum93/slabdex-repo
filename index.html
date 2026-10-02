@@ -6,7 +6,20 @@
 <title>SlabDex</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/styles.css?v=20261001c">
+<script>
+  // Build stamp + on-screen error reporter: if anything breaks, the page says what and where instead of going blank.
+  window.SLABDEX_BUILD = '20261001c';
+  (function () {
+    function show(msg) {
+      var b = document.getElementById('errbar');
+      if (!b) { b = document.createElement('div'); b.id = 'errbar'; b.style.cssText = 'position:fixed;left:0;right:0;bottom:0;z-index:9999;padding:8px 12px;background:#b3261e;color:#fff;font:12px/1.4 monospace;white-space:pre-wrap;max-height:40vh;overflow:auto'; (document.body || document.documentElement).appendChild(b); }
+      b.textContent += (b.textContent ? '\n' : 'SlabDex error (build ' + window.SLABDEX_BUILD + ') — please send this text:\n') + msg;
+    }
+    window.addEventListener('error', function (e) { show((e.message || 'error') + (e.filename ? ' @ ' + e.filename.split('/').pop() + ':' + e.lineno + ':' + e.colno : '')); });
+    window.addEventListener('unhandledrejection', function (e) { show('promise: ' + (e.reason && (e.reason.stack || e.reason.message) || e.reason)); });
+  })();
+</script>
 </head>
 <body>
 <div class="dex" id="dex">
@@ -107,12 +120,12 @@
     <p>On the chart: wheel = zoom time · wheel or drag on the price axis = zoom price · drag = pan · drag a pane divider = resize · double-click = reset.</p>
   </div>
 </div>
-<script src="js/indicators.js"></script>
-<script src="js/chart.js"></script>
-<script src="js/clean.js"></script>
-<script src="js/model.js"></script>
-<script src="js/tpi.js"></script>
-<script src="js/edge.js"></script>
-<script src="js/app.js"></script>
+<script src="js/indicators.js?v=20261001c"></script>
+<script src="js/chart.js?v=20261001c"></script>
+<script src="js/clean.js?v=20261001c"></script>
+<script src="js/model.js?v=20261001c"></script>
+<script src="js/tpi.js?v=20261001c"></script>
+<script src="js/edge.js?v=20261001c"></script>
+<script src="js/app.js?v=20261001c"></script>
 </body>
 </html>

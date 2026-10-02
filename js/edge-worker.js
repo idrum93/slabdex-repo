@@ -1,6 +1,7 @@
 // Background backtest (js/edge.js) so the page never freezes while it runs. The page posts the watchlist and price
 // series once ({type:'init'}), then asks per grade ({type:'run', grade}); models are built here with the same code.
-self.importScripts('indicators.js', 'clean.js', 'model.js', 'tpi.js', 'edge.js');
+const V = self.location.search || ''; // same build as the page (cache-busting)
+self.importScripts(...['indicators.js', 'clean.js', 'model.js', 'tpi.js', 'edge.js'].map((f) => f + V));
 let WL = null, SERIES = null, MODELS = {};
 const GRADES = ['psa7', 'psa8', 'psa9', 'psa10'];
 self.onmessage = (e) => {

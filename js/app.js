@@ -696,7 +696,7 @@
     const nSets = Object.values(model.idx).filter((x) => x.kind === 'set').length;
     $('status').textContent = anyDemo
       ? `DEMO · ${all.filter((b) => !b.demo).length}/${all.length} cards live${last ? ' · last fetch ' + last : ''}`
-      : `LIVE · ${all.length} cards · ${nSets} sets · ${last || 'no fetch log'}${STATUS?.dailyRemaining != null ? ' · ' + STATUS.dailyRemaining + ' credits left' : ''}`;
+      : `LIVE · ${all.length} cards · ${nSets} sets · ${last || 'no fetch log'}${STATUS?.dailyRemaining != null ? ' · ' + STATUS.dailyRemaining + ' credits left' : ''}${window.SLABDEX_BUILD ? ' · build ' + window.SLABDEX_BUILD : ''}`;
   }
 
   // Consensus across grades is grade-independent, so it's computed once per data load.
@@ -713,7 +713,7 @@
     if (EW !== undefined) return EW;
     try {
       if (window.__SLABDEX_DATA__ || typeof Worker === 'undefined') return (EW = null);
-      EW = new Worker('js/edge-worker.js');
+      EW = new Worker('js/edge-worker.js?v=' + (window.SLABDEX_BUILD || ''));
       EW.onmessage = (e) => { const d = e.data, q = WORKQ[d.grade]; if (!q) return; delete WORKQ[d.grade]; if (d.type === 'done') q.done(d.result); else q.fallback(); };
       EW.onerror = (e) => { console.warn('edge worker failed, using the main thread', e.message); const qs = Object.values(WORKQ); for (const k in WORKQ) delete WORKQ[k]; EW.terminate(); EW = null; qs.forEach((q) => q.fallback()); };
       EW.postMessage({ type: 'init', WL, SERIES });
