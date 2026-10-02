@@ -15,6 +15,7 @@
 
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import path from 'node:path';
+import { runLadder } from './ladder.mjs';
 import { DATA, PRICES, BudgetError, client, asList, loadSeries, saveSeries, mergeCard, mergeStats, gradeBlock, pickPrice } from './lib.mjs';
 
 const args = process.argv.slice(2);
@@ -101,10 +102,22 @@ async function main() {
       note(`  ✗ ${c.key}: ${e.message}`); skipped++;
     }
   }
+  // Roster ladder: bench cards compete for slots with the credits left (never past safeDailyCredits). Skipped for --only.
+  let lad = null;
+  if (!ONLY && !flag('--no-ladder')) {
+    try {
+      const cfg = JSON.parse(await readFile(path.join(DATA, 'sets.json'), 'utf8'));
+      const cap = Math.min(BUDGET, Number(cfg.safeDailyCredits || 85)), rem = api.st.dailyRemaining;
+      const credits = Math.max(0, Math.min(cap - api.st.spent, isFinite(rem) ? rem - 20 : Infinity));
+      const before = JSON.stringify([wl.cards.map((c) => c.key), (wl.bench || []).map((c) => c.key)]);
+      lad = await runLadder({ api, wl, today: TODAY, credits, window: WINDOW, note });
+      if (JSON.stringify([wl.cards.map((c) => c.key), (wl.bench || []).map((c) => c.key)]) !== before) dirtyWl = true;
+    } catch (e) { note(`Ladder failed: ${e.message}`); }
+  }
   if (dirtyWl) await writeFile(wlPath, JSON.stringify(wl, null, 2) + '\n');
   const ld = [...mergeStats.lateDays].sort((a, b) => a - b), lm = ld.length ? ld[ld.length >> 1] : null;
   const rem = api.st.dailyRemaining;
-  await writeFile(path.join(DATA, 'status.json'), JSON.stringify({ lastRun: new Date().toISOString(), window: WINDOW, late: mergeStats.late, lateMedianDays: lm, revised: mergeStats.revised, creditsSpent: api.st.spent, dailyRemaining: isFinite(rem) ? rem : null, updated: done, skipped, log: log.slice(-60) }, null, 2) + '\n');
+  await writeFile(path.join(DATA, 'status.json'), JSON.stringify({ lastRun: new Date().toISOString(), window: WINDOW, late: mergeStats.late, lateMedianDays: lm, revised: mergeStats.revised, creditsSpent: api.st.spent, dailyRemaining: isFinite(rem) ? rem : null, updated: done, skipped, ladder: lad, log: log.slice(-60) }, null, 2) + '\n');
   note(`Done: ${done} updated, ${skipped} skipped, ${api.st.spent} credits spent. Window ${WINDOW}d · late-posted sales caught: ${mergeStats.late}${lm != null ? ` (median ${lm}d after the sale, max ${ld[ld.length - 1]}d)` : ''} · days revised with more sales: ${mergeStats.revised}.`);
 }
 

@@ -11,6 +11,7 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const rd = (p) => readFile(path.join(ROOT, p), 'utf8');
 const watchlist = JSON.parse(await rd('data/watchlist.json'));
 const status = existsSync(path.join(ROOT, 'data/status.json')) ? JSON.parse(await rd('data/status.json')) : null;
+const ladder = existsSync(path.join(ROOT, 'data/ladder.json')) ? JSON.parse(await rd('data/ladder.json')) : null;
 const ledger = existsSync(path.join(ROOT, 'data/ledger.json')) ? JSON.parse(await rd('data/ledger.json')) : null;
 let pops = null; try { pops = JSON.parse((await rd('data/pops.json')).replace(/,(\s*[\]}])/g, '$1')); } catch {}
 const series = {};
@@ -19,7 +20,7 @@ for (const f of await readdir(path.join(ROOT, 'data/prices'))) if (f.endsWith('.
 let html = await rd('index.html');
 html = html.replace(/<link rel="stylesheet" href="css\/styles\.css(\?v=[^"]*)?">/, ((c) => () => c)(`<style>\n${await rd('css/styles.css')}</style>`));
 try { watchlist.printingNames = JSON.parse(await rd('data/printings.json')).names; } catch {}
-const data = `<script>window.__SLABDEX_DATA__=${JSON.stringify({ watchlist, series, status, ledger, pops }).replace(/</g, '\\u003c')};</script>`;
+const data = `<script>window.__SLABDEX_DATA__=${JSON.stringify({ watchlist, series, status, ledger, pops, ladder }).replace(/</g, '\\u003c')};</script>`;
 html = html.replace(/<script src="js\/indicators\.js(\?v=[^"]*)?"><\/script>/, ((c) => () => c)(`${data}\n<script>\n${await rd('js/indicators.js')}</script>`));
 html = html.replace(/<script src="js\/chart\.js(\?v=[^"]*)?"><\/script>/, ((c) => () => c)(`<script>\n${await rd('js/chart.js')}</script>`));
 html = html.replace(/<script src="js\/clean\.js(\?v=[^"]*)?"><\/script>/, ((c) => () => c)(`<script>\n${await rd('js/clean.js')}</script>`));

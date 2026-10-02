@@ -15,7 +15,7 @@
   try { const nt = JSON.parse(localStorage.getItem('slabdex-notes') || 'null'); if (nt) { state.pops = { ...(nt.pops || {}), ...(state.pops || {}) }; state.wi = { ...(nt.wi || {}), ...(state.wi || {}) }; state.use = { ...(nt.use || {}), ...(state.use || {}) }; } } catch (e) {}
   const save = () => { try { localStorage.setItem('slabdex', JSON.stringify(state)); localStorage.setItem('slabdex-notes', JSON.stringify({ pops: state.pops || {}, wi: state.wi || {}, use: state.use || {} })); } catch (e) {} };
   function pruneNotes() {
-    const keep = new Set([...(WL?.cards || []), ...(WL?.extra || [])].map((c) => c.key));
+    const keep = new Set([...(WL?.cards || []), ...(WL?.extra || []), ...(WL?.bench || [])].map((c) => c.key)); // benched cards keep your notes: they can be promoted back
     if (keep.size < 10) return; // a partial / failed load must never wipe your notes
     let n = 0;
     for (const k of Object.keys(state.pops || {})) if (!keep.has(k)) { delete state.pops[k]; n++; }
@@ -24,15 +24,16 @@
     if (n) { console.info(`notes: dropped ${n} entr${n === 1 ? 'y' : 'ies'} for cards no longer tracked`); save(); }
   }
 
-  let WL = null, SERIES = {}, STATUS = null, LEDGER = null, POPFILE = null, chart = null, model = null;
+  let WL = null, SERIES = {}, STATUS = null, LEDGER = null, POPFILE = null, chart = null, model = null, LADDER = null;
   const slug = (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 
   // ---------- data loading (static JSON from the repo, or an inlined bundle) ----------
   async function load() {
-    if (window.__SLABDEX_DATA__) { ({ watchlist: WL, series: SERIES, status: STATUS, ledger: LEDGER, pops: POPFILE } = window.__SLABDEX_DATA__); return; }
+    if (window.__SLABDEX_DATA__) { ({ watchlist: WL, series: SERIES, status: STATUS, ledger: LEDGER, pops: POPFILE, ladder: LADDER } = window.__SLABDEX_DATA__); return; }
     const j = (u) => fetch(u, { cache: 'no-cache' }).then((r) => (r.ok ? r.json() : null)).catch(() => null);
     WL = await j('data/watchlist.json');
     STATUS = await j('data/status.json');
+    LADDER = await j('data/ladder.json'); // roster moves (scripts/ladder.mjs)
     LEDGER = await j('data/ledger.json'); // forward record of live setups (scripts/ledger.mjs)
     // hand-entered PSA population counts (optional); tolerant of the trailing comma a pasted line leaves behind
     POPFILE = await fetch('data/pops.json', { cache: 'no-cache' }).then((r) => (r.ok ? r.text() : null)).then((s) => (s ? JSON.parse(s.replace(/,(\s*[\]}])/g, '$1')) : null)).catch((e) => { console.warn('pops.json', e); return null; });
@@ -1143,7 +1144,9 @@
     const gapNote = gr && gr.n ? `Backtest so far (${L[state.grade]}): after a card got this cheap vs its next grade, it did ${Edge.pct(gr.vsPeers, 1)} vs other cards over 30 days (${gr.n} times, ${gr.status === 'few' ? 'too few to judge' : gr.status}). A price check, not a buy signal yet.` : 'Not yet backtested for this grade. A price check, not a buy signal.';
     const gapGrp = cheap.length ? grp(`Grade gaps · ${L[state.grade]} vs ${L[Model.NEXT[state.grade]]}`, [{ label: 'Cheap vs next grade up, compared with the card’s own usual ratio', items: cheap }], gapNote) : '';
     const head = `<div class="bhead"><span></span><span>30D</span><span>Sig</span></div>`;
-    $('briefList').innerHTML = rawNote() + head + (hot ? eg : '') + (chg.length ? grp(`New this week · ${Model.GRADE_LABEL[state.grade]}`, [{ label: 'Changed status', items: chg }]) : '') + grp(`Consensus · ${c.gradeLabels.map((x) => x.replace('RAW NM', 'RAW')).join(' / ')}`, c.lines, c.leadNote ? 'Lead-lag: ' + c.leadNote : '') + grp(`${b.gradeLabel} · ${b.asOf || '—'} · ${b.scoredCards}/${b.cards} scoreable`, b.lines) + gapGrp + (hot ? '' : eg);
+    const lh = (LADDER?.history || []).filter((e) => (Date.parse(dataMaxDate()) - Date.parse(e.t)) / 864e5 <= 30).reverse();
+    const rosterGrp = lh.length ? `<div class="bgroup"><h3>Roster · last 30 days</h3>${lh.slice(0, 12).map((e) => `<p class="trk"><span class="${e.action === 'promote' ? 'pos' : 'neg'}">${e.action === 'promote' ? '▲ in' : '▼ out'}</span> ${esc(e.name)} <span class="dim">${esc(e.set)} · ${esc(e.t.slice(5))}</span><br><span class="dim">${esc(e.reason)}</span></p>`).join('')}<p>Cards compete for slots daily: a bench card comes in only if it's liquid at ${money(WL?.minPrice || 0)}+ in some grade and takes an open slot or beats the weakest card in its set / era basket; a tracked card that fails that for 7+ days goes to the bench. ${LADDER.tracked ?? ''} tracked · ${LADDER.bench ?? ''} on the bench.</p></div>` : '';
+    $('briefList').innerHTML = rawNote() + head + (hot ? eg : '') + rosterGrp + (chg.length ? grp(`New this week · ${Model.GRADE_LABEL[state.grade]}`, [{ label: 'Changed status', items: chg }]) : '') + grp(`Consensus · ${c.gradeLabels.map((x) => x.replace('RAW NM', 'RAW')).join(' / ')}`, c.lines, c.leadNote ? 'Lead-lag: ' + c.leadNote : '') + grp(`${b.gradeLabel} · ${b.asOf || '—'} · ${b.scoredCards}/${b.cards} scoreable`, b.lines) + gapGrp + (hot ? '' : eg);
   }
   // RAW only covers WOTC set baskets (EX, DP and index-only cards are fetched without RAW to fit the free tier).
   function rawNote() {
