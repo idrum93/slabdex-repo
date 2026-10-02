@@ -139,6 +139,16 @@ The provider posts eBay sales days after they happen, dated on the sale day, and
 
 Toggle **WHAT-IF** on and each grade gets a box for sold prices you found outside the tool (eBay, Alt…): `695 750 644 600` — dates like `9/30` and `$` are ignored; the median is used, or type one average. That grade is then treated as the current, freshest price and becomes the anchor, so the other grades' estimates and gaps are redrawn from it. Inputs are saved per card in this browser only and are display-only: collected data, charts, signals, gauges, the backtest and the forward record never see them. Toggle off to hide them (they're kept for next time); clear a box to remove its input.
 
+## Population counts (hand-entered)
+
+PSA pop counts aren't available free by API, so they're typed in from psacard.com's pop report pages (they change slowly — monthly is plenty). With WHAT-IF on, the Signal panel's POPULATION section takes PSA 7/8/9/10 counts for the card (saved on this device), and **⧉ copy for pops.json** gives a line to paste into `data/pops.json`'s `entries` in GitHub's editor so it applies everywhere (a trailing comma is fine). The newest date per card is used.
+
+What they do: a grade-to-grade step estimated from *peer* cards (same set / era family — e.g. most PSA 9 → 10 steps, which miss by ~45%) is scaled by this card's scarcity: the 9÷10 price ratio is taken to move with (10s per 9)^β, relative to the typical 10s-per-9 of other cards with pops (same era family if 3+, else all). β is 0.5 until 8 cards have both pops and their own price spread, then it's fitted on them. Steps based on the card's own price spread are left alone (they already reflect its pops). Adjusted estimates are tagged *pop-adj*.
+
+### Scarcity curve
+
+With pops entered, the POPULATION section draws the card's own scarcity curve: log price against log *copies at that grade or higher* (a PSA 8 competes with every 9 and 10 too; pop at the grade alone isn't monotone because low grades are rarely submitted). Each middle grade is judged against the line through the other grades — its neighbours — and the lowest / highest grade (ᵉ) against the line through all of them. Green = priced below where its scarcity puts it, red = above, grey = within the card's own scatter (shown, min ±10%). Needs 3+ grades with a current price and pops for that grade and every grade above it; ⧗ stale grades are left out unless you give them a what-if price (marked *). Display only.
+
 ## Tradable slabs: liquidity, spread, fees
 
 Rules in `js/model.js` (`Model.RULES`, override with `"rules": {…}` in the watchlist), judged as of the day a setup fires:

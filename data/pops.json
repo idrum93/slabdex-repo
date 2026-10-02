@@ -1,0 +1,5 @@
+{
+  "_comment": "Hand-entered PSA population counts (from psacard.com pop report pages). One line per card per date; the newest date per card is used. Key = the card's key (Signal panel → POPULATION → copy for pops.json gives you a ready line). Used to adjust peer-based grade-to-grade estimates for scarcity.",
+  "entries": [
+  ]
+}

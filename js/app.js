@@ -6,22 +6,24 @@
   const I = window.Ind;
   const C = window.Clean;
 
-  const state = { v: 3, key: null, grade: 'psa9', vs: 'idx:all', range: 365, res: 'D', ind: { st: 1, sma20: 1, sma50: 1, hma: 0, vol: 1, rs: 1, rsi: 1, macd: 0, vzo: 0 }, guide: 1, dash: 0, whatIf: 0, wi: {}, sort: 'score', dir: -1, wlView: 'cards', wlMetric: 'c30', merge: false, print: 'main', group: false, collapsed: [], stars: [] };
+  const state = { v: 3, key: null, grade: 'psa9', vs: 'idx:all', range: 365, res: 'D', ind: { st: 1, sma20: 1, sma50: 1, hma: 0, vol: 1, rs: 1, rsi: 1, macd: 0, vzo: 0 }, guide: 1, dash: 0, whatIf: 0, wi: {}, pops: {}, sort: 'score', dir: -1, wlView: 'cards', wlMetric: 'c30', merge: false, print: 'main', group: false, collapsed: [], stars: [] };
   let hadSaved = false;
   try { if (/[?&]reset\b/.test(location.search)) localStorage.removeItem('slabdex'); } catch (e) {} // ?reset = start from the default layout
   try { const sv = JSON.parse(localStorage.getItem('slabdex') || 'null'); if (sv && sv.v === 3) { Object.assign(state, sv); hadSaved = true; if (!('st' in state.ind)) state.ind.st = 1; } } catch (e) {} // older saved layouts are ignored
   const save = () => { try { localStorage.setItem('slabdex', JSON.stringify(state)); } catch (e) {} };
 
-  let WL = null, SERIES = {}, STATUS = null, LEDGER = null, chart = null, model = null;
+  let WL = null, SERIES = {}, STATUS = null, LEDGER = null, POPFILE = null, chart = null, model = null;
   const slug = (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 
   // ---------- data loading (static JSON from the repo, or an inlined bundle) ----------
   async function load() {
-    if (window.__SLABDEX_DATA__) { ({ watchlist: WL, series: SERIES, status: STATUS, ledger: LEDGER } = window.__SLABDEX_DATA__); return; }
+    if (window.__SLABDEX_DATA__) { ({ watchlist: WL, series: SERIES, status: STATUS, ledger: LEDGER, pops: POPFILE } = window.__SLABDEX_DATA__); return; }
     const j = (u) => fetch(u, { cache: 'no-cache' }).then((r) => (r.ok ? r.json() : null)).catch(() => null);
     WL = await j('data/watchlist.json');
     STATUS = await j('data/status.json');
     LEDGER = await j('data/ledger.json'); // forward record of live setups (scripts/ledger.mjs)
+    // hand-entered PSA population counts (optional); tolerant of the trailing comma a pasted line leaves behind
+    POPFILE = await fetch('data/pops.json', { cache: 'no-cache' }).then((r) => (r.ok ? r.text() : null)).then((s) => (s ? JSON.parse(s.replace(/,(\s*[\]}])/g, '$1')) : null)).catch((e) => { console.warn('pops.json', e); return null; });
     const pn = await j('data/printings.json'); if (pn?.names) WL.printingNames = pn.names; // names for holo / reverse tiers
     const all = [...WL.cards, ...(WL.extra || [])];
     const res = await Promise.all(all.map((c) => j(`data/prices/${c.key}.json`)));
@@ -319,16 +321,76 @@
     const o = {}; for (const g of ['psa7', 'psa8', 'psa9', 'psa10']) { const p = parseWi(state.wi?.[wiKey(id, g)]); if (p) o[g] = p; }
     return Object.keys(o).length ? o : null;
   }
+  // ---------- PSA population counts (hand-entered: data/pops.json, plus what-if entries saved on this device) ----------
+  const PG = ['psa7', 'psa8', 'psa9', 'psa10'];
+  function popsAll() {
+    const out = {};
+    for (const e of POPFILE?.entries || []) { const k = String(e.key || '').replace(/~alt$/, ''); if (k && (!out[k] || (e.t || '') >= (out[k].t || ''))) out[k] = { ...e, src: 'file' }; }
+    for (const [k, e] of Object.entries(state.pops || {})) if (state.whatIf && e && PG.some((g) => e[g] > 0)) out[k] = { ...e, src: 'local' };
+    return out;
+  }
+  // Population-adjusted grade step: the ratio lo÷hi is assumed to scale with (pop hi ÷ pop lo)^β — more 10s per 9 means
+  // a 10 is less scarce, so the 9 sits closer to it. Reference = median pop ratio of other cards with pops (same era
+  // family if 3+, else all); β is fitted on cards with pops AND their own price spread once 8+ exist, else 0.5 (assumed).
+  function popAdjFor(cur) {
+    const P = popsAll(), base = cur.id.replace(/~alt$/, ''), me = P[base]; if (!me) return null;
+    const fam = (c) => c.family || String(c.era || '').split(' ')[0], myFam = fam(cur.card), ms = allModels();
+    return (lo, hi) => {
+      if (!(me[lo] > 0 && me[hi] > 0)) return null;
+      const sCard = me[hi] / me[lo], refs = [], fit = [];
+      for (const [k, e] of Object.entries(P)) {
+        if (k === base || !(e[lo] > 0 && e[hi] > 0)) continue;
+        const b = model.by[k] || ms[lo]?.by[k] || ms[hi]?.by[k]; if (!b) continue;
+        const s = e[hi] / e[lo]; refs.push({ s, fam: fam(b.card) });
+        const own = ms[lo] && ms[hi] ? Model.pairRatio(ms[lo], ms[hi], k, b.card) : null;
+        if (own?.src === 'own') fit.push([Math.log(s), Math.log(own.v)]);
+      }
+      const same = refs.filter((r) => r.fam === myFam), use = same.length >= 3 ? same : refs;
+      if (use.length < 3) return { need: 3 - use.length, sCard };
+      const w = use.map((r) => r.s).sort((a, b) => a - b), sRef = w[w.length >> 1];
+      let beta = 0.5, fitted = false;
+      if (fit.length >= 8) { const mx = fit.reduce((s, p) => s + p[0], 0) / fit.length, my = fit.reduce((s, p) => s + p[1], 0) / fit.length; let sxy = 0, sxx = 0; for (const [x, y] of fit) { sxy += (x - mx) * (y - my); sxx += (x - mx) ** 2; } if (sxx > 0) { beta = Math.max(0.2, Math.min(1.2, sxy / sxx)); fitted = true; } }
+      const mult = Math.max(1 / 3, Math.min(3, (sCard / sRef) ** beta));
+      return { mult, sCard, sRef, nRef: use.length, refFam: use === same ? myFam : 'all', beta, fitted, nFit: fit.length };
+    };
+  }
+  function popRows(cur) {
+    const P = popsAll(), base = cur.id.replace(/~alt$/, ''), me = P[base], L = Model.GRADE_LABEL;
+    const local = state.pops?.[base] || {};
+    const counts = me ? PG.filter((g) => me[g] > 0).map((g) => `${L[g].replace('PSA ', '')}: ${Number(me[g]).toLocaleString('en-US')}`).join(' · ') : '';
+    const adj = popAdjFor(cur), a910 = adj ? adj('psa9', 'psa10') : null;
+    const note = !me ? 'No population counts for this card yet.' : a910?.need ? `10s per 9: ${a910.sCard.toFixed(2)}. Enter pops for ${a910.need} more card${a910.need > 1 ? 's' : ''} (same era) to adjust estimates.` : a910 ? `10s per 9: ${a910.sCard.toFixed(2)} vs ${a910.sRef.toFixed(2)} typical (${a910.nRef} cards${a910.refFam !== 'all' ? ', ' + a910.refFam : ''}) → 9÷10 spread ×${a910.mult.toFixed(2)} (β ${a910.beta.toFixed(2)}${a910.fitted ? `, fitted on ${a910.nFit}` : ', assumed until 8 cards have pops'}). Only peer-based steps are adjusted; a card's own price spread already reflects its pops.` : '';
+    const inputs = state.whatIf ? `<div class="pop-in">${PG.map((g) => `<label>${L[g]}<input data-pop="${esc(base)}|${g}" type="text" inputmode="numeric" value="${local[g] ?? ''}" placeholder="${me?.[g] ?? ''}"></label>`).join('')}</div><button class="tbtn pop-copy" type="button" data-popcopy="${esc(base)}" title="Copy a line for data/pops.json (paste it into the entries list in GitHub's editor)">⧉ copy for pops.json</button>` : '';
+    // Scarcity curve: each grade vs the price its scarcity implies, judged against its neighbouring grades.
+    let curve = '';
+    if (me) {
+      const E = Model.gradeEstimates(allModels(), cur.id, cur.card, wiOverrides(cur.id));
+      // Scarcity of a grade = copies at that grade OR HIGHER (a PSA 8 buyer is also competing with every 9 and 10 that
+      // exists). Pop at the grade alone isn't monotone — low grades often have small pops because few are submitted.
+      const cum = (g) => { const hi = PG.slice(PG.indexOf(g)); return hi.every((x) => me[x] > 0) ? hi.reduce((s, x) => s + Number(me[x]), 0) : null; };
+      const pts = E.rows.filter((r) => !r.stale && r.mkt > 0 && cum(r.grade)).map((r) => ({ grade: r.grade, price: r.user ? r.user.price : r.mkt, pop: cum(r.grade), own: Number(me[r.grade]), user: !!r.user }));
+      const sc = Model.scarcityCurve(pts), skipped = E.rows.filter((r) => r.stale && me[r.grade] > 0).map((r) => L[r.grade]);
+      if (!sc.ok) curve = `<p class="trk">Scarcity curve needs 3+ grades with a current price and pops for that grade and every grade above it (have ${sc.n}${skipped.length ? `; ${skipped.join(', ')} left out as ⧗ stale — add a what-if price` : ''}).</p>`;
+      else {
+        const band = Math.max(0.1, sc.se ?? 0.1), small = sc.n < 4;
+        curve = `<h3>SCARCITY CURVE <span class="dim">price vs copies at grade or higher · each grade vs its neighbours</span></h3>` + sc.rows.map((r) => {
+          const tone = Math.abs(r.loo) <= band ? 'dim' : r.loo < 0 ? 'pos' : 'neg';
+          return `<p class="sc-row" title="Line through the other grades says ${L[r.grade]} (${r.pop.toLocaleString('en-US')} copies at this grade or higher) should be about ${money(r.fitted)}${r.user ? ' (price = your what-if input)' : ''}. Green = below the curve (cheap for its scarcity), red = above, grey = within the usual scatter."><span class="ck">${L[r.grade]}<small title="copies at this grade or higher">≥${r.pop.toLocaleString('en-US')}</small></span><span>${money(r.price)}${r.user ? '*' : ''}</span><span class="dim" title="where the curve puts it">≈${money(r.fitted)}</span><b class="${tone}"${r.end ? ' title="End of the curve: judged against the line through all grades"' : ''}>${r.loo >= 0 ? '+' : ''}${(r.loo * 100).toFixed(0)}%${r.end ? '<sup>e</sup>' : ''}</b></p>`;
+        }).join('') + `<p class="trk">${sc.monotone ? `Each halving of the copies at a grade or higher adds about ${((Math.pow(2, -sc.slope) - 1) * 100).toFixed(0)}% to the price on this card.` : '⚠ Prices don\'t fall as the pop rises here — check the pops and recent sales (mixed listings?).'} Scatter ±${Math.round(band * 100)}%${small ? ' (only 3 grades: rough — one grade decides the line for the others)' : ''}. Grey = within the scatter; ᵉ = lowest / highest grade, judged against the whole curve (the middle grades are judged against their neighbours).${skipped.length ? ` Left out: ${skipped.join(', ')} (⧗ stale).` : ''}${pts.some((p) => p.user) ? ' * = your what-if price.' : ''}</p>`;
+      }
+    }
+    return `<h3>POPULATION <span class="dim">PSA pop · hand-entered${me ? ` · ${esc(me.t || '')}${me.src === 'local' ? ' · this device' : ''}` : ''}</span></h3>${counts ? `<p class="trk">${counts}</p>` : ''}<p class="trk">${esc(note)}${state.whatIf ? '' : ' Turn on WHAT-IF to enter counts.'}</p>${curve}${inputs}`;
+  }
   function valueRows(cur, ratio) {
     if (ratio || cur.isIndex || model.dense) return '';
     const ov = wiOverrides(cur.id);
-    const E = Model.gradeEstimates(allModels(), cur.id, cur.card, ov); if (!E.anchor) return '';
+    const E = Model.gradeEstimates(allModels(), cur.id, cur.card, ov, popAdjFor(cur)); if (!E.anchor) return '';
     const L = Model.GRADE_LABEL, src = (v) => (v === 'own' ? "this card's own grade spread" : v === 'set' ? 'same-set average spread' : `${v} average spread`);
     const aAge = E.rows.find((r) => r.anchor)?.age ?? null;
     const rows = E.rows.map((r) => {
       const stale = !r.anchor && (r.stale || (r.age != null && aAge != null && r.age - aAge > 7)); // overdue for its usual pace, or much older than the anchor's newest sale: newer sales may be missing
       const lastTxt = r.user ? `<span class="wiv">${money(r.user.price)} <span class="dim">your ${r.user.n > 1 ? 'median of ' + r.user.n : 'price'}</span></span>${r.dataLast != null ? ` <span class="dim">(data ${money(r.dataLast)} ${r.dataAge}d)</span>` : ''}` : r.last == null ? '<span class="dim">no sale</span>' : `${money(r.last)} <span class="dim">${r.age}d${r.blended ? ' · blended' : ''}</span>`;
-      const estTxt = r.anchor ? '<span class="dim">anchor</span>' : r.est == null ? '<span class="dim">—</span>' : `≈${money(r.est)} <span class="dim">±${Math.round(r.miss * 100)}%</span>`;
+      const estTxt = r.anchor ? '<span class="dim">anchor</span>' : r.est == null ? '<span class="dim">—</span>' : `≈${money(r.est)} <span class="dim">±${Math.round(r.miss * 100)}%</span>${r.popAdj ? ` <span class="popm" title="Adjusted for this card's population: spread ×${r.popAdj.mult.toFixed(2)}">pop-adj</span>` : ''}`;
       const gap = r.gap == null ? '' : stale ? `<span class="dim" title="Newest sales likely missing from the data — gap not reliable">⧗ stale</span>` : `<span class="${Math.abs(r.gap) <= r.miss * 100 ? 'dim' : r.gap < 0 ? 'pos' : 'neg'}">${r.gap >= 0 ? '+' : ''}${r.gap.toFixed(0)}%</span>`;
       const tip = r.anchor ? `Anchor: ${L[r.grade]} market price (median of last 3 clean sales), ${r.n30} sales in 30D` : r.est != null ? `Estimate from ${L[E.anchor]} via ${src(r.via)}; typical miss ±${Math.round(r.miss * 100)}%. Gap = last sale vs estimate (grey = within the typical miss).${r.blended ? ' Last sale may be either printing.' : ''}${r.age != null && r.age > 45 ? ' Last sale is old — the estimate is the better guide.' : ''}${stale ? ` ⧗ This grade's newest sales are likely missing: last sale ${r.age}d ago${r.typ ? ` though it usually sells every ~${r.typ}d` : ''}${aAge != null ? `, ${L[E.anchor]}'s ${aAge}d ago` : ''}. The provider posts sales late, so the gap isn't shown.` : ''}` : 'Not enough data to estimate';
       return `<button class="ctx-row val${r.grade === model.grade ? ' on' : ''}${r.user ? ' wi' : ''}" data-grade="${r.grade}" type="button" title="${esc(tip)}"><span class="ck">${L[r.grade]}</span><span class="cn">${lastTxt}<br>${estTxt}</span><span class="cv">${gap}</span></button>` + (state.whatIf ? `<input class="wi-in" data-wi="${esc(wiKey(cur.id, r.grade))}" type="text" inputmode="decimal" placeholder="${L[r.grade]} prices you found, e.g. 695 750 644" value="${esc(state.wi?.[wiKey(cur.id, r.grade)] || '')}" aria-label="What-if ${L[r.grade]} prices">` : '');
@@ -434,7 +496,7 @@
     ];
     // Each panel section is isolated: a bug in one never blanks the panel or stops the chart from drawing.
     const safe = (fn, name) => { try { return fn(cur, ratio) || ''; } catch (err) { console.error(name, err); return ''; } };
-    $('sigCtx').innerHTML = safe(setupLine, 'setup') + safe(gaugeRows, 'gauge') + safe(ladderRows, 'grades') + safe(valueRows, 'value') + safe(contextRows, 'context');
+    $('sigCtx').innerHTML = safe(setupLine, 'setup') + safe(gaugeRows, 'gauge') + safe(ladderRows, 'grades') + safe(valueRows, 'value') + safe(popRows, 'pop') + safe(contextRows, 'context');
     $('metrics').innerHTML = rows.map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join('');
   }
 
@@ -1009,9 +1071,11 @@
     document.addEventListener('click', (e) => { const g = e.target.closest('[data-grade]'); if (!g) return; e.stopPropagation(); e.preventDefault(); state.grade = g.dataset.grade; rebuild(); }, true); // 'Switch to PSA 8' links
     $('groupBtn').addEventListener('click', () => { state.group = !state.group; renderWatchlist(); save(); });
     $('sigStar').addEventListener('click', () => toggleStar($('sigStar').dataset.k));
+    $('sigCtx').addEventListener('change', (e) => { const pi = e.target.closest('input[data-pop]'); if (!pi) return; const [k, g] = pi.dataset.pop.split('|'); const v = Number(String(pi.value).replace(/[^0-9]/g, '')); state.pops = { ...(state.pops || {}) }; const cur = { ...(state.pops[k] || {}) }; if (v > 0) cur[g] = v; else delete cur[g]; cur.t = new Date().toISOString().slice(0, 10); if (PG.some((x) => cur[x] > 0)) state.pops[k] = cur; else delete state.pops[k]; save(); draw({ keepView: true }); });
+    $('sigCtx').addEventListener('click', (e) => { const b = e.target.closest('[data-popcopy]'); if (!b) return; e.stopPropagation(); const k = b.dataset.popcopy, me = popsAll()[k]; if (!me) return; const line = JSON.stringify({ key: k, t: me.t || new Date().toISOString().slice(0, 10), psa7: me.psa7 ?? null, psa8: me.psa8 ?? null, psa9: me.psa9 ?? null, psa10: me.psa10 ?? null }) + ','; (navigator.clipboard?.writeText(line) || Promise.reject()).then(() => { b.textContent = '✓ copied — paste into data/pops.json'; }, () => { window.prompt('Copy this line into data/pops.json:', line); }); }, true);
     $('sigCtx').addEventListener('change', (e) => { const inp = e.target.closest('input[data-wi]'); if (!inp) return; const k = inp.dataset.wi; state.wi = { ...(state.wi || {}) }; if (inp.value.trim()) state.wi[k] = inp.value.trim(); else delete state.wi[k]; save(); draw({ keepView: true }); });
-    $('sigCtx').addEventListener('keydown', (e) => { if (e.key === 'Enter' && e.target.matches('input[data-wi]')) e.target.blur(); e.stopPropagation(); });
-    $('sigCtx').addEventListener('click', (e) => { if (e.target.closest('input[data-wi]')) { e.stopPropagation(); return; } if (e.target.closest('[data-witog]')) { e.stopPropagation(); state.whatIf = state.whatIf ? 0 : 1; save(); draw({ keepView: true }); return; } if (e.target.closest('[data-gtoggle]')) { state.collapsed = state.collapsed.includes('gauge:open') ? state.collapsed.filter((x) => x !== 'gauge:open') : [...state.collapsed, 'gauge:open']; save(); draw({ keepView: true }); return; } const b = e.target.closest('.ctx-row[data-k]'); if (b) select(b.dataset.k); });
+    $('sigCtx').addEventListener('keydown', (e) => { if (e.key === 'Enter' && e.target.matches('input[data-wi], input[data-pop]')) e.target.blur(); e.stopPropagation(); });
+    $('sigCtx').addEventListener('click', (e) => { if (e.target.closest('input[data-wi], input[data-pop]')) { e.stopPropagation(); return; } if (e.target.closest('[data-witog]')) { e.stopPropagation(); state.whatIf = state.whatIf ? 0 : 1; save(); draw({ keepView: true }); return; } if (e.target.closest('[data-gtoggle]')) { state.collapsed = state.collapsed.includes('gauge:open') ? state.collapsed.filter((x) => x !== 'gauge:open') : [...state.collapsed, 'gauge:open']; save(); draw({ keepView: true }); return; } const b = e.target.closest('.ctx-row[data-k]'); if (b) select(b.dataset.k); });
     $('helpBtn').addEventListener('click', () => { $('help').hidden = !$('help').hidden; });
     $('gaugesBtn').addEventListener('click', () => { state.dash = state.dash ? 0 : 1; save(); showDash(); });
     $('dash').addEventListener('click', (e) => {

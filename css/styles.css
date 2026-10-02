@@ -413,3 +413,15 @@ tr.zrow.z-watch td:first-child { box-shadow: inset 2px 0 0 var(--cmp); }
 .wiv { color: var(--warn); font-weight: 700; }
 .wi-in { display: block; width: 100%; box-sizing: border-box; margin: 0 0 6px; padding: 3px 6px; font: 11px var(--f-mono); color: var(--fg); background: var(--bg); border: 1px dashed var(--line); border-radius: 3px; }
 .wi-in:focus { outline: none; border-color: var(--warn); border-style: solid; }
+
+.pop-in { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px; margin: 4px 0; }
+.pop-in label { display: flex; flex-direction: column; font-size: 9px; color: var(--muted); }
+.pop-in input { width: 100%; box-sizing: border-box; padding: 2px 4px; font: 11px var(--f-mono); color: var(--fg); background: var(--bg); border: 1px dashed var(--line); border-radius: 3px; }
+.pop-in input:focus { outline: none; border-color: var(--warn); border-style: solid; }
+.pop-copy { display: block; width: 100%; margin: 2px 0 6px; padding: 3px 6px; font: 11px var(--f-mono); text-align: center; }
+.popm { font-size: 9px; color: var(--warn); border: 1px solid currentColor; border-radius: 2px; padding: 0 3px; }
+
+.sc-row { display: grid; grid-template-columns: 52px minmax(0,1fr) minmax(0,1.3fr) 46px; gap: 6px; align-items: baseline; margin: 0; padding: 2px 0; font-size: 11px; border-bottom: 1px dotted var(--line); }
+.sc-row b { text-align: right; }
+.sc-row .ck { font-weight: 700; font-size: 10px; }
+.sc-row .ck small { display: block; font-weight: 400; color: var(--muted); font-size: 9px; }

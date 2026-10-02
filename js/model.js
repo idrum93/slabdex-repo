@@ -657,7 +657,13 @@
     }
     return (model[ck] = rows);
   }
-  function pairRatio(ml, mh, key, card) {
+  // popAdj(lo, hi) → { mult } (optional): scales a peer-based ratio by this card's population structure; a card's own
+  // price ratio already reflects its own scarcity, so it's left alone.
+  function pairRatio(ml, mh, key, card, popAdj = null) {
+    const r = pairRatioBase(ml, mh, key, card); if (!r || r.src === 'own' || !popAdj) return r;
+    const a = popAdj(ml.grade, mh.grade); return a ? { ...r, v: r.v * a.mult, popAdj: a } : r;
+  }
+  function pairRatioBase(ml, mh, key, card) {
     const fam = card.family || String(card.era || '').split(' ')[0];
     const lk = lineIn(ml, key, card), rows = ownRatios(ml, mh);
     const mine = lk ? rows.find((r) => r.key === lk.card.key) : null;
@@ -670,7 +676,7 @@
   }
   // overrides (what-if, from the Signal panel): { psa7: { price, n } } — treated as that grade's current market price,
   // fresh, and preferred as the anchor. Display only: nothing here feeds collected data, signals or tests.
-  function gradeEstimates(models, key, card, overrides = null) {
+  function gradeEstimates(models, key, card, overrides = null, popAdj = null) {
     const G = ['psa7', 'psa8', 'psa9', 'psa10'].filter((g) => models[g]), rows = [];
     for (const g of G) {
       const m = models[g], clean = lineIn(m, key, card), shown = clean || m.by[key.replace(/~alt$/, '')] || null;
@@ -690,12 +696,12 @@
     if (!anc) return { rows, anchor: null };
     const ai = rows.indexOf(anc); anc.est = anc.mkt; anc.lmiss = 0; anc.anchor = true;
     for (let k = ai + 1; k < rows.length; k++) { // walk up: higher grade = lower ÷ ratio(lower÷higher)
-      const r = pairRatio(models[rows[k - 1].grade], models[rows[k].grade], key, card); if (!r || rows[k - 1].est == null) break;
-      rows[k].est = rows[k - 1].est / r.v; rows[k].lmiss = Math.hypot(rows[k - 1].lmiss, Math.log(1 + r.miss)); rows[k].via = r.src;
+      const r = pairRatio(models[rows[k - 1].grade], models[rows[k].grade], key, card, popAdj); if (!r || rows[k - 1].est == null) break;
+      rows[k].est = rows[k - 1].est / r.v; rows[k].lmiss = Math.hypot(rows[k - 1].lmiss, Math.log(1 + r.miss)); rows[k].via = r.src; rows[k].popAdj = r.popAdj || null;
     }
     for (let k = ai - 1; k >= 0; k--) { // walk down: lower grade = higher × ratio
-      const r = pairRatio(models[rows[k].grade], models[rows[k + 1].grade], key, card); if (!r || rows[k + 1].est == null) break;
-      rows[k].est = rows[k + 1].est * r.v; rows[k].lmiss = Math.hypot(rows[k + 1].lmiss, Math.log(1 + r.miss)); rows[k].via = r.src;
+      const r = pairRatio(models[rows[k].grade], models[rows[k + 1].grade], key, card, popAdj); if (!r || rows[k + 1].est == null) break;
+      rows[k].est = rows[k + 1].est * r.v; rows[k].lmiss = Math.hypot(rows[k + 1].lmiss, Math.log(1 + r.miss)); rows[k].via = r.src; rows[k].popAdj = r.popAdj || null;
     }
     rows.forEach((r) => { if (r.est != null) { r.miss = Math.exp(r.lmiss) - 1; r.gap = r.last != null && !r.anchor ? (r.last / r.est - 1) * 100 : null; } });
     return { rows, anchor: anc.grade };
@@ -737,6 +743,25 @@
     const R = rulesOf(model), j = dayOf(model, i), d = saleDaysIn(b, j, R.liqWin), sp = spreadAt(model, b, i);
     return { days: d.length, age: d.length ? j - d[d.length - 1] : null, liquid: liquidAt(model, b, i), spread: sp, wide: sp != null && sp > R.spreadFlag, rules: R, overdue: staleInfo(model, b, i) };
   }
-  const api = { behindAt, staleAt, staleInfo, staleSeries, STALE, aboveMin, tradable, liquidAt, spreadAt, liquidity, rulesOf, RULES, feeAt, gradeEstimates, pairRatio, impliedPrice, peerRatios, squeezeNow, squeezeSeries, SQZ, lagSeries, gradeLadder, PREV, LAG, gapSeries, gradeGaps, NEXT, lineIn, ladder, trackCorr, changes, buildModel, makeIndex, signals, brief, consensus, leadLag, briefMarkdown, fillDays, slug, GRADE_LABEL, MIN_SALE_DAYS_90 };
+  // Scarcity curve for one card: log price vs log population across its grades (a straight line on log-log axes).
+  // Each grade is judged against the line drawn through the OTHER grades (leave-one-out), i.e. against its neighbours:
+  // loo < 0 = priced below where its scarcity says it should be, > 0 = above. points: [{ grade, price, pop }].
+  function scarcityCurve(points) {
+    const P = points.filter((p) => p.price > 0 && p.pop > 0).map((p) => ({ ...p, x: Math.log(p.pop), y: Math.log(p.price) }));
+    if (P.length < 3) return { ok: false, n: P.length };
+    const fit = (arr) => { const n = arr.length, mx = arr.reduce((s, p) => s + p.x, 0) / n, my = arr.reduce((s, p) => s + p.y, 0) / n; let sxy = 0, sxx = 0; for (const p of arr) { sxy += (p.x - mx) * (p.y - my); sxx += (p.x - mx) ** 2; } const b = sxx > 0 ? sxy / sxx : 0; return { a: my - b * mx, b }; };
+    const all = fit(P), res = P.map((p) => p.y - (all.a + all.b * p.x));
+    const se = P.length > 2 ? Math.sqrt(res.reduce((s, r) => s + r * r, 0) / (P.length - 2)) : null;
+    // Interior grades: judged against the line through the others (true neighbours on both sides). The lowest and highest
+    // grade would be an extrapolation that way, so they're judged against the line through all grades instead (marked end).
+    const xs = P.map((p) => p.x), xmin = Math.min(...xs), xmax = Math.max(...xs);
+    const rows = P.map((p, i) => {
+      const end = p.x === xmin || p.x === xmax;
+      const f = end ? all : fit(P.filter((_, j) => j !== i)); const d = p.y - (f.a + f.b * p.x);
+      return { grade: p.grade, price: p.price, pop: p.pop, user: p.user, end, fitted: Math.exp(f.a + f.b * p.x), loo: Math.exp(d) - 1, res: Math.exp(res[i]) - 1 };
+    });
+    return { ok: true, n: P.length, slope: all.b, se: se == null ? null : Math.exp(se) - 1, rows, monotone: all.b < 0 };
+  }
+  const api = { scarcityCurve, behindAt, staleAt, staleInfo, staleSeries, STALE, aboveMin, tradable, liquidAt, spreadAt, liquidity, rulesOf, RULES, feeAt, gradeEstimates, pairRatio, impliedPrice, peerRatios, squeezeNow, squeezeSeries, SQZ, lagSeries, gradeLadder, PREV, LAG, gapSeries, gradeGaps, NEXT, lineIn, ladder, trackCorr, changes, buildModel, makeIndex, signals, brief, consensus, leadLag, briefMarkdown, fillDays, slug, GRADE_LABEL, MIN_SALE_DAYS_90 };
   if (isNode) module.exports = api; else root.Model = api;
 })(typeof window !== 'undefined' ? window : globalThis);
