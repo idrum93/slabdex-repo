@@ -21,7 +21,7 @@
   const Model = isNode ? require('./model.js') : root.Model;
   const isN = I.isN;
   const WEIGHTS = { context: 0.4, card: 0.4, grades: 0.2 };
-  const TH = { up: 0.25, strong: 0.5, buy: 0.5, cheap: -0.25, late: -0.25, watch: 0.75, avoid: -0.25 };
+  const TH = { up: 0.25, strong: 0.5, buy: 0.5, cheap: 0.4, rich: -0.4, late: -0.25, watch: 0.75, avoid: -0.25 }; // cheap / rich = where the value bar turns green / red
   const clip = (v, a, b) => Math.max(a, Math.min(b, v));
   const mean = (a) => (a.length ? a.reduce((s, v) => s + v, 0) / a.length : null);
 
@@ -66,16 +66,19 @@
     const chars = (model.memberOf[base] || []).filter((id) => id.startsWith('idx:char:')).map((id) => model.idx[id]).filter(Boolean);
     return { all: model.idx['idx:all'] || null, fam: model.idx['idx:fam:' + Model.slug(famOf(c))] || null, set, era, local: set || era, char: chars.find((x) => x.scope === 'all') || chars[0] || null };
   }
+  // BUY = both readings green: trend strong up AND value lean cheap or better. Trend up but only fair = UP (not a buy);
+  // trend up and pricey = LATE.
   function zoneOf(t, v) {
     if (t == null) return 'neutral';
     if (t >= TH.buy && v != null && v >= TH.cheap) return 'buy';
-    if (t >= TH.up) return 'late';
+    if (t >= TH.up) return v != null && v <= TH.rich ? 'late' : 'up';
     if (t <= 0 && v != null && v >= TH.watch) return 'watch';
     if (t <= TH.avoid && v != null && v < TH.late) return 'avoid';
     return 'neutral';
   }
   const ZONES = {
-    buy: { label: 'BUY ZONE', tone: 'good', note: 'trend up, priced fair or cheap' },
+    buy: { label: 'BUY ZONE', tone: 'good', note: 'trend strong up and priced cheap — both readings green' },
+    up: { label: 'TREND UP', tone: 'mid', note: 'trend up, priced only fair — not cheap enough for the buy zone' },
     late: { label: 'LATE', tone: 'warn', note: 'trend up but already pricey' },
     watch: { label: 'WATCH', tone: 'cyan', note: 'cheap, trend not up yet — wait for the turn' },
     avoid: { label: 'AVOID', tone: 'bad', note: 'trend down and pricey' },

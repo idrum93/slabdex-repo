@@ -381,7 +381,7 @@ tr.sec .setupnote { margin-top: 4px; }
 .vbar { position: relative; height: 6px; min-width: 50px; border-radius: 3px; background: linear-gradient(90deg, var(--down), var(--line) 50%, var(--up)); }
 .vbar i { position: absolute; top: -3px; width: 3px; height: 12px; margin-left: -1.5px; background: var(--fg); border-radius: 1px; }
 .zchip { display: inline-block; padding: 0 5px; border-radius: 3px; font: 700 9px/15px var(--f-mono); letter-spacing: .05em; border: 1px solid currentColor; white-space: nowrap; }
-.zchip.z-buy { color: var(--up); } .zchip.z-late { color: var(--warn); } .zchip.z-watch { color: var(--cmp); } .zchip.z-avoid { color: var(--down); } .zchip.z-neutral { color: var(--muted); }
+.zchip.z-buy { color: var(--up); } .zchip.z-late { color: var(--warn); } .zchip.z-up { color: var(--fg); } .zchip.z-watch { color: var(--cmp); } .zchip.z-avoid { color: var(--down); } .zchip.z-neutral { color: var(--muted); }
 .drec { margin: 8px 0; padding: 6px 8px; border-left: 2px solid var(--accent); background: var(--panel); font-size: 11px; }
 .hsvg { width: 100%; height: 170px; display: block; background: var(--panel); border: 1px solid var(--line); border-radius: 6px; }
 .hsvg .h-grid { stroke: var(--line); } .hsvg .h-grid.dash { stroke-dasharray: 3 3; }
@@ -430,3 +430,4 @@ tr.zrow.z-watch td:first-child { box-shadow: inset 2px 0 0 var(--cmp); }
 .mine-btn { font-weight: 700; letter-spacing: .03em; }
 .mine-btn.on { background: var(--warn); color: #111; border-color: var(--warn); }
 .wi-tog.mine-tog.on { background: var(--warn); color: #111; border-color: var(--warn); }
+.sc-row.sc-est { opacity: .9; border-bottom-style: dashed; }

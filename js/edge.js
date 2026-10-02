@@ -49,7 +49,7 @@
     ['sc68', 'Score to EARLY STRENGTH', (x, i) => upTh(x.sc, i, 68)],
     // Trend & value gauges (js/tpi.js): logged so the gauge's own calls get a track record.
     ['tpiUp', 'Trend gauge up through +0.5', (x, i) => !!x.tpi && upTh(x.tpi.trend, i, 0.5)],
-    ['buyZone', 'Enters buy zone (trend gauge ≥ +0.5, priced fair or cheap)', (x, i) => !!x.tpi && x.tpi.zone[i] === 'buy' && x.tpi.zone[i - 1] !== 'buy'],
+    ['buyZone', 'Enters buy zone (trend gauge ≥ +0.5, value ≥ +0.4)', (x, i) => !!x.tpi && x.tpi.zone[i] === 'buy' && x.tpi.zone[i - 1] !== 'buy'],
     ['watchZone', 'Undervalued, trend not up yet (watch zone)', (x, i) => !!x.tpi && x.tpi.zone[i] === 'watch' && x.tpi.zone[i - 1] !== 'watch'],
   ];
   const SHORT = { rsi30: 'RSI↑30', rsi50: 'RSI↑50', macdX: 'MACD×', macdX0: 'MACD×<0', px50: 'Px>SMA50', gold: 'SMA20×50', rsX: 'RS↑', volUp: 'Pace↑', dip: 'Dip', hmaUp: 'HMA↑', stUp: 'ST↑', vzoX: 'VZO↑0', rsSetX: 'RS↑set', gapLow: 'Gap↓', lagUp: 'Lag↑', lagDown: 'Lag↓', squeeze: 'Sqz', sc55: 'Score≥55', sc68: 'Score≥68', tpiUp: 'Gauge↑', buyZone: 'BuyZone', watchZone: 'Watch' };

@@ -342,7 +342,7 @@
     const L = Model.GRADE_LABEL, e = EDGE[state.grade];
     const res = (id) => e?.ok ? e.results.find((r) => r.id === id) : null;
     const lagNote = rows.some((r) => r.lagging) ? (() => { const a = res('lagUp'), b = res('lagDown'); const t = [a, b].filter((x) => x && x.n).map((x) => `${x.id === 'lagUp' ? 'grade above led' : 'grade below led'}: ${Edge.pct(x.vsPeers, 1)} vs peers over 30D (${x.n}×, ${x.status === 'few' ? 'too few' : x.status})`).join(' · '); return `<p class="trk">⇅ = priced almost like the grade below (the grade to look at). ⤴ = a neighbouring grade jumped ≥20% in 30D and this one hasn't followed. Backtest (${L[state.grade]}): ${t || 'not enough history yet'}. Not a buy signal on its own.</p>`; })() : '';
-    return `<h3>GRADES <span class="dim">30D · share of next grade</span></h3>` + rows.map((r) => `<button class="ctx-row lad${r.grade === model.grade ? ' on' : ''}${r.lagging ? ' lagging' : ''}" data-grade="${r.grade}" type="button" title="${r.lagging ? `Lagging: ${r.lagging.map((g) => L[g]).join(' & ')} jumped, ${L[r.grade]} hasn't followed · ` : ''}Last sale ${r.age ?? '—'} days ago · click to switch grade"><span class="ck">${L[r.grade]}</span><span class="cn">${money(r.price)} ${r.share != null ? `<span class="dim">${(r.share * 100).toFixed(0)}%</span>` : ''}${r.lagging ? ' <b class="lagm">⤴</b>' : ''}${r.sq ? (r.sq.inverted ? ' <b class="dim" title="Priced above-or-equal to the grade below — usually mixed listings, check sales">⇵?</b>' : ' <b class="sqzm" title="Compressed: the grade below sells for ' + (r.sq.ratio * 100).toFixed(0) + '% of this grade (' + normWord(r.sq.normSrc) + ' ' + (r.sq.norm != null ? (r.sq.norm * 100).toFixed(0) + '%' : '—') + ')">⇅</b>') : ''}</span><span class="cv">${fmtP(r.c30, 0)}</span></button>${r.im ? `<p class="implied">${esc(impliedTxt(r.im))}</p>` : ''}`).join('') + warn + lagNote;
+    return `<h3>GRADES <span class="dim">30D · share of next grade</span></h3>` + [...rows].reverse().map((r) => `<button class="ctx-row lad${r.grade === model.grade ? ' on' : ''}${r.lagging ? ' lagging' : ''}" data-grade="${r.grade}" type="button" title="${r.lagging ? `Lagging: ${r.lagging.map((g) => L[g]).join(' & ')} jumped, ${L[r.grade]} hasn't followed · ` : ''}Last sale ${r.age ?? '—'} days ago · click to switch grade"><span class="ck">${L[r.grade]}</span><span class="cn">${money(r.price)} ${r.share != null ? `<span class="dim">${(r.share * 100).toFixed(0)}%</span>` : ''}${r.lagging ? ' <b class="lagm">⤴</b>' : ''}${r.sq ? (r.sq.inverted ? ' <b class="dim" title="Priced above-or-equal to the grade below — usually mixed listings, check sales">⇵?</b>' : ' <b class="sqzm" title="Compressed: the grade below sells for ' + (r.sq.ratio * 100).toFixed(0) + '% of this grade (' + normWord(r.sq.normSrc) + ' ' + (r.sq.norm != null ? (r.sq.norm * 100).toFixed(0) + '%' : '—') + ')">⇅</b>') : ''}</span><span class="cv">${fmtP(r.c30, 0)}</span></button>${r.im ? `<p class="implied">${esc(impliedTxt(r.im))}</p>` : ''}`).join('') + warn + lagNote;
   }
   // Every grade's last sale next to an estimate built from the card's other grades — including grades that are
   // blended, thin or stale, where the estimate is the better guide to what a copy should cost.
@@ -403,33 +403,70 @@
       return { mult, sCard, sRef, nRef: use.length, refFam: use === same ? myFam : 'all', beta, fitted, nFit: fit.length };
     };
   }
+  // A card's scarcity curve (see Model.scarcityCurve): grades with a current price and pops for that grade and every grade
+  // above it. Scarcity of a grade = copies at that grade OR HIGHER (a PSA 8 buyer also competes with every 9 and 10) —
+  // pop at the grade alone isn't monotone, since low grades often have small pops because few are submitted.
+  function curveData(id, card, ov) {
+    const base = id.replace(/~alt$/, ''), me = popsAll()[base]; if (!me) return null;
+    const ms = allModels(), E = Model.gradeEstimates(ms, id, card, ov);
+    const cum = (g) => { const hi = PG.slice(PG.indexOf(g)); return hi.every((x) => me[x] > 0) ? hi.reduce((s, x) => s + Number(me[x]), 0) : null; };
+    const pts = E.rows.filter((r) => !r.stale && r.mkt > 0 && cum(r.grade)).map((r) => ({ grade: r.grade, price: r.user ? r.user.price : r.mkt, pop: cum(r.grade), own: Number(me[r.grade]), user: !!r.user, mine: !ov && !!ms[r.grade]?.by[base]?.card?.mine }));
+    const sc = Model.scarcityCurve(pts), skipped = E.rows.filter((r) => r.stale && me[r.grade] > 0).map((r) => Model.GRADE_LABEL[r.grade]);
+    return { E, cum, pts, sc, skipped, me };
+  }
+  // Cards priced below their own scarcity curve: PSA 8 / 9 whose current price (yours, with USE IN READINGS) sits under
+  // the curve by more than the card's scatter. PSA 7 stays in the fit as a reference point but isn't featured (low-grade
+  // pops are skewed by what gets submitted, and 7s are thin and often mixed printings); PSA 10 is the curve's far end.
+  function belowCurveList() {
+    const out = [], seen = new Set(), min = WL?.minPrice || model.minPrice || 0;
+    for (const base of Object.keys(popsAll())) {
+      if (seen.has(base)) continue; seen.add(base);
+      const ms = allModels(), b = Object.values(ms).map((m) => m.by[base]).find(Boolean); if (!b) continue;
+      const d = curveData(base, b.card, null); if (!d?.sc.ok) continue;
+      const band = Math.max(0.1, d.sc.se ?? 0.1);
+      for (const r of d.sc.rows) if ((r.grade === 'psa8' || r.grade === 'psa9') && r.loo < -band && r.price >= min) out.push({ key: base, card: b.card, grade: r.grade, price: r.price, fitted: r.fitted, loo: r.loo, band, end: r.end, mine: d.pts.find((p) => p.grade === r.grade)?.mine, n: d.sc.n });
+    }
+    return out.sort((a, b) => a.loo - b.loo);
+  }
   function popRows(cur) {
     const P = popsAll(), base = cur.id.replace(/~alt$/, ''), me = P[base], L = Model.GRADE_LABEL;
     const local = state.pops?.[base] || {};
-    const counts = me ? PG.filter((g) => me[g] > 0).map((g) => `${L[g].replace('PSA ', '')}: ${Number(me[g]).toLocaleString('en-US')}`).join(' · ') : '';
+    const counts = me ? [...PG].reverse().filter((g) => me[g] > 0).map((g) => `${L[g].replace('PSA ', '')}: ${Number(me[g]).toLocaleString('en-US')}`).join(' · ') : '';
     const adj = popAdjFor(cur), a910 = adj ? adj('psa9', 'psa10') : null;
     const note = !me ? 'No population counts for this card yet.' : a910?.need ? `10s per 9: ${a910.sCard.toFixed(2)}. Enter pops for ${a910.need} more card${a910.need > 1 ? 's' : ''} (same era) to adjust estimates.` : a910 ? `10s per 9: ${a910.sCard.toFixed(2)} vs ${a910.sRef.toFixed(2)} typical (${a910.nRef} cards${a910.refFam !== 'all' ? ', ' + a910.refFam : ''}) → 9÷10 spread ×${a910.mult.toFixed(2)} (β ${a910.beta.toFixed(2)}${a910.fitted ? `, fitted on ${a910.nFit}` : ', assumed until 8 cards have pops'}). Only peer-based steps are adjusted; a card's own price spread already reflects its pops.` : '';
-    const inputs = `<div class="pop-in">${PG.map((g) => `<label>${L[g]}<input data-pop="${esc(base)}|${g}" type="text" inputmode="numeric" value="${local[g] ?? ''}" placeholder="${me?.[g] ?? ''}"></label>`).join('')}</div>${me ? `<button class="tbtn pop-copy" type="button" data-popcopy="${esc(base)}" title="Copy a line for data/pops.json (paste it into the entries list in GitHub's editor)">⧉ copy for pops.json</button>` : ''}`;
+    const inputs = `<div class="pop-in">${[...PG].reverse().map((g) => `<label>${L[g]}<input data-pop="${esc(base)}|${g}" type="text" inputmode="numeric" value="${local[g] ?? ''}" placeholder="${me?.[g] ?? ''}"></label>`).join('')}</div>${me ? `<button class="tbtn pop-copy" type="button" data-popcopy="${esc(base)}" title="Copy a line for data/pops.json (paste it into the entries list in GitHub's editor)">⧉ copy for pops.json</button>` : ''}`;
     // Scarcity curve: each grade vs the price its scarcity implies, judged against its neighbouring grades.
     // Scarcity curve, drawn twice when WHAT-IF has prices for this card: once from the collected data, once with your prices.
+    // Grade-to-grade steps: how much the price rises per unit of extra scarcity (elasticity = log price ratio ÷ log pop ratio).
+    // A middle grade whose step up from below is much steeper than its step to the next grade is rich vs the lower grade
+    // and cheap vs the higher one (or the other way round) — the straight curve blends the two; this shows each side.
+    const stepsHtml = (rows) => {
+      const R = [...rows].sort((a, b) => b.pop - a.pop), st = [];
+      for (let i = 1; i < R.length; i++) { const lo = R[i - 1], hi = R[i], pr = hi.price / lo.price, sr = lo.pop / hi.pop; if (sr > 1.02) st.push({ lo, hi, pr, sr, e: Math.log(pr) / Math.log(sr) }); }
+      if (st.length < 2) return '';
+      const short = (g) => L[g].replace('PSA ', '');
+      const line = st.map((x) => `<span title="${L[x.hi.grade]} costs ×${x.pr.toFixed(2)} ${L[x.lo.grade]} for ×${x.sr.toFixed(2)} fewer copies (at that grade or higher). Elasticity ${x.e.toFixed(2)}: price rises ${x.e.toFixed(2)}% per 1% scarcer.">${short(x.lo.grade)}→${short(x.hi.grade)} ×${x.pr < 10 ? x.pr.toFixed(1) : Math.round(x.pr)} for ×${x.sr < 10 ? x.sr.toFixed(1) : Math.round(x.sr)} scarcer <b>${x.e.toFixed(2)}</b></span>`).join(' · ');
+      // The step that's out of line with the others: one of its two prices is off, but the curve can't say which.
+      const notes = [], med = (v) => { const w = [...v].sort((x, y) => x - y); return w.length % 2 ? w[w.length >> 1] : (w[w.length / 2 - 1] + w[w.length / 2]) / 2; };
+      let worst = null;
+      st.forEach((x, i) => { const ref = med(st.filter((_, j) => j !== i).map((y) => y.e)); if (!(ref > 0 && x.e > 0)) return; const d = Math.log(x.e / ref); if (Math.abs(d) > Math.log(1.35) && (!worst || Math.abs(d) > Math.abs(worst.d))) worst = { ...x, d, ref }; });
+      if (worst) notes.push(`the ${short(worst.lo.grade)}→${short(worst.hi.grade)} step (${worst.e.toFixed(2)}) is ${worst.d > 0 ? 'steeper' : 'flatter'} than the others (~${worst.ref.toFixed(2)}): either ${L[worst.hi.grade]} is ${worst.d > 0 ? 'dear' : 'cheap'} or ${L[worst.lo.grade]} is ${worst.d > 0 ? 'cheap' : 'dear'} — the curve can't tell which, so check which price has more sales behind it`);
+      return `<p class="trk sc-steps"><span class="dim">STEPS · price rise per extra scarcity (elasticity):</span> ${line}${notes.length ? `<br>↳ ${notes.join('; ')}.` : ''}</p>`;
+    };
     const curveBlock = (ov, title) => {
-      const E = Model.gradeEstimates(allModels(), cur.id, cur.card, ov);
-      // Scarcity of a grade = copies at that grade OR HIGHER (a PSA 8 buyer is also competing with every 9 and 10 that
-      // exists). Pop at the grade alone isn't monotone — low grades often have small pops because few are submitted.
-      const cum = (g) => { const hi = PG.slice(PG.indexOf(g)); return hi.every((x) => me[x] > 0) ? hi.reduce((s, x) => s + Number(me[x]), 0) : null; };
-      const pts = E.rows.filter((r) => !r.stale && r.mkt > 0 && cum(r.grade)).map((r) => ({ grade: r.grade, price: r.user ? r.user.price : r.mkt, pop: cum(r.grade), own: Number(me[r.grade]), user: !!r.user, mine: !ov && !!allModels()[r.grade]?.by[base]?.card?.mine }));
-      const sc = Model.scarcityCurve(pts), skipped = E.rows.filter((r) => r.stale && me[r.grade] > 0).map((r) => L[r.grade]);
+      const { E, cum, pts, sc, skipped } = curveData(cur.id, cur.card, ov);
       const head = `<h3>SCARCITY CURVE <span class="dim">${title}</span></h3>`;
       if (!sc.ok) return head + `<p class="trk">Needs 3+ grades with a current price and pops for that grade and every grade above it (have ${sc.n}${skipped.length ? `; ${skipped.join(', ')} left out as ⧗ stale${ov ? '' : ' — a what-if price can stand in'}` : ''}).</p>`;
       const band = Math.max(0.1, sc.se ?? 0.1), small = sc.n < 4;
       // Grades with pops but no usable price (no sales, ⧗ stale, blended): the curve's estimate for them.
       const have = new Set(sc.rows.map((r) => r.grade));
       const extra = E.rows.filter((r) => !have.has(r.grade) && cum(r.grade)).map((r) => ({ grade: r.grade, pop: cum(r.grade), est: sc.predict(cum(r.grade)), why: r.stale ? '⧗ stale' : r.blended ? 'blended' : r.mkt ? 'no fresh price' : 'no sales', out: cum(r.grade) < sc.popRange[0] || cum(r.grade) > sc.popRange[1] }));
-      const extraHtml = extra.filter((x) => x.est).map((x) => `<p class="sc-row sc-est" title="${L[x.grade]} has pops but ${x.why === 'no sales' ? 'no sales in the data' : 'no usable price (' + x.why + ')'}. This is where this card's scarcity curve puts it${x.out ? ' — beyond the grades it was fitted on, so an extrapolation: treat as rough' : ''}. Add a what-if price to judge it against the curve."><span class="ck">${L[x.grade]}<small>≥${x.pop.toLocaleString('en-US')}</small></span><span class="dim">${esc(x.why)}</span><span>curve ≈${money(x.est)}</span><b class="dim">${x.out ? 'extrap.' : 'est.'}</b></p>`).join('');
-      return head + sc.rows.map((r) => {
+      const extraRows = extra.filter((x) => x.est).map((x) => [x.grade, `<p class="sc-row sc-est" title="${L[x.grade]} has pops but ${x.why === 'no sales' ? 'no sales in the data' : 'no usable price (' + x.why + ')'}. This is where this card's scarcity curve puts it${x.out ? ' — beyond the grades it was fitted on, so an extrapolation: treat as rough' : ''}. Add a what-if price to judge it against the curve."><span class="ck">${L[x.grade]}<small>≥${x.pop.toLocaleString('en-US')}</small></span><span class="dim">${esc(x.why)}</span><span>curve ≈${money(x.est)}</span><b class="dim">${x.out ? 'extrap.' : 'est.'}</b></p>`]);
+      const order = (g) => -PG.indexOf(g); // PSA 10 first
+      return head + [...sc.rows.map((r) => [r.grade, (() => {
         const tone = Math.abs(r.loo) <= band ? 'dim' : r.loo < 0 ? 'pos' : 'neg';
         return `<p class="sc-row" title="The curve puts ${L[r.grade]} (${r.pop.toLocaleString('en-US')} copies at this grade or higher) at about ${money(r.fitted)}${r.user ? ' (price = your what-if input)' : ''}. Green = below the curve (cheap for its scarcity), red = above, grey = within the usual scatter."><span class="ck">${L[r.grade]}<small title="copies at this grade or higher">≥${r.pop.toLocaleString('en-US')}</small></span><span>${money(r.price)}${r.user ? '*' : pts.find((q) => q.grade === r.grade)?.mine ? '✎' : ''}</span><span class="dim" title="where the curve puts it">≈${money(r.fitted)}</span><b class="${tone}"${r.end ? ' title="End of the curve: judged against the line through all grades"' : ''}>${r.loo >= 0 ? '+' : ''}${(r.loo * 100).toFixed(0)}%${r.end ? '<sup>e</sup>' : ''}</b></p>`;
-      }).join('') + extraHtml + `<p class="trk">${sc.monotone ? `Each halving of the copies at a grade or higher adds about ${((Math.pow(2, -sc.slope) - 1) * 100).toFixed(0)}% to the price.` : '⚠ Prices don\'t fall as the pop rises here — check the pops and recent sales (mixed listings?).'} Scatter ±${Math.round(band * 100)}%${small ? ' (only 3 grades: rough)' : ''}.${skipped.length ? ` Left out: ${skipped.join(', ')} (⧗ stale).` : ''}${pts.some((p) => p.user) ? ' * = your what-if price.' : ''}${pts.some((p) => p.mine) ? ' ✎ = includes your prices.' : ''}</p>`;
+      })()]), ...extraRows].sort((x, y) => order(x[0]) - order(y[0])).map((x) => x[1]).join('') + stepsHtml(sc.rows) + `<p class="trk">${sc.monotone ? `Each halving of the copies at a grade or higher adds about ${((Math.pow(2, -sc.slope) - 1) * 100).toFixed(0)}% to the price.` : '⚠ Prices don\'t fall as the pop rises here — check the pops and recent sales (mixed listings?).'} Scatter ±${Math.round(band * 100)}%${small ? ' (only 3 grades: rough)' : ''}.${skipped.length ? ` Left out: ${skipped.join(', ')} (⧗ stale).` : ''}${pts.some((p) => p.user) ? ' * = your what-if price.' : ''}${pts.some((p) => p.mine) ? ' ✎ = includes your prices.' : ''}</p>`;
     };
     let curve = '';
     if (me) {
@@ -445,7 +482,7 @@
     const E = Model.gradeEstimates(allModels(), cur.id, cur.card, ov, popAdjFor(cur)); if (!E.anchor) return '';
     const L = Model.GRADE_LABEL, src = (v) => (v === 'own' ? "this card's own grade spread" : v === 'set' ? 'same-set average spread' : `${v} average spread`);
     const aAge = E.rows.find((r) => r.anchor)?.age ?? null;
-    const rows = E.rows.map((r) => {
+    const rows = [...E.rows].reverse().map((r) => { // PSA 10 first
       const stale = !r.anchor && !r.mine && !r.user && (r.stale || (r.age != null && aAge != null && r.age - aAge > 7)); // overdue for its usual pace, or much older than the anchor's newest sale: newer sales may be missing
       const lastTxt = r.user ? `<span class="wiv">${money(r.user.price)} <span class="dim">your ${r.user.n > 1 ? 'median of ' + r.user.n : 'price'}</span></span>${r.dataLast != null ? ` <span class="dim">(data ${money(r.dataLast)} ${r.dataAge}d)</span>` : ''}` : r.last == null ? '<span class="dim">no sale</span>' : `${money(r.last)} <span class="dim">${r.age}d${r.blended ? ' · blended' : ''}</span>`;
       const estTxt = r.anchor ? '<span class="dim">anchor</span>' : r.est == null ? '<span class="dim">—</span>' : `≈${money(r.est)} <span class="dim">±${Math.round(r.miss * 100)}%</span>${r.popAdj ? ` <span class="popm" title="Adjusted for this card's population: spread ×${r.popAdj.mult.toFixed(2)}">pop-adj</span>` : ''}`;
@@ -569,6 +606,20 @@
     const where = { all: '', family: 'era family · ', era: 'era · ', set: `${x.era} · `, char: x.scope === 'all' ? 'character ladder · ' : 'character · ', theme: x.scope === 'all' ? 'theme ladder · ' : 'theme · ' }[x.kind] ?? '';
     return { key: x.id, name: x.name, sub: `${where}${x.members.length} cards`, last: s.last, lastTxt: s.last != null ? s.last.toFixed(1) : '—', metric: M.get(s), score: s.score, tag: s.tag, ch: st.ch[x.id], isIdx: true, sprite: x.sprite, symbol: x.symbol };
   }
+  // ★ TOP: grades priced below their own scarcity curve (cards with pops entered).
+  function curveSection() {
+    let xs = []; try { xs = belowCurveList(); } catch (e) { console.error(e); }
+    const nPop = Object.keys(popsAll()).length, tk = 'zone:curve', open = !state.collapsed.includes(tk), L = Model.GRADE_LABEL;
+    const head = `<tr class="sec" data-toggle="${tk}"><td colspan="5">${open ? '▾' : '▸'} BELOW SCARCITY CURVE <span class="dim">${xs.length} · PSA 8 / 9 priced under where the card's pops put them</span></td></tr>`;
+    if (!open) return head;
+    const note = `<tr class="sec"><td colspan="5"><p class="setupnote">From the ${nPop} card${nPop === 1 ? '' : 's'} with pops entered: a PSA 8 or 9 whose current price (✎ your prices when USE IN READINGS is on) sits below its scarcity curve by more than the card's scatter, and is ${money(WL?.minPrice || 0)}+. Biggest discount first; click to open that grade. PSA 7 stays in the curve as a reference point but isn't listed. Enter pops for more cards to widen this list. A lead to research — not yet in the forward record.</p></td></tr>`;
+    const M = { fmt: (v) => `<span class="pos" title="Price vs the curve">${(v * 100).toFixed(0)}%</span>` };
+    const rows = xs.map((x) => {
+      const r = { key: x.key, name: x.card.name, sub: `${x.mine ? '✎ ' : ''}${x.card.set} #${x.card.number} · ${L[x.grade]} ${money(x.price)} vs curve ≈${money(x.fitted)}${x.end ? ' (end of curve)' : ''}${x.n < 4 ? ' · 3 grades: rough' : ''}`, lastTxt: money(x.price), metric: x.loo, score: null, tag: ['', 'na'] };
+      return rowHtml(r, M, ' crow').replace('<tr class="row', `<tr data-lgrade="${x.grade}" class="row`).replace(/<span class="pill[^"]*"[^>]*>··<\/span>/, `<span class="pill lagg">${L[x.grade].replace('PSA ', '')}</span>`);
+    }).join('');
+    return head + note + (rows || `<tr><td colspan="5" class="empty">${nPop ? 'No PSA 8 or 9 is below its curve right now.' : 'Enter PSA pops for a card (Signal panel → POPULATION) to start this list.'}</td></tr>`);
+  }
   function rowHtml(r, M, extra = '') {
     const cls = r.score == null ? 'na' : r.tag[1];
     const star = r.isIdx ? '' : `<button class="st-btn${isStar(r.key) ? ' on' : ''}" data-star="${r.key}" title="${isStar(r.key) ? 'Remove from' : 'Add to'} MINE" aria-label="Star ${esc(r.name)}">${isStar(r.key) ? '★' : '☆'}</button>`;
@@ -632,9 +683,9 @@
       }).join('');
     } else if (view === 'zone') { // tradable slabs by gauge zone, best prospects first
       const G = tpiAll(), L = Model.GRADE_LABEL[state.grade];
-      const groups = ['buy', 'watch', 'late', 'neutral', 'avoid'].map((z) => [z, G.ranked.filter((c) => c.zone === z)]);
-      const note = `<tr class="sec"><td colspan="5"><p class="setupnote">Tradable ${L} slabs (${model.minPrice ? money(model.minPrice) + '+, ' : ''}liquid) by trend &amp; value gauge. <b>BUY ZONE</b> = trend ≥ +0.5 and priced fair or cheap · <b>WATCH</b> = cheap, trend not up yet · <b>LATE</b> = trend up but pricey. Open ◔ GAUGES for the dashboard. A lead to research until the forward record backs the zones.</p></td></tr>`;
-      html = note + groups.map(([z, xs]) => {
+      const groups = ['buy', 'watch', 'up', 'late', 'neutral', 'avoid'].map((z) => [z, G.ranked.filter((c) => c.zone === z)]);
+      const note = `<tr class="sec"><td colspan="5"><p class="setupnote">Tradable ${L} slabs (${model.minPrice ? money(model.minPrice) + '+, ' : ''}liquid) by trend &amp; value gauge. <b>BUY ZONE</b> = both readings green: trend ≥ +0.5 and value ≥ +0.4 (lean cheap or cheap) · <b>TREND UP</b> = trend up, priced only fair · <b>WATCH</b> = cheap, trend not up yet · <b>LATE</b> = trend up but pricey. Open ◔ GAUGES for the dashboard. A lead to research until the forward record backs the zones.</p></td></tr>`;
+      html = curveSection() + note + groups.map(([z, xs]) => {
         if (!xs.length) return '';
         const tk = 'zone:' + z, open = z === 'buy' || z === 'watch' ? !state.collapsed.includes(tk) : state.collapsed.includes(tk);
         return `<tr class="sec" data-toggle="${tk}"><td colspan="5">${open ? '▾' : '▸'} ${TPI.ZONES[z].label} <span class="dim">${xs.length} · ${esc(TPI.ZONES[z].note)}</span></td></tr>` + (open ? xs.map((c) => { const r = cardRow(c.b, M, st); r.sub = `${c.b.card.mine ? '✎ ' : ''}trend ${sgn(c.t)} ${c.roc == null ? '' : c.roc > 0.05 ? '▲' : c.roc < -0.05 ? '▼' : '▬'} · value ${sgn(c.v)} (${TPI.vlabel(c.v).toLowerCase()})${c.liq.wide ? ` · ⚠ spread ${c.liq.spread.toFixed(1)}×` : ''}`; return rowHtml(r, M, ' zrow z-' + z); }).join('') : '');
@@ -965,7 +1016,7 @@
     const chars = Object.values(G.idx).filter((o) => o.x.kind === 'char' && (o.x.scope === 'all' || !Object.values(G.idx).some((p) => p.x.kind === 'char' && p.x.scope === 'all' && p.x.base === o.x.base))).sort((a, b) => (b.t ?? -9) - (a.t ?? -9));
     const top = G.buy.slice(0, 8);
     el.innerHTML = `<div class="dash-head"><b>TREND &amp; VALUE GAUGES</b> <span class="dim">${L} · medium term (30–90 day inputs) · long term needs a year of history</span><button class="tbtn" type="button" data-close-dash>✕ chart</button></div>
-      ${sec('★ TOP PROSPECTS', `${L} slabs in the buy zone: tradable (${model.minPrice ? money(model.minPrice) + '+, ' : ''}liquid), trend gauge ≥ +0.5, priced fair or cheap — ranked by trend, value and a rising gauge`,
+      ${sec('★ TOP PROSPECTS', `${L} slabs in the buy zone: tradable (${model.minPrice ? money(model.minPrice) + '+, ' : ''}liquid), trend gauge ≥ +0.5 and value ≥ +0.4 (both green, not late) — ranked by trend, value and a rising gauge`,
         top.length ? `<div class="pgrid">${top.map(prospectTile).join('')}</div>` : `<p class="dim">No tradable ${L} slab is in the buy zone right now.</p>`)}
       <p class="drec">${rec}<br><span class="dim">A lead to research, not a buy signal, until the forward record shows the buy zone beating other cards after PSA fees.</span></p>
       ${G.watch.length ? sec('WATCH', 'cheap, trend not up yet — wait for the gauge to turn', `<div class="pgrid">${G.watch.slice(0, 6).map(prospectTile).join('')}</div>`) : ''}
