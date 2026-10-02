@@ -46,10 +46,13 @@
       if (!pts.length && !man?.length) continue;
       const demo = s.source === 'demo';
       const kind = demo ? null : C.pooledKind(s.printings);
-      const r = demo ? { main: pts, alt: [], out: [], split: null } : C.classify(pts, kind, { ...C.gradedOpts(s, grade), names: WL.printingNames?.[c.key] });
-      const mixed = r.kind && !r.split && !r.same ? (r.kind === '1st' ? '1st+Unl mixed' : 'holo+rev mixed') : null;
+      const r = demo ? { main: pts, alt: [], out: [], split: null } : !pts.length ? { main: [], alt: [], out: [], split: null, kind: null } /* only your prices: one clean line */ : C.classify(pts, kind, { ...C.gradedOpts(s, grade), names: WL.printingNames?.[c.key] });
+      let mixed = r.kind && !r.split && !r.same ? (r.kind === '1st' ? '1st+Unl mixed' : 'holo+rev mixed') : null;
+      // Your prices on a grade whose site record mixes printings: you priced the card's own printing, so that grade's line
+      // is your prices alone (the mixed site sales can't be told apart and are left out of it).
+      const mineOnly = !!(mixed && man?.length); if (mineOnly) mixed = null;
       const same = r.same ? (r.kind === '1st' ? '1st/Unl · one price level' : 'holo/rev · one price level') : null;
-      let main = r.main;
+      let main = mineOnly ? [] : r.main;
       if (man?.length) { const md = new Set(man.map((x) => x.t)); main = [...main.filter((x) => !md.has(x.t)), ...man.map((x) => ({ t: x.t, p: x.p, n: x.n || 1, m: 1, ps: x.ps || null }))].sort((a, b) => (a.t < b.t ? -1 : a.t > b.t ? 1 : 0)); }
       lines.push({ key: c.key, card: { ...c, line: r.split ? r.split.mainLabel : mixed || same, est: !!r.split, mixed: !!mixed, mine: man?.length || 0 }, pts: main, site: man?.length ? r.main : null, demo });
       if (r.split && r.alt.length >= 4) lines.push({ key: c.key + '~alt', card: { ...c, key: c.key + '~alt', line: r.split.altLabel, est: true, virtual: true }, pts: r.alt, demo });
@@ -704,6 +707,7 @@
       rows.push({ grade: g, last, age, n30, blended: !clean && !!shown, mkt: li >= 0 ? clean.close[li] : null, clean: !!clean, stale: !!si?.stale, typ: si?.typ ?? null });
     }
     markBehind(models, key, card, rows);
+    rows.forEach((r, i) => { if (models[G[i]].by[key.replace(/~alt$/, '')]?.card?.mine) { r.stale = false; r.mine = true; } }); // your prices are the latest you know of: never ⧗ stale
     if (overrides) for (const r of rows) { const o = overrides[r.grade]; if (!o || !(o.price > 0)) continue; Object.assign(r, { user: o, dataLast: r.last, dataAge: r.age, last: o.price, mkt: o.price, age: 0, stale: false, clean: true, n30: Math.max(r.n30, o.n || 1) }); }
     const anc = rows.filter((r) => r.clean && r.mkt && r.age != null && r.age <= 45 && !r.stale).sort((a, b) => (b.user ? 1 : 0) - (a.user ? 1 : 0) || b.n30 - a.n30 || (a.age - b.age))[0];
     if (!anc) return { rows, anchor: null };
@@ -773,7 +777,9 @@
       const f = end ? all : fit(P.filter((_, j) => j !== i)); const d = p.y - (f.a + f.b * p.x);
       return { grade: p.grade, price: p.price, pop: p.pop, user: p.user, end, fitted: Math.exp(f.a + f.b * p.x), loo: Math.exp(d) - 1, res: Math.exp(res[i]) - 1 };
     });
-    return { ok: true, n: P.length, slope: all.b, se: se == null ? null : Math.exp(se) - 1, rows, monotone: all.b < 0 };
+    // Price the curve implies for a population (e.g. a grade with pops but no usable sale).
+    const predict = (pop) => (pop > 0 ? Math.exp(all.a + all.b * Math.log(pop)) : null);
+    return { ok: true, n: P.length, slope: all.b, se: se == null ? null : Math.exp(se) - 1, rows, monotone: all.b < 0, predict, popRange: [Math.exp(xmin), Math.exp(xmax)] };
   }
   const api = { scarcityCurve, behindAt, staleAt, staleInfo, staleSeries, STALE, aboveMin, tradable, liquidAt, spreadAt, liquidity, rulesOf, RULES, feeAt, gradeEstimates, pairRatio, impliedPrice, peerRatios, squeezeNow, squeezeSeries, SQZ, lagSeries, gradeLadder, PREV, LAG, gapSeries, gradeGaps, NEXT, lineIn, ladder, trackCorr, changes, buildModel, makeIndex, signals, brief, consensus, leadLag, briefMarkdown, fillDays, slug, GRADE_LABEL, MIN_SALE_DAYS_90 };
   if (isNode) module.exports = api; else root.Model = api;
