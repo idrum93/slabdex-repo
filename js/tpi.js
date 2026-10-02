@@ -155,7 +155,7 @@
     return {
       trend, value, zone, last, stale: (i = last) => !!(st && st[i]),
       roc: (i = last, k = 7) => (isN(trend[i]) && isN(trend[i - k]) ? trend[i] - trend[i - k] : null),
-      breakdown: (i = last) => { const cm = compsAt(i); return { ...cm, ...combine(cm) }; },
+      breakdown: (i = last) => { const cm = compsAt(i), r = combine(cm); return { context: cm.context, card: cm.card, grades: cm.grades, valueParts: cm.value, trend: r.trend, value: r.value, groups: r.groups }; },
     };
   }
 

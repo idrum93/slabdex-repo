@@ -8,6 +8,7 @@
 
   const state = { v: 3, key: null, grade: 'psa9', vs: 'idx:all', range: 365, res: 'D', ind: { st: 1, sma20: 1, sma50: 1, hma: 0, vol: 1, rs: 1, rsi: 1, macd: 0, vzo: 0 }, guide: 1, dash: 0, whatIf: 0, wi: {}, sort: 'score', dir: -1, wlView: 'cards', wlMetric: 'c30', merge: false, print: 'main', group: false, collapsed: [], stars: [] };
   let hadSaved = false;
+  try { if (/[?&]reset\b/.test(location.search)) localStorage.removeItem('slabdex'); } catch (e) {} // ?reset = start from the default layout
   try { const sv = JSON.parse(localStorage.getItem('slabdex') || 'null'); if (sv && sv.v === 3) { Object.assign(state, sv); hadSaved = true; if (!('st' in state.ind)) state.ind.st = 1; } } catch (e) {} // older saved layouts are ignored
   const save = () => { try { localStorage.setItem('slabdex', JSON.stringify(state)); } catch (e) {} };
 
@@ -402,7 +403,8 @@
     $('sigStar').hidden = !base; if (base) { const on = isStar(base); $('sigStar').textContent = on ? '★' : '☆'; $('sigStar').classList.toggle('on', on); $('sigStar').dataset.k = base; }
     const chg = !ratio && stats().ch[cur.id];
     $('sigChange').innerHTML = chg ? `<span class="${chg.dir > 0 ? 'pos' : 'neg'}">${chg.dir > 0 ? '▲' : '▼'} this week:</span> ${esc(chg.items.map((i) => i.text).join(' · '))}` : '';
-    const gz = !ratio && !cur.isIndex && !model.dense ? tpiCard(cur.id) : null, ov = gz?.s.stale() ? gz.liq.overdue : null;
+    let gz = null; try { gz = !ratio && !cur.isIndex && !model.dense ? tpiCard(cur.id) : null; } catch (err) { console.error('gauge', err); }
+    const ov = gz?.s.stale() ? gz.liq.overdue : null;
     if (ov) $('sigChange').innerHTML = `<span class="warn">⧗ Newest ${Model.GRADE_LABEL[state.grade]} sales likely missing</span> — last sale ${ov.since}d ago${ov.typ ? `, usually every ~${ov.typ}d` : ''}. The provider posts sales late; readings below may lag the real market.` + (chg ? '<br>' + $('sigChange').innerHTML : '');
     $('sigChange').hidden = !chg && !ov;
     $('scoreVal').textContent = s.score == null ? '—' : s.score;
@@ -430,7 +432,9 @@
       ]; })()),
       ['History', `${s.days} days`],
     ];
-    $('sigCtx').innerHTML = setupLine(cur, ratio) + gaugeRows(cur, ratio) + ladderRows(cur, ratio) + valueRows(cur, ratio) + contextRows(cur, ratio);
+    // Each panel section is isolated: a bug in one never blanks the panel or stops the chart from drawing.
+    const safe = (fn, name) => { try { return fn(cur, ratio) || ''; } catch (err) { console.error(name, err); return ''; } };
+    $('sigCtx').innerHTML = safe(setupLine, 'setup') + safe(gaugeRows, 'gauge') + safe(ladderRows, 'grades') + safe(valueRows, 'value') + safe(contextRows, 'context');
     $('metrics').innerHTML = rows.map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join('');
   }
 
@@ -853,11 +857,11 @@
     if (cur.isIndex) { const o = idxGauge(cur.id); if (!o) return ''; return `<h3>TREND GAUGE <span class="dim">${esc(TPI.label(o.t))}</span></h3><div class="gblock">${gaugeSvg(o.t, { size: 120 })}<div class="gside">${rocTxt(o.roc)}<span class="dim">range in its year</span>${valueBar(o.v)}</div></div>`; }
     const c = tpiCard(cur.id); if (!c) return '';
     const bd = c.s.breakdown(), vote = (v) => (v == null ? '<span class="dim">·</span>' : v > 0.05 ? `<span class="pos">+${v === 1 ? 1 : v.toFixed(1)}</span>` : v < -0.05 ? `<span class="neg">${v === -1 ? -1 : v.toFixed(1)}</span>` : '<span class="dim">0</span>');
-    const rows = (title, arr, w) => arr.length ? `<p class="gbh">${title}${w ? ` <span class="dim">${Math.round(w * 100)}% · ${sgn(bd.groups?.[title.toLowerCase()] ?? null)}</span>` : ''}</p>` + arr.map(([n, v, why]) => `<p class="gbr" title="${esc(why)}"><span>${esc(n)}</span>${vote(v)}</p>`).join('') : '';
+    const rows = (title, arr, w) => arr?.length ? `<p class="gbh">${title}${w ? ` <span class="dim">${Math.round(w * 100)}% · ${sgn(bd.groups?.[title.toLowerCase()] ?? null)}</span>` : ''}</p>` + arr.map(([n, v, why]) => `<p class="gbr" title="${esc(why)}"><span>${esc(n)}</span>${vote(v)}</p>`).join('') : '';
     const open = state.collapsed.includes('gauge:open'); // folded by default
     return `<h3>TREND &amp; VALUE ${zoneChip(c.zone)}</h3><div class="gblock">${gaugeSvg(c.t, { size: 120 })}<div class="gside"><span>${esc(TPI.label(c.t))} ${rocTxt(c.roc)}</span><span class="dim">value · ${esc(TPI.vlabel(c.v))} ${sgn(c.v)}</span>${valueBar(c.v)}${c.s.stale() ? `<span class="warn small" title="Last sale ${c.liq.overdue?.since}d ago; usually sells every ~${c.liq.overdue?.typ}d. The provider posts sales late, so the price is frozen — no value or zone call.">⧗ newest sales missing</span>` : c.tradable ? '' : '<span class="neg small">not tradable</span>'}</div></div>
       <button class="ctx-row gbtoggle" type="button" data-gtoggle>${open ? '▾' : '▸'} why <span class="dim">vote by vote</span></button>
-      ${open ? `<div class="gbd">${rows('Context', bd.context, TPI.WEIGHTS.context)}${rows('Card', bd.card, TPI.WEIGHTS.card)}${rows('Grades', bd.grades, TPI.WEIGHTS.grades)}${rows('Value', bd.value)}</div>` : ''}`;
+      ${open ? `<div class="gbd">${rows('Context', bd.context, TPI.WEIGHTS.context)}${rows('Card', bd.card, TPI.WEIGHTS.card)}${rows('Grades', bd.grades, TPI.WEIGHTS.grades)}${rows('Value', bd.valueParts || [])}</div>` : ''}`;
   }
   // ---------- forward record: setups logged live when they fire, scored 30 days later (data/ledger.json) ----------
   const FWD_TONE = { 'holding up': 'pos', 'not holding': 'neg', 'beats peers, not fees': 'warn', mixed: '', collecting: 'dim' };
@@ -1085,7 +1089,8 @@
     if (!WL || !Object.keys(SERIES).length) { $('status').textContent = 'NO DATA · run the discovery or fetch workflow'; return; }
     if (state.grade === 'raw') state.grade = WL.primaryGrade || 'psa8'; // RAW view retired
     if (!hadSaved && WL.primaryGrade) state.grade = WL.primaryGrade; // deepest clean grade, chosen by discover
-    bind(); rebuild();
+    bind();
+    try { rebuild(); } catch (err) { console.error(err); $('status').textContent = 'Display error — ' + err.message + ' (try Shift-reload; if it persists, the saved layout is reset next load)'; try { localStorage.removeItem('slabdex'); } catch (e) {} }
   }
   start();
 })();
