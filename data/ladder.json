@@ -2,14 +2,22 @@
  "fails": {
   "base-set-charizard-4": {
    "since": "2026-10-02",
-   "last": "2026-10-03"
+   "last": "2026-10-04"
+  },
+  "dragon-charmander-98": {
+   "since": "2026-10-04",
+   "last": "2026-10-04"
   }
  },
  "checked": {
   "dragon-charizard-100": "2026-10-02",
   "crystal-guardians-blastoise-delta-species-2": "2026-10-02",
   "legend-maker-gengar-5": "2026-10-02",
-  "deoxys-gyarados-8": "2026-10-02"
+  "deoxys-gyarados-8": "2026-10-02",
+  "firered-leafgreen-snorlax-15": "2026-10-04",
+  "delta-species-tyranitar-delta-species-16": "2026-10-04",
+  "team-rocket-returns-rocket-s-articuno-ex-96": "2026-10-04",
+  "deoxys-rayquaza-star-107": "2026-10-04"
  },
  "history": [
   {
@@ -28,7 +36,7 @@
    "price": 20000
   }
  ],
- "updated": "2026-10-03T15:09:08.372Z",
+ "updated": "2026-10-04T15:47:15.435Z",
  "bench": 180,
  "tracked": 72
 }
