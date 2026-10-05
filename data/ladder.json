@@ -2,11 +2,11 @@
  "fails": {
   "base-set-charizard-4": {
    "since": "2026-10-02",
-   "last": "2026-10-04"
+   "last": "2026-10-05"
   },
   "dragon-charmander-98": {
    "since": "2026-10-04",
-   "last": "2026-10-04"
+   "last": "2026-10-05"
   }
  },
  "checked": {
@@ -17,7 +17,11 @@
   "firered-leafgreen-snorlax-15": "2026-10-04",
   "delta-species-tyranitar-delta-species-16": "2026-10-04",
   "team-rocket-returns-rocket-s-articuno-ex-96": "2026-10-04",
-  "deoxys-rayquaza-star-107": "2026-10-04"
+  "deoxys-rayquaza-star-107": "2026-10-04",
+  "delta-species-metagross-star-113": "2026-10-05",
+  "team-magma-vs-team-aqua-absol-96": "2026-10-05",
+  "hidden-legends-groudon-102": "2026-10-05",
+  "team-magma-vs-team-aqua-jirachi-97": "2026-10-05"
  },
  "history": [
   {
@@ -36,7 +40,7 @@
    "price": 20000
   }
  ],
- "updated": "2026-10-04T15:47:15.435Z",
+ "updated": "2026-10-05T19:47:13.012Z",
  "bench": 180,
  "tracked": 72
 }
