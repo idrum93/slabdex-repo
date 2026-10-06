@@ -2,11 +2,15 @@
  "fails": {
   "base-set-charizard-4": {
    "since": "2026-10-02",
-   "last": "2026-10-05"
+   "last": "2026-10-06"
   },
   "dragon-charmander-98": {
    "since": "2026-10-04",
-   "last": "2026-10-05"
+   "last": "2026-10-06"
+  },
+  "secret-wonders-charizard-3": {
+   "since": "2026-10-06",
+   "last": "2026-10-06"
   }
  },
  "checked": {
@@ -40,7 +44,7 @@
    "price": 20000
   }
  ],
- "updated": "2026-10-05T19:47:13.012Z",
+ "updated": "2026-10-06T17:11:04.351Z",
  "bench": 180,
  "tracked": 72
 }
