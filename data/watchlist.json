@@ -1217,6 +1217,21 @@
       "tier": "rotate",
       "raw": false,
       "tcgPlayerId": "84187"
+    },
+    {
+      "key": "hidden-legends-kyogre-ex-94",
+      "name": "Kyogre ex",
+      "set": "Hidden Legends",
+      "number": "94",
+      "era": "EX Series",
+      "family": "EX",
+      "basket": "hidden-legends",
+      "rarity": "Ultra Rare",
+      "pooled": false,
+      "query": "Kyogre ex Hidden Legends 94",
+      "tier": "rotate",
+      "raw": false,
+      "tcgPlayerId": "86556"
     }
   ],
   "bench": [
@@ -1414,21 +1429,6 @@
       "tier": "bench",
       "raw": false,
       "tcgPlayerId": "87782"
-    },
-    {
-      "key": "hidden-legends-kyogre-ex-94",
-      "name": "Kyogre ex",
-      "set": "Hidden Legends",
-      "number": "94",
-      "era": "EX Series",
-      "family": "EX",
-      "basket": "hidden-legends",
-      "rarity": "Ultra Rare",
-      "pooled": false,
-      "query": "Kyogre ex Hidden Legends 94",
-      "tier": "bench",
-      "raw": false,
-      "tcgPlayerId": "86556"
     },
     {
       "key": "sandstorm-typhlosion-ex-99",
