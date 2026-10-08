@@ -1,16 +1,12 @@
 {
  "fails": {
-  "base-set-charizard-4": {
-   "since": "2026-10-02",
-   "last": "2026-10-07"
-  },
   "dragon-charmander-98": {
    "since": "2026-10-04",
-   "last": "2026-10-07"
+   "last": "2026-10-08"
   },
   "secret-wonders-charizard-3": {
    "since": "2026-10-06",
-   "last": "2026-10-07"
+   "last": "2026-10-08"
   }
  },
  "checked": {
@@ -29,7 +25,11 @@
   "emerald-deoxys-ex-speed-forme-93": "2026-10-07",
   "hidden-legends-ninetales-ex-96": "2026-10-07",
   "hidden-legends-kyogre-ex-94": "2026-10-07",
-  "sandstorm-typhlosion-ex-99": "2026-10-07"
+  "sandstorm-typhlosion-ex-99": "2026-10-07",
+  "emerald-regice-ex-98": "2026-10-08",
+  "sandstorm-gardevoir-ex-96": "2026-10-08",
+  "ruby-sapphire-lapras-ex-99": "2026-10-08",
+  "ruby-sapphire-scyther-ex-102": "2026-10-08"
  },
  "history": [
   {
@@ -61,7 +61,7 @@
    "price": 1119.97
   }
  ],
- "updated": "2026-10-07T17:48:36.691Z",
+ "updated": "2026-10-08T17:52:50.866Z",
  "bench": 179,
  "tracked": 73
 }
