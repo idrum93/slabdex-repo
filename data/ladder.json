@@ -2,11 +2,19 @@
  "fails": {
   "dragon-charmander-98": {
    "since": "2026-10-04",
-   "last": "2026-10-09"
+   "last": "2026-10-10"
   },
   "secret-wonders-charizard-3": {
    "since": "2026-10-06",
-   "last": "2026-10-09"
+   "last": "2026-10-10"
+  },
+  "team-rocket-returns-rocket-s-suicune-ex-105": {
+   "since": "2026-10-10",
+   "last": "2026-10-10"
+  },
+  "rising-rivals-pikachu-112": {
+   "since": "2026-10-10",
+   "last": "2026-10-10"
   }
  },
  "checked": {
@@ -29,7 +37,11 @@
   "emerald-regice-ex-98": "2026-10-08",
   "sandstorm-gardevoir-ex-96": "2026-10-08",
   "ruby-sapphire-lapras-ex-99": "2026-10-08",
-  "ruby-sapphire-scyther-ex-102": "2026-10-08"
+  "ruby-sapphire-scyther-ex-102": "2026-10-08",
+  "secret-wonders-blastoise-2": "2026-10-10",
+  "platinum-blastoise-2": "2026-10-10",
+  "supreme-victors-venusaur-13": "2026-10-10",
+  "secret-wonders-venusaur-20": "2026-10-10"
  },
  "history": [
   {
@@ -61,7 +73,7 @@
    "price": 1119.97
   }
  ],
- "updated": "2026-10-09T17:26:51.525Z",
+ "updated": "2026-10-10T16:13:48.286Z",
  "bench": 179,
  "tracked": 73
 }
