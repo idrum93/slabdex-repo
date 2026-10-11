@@ -1,20 +1,24 @@
 {
  "fails": {
-  "dragon-charmander-98": {
-   "since": "2026-10-04",
-   "last": "2026-10-10"
-  },
   "secret-wonders-charizard-3": {
    "since": "2026-10-06",
-   "last": "2026-10-10"
+   "last": "2026-10-11"
   },
   "team-rocket-returns-rocket-s-suicune-ex-105": {
    "since": "2026-10-10",
-   "last": "2026-10-10"
+   "last": "2026-10-11"
   },
   "rising-rivals-pikachu-112": {
    "since": "2026-10-10",
-   "last": "2026-10-10"
+   "last": "2026-10-11"
+  },
+  "call-of-legends-lugia-shiny-SL7": {
+   "since": "2026-10-11",
+   "last": "2026-10-11"
+  },
+  "jungle-vaporeon-12-12": {
+   "since": "2026-10-11",
+   "last": "2026-10-11"
   }
  },
  "checked": {
@@ -41,7 +45,11 @@
   "secret-wonders-blastoise-2": "2026-10-10",
   "platinum-blastoise-2": "2026-10-10",
   "supreme-victors-venusaur-13": "2026-10-10",
-  "secret-wonders-venusaur-20": "2026-10-10"
+  "secret-wonders-venusaur-20": "2026-10-10",
+  "stormfront-raichu-lv-x-99": "2026-10-11",
+  "legends-awakened-mewtwo-lv-x-144": "2026-10-11",
+  "legends-awakened-mewtwo-11": "2026-10-11",
+  "legends-awakened-dragonite-2": "2026-10-11"
  },
  "history": [
   {
@@ -71,9 +79,31 @@
     "psa9"
    ],
    "price": 1119.97
+  },
+  {
+   "t": "2026-10-11",
+   "action": "demote",
+   "key": "dragon-charmander-98",
+   "name": "Charmander",
+   "set": "Dragon",
+   "basket": "fam:EX",
+   "reason": "no grade liquid at the minimum for 7 days"
+  },
+  {
+   "t": "2026-10-11",
+   "action": "promote",
+   "key": "legends-awakened-mewtwo-lv-x-144",
+   "name": "Mewtwo LV.X",
+   "set": "Legends Awakened",
+   "basket": "fam:DP",
+   "reason": "liquid at PSA9 · open slot in DP",
+   "liq": [
+    "psa9"
+   ],
+   "price": 2347
   }
  ],
- "updated": "2026-10-10T16:13:48.286Z",
+ "updated": "2026-10-11T16:39:06.266Z",
  "bench": 179,
  "tracked": 73
 }

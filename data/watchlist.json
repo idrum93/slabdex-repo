@@ -388,22 +388,6 @@
       "sprite": "img/sprites/raikou.png"
     },
     {
-      "key": "dragon-charmander-98",
-      "name": "Charmander",
-      "set": "Dragon",
-      "number": "98",
-      "era": "EX Series",
-      "family": "EX",
-      "basket": "dragon",
-      "rarity": "Secret Rare",
-      "pooled": false,
-      "query": "Charmander Dragon 98",
-      "tier": "rotate",
-      "raw": false,
-      "tcgPlayerId": "84208",
-      "sprite": "img/sprites/charmander.png"
-    },
-    {
       "key": "team-rocket-returns-rocket-s-suicune-ex-105",
       "name": "Rocket's Suicune ex",
       "set": "Team Rocket Returns",
@@ -1232,6 +1216,21 @@
       "tier": "rotate",
       "raw": false,
       "tcgPlayerId": "86556"
+    },
+    {
+      "key": "legends-awakened-mewtwo-lv-x-144",
+      "name": "Mewtwo LV.X",
+      "set": "Legends Awakened",
+      "number": "144",
+      "era": "DP & Platinum",
+      "family": "DP",
+      "basket": "legends-awakened",
+      "rarity": "Ultra Rare",
+      "pooled": false,
+      "query": "Mewtwo LV.X Legends Awakened 144",
+      "tier": "rotate",
+      "raw": false,
+      "tcgPlayerId": "87433"
     }
   ],
   "bench": [
@@ -1579,21 +1578,6 @@
       "tier": "bench",
       "raw": false,
       "tcgPlayerId": "88528"
-    },
-    {
-      "key": "legends-awakened-mewtwo-lv-x-144",
-      "name": "Mewtwo LV.X",
-      "set": "Legends Awakened",
-      "number": "144",
-      "era": "DP & Platinum",
-      "family": "DP",
-      "basket": "legends-awakened",
-      "rarity": "Ultra Rare",
-      "pooled": false,
-      "query": "Mewtwo LV.X Legends Awakened 144",
-      "tier": "bench",
-      "raw": false,
-      "tcgPlayerId": "87433"
     },
     {
       "key": "legends-awakened-mewtwo-11",
@@ -3919,6 +3903,22 @@
       "tier": "bench",
       "raw": false,
       "tcgPlayerId": "88014"
+    },
+    {
+      "key": "dragon-charmander-98",
+      "name": "Charmander",
+      "set": "Dragon",
+      "number": "98",
+      "era": "EX Series",
+      "family": "EX",
+      "basket": "dragon",
+      "rarity": "Secret Rare",
+      "pooled": false,
+      "query": "Charmander Dragon 98",
+      "tier": "bench",
+      "raw": false,
+      "tcgPlayerId": "84208",
+      "sprite": "img/sprites/charmander.png"
     }
   ],
   "extra": [
