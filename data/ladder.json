@@ -2,23 +2,23 @@
  "fails": {
   "secret-wonders-charizard-3": {
    "since": "2026-10-06",
-   "last": "2026-10-11"
+   "last": "2026-10-12"
   },
   "team-rocket-returns-rocket-s-suicune-ex-105": {
    "since": "2026-10-10",
-   "last": "2026-10-11"
+   "last": "2026-10-12"
   },
   "rising-rivals-pikachu-112": {
    "since": "2026-10-10",
-   "last": "2026-10-11"
+   "last": "2026-10-12"
   },
   "call-of-legends-lugia-shiny-SL7": {
    "since": "2026-10-11",
-   "last": "2026-10-11"
+   "last": "2026-10-12"
   },
   "jungle-vaporeon-12-12": {
    "since": "2026-10-11",
-   "last": "2026-10-11"
+   "last": "2026-10-12"
   }
  },
  "checked": {
@@ -103,7 +103,7 @@
    "price": 2347
   }
  ],
- "updated": "2026-10-11T16:39:06.266Z",
+ "updated": "2026-10-12T20:17:06.756Z",
  "bench": 179,
  "tracked": 73
 }
