@@ -580,22 +580,6 @@
       "sprite": "img/sprites/darkrai.png"
     },
     {
-      "key": "secret-wonders-charizard-3",
-      "name": "Charizard",
-      "set": "Secret Wonders",
-      "number": "3",
-      "era": "DP & Platinum",
-      "family": "DP",
-      "basket": "secret-wonders",
-      "rarity": "Holo Rare",
-      "pooled": false,
-      "query": "Charizard Secret Wonders 3",
-      "tier": "rotate",
-      "raw": false,
-      "tcgPlayerId": "84189",
-      "sprite": "img/sprites/charizard.png"
-    },
-    {
       "key": "triumphant-mew-prime-97",
       "name": "Mew (Prime)",
       "set": "Triumphant",
@@ -1231,6 +1215,36 @@
       "tier": "rotate",
       "raw": false,
       "tcgPlayerId": "87433"
+    },
+    {
+      "key": "rising-rivals-snorlax-lv-x-111",
+      "name": "Snorlax Lv.X",
+      "set": "Rising Rivals",
+      "number": "111",
+      "era": "DP & Platinum",
+      "family": "DP",
+      "basket": "rising-rivals",
+      "rarity": "Ultra Rare",
+      "pooled": false,
+      "query": "Snorlax Lv.X Rising Rivals 111",
+      "tier": "rotate",
+      "raw": false,
+      "tcgPlayerId": "89397"
+    },
+    {
+      "key": "supreme-victors-articuno-148-148",
+      "name": "Articuno (148)",
+      "set": "Supreme Victors",
+      "number": "148",
+      "era": "DP & Platinum",
+      "family": "DP",
+      "basket": "supreme-victors",
+      "rarity": "Secret Rare",
+      "pooled": false,
+      "query": "Articuno (148) Supreme Victors 148",
+      "tier": "rotate",
+      "raw": false,
+      "tcgPlayerId": "83651"
     }
   ],
   "bench": [
@@ -1610,21 +1624,6 @@
       "tcgPlayerId": "84913"
     },
     {
-      "key": "rising-rivals-snorlax-lv-x-111",
-      "name": "Snorlax Lv.X",
-      "set": "Rising Rivals",
-      "number": "111",
-      "era": "DP & Platinum",
-      "family": "DP",
-      "basket": "rising-rivals",
-      "rarity": "Ultra Rare",
-      "pooled": false,
-      "query": "Snorlax Lv.X Rising Rivals 111",
-      "tier": "bench",
-      "raw": false,
-      "tcgPlayerId": "89397"
-    },
-    {
       "key": "mysterious-treasures-tyranitar-17",
       "name": "Tyranitar",
       "set": "Mysterious Treasures",
@@ -1638,21 +1637,6 @@
       "tier": "bench",
       "raw": false,
       "tcgPlayerId": "90119"
-    },
-    {
-      "key": "supreme-victors-articuno-148-148",
-      "name": "Articuno (148)",
-      "set": "Supreme Victors",
-      "number": "148",
-      "era": "DP & Platinum",
-      "family": "DP",
-      "basket": "supreme-victors",
-      "rarity": "Secret Rare",
-      "pooled": false,
-      "query": "Articuno (148) Supreme Victors 148",
-      "tier": "bench",
-      "raw": false,
-      "tcgPlayerId": "83651"
     },
     {
       "key": "supreme-victors-moltres-149-149",
@@ -3919,6 +3903,22 @@
       "raw": false,
       "tcgPlayerId": "84208",
       "sprite": "img/sprites/charmander.png"
+    },
+    {
+      "key": "secret-wonders-charizard-3",
+      "name": "Charizard",
+      "set": "Secret Wonders",
+      "number": "3",
+      "era": "DP & Platinum",
+      "family": "DP",
+      "basket": "secret-wonders",
+      "rarity": "Holo Rare",
+      "pooled": false,
+      "query": "Charizard Secret Wonders 3",
+      "tier": "bench",
+      "raw": false,
+      "tcgPlayerId": "84189",
+      "sprite": "img/sprites/charizard.png"
     }
   ],
   "extra": [

@@ -1,24 +1,20 @@
 {
  "fails": {
-  "secret-wonders-charizard-3": {
-   "since": "2026-10-06",
-   "last": "2026-10-12"
-  },
   "team-rocket-returns-rocket-s-suicune-ex-105": {
    "since": "2026-10-10",
-   "last": "2026-10-12"
+   "last": "2026-10-13"
   },
   "rising-rivals-pikachu-112": {
    "since": "2026-10-10",
-   "last": "2026-10-12"
+   "last": "2026-10-13"
   },
   "call-of-legends-lugia-shiny-SL7": {
    "since": "2026-10-11",
-   "last": "2026-10-12"
+   "last": "2026-10-13"
   },
   "jungle-vaporeon-12-12": {
    "since": "2026-10-11",
-   "last": "2026-10-12"
+   "last": "2026-10-13"
   }
  },
  "checked": {
@@ -49,7 +45,11 @@
   "stormfront-raichu-lv-x-99": "2026-10-11",
   "legends-awakened-mewtwo-lv-x-144": "2026-10-11",
   "legends-awakened-mewtwo-11": "2026-10-11",
-  "legends-awakened-dragonite-2": "2026-10-11"
+  "legends-awakened-dragonite-2": "2026-10-11",
+  "rising-rivals-snorlax-lv-x-111": "2026-10-13",
+  "mysterious-treasures-tyranitar-17": "2026-10-13",
+  "supreme-victors-articuno-148-148": "2026-10-13",
+  "supreme-victors-moltres-149-149": "2026-10-13"
  },
  "history": [
   {
@@ -101,9 +101,44 @@
     "psa9"
    ],
    "price": 2347
+  },
+  {
+   "t": "2026-10-13",
+   "action": "demote",
+   "key": "secret-wonders-charizard-3",
+   "name": "Charizard",
+   "set": "Secret Wonders",
+   "basket": "fam:DP",
+   "reason": "no grade liquid at the minimum for 7 days"
+  },
+  {
+   "t": "2026-10-13",
+   "action": "promote",
+   "key": "rising-rivals-snorlax-lv-x-111",
+   "name": "Snorlax Lv.X",
+   "set": "Rising Rivals",
+   "basket": "fam:DP",
+   "reason": "liquid at PSA7 · open slot in DP",
+   "liq": [
+    "psa7"
+   ],
+   "price": 1100
+  },
+  {
+   "t": "2026-10-13",
+   "action": "promote",
+   "key": "supreme-victors-articuno-148-148",
+   "name": "Articuno (148)",
+   "set": "Supreme Victors",
+   "basket": "fam:DP",
+   "reason": "liquid at PSA8 · open slot in DP",
+   "liq": [
+    "psa8"
+   ],
+   "price": 1099.99
   }
  ],
- "updated": "2026-10-12T20:17:06.756Z",
- "bench": 179,
- "tracked": 73
+ "updated": "2026-10-13T18:16:07.901Z",
+ "bench": 178,
+ "tracked": 74
 }
