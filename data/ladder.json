@@ -2,19 +2,23 @@
  "fails": {
   "team-rocket-returns-rocket-s-suicune-ex-105": {
    "since": "2026-10-10",
-   "last": "2026-10-13"
+   "last": "2026-10-14"
   },
   "rising-rivals-pikachu-112": {
    "since": "2026-10-10",
-   "last": "2026-10-13"
+   "last": "2026-10-14"
   },
   "call-of-legends-lugia-shiny-SL7": {
    "since": "2026-10-11",
-   "last": "2026-10-13"
+   "last": "2026-10-14"
   },
   "jungle-vaporeon-12-12": {
    "since": "2026-10-11",
-   "last": "2026-10-13"
+   "last": "2026-10-14"
+  },
+  "neo-revelation-ampharos-1": {
+   "since": "2026-10-14",
+   "last": "2026-10-14"
   }
  },
  "checked": {
@@ -49,7 +53,11 @@
   "rising-rivals-snorlax-lv-x-111": "2026-10-13",
   "mysterious-treasures-tyranitar-17": "2026-10-13",
   "supreme-victors-articuno-148-148": "2026-10-13",
-  "supreme-victors-moltres-149-149": "2026-10-13"
+  "supreme-victors-moltres-149-149": "2026-10-13",
+  "majestic-dawn-glaceon-lv-x-98": "2026-10-14",
+  "rising-rivals-surfing-pikachu-114": "2026-10-14",
+  "majestic-dawn-garchomp-lv-x-97": "2026-10-14",
+  "great-encounters-dialga-lv-x-105": "2026-10-14"
  },
  "history": [
   {
@@ -136,9 +144,22 @@
     "psa8"
    ],
    "price": 1099.99
+  },
+  {
+   "t": "2026-10-14",
+   "action": "promote",
+   "key": "majestic-dawn-glaceon-lv-x-98",
+   "name": "Glaceon LV.X",
+   "set": "Majestic Dawn",
+   "basket": "fam:DP",
+   "reason": "liquid at PSA8 · open slot in DP",
+   "liq": [
+    "psa8"
+   ],
+   "price": 1195
   }
  ],
- "updated": "2026-10-13T18:16:07.901Z",
- "bench": 178,
- "tracked": 74
+ "updated": "2026-10-14T15:49:22.771Z",
+ "bench": 177,
+ "tracked": 75
 }

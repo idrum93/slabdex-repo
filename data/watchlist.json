@@ -1245,6 +1245,21 @@
       "tier": "rotate",
       "raw": false,
       "tcgPlayerId": "83651"
+    },
+    {
+      "key": "majestic-dawn-glaceon-lv-x-98",
+      "name": "Glaceon LV.X",
+      "set": "Majestic Dawn",
+      "number": "98",
+      "era": "DP & Platinum",
+      "family": "DP",
+      "basket": "majestic-dawn",
+      "rarity": "Ultra Rare",
+      "pooled": false,
+      "query": "Glaceon LV.X Majestic Dawn 98",
+      "tier": "rotate",
+      "raw": false,
+      "tcgPlayerId": "85750"
     }
   ],
   "bench": [
@@ -1652,21 +1667,6 @@
       "tier": "bench",
       "raw": false,
       "tcgPlayerId": "87563"
-    },
-    {
-      "key": "majestic-dawn-glaceon-lv-x-98",
-      "name": "Glaceon LV.X",
-      "set": "Majestic Dawn",
-      "number": "98",
-      "era": "DP & Platinum",
-      "family": "DP",
-      "basket": "majestic-dawn",
-      "rarity": "Ultra Rare",
-      "pooled": false,
-      "query": "Glaceon LV.X Majestic Dawn 98",
-      "tier": "bench",
-      "raw": false,
-      "tcgPlayerId": "85750"
     },
     {
       "key": "rising-rivals-surfing-pikachu-114",
