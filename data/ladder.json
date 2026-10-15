@@ -1,24 +1,20 @@
 {
  "fails": {
-  "team-rocket-returns-rocket-s-suicune-ex-105": {
-   "since": "2026-10-10",
-   "last": "2026-10-14"
-  },
   "rising-rivals-pikachu-112": {
    "since": "2026-10-10",
-   "last": "2026-10-14"
+   "last": "2026-10-15"
   },
   "call-of-legends-lugia-shiny-SL7": {
    "since": "2026-10-11",
-   "last": "2026-10-14"
+   "last": "2026-10-15"
   },
   "jungle-vaporeon-12-12": {
    "since": "2026-10-11",
-   "last": "2026-10-14"
+   "last": "2026-10-15"
   },
   "neo-revelation-ampharos-1": {
    "since": "2026-10-14",
-   "last": "2026-10-14"
+   "last": "2026-10-15"
   }
  },
  "checked": {
@@ -159,7 +155,7 @@
    "price": 1195
   }
  ],
- "updated": "2026-10-14T15:49:22.771Z",
+ "updated": "2026-10-15T15:36:03.932Z",
  "bench": 177,
  "tracked": 75
 }
