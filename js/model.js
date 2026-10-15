@@ -48,7 +48,7 @@
     for (const c of all) {
       const s = SERIES[c.key];
       if (!s) continue;
-      if (grade === 'raw') { if (c.raw !== false) lines.push(...rawLines(c, s)); continue; } // raw:false cards (EX, DP, index-only) only have backfilled RAW that would go stale
+      if (grade === 'raw') { lines.push(...rawLines(c, s)); continue; } // RAW NM per printing — every fetch adds a point for free, so all cards stay current
       // WL.manual[key][grade] = [{ t, p }]: your own sold prices (MY PRICES mode in the page). They join the main line as
       // sales (a same-day site point is replaced) so every reading — market line, gauges, zones, lists — uses them.
       const man = WL.manual?.[c.key]?.[grade] || null;
@@ -96,7 +96,7 @@
       if (l.rawPts?.length && !l.dense) { // RAW NM price on this axis, carried forward up to 10 days between reads
         const rc = new Array(axis.length).fill(null); let any = false;
         for (const p of l.rawPts) { const i = pos.get(p.t); if (i != null && p.p > 0) { rc[i] = p.p; any = true; } }
-        if (any) { let last = null, at = -99; for (let i = 0; i < rc.length; i++) { if (rc[i] != null) { last = rc[i]; at = i; } else if (last != null && i - at <= 10) rc[i] = last; } by[l.key].rawClose = rc; }
+        if (any) { let last = null, at = -99; for (let i = 0; i < rc.length; i++) { if (rc[i] != null) { last = rc[i]; at = i; } else if (last != null && i - at <= 10) rc[i] = last; } by[l.key].rawClose = rc; by[l.key].rawLast = l.rawPts[l.rawPts.length - 1]; }
       }
       if (l.site) { const T = series(l, l.site); by[l.key].site = { close: T.close, vol: T.vol }; } // collected-data copy: indexes use this, so your prices only move this card
     }
@@ -119,7 +119,7 @@
     // Which character / theme indexes each card belongs to (base key, so both printings share it).
     const memberOf = {};
     for (const g of WL.groups || []) for (const k of g.members) (memberOf[k] ||= []).push(g.id);
-    return { grade, dense: grade === 'raw', axis, by, idx, memberOf, index: idx['idx:all']?.close || [], minPrice: Number(WL.minPrice) || 0, rules: WL.rules || null };
+    return { grade, dense: grade === 'raw', axis, by, idx, memberOf, index: idx['idx:all']?.close || [], minPrice: grade === 'raw' ? 0 : Number(WL.minPrice) || 0, /* the $1,000 slab minimum is a graded rule; RAW shows every card */ rules: WL.rules || null };
   }
 
   // One entry per character / theme: its all-eras index where one exists, otherwise its single-era index.

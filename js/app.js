@@ -571,7 +571,7 @@
     $('sigStar').hidden = !base; if (base) { const on = isStar(base); $('sigStar').textContent = on ? '★' : '☆'; $('sigStar').classList.toggle('on', on); $('sigStar').dataset.k = base; }
     const chg = !ratio && stats().ch[cur.id];
     $('sigChange').innerHTML = chg ? `<span class="${chg.dir > 0 ? 'pos' : 'neg'}">${chg.dir > 0 ? '▲' : '▼'} this week:</span> ${esc(chg.items.map((i) => i.text).join(' · '))}` : '';
-    let gz = null; try { gz = !ratio && !cur.isIndex && !model.dense ? tpiCard(cur.id) : null; } catch (err) { console.error('gauge', err); }
+    let gz = null; try { gz = !ratio && !cur.isIndex ? tpiCard(cur.id) : null; } catch (err) { console.error('gauge', err); }
     const ov = gz?.s.stale() ? gz.liq.overdue : null;
     if (ov) $('sigChange').innerHTML = `<span class="warn">⧗ Newest ${Model.GRADE_LABEL[state.grade]} sales likely missing</span> — last sale ${ov.since}d ago${ov.typ ? `, usually every ~${ov.typ}d` : ''}. The provider posts sales late; readings below may lag the real market.` + (chg ? '<br>' + $('sigChange').innerHTML : '');
     $('sigChange').hidden = !chg && !ov;
@@ -602,13 +602,14 @@
         const rc = model.by[cur.id].rawClose, c = model.by[cur.id].close, n = rc.length - 1, j = n - 30;
         const r30 = j >= 0 && rc[n] > 0 && rc[j] > 0 ? rc[n] / rc[j] - 1 : null, g30 = j >= 0 && c[n] > 0 && c[j] > 0 ? c[n] / c[j] - 1 : null;
         const lead = r30 != null && g30 != null && r30 >= 0.15 && g30 < 0.05;
-        return [['RAW NM 30D', rc[n] == null ? '—' : `<span title="Ungraded Near Mint (TCGplayer market), same printing. ${lead ? 'Raw is up ≥15% while this grade is up < 5% — the Raw leads setup, logged in the forward record.' : 'Raw moves ahead of graded sometimes; tested as the Raw leads setup.'}">${money(rc[n])} · <span class="${r30 == null ? 'dim' : r30 > 0.05 ? 'pos' : r30 < -0.05 ? 'neg' : ''}">${r30 == null ? '—' : fmtP(r30 * 100)}</span>${lead ? ' <span class="warn">▲ raw leads</span>' : ''}</span>`]];
+        const rl = model.by[cur.id].rawLast;
+        return [['RAW NM 30D', rc[n] == null ? `<span class="dim" title="No RAW read in the last 10 days. Every fetch now adds one for free, and the one-off RAW backfill fills the gap.">no recent read${rl ? ` (last ${money(rl.p)}, ${rl.t.slice(5)})` : ''}</span>` : `<span title="Ungraded Near Mint (TCGplayer market), same printing. ${lead ? 'Raw is up ≥15% while this grade is up < 5% — the Raw leads setup, logged in the forward record.' : 'Raw moves ahead of graded sometimes; tested as the Raw leads setup.'}">${money(rc[n])} · <span class="${r30 == null ? 'dim' : r30 > 0.05 ? 'pos' : r30 < -0.05 ? 'neg' : ''}">${r30 == null ? '—' : fmtP(r30 * 100)}</span>${lead ? ' <span class="warn">▲ raw leads</span>' : ''}</span>`]];
       })()),
       ['History', `${s.days} days`],
     ];
     // Each panel section is isolated: a bug in one never blanks the panel or stops the chart from drawing.
     const safe = (fn, name) => { try { return fn(cur, ratio) || ''; } catch (err) { console.error(name, err); return ''; } };
-    $('sigCtx').innerHTML = safe(setupLine, 'setup') + safe(gaugeRows, 'gauge') + safe(ladderRows, 'grades') + safe(valueRows, 'value') + safe(popRows, 'pop') + safe(contextRows, 'context');
+    $('sigCtx').innerHTML = safe(setupLine, 'setup') + safe(gaugeRows, 'gauge') + safe(ladderRows, 'grades') + safe(valueRows, 'value') + (model.dense ? '' : safe(popRows, 'pop')) + safe(contextRows, 'context');
     $('metrics').innerHTML = rows.map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join('');
   }
 
@@ -701,8 +702,8 @@
     } else if (view === 'zone') { // tradable slabs by gauge zone, best prospects first
       const G = tpiAll(), L = Model.GRADE_LABEL[state.grade];
       const groups = ['buy', 'watch', 'up', 'late', 'neutral', 'avoid'].map((z) => [z, G.ranked.filter((c) => c.zone === z)]);
-      const note = `<tr class="sec"><td colspan="5"><p class="setupnote">Tradable ${L} slabs (${model.minPrice ? money(model.minPrice) + '+, ' : ''}liquid) by trend &amp; value gauge. <b>BUY ZONE</b> = both readings green: trend ≥ +0.5 and value ≥ +0.4 (lean cheap or cheap) · <b>TREND UP</b> = trend up, priced only fair · <b>WATCH</b> = cheap, trend not up yet · <b>LATE</b> = trend up but pricey. Open ◔ GAUGES for the dashboard. A lead to research until the forward record backs the zones.</p></td></tr>`;
-      html = curveSection() + note + groups.map(([z, xs]) => {
+      const note = `<tr class="sec"><td colspan="5"><p class="setupnote">${model.dense ? `RAW NM (ungraded, each card's own printing — 1st Ed where it exists) — every tracked card, no price minimum —` : `Tradable ${L} slabs (${model.minPrice ? money(model.minPrice) + '+, ' : ''}liquid)`} by trend &amp; value gauge. <b>BUY ZONE</b> = both readings green: trend ≥ +0.5 and value ≥ +0.4 (lean cheap or cheap) · <b>TREND UP</b> = trend up, priced only fair · <b>WATCH</b> = cheap, trend not up yet · <b>LATE</b> = trend up but pricey. Open ◔ GAUGES for the dashboard. A lead to research until the forward record backs the zones.</p></td></tr>`;
+      html = (model.dense ? '' : curveSection()) + note + groups.map(([z, xs]) => {
         if (!xs.length) return '';
         const tk = 'zone:' + z, open = z === 'buy' || z === 'watch' ? !state.collapsed.includes(tk) : state.collapsed.includes(tk);
         return `<tr class="sec" data-toggle="${tk}"><td colspan="5">${open ? '▾' : '▸'} ${TPI.ZONES[z].label} <span class="dim">${xs.length} · ${esc(TPI.ZONES[z].note)}</span></td></tr>` + (open ? xs.map((c) => { const r = cardRow(c.b, M, st); r.sub = `${c.b.card.mine ? '✎ ' : ''}trend ${sgn(c.t)} ${c.roc == null ? '' : c.roc > 0.05 ? '▲' : c.roc < -0.05 ? '▼' : '▬'} · value ${sgn(c.v)} (${TPI.vlabel(c.v).toLowerCase()})${c.liq.wide ? ` · ⚠ spread ${c.liq.spread.toFixed(1)}×` : ''}`; return rowHtml(r, M, ' zrow z-' + z); }).join('') : '');
@@ -1046,7 +1047,7 @@
   }
   // Signal panel block for one card: gauge, value, zone, and the vote-by-vote breakdown.
   function gaugeRows(cur, ratio) {
-    if (ratio || model.dense) return '';
+    if (ratio) return '';
     if (cur.isIndex) { const o = idxGauge(cur.id); if (!o) return ''; return `<h3>TREND GAUGE <span class="dim">${esc(TPI.label(o.t))}</span></h3><div class="gblock">${gaugeSvg(o.t, { size: 120 })}<div class="gside">${rocTxt(o.roc)}<span class="dim">range in its year</span>${valueBar(o.v)}</div></div>`; }
     const c = tpiCard(cur.id); if (!c) return '';
     const bd = c.s.breakdown(), vote = (v) => (v == null ? '<span class="dim">·</span>' : v > 0.05 ? `<span class="pos">+${v === 1 ? 1 : v.toFixed(1)}</span>` : v < -0.05 ? `<span class="neg">${v === -1 ? -1 : v.toFixed(1)}</span>` : '<span class="dim">0</span>');
@@ -1300,7 +1301,6 @@
     try { await load(); } catch (e) { $('status').textContent = 'Could not load data/ — ' + e.message; return; }
     if (!WL || !Object.keys(SERIES).length) { $('status').textContent = 'NO DATA · run the discovery or fetch workflow'; return; }
     pruneNotes(); syncMine();
-    if (state.grade === 'raw') state.grade = WL.primaryGrade || 'psa8'; // RAW view retired
     if (state.wlView === 'setups') state.wlView = 'zone'; // SETUPS now lives inside ★ TOP
     if (!hadSaved && WL.primaryGrade) state.grade = WL.primaryGrade; // deepest clean grade, chosen by discover
     state.wlView = 'zone'; state.dash = 0; // every visit opens on ★ TOP (best prospects), chart showing the #1 prospect
