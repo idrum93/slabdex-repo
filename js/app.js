@@ -598,6 +598,12 @@
         ['Tradable', Model.tradable(model, cur) ? '<span class="pos">yes</span>' : q.overdue?.stale && q.liquid && Model.aboveMin(model, cur) ? `<span class="warn" title="Last sale ${q.overdue.since}d ago; usually sells every ~${q.overdue.typ}d. The provider posts sales late, so newer sales are probably missing.">⧗ newest sales missing</span>` : `<span class="neg" title="Needs ${R.liqDays}+ sale days in ${R.liqWin}D, a sale within ${R.liqAge}D${model.minPrice ? ` and ${money(model.minPrice)}+` : ''}">no · ${!Model.aboveMin(model, cur) ? 'under ' + money(model.minPrice) : q.days < R.liqDays ? `${q.days}/${R.liqDays} sale days` : `last sale ${q.age}d ago`}</span>`],
         ['Sales spread 90D', q.spread == null ? '—' : `<span class="${q.wide ? 'warn' : ''}" title="75th ÷ 25th percentile of recent sales. Above ${R.spreadFlag}× the price you pay depends heavily on which listing you catch.">${q.spread.toFixed(2)}×${q.wide ? ' wide' : ''}</span>`],
       ]; })()),
+      ...(cur.isIndex || ratio || !model.by[cur.id]?.rawClose ? [] : (() => { // RAW NM of the same printing vs this grade, last 30 days
+        const rc = model.by[cur.id].rawClose, c = model.by[cur.id].close, n = rc.length - 1, j = n - 30;
+        const r30 = j >= 0 && rc[n] > 0 && rc[j] > 0 ? rc[n] / rc[j] - 1 : null, g30 = j >= 0 && c[n] > 0 && c[j] > 0 ? c[n] / c[j] - 1 : null;
+        const lead = r30 != null && g30 != null && r30 >= 0.15 && g30 < 0.05;
+        return [['RAW NM 30D', rc[n] == null ? '—' : `<span title="Ungraded Near Mint (TCGplayer market), same printing. ${lead ? 'Raw is up ≥15% while this grade is up < 5% — the Raw leads setup, logged in the forward record.' : 'Raw moves ahead of graded sometimes; tested as the Raw leads setup.'}">${money(rc[n])} · <span class="${r30 == null ? 'dim' : r30 > 0.05 ? 'pos' : r30 < -0.05 ? 'neg' : ''}">${r30 == null ? '—' : fmtP(r30 * 100)}</span>${lead ? ' <span class="warn">▲ raw leads</span>' : ''}</span>`]];
+      })()),
       ['History', `${s.days} days`],
     ];
     // Each panel section is isolated: a bug in one never blanks the panel or stops the chart from drawing.

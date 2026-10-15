@@ -150,10 +150,16 @@ export function mergeCard(s, c, grades, today) {
   // Kept only as a hint of how far apart a card's printings trade; never charted or used in signals.
   const now = {};
   for (const [printing, v] of Object.entries(c.prices?.variants || c.variants || {})) {
-    const p = num(v?.['Near Mint']?.price) ?? num(v?.['Near Mint']?.market) ?? num(v?.market) ?? num(v?.price);
+    const p = num(v?.['Near Mint']?.market) ?? num(v?.['Near Mint']?.price) ?? num(v?.market) ?? num(v?.price); // market first: same measure as the RAW history
     if (p != null && p > 0) now[printing] = round(p);
   }
-  if (Object.keys(now).length) s.rawNow = { t: today, p: now };
+  if (Object.keys(now).length) {
+    s.rawNow = { t: today, p: now };
+    // Free RAW history: the base record (no extra credit) carries today's NM price per printing, so every fetch adds one
+    // point to s.raw — a read every 3 days, plenty for 30-day moves. A full history point for the day is kept if present.
+    s.raw ||= {};
+    for (const [printing, p] of Object.entries(now)) { const arr = (s.raw[printing] ||= []); if (!arr.some((x) => x.t === today)) upsert(arr, { t: today, p, snap: 1 }); }
+  }
   s.updated = new Date().toISOString();
   s.tcgPlayerId = String(c.tcgPlayerId ?? s.tcgPlayerId ?? '');
   s.printings = c.printingsAvailable || (c.variants ? Object.keys(c.variants) : s.printings || null);

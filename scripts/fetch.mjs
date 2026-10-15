@@ -14,6 +14,7 @@
 //   node scripts/fetch.mjs --probe "Charizard Base Set" # dump raw API JSON (verify field names)
 
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
+import { existsSync } from 'node:fs';
 import path from 'node:path';
 import { runLadder } from './ladder.mjs';
 import { DATA, PRICES, BudgetError, client, asList, loadSeries, saveSeries, mergeCard, mergeStats, gradeBlock, pickPrice } from './lib.mjs';
@@ -32,7 +33,13 @@ const STALE_DAYS = 3;
 // History window per call. The free tier returns 3 days; while the paid plan lasts, ask for 30 so sales the provider
 // posts late (dated days back) are still collected. days doesn't change the credit cost.
 const PAID_UNTIL = process.env.PPT_PAID_UNTIL || '2026-10-17';
-const WINDOW = Number(opt('--days', process.env.PPT_FETCH_DAYS || (TODAY < PAID_UNTIL ? 30 : 3))); // every card every 3 days; each call asks for the last 4 days so no sale or price day is missed
+const WINDOW_BASE = Number(opt('--days', process.env.PPT_FETCH_DAYS || (TODAY < PAID_UNTIL ? 30 : 3))); // every card every 3 days; each call asks for the last 4 days so no sale or price day is missed
+// One-off RAW NM history backfill for every tracked + bench card (3 credits each), filling the gap since RAW history was
+// last collected. Runs with --raw-backfill, or by itself on a manual run with a budget of 500+ while the paid plan lasts
+// (once: data/raw-backfill.json marks it done). Afterwards every fetch keeps RAW going for free from the base record.
+const RAW_MARK = path.join(DATA, 'raw-backfill.json');
+const RAW_BACKFILL = flag('--raw-backfill') || (!ONLY && !PROBE && BUDGET >= 500 && TODAY < (process.env.PPT_PAID_UNTIL || '2026-10-17') && !existsSync(RAW_MARK));
+const WINDOW = RAW_BACKFILL ? Math.max(45, WINDOW_BASE) : WINDOW_BASE; // a RAW backfill reaches back 45 days
 
 const log = [];
 const note = (m) => { console.log(m); log.push(m); };
@@ -51,8 +58,9 @@ async function resolveId(card) {
 }
 
 async function snapshot(card, grades) {
-  // Graded only: base + eBay graded data = 2 credits. (RAW price history was +1 and fed no signal.)
-  const j = await api.get('/cards', { tcgPlayerId: card.tcgPlayerId, includeEbay: true, days: WINDOW }, 2);
+  // Base + eBay graded data = 2 credits; the base record also carries today's RAW NM price (kept as a RAW point, free).
+  // --raw-backfill adds the full RAW history (+1 credit) to fill the gap since RAW history was last collected.
+  const j = await api.get('/cards', { tcgPlayerId: card.tcgPlayerId, includeEbay: true, days: WINDOW, ...(RAW_BACKFILL ? { includeHistory: true } : {}) }, RAW_BACKFILL ? 3 : 2);
   const c = asList(j)[0];
   if (!c) { note(`  ✗ ${card.key}: empty response`); return false; }
   const s = await loadSeries(card.key);
@@ -71,7 +79,7 @@ async function main() {
   await mkdir(PRICES, { recursive: true });
   const wlPath = path.join(DATA, 'watchlist.json');
   const wl = JSON.parse(await readFile(wlPath, 'utf8'));
-  let cards = [...wl.cards, ...(wl.extra || [])]; // set baskets + character/theme-only cards
+  let cards = [...wl.cards, ...(wl.extra || []), ...(RAW_BACKFILL ? wl.bench || [] : [])]; // set baskets + character/theme-only cards (+ the bench for a RAW backfill)
   if (ONLY) cards = cards.filter((c) => c.key === ONLY);
 
   // Plan: daily tier first, then rotate tier by staleness (oldest first). Skip anything done today.
@@ -80,16 +88,16 @@ async function main() {
     const s = await loadSeries(c.key);
     const lastReal = s.source === 'demo' ? null : s.updated?.slice(0, 10) ?? null;
     const age = lastReal ? (Date.parse(TODAY) - Date.parse(lastReal)) / 864e5 : Infinity;
-    if (!ONLY && age < (c.tier === 'daily' ? 1 : STALE_DAYS)) continue;
+    if (!ONLY && !RAW_BACKFILL && age < (c.tier === 'daily' ? 1 : STALE_DAYS)) continue;
     due.push({ c, age });
   }
   due.sort((a, b) => b.age - a.age || (a.c.role === 'group' ? 1 : 0) - (b.c.role === 'group' ? 1 : 0)); // stalest first, baskets before index-only
-  const est = due.reduce((n, m) => n + 2 + (m.c.tcgPlayerId ? 0 : 3), 0);
+  const est = due.reduce((n, m) => n + (RAW_BACKFILL ? 3 : 2) + (m.c.tcgPlayerId ? 0 : 3), 0);
   note(`SlabDex fetch ${TODAY}: ${due.length} cards due, est ${est} credits, budget ${BUDGET}`);
   if (DRY) { due.forEach((m) => note(`  · ${m.c.key} [${m.c.tier}]${m.c.tcgPlayerId ? '' : ' (needs id)'}`)); return; }
   if (!KEY) throw new Error('PPT_API_KEY not set (add it as a GitHub Actions secret)');
 
-  let done = 0, skipped = 0, dirtyWl = false;
+  let done = 0, skipped = 0, dirtyWl = false, budgetHit = false;
   for (const { c } of due) {
     try {
       if (!c.tcgPlayerId) {
@@ -98,13 +106,13 @@ async function main() {
       }
       if (await snapshot(c, wl.grades)) done++;
     } catch (e) {
-      if (e instanceof BudgetError) { note(`Budget reached (spent ${api.st.spent}); remaining cards roll to next run.`); break; }
+      if (e instanceof BudgetError) { budgetHit = true; note(`Budget reached (spent ${api.st.spent}); remaining cards roll to next run.`); break; }
       note(`  ✗ ${c.key}: ${e.message}`); skipped++;
     }
   }
   // Roster ladder: bench cards compete for slots with the credits left (never past safeDailyCredits). Skipped for --only.
   let lad = null;
-  if (!ONLY && !flag('--no-ladder')) {
+  if (!ONLY && !RAW_BACKFILL && !flag('--no-ladder')) {
     try {
       const cfg = JSON.parse(await readFile(path.join(DATA, 'sets.json'), 'utf8'));
       const cap = Math.min(BUDGET, Number(cfg.safeDailyCredits || 85)), rem = api.st.dailyRemaining;
@@ -114,6 +122,7 @@ async function main() {
       if (JSON.stringify([wl.cards.map((c) => c.key), (wl.bench || []).map((c) => c.key)]) !== before) dirtyWl = true;
     } catch (e) { note(`Ladder failed: ${e.message}`); }
   }
+  if (RAW_BACKFILL && !budgetHit) { await writeFile(RAW_MARK, JSON.stringify({ done: TODAY, cards: done, days: WINDOW }) + '\n'); note(`RAW backfill done for ${done} cards (${WINDOW} days).`); }
   if (dirtyWl) await writeFile(wlPath, JSON.stringify(wl, null, 2) + '\n');
   const ld = [...mergeStats.lateDays].sort((a, b) => a - b), lm = ld.length ? ld[ld.length >> 1] : null;
   const rem = api.st.dailyRemaining;

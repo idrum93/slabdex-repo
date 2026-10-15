@@ -25,7 +25,8 @@ Because free history is only 3 days, the strategy is **snapshot, don't query his
 ### Credit budget
 
 - Every card refreshes every 3 days, stalest first (each call asks for 4 days so no sale day is missed).
-- Every card costs 2 credits (base + eBay graded). The site is graded-only: ungraded (RAW) price history is no longer fetched (it was +1 credit per card and fed no signal). The RAW history already saved stays in the price files but isn't shown.
+- Every card costs 2 credits (base + eBay graded). **RAW is back, free:** the base record already carries today's ungraded Near Mint price per printing, so every fetch adds one RAW point per printing (a read every 3 days) at no extra credit. A one-off RAW history backfill (3 credits per card, 45 days, tracked + bench) runs by itself on a manual *Daily price snapshot* run with budget 500+ while the paid plan lasts; `data/raw-backfill.json` marks it done.
+- **How RAW is used** — never as a graded price. Each graded line gets the RAW history of its own printing (only printing, or the one its 1st Ed / Unl label names; none for blended or one-price-level lines). The Signal panel shows **RAW NM 30D**; the setup **Raw leads** (RAW up ≥15% in 30 days while that grade is up < 5%) is backtested and logged in the forward record. On Apr–Sep data (single-printing cards), RAW's 30-day move ranked next month's graded move vs peers at +0.12 overall, +0.16 for PSA 9, +0.20 for $1,000+ slabs, while graded's own past move ranked it negatively (mean reversion) — suggestive, not confirmed.
 - Target ≤ 90 credits/day on the 100/day free tier. `discover` and `groups` print the projected daily cost at the end of each run; anything over 90 is flagged ⚠.
 - The fetcher reads `X-RateLimit-Daily-Remaining` and stops with a reserve. Nothing ever retries into a daily-limit wall.
 

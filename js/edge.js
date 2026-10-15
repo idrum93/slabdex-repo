@@ -51,9 +51,11 @@
     ['tpiUp', 'Trend gauge up through +0.5', (x, i) => !!x.tpi && upTh(x.tpi.trend, i, 0.5)],
     ['buyZone', 'Enters buy zone (trend gauge ≥ +0.5, value ≥ +0.4)', (x, i) => !!x.tpi && x.tpi.zone[i] === 'buy' && x.tpi.zone[i - 1] !== 'buy'],
     ['watchZone', 'Undervalued, trend not up yet (watch zone)', (x, i) => !!x.tpi && x.tpi.zone[i] === 'watch' && x.tpi.zone[i - 1] !== 'watch'],
+    // Ungraded leads graded? RAW NM (same printing) up ≥15% over 30 days while this graded line is up < 5%.
+    ['rawLead', 'Raw leads: RAW NM up ≥15% in 30D, this grade up < 5%', (x, i) => !!x.rawUp && x.rawUp[i] === true && x.rawUp[i - 1] !== true],
   ];
-  const SHORT = { rsi30: 'RSI↑30', rsi50: 'RSI↑50', macdX: 'MACD×', macdX0: 'MACD×<0', px50: 'Px>SMA50', gold: 'SMA20×50', rsX: 'RS↑', volUp: 'Pace↑', dip: 'Dip', hmaUp: 'HMA↑', stUp: 'ST↑', vzoX: 'VZO↑0', rsSetX: 'RS↑set', gapLow: 'Gap↓', lagUp: 'Lag↑', lagDown: 'Lag↓', squeeze: 'Sqz', sc55: 'Score≥55', sc68: 'Score≥68', tpiUp: 'Gauge↑', buyZone: 'BuyZone', watchZone: 'Watch' };
-  const SOLO = new Set(['gapLow', 'lagUp', 'lagDown', 'squeeze', 'tpiUp', 'buyZone', 'watchZone']); // cross-grade price setups: tested on their own (few events)
+  const SHORT = { rsi30: 'RSI↑30', rsi50: 'RSI↑50', macdX: 'MACD×', macdX0: 'MACD×<0', px50: 'Px>SMA50', gold: 'SMA20×50', rsX: 'RS↑', volUp: 'Pace↑', dip: 'Dip', hmaUp: 'HMA↑', stUp: 'ST↑', vzoX: 'VZO↑0', rsSetX: 'RS↑set', gapLow: 'Gap↓', lagUp: 'Lag↑', lagDown: 'Lag↓', squeeze: 'Sqz', sc55: 'Score≥55', sc68: 'Score≥68', tpiUp: 'Gauge↑', buyZone: 'BuyZone', watchZone: 'Watch', rawLead: 'Raw↑' };
+  const SOLO = new Set(['gapLow', 'lagUp', 'lagDown', 'squeeze', 'tpiUp', 'buyZone', 'watchZone', 'rawLead']); // cross-grade price setups: tested on their own (few events)
   const NESTED = new Set(['macdX+macdX0', 'sc55+sc68']);
   const RULES = [
     ...BASE.map(([id, label]) => ({ id, label, parts: [id] })),
@@ -138,6 +140,7 @@
       if (downModel) x.lagDn = Model.lagSeries(model, downModel, key)?.flag || null;
       if (downModel) x.sq = Model.squeezeSeries(model, downModel, key)?.flag || null;
       x.tpi = TPI.series(model, key, { up: upModel, down: downModel }); // memoized, shares the cross-grade series above
+      if (b.rawClose) { const rc = b.rawClose, c = b.close; x.rawUp = c.map((v, k) => k >= 30 && isN(v) && isN(c[k - 30]) && isN(rc[k]) && isN(rc[k - 30]) && rc[k - 30] > 0 && c[k - 30] > 0 ? rc[k] / rc[k - 30] - 1 >= 0.15 && v / c[k - 30] - 1 < 0.05 : null); }
       // Base triggers on every day (for live setups too), fwd excess where the outcome is known.
       const trig = {};
       for (const [id, , fn] of BASE) {

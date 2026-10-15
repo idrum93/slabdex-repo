@@ -16,6 +16,16 @@
   }
 
   // Raw NM lines come per printing, so 1st Ed and Unlimited are exact (no clustering needed).
+  // The ungraded (RAW NM, TCGplayer) price history matching a graded line's printing: the only printing, or the one the
+  // line's label names (1st Ed / Unlimited, holo / reverse). null when it can't be matched — never mixes printings.
+  function rawFor(s, line) {
+    const raw = s?.raw || {}, prs = Object.keys(raw).filter((p) => raw[p]?.length);
+    if (!prs.length) return null;
+    if (prs.length === 1) return raw[prs[0]];
+    const L = String(line || '');
+    const pick = /1st/i.test(L) ? prs.find((p) => /1st/i.test(p)) : /unl/i.test(L) ? prs.find((p) => /unlimited/i.test(p)) : /rev/i.test(L) ? prs.find((p) => /reverse/i.test(p)) : /holo/i.test(L) ? prs.find((p) => /holo/i.test(p) && !/reverse|1st/i.test(p)) : null;
+    return pick ? raw[pick] : null;
+  }
   function rawLines(c, s) {
     const raw = s.raw || {};
     const prs = Object.keys(raw).filter((p) => raw[p]?.length);
@@ -54,8 +64,8 @@
       const same = r.same ? (r.kind === '1st' ? '1st/Unl · one price level' : 'holo/rev · one price level') : null;
       let main = mineOnly ? [] : r.main;
       if (man?.length) { const md = new Set(man.map((x) => x.t)); main = [...main.filter((x) => !md.has(x.t)), ...man.map((x) => ({ t: x.t, p: x.p, n: x.n || 1, m: 1, ps: x.ps || null }))].sort((a, b) => (a.t < b.t ? -1 : a.t > b.t ? 1 : 0)); }
-      lines.push({ key: c.key, card: { ...c, line: r.split ? r.split.mainLabel : mixed || same, est: !!r.split, mixed: !!mixed, mine: man?.length || 0 }, pts: main, site: man?.length ? r.main : null, demo });
-      if (r.split && r.alt.length >= 4) lines.push({ key: c.key + '~alt', card: { ...c, key: c.key + '~alt', line: r.split.altLabel, est: true, virtual: true }, pts: r.alt, demo });
+      lines.push({ key: c.key, card: { ...c, line: r.split ? r.split.mainLabel : mixed || same, est: !!r.split, mixed: !!mixed, mine: man?.length || 0 }, pts: main, site: man?.length ? r.main : null, demo, rawPts: mixed || same ? null : rawFor(s, r.split ? r.split.mainLabel : null) });
+      if (r.split && r.alt.length >= 4) lines.push({ key: c.key + '~alt', card: { ...c, key: c.key + '~alt', line: r.split.altLabel, est: true, virtual: true }, pts: r.alt, demo, rawPts: rawFor(s, r.split.altLabel) });
     }
     const dates = new Set();
     lines.forEach((l) => l.pts.forEach((p) => dates.add(p.t)));
@@ -83,6 +93,11 @@
     for (const l of lines) {
       const S = series(l, l.pts);
       by[l.key] = { card: l.card, close: S.close, sales: l.dense ? null : S.raw, vol: S.vol, demo: !!l.demo, saleN: l.pts.length, dense: !!l.dense };
+      if (l.rawPts?.length && !l.dense) { // RAW NM price on this axis, carried forward up to 10 days between reads
+        const rc = new Array(axis.length).fill(null); let any = false;
+        for (const p of l.rawPts) { const i = pos.get(p.t); if (i != null && p.p > 0) { rc[i] = p.p; any = true; } }
+        if (any) { let last = null, at = -99; for (let i = 0; i < rc.length; i++) { if (rc[i] != null) { last = rc[i]; at = i; } else if (last != null && i - at <= 10) rc[i] = last; } by[l.key].rawClose = rc; }
+      }
       if (l.site) { const T = series(l, l.site); by[l.key].site = { close: T.close, vol: T.vol }; } // collected-data copy: indexes use this, so your prices only move this card
     }
     // Set / era / all indexes are the set baskets only; index-only cards (role 'group') feed character & theme indexes.
