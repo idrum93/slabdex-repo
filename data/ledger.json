@@ -6,7 +6,7 @@
    "rule": "rsSetX",
    "label": "Beats its own set (RS vs set turns up)",
    "n": 0,
-   "pending": 95,
+   "pending": 96,
    "void": 0,
    "vsPeers": null,
    "net": null,
@@ -16,7 +16,7 @@
    "verdict": "collecting",
    "h90": {
     "n": 0,
-    "pending": 95,
+    "pending": 96,
     "void": 0,
     "vsPeers": null,
     "net": null,
@@ -56,7 +56,7 @@
    "rule": "conf3",
    "label": "3+ setups within 10d",
    "n": 0,
-   "pending": 88,
+   "pending": 89,
    "void": 0,
    "vsPeers": null,
    "net": null,
@@ -66,7 +66,7 @@
    "verdict": "collecting",
    "h90": {
     "n": 0,
-    "pending": 88,
+    "pending": 89,
     "void": 0,
     "vsPeers": null,
     "net": null,
@@ -131,7 +131,7 @@
    "rule": "tpiUp",
    "label": "Trend gauge up through +0.5",
    "n": 0,
-   "pending": 73,
+   "pending": 74,
    "void": 0,
    "vsPeers": null,
    "net": null,
@@ -141,7 +141,7 @@
    "verdict": "collecting",
    "h90": {
     "n": 0,
-    "pending": 73,
+    "pending": 74,
     "void": 0,
     "vsPeers": null,
     "net": null,
@@ -231,7 +231,7 @@
    "rule": "rsSetX@2g",
    "label": "Beats its own set (RS vs set turns up) · in 2+ grades",
    "n": 0,
-   "pending": 54,
+   "pending": 55,
    "void": 0,
    "vsPeers": null,
    "net": null,
@@ -241,7 +241,7 @@
    "verdict": "collecting",
    "h90": {
     "n": 0,
-    "pending": 54,
+    "pending": 55,
     "void": 0,
     "vsPeers": null,
     "net": null,
@@ -753,10 +753,10 @@
    "grades": {}
   },
   {
-   "rule": "stUp@2g",
-   "label": "Supertrend flips up · in 2+ grades",
+   "rule": "watchZone",
+   "label": "Undervalued, trend not up yet (watch zone)",
    "n": 0,
-   "pending": 15,
+   "pending": 16,
    "void": 0,
    "vsPeers": null,
    "net": null,
@@ -766,7 +766,7 @@
    "verdict": "collecting",
    "h90": {
     "n": 0,
-    "pending": 15,
+    "pending": 16,
     "void": 0,
     "vsPeers": null,
     "net": null,
@@ -778,8 +778,8 @@
    "grades": {}
   },
   {
-   "rule": "watchZone",
-   "label": "Undervalued, trend not up yet (watch zone)",
+   "rule": "stUp@2g",
+   "label": "Supertrend flips up · in 2+ grades",
    "n": 0,
    "pending": 15,
    "void": 0,
@@ -853,8 +853,8 @@
    "grades": {}
   },
   {
-   "rule": "lagUp",
-   "label": "Lagging grade: the grade above jumped ≥20%, this one has not",
+   "rule": "dip",
+   "label": "Oversold dip (−15%, RSI<40)",
    "n": 0,
    "pending": 12,
    "void": 0,
@@ -878,10 +878,10 @@
    "grades": {}
   },
   {
-   "rule": "dip",
-   "label": "Oversold dip (−15%, RSI<40)",
+   "rule": "lagUp",
+   "label": "Lagging grade: the grade above jumped ≥20%, this one has not",
    "n": 0,
-   "pending": 11,
+   "pending": 12,
    "void": 0,
    "vsPeers": null,
    "net": null,
@@ -891,7 +891,7 @@
    "verdict": "collecting",
    "h90": {
     "n": 0,
-    "pending": 11,
+    "pending": 12,
     "void": 0,
     "vsPeers": null,
     "net": null,
@@ -1003,10 +1003,10 @@
    "grades": {}
   }
  ],
- "updated": "2026-10-15",
+ "updated": "2026-10-16",
  "counts": {
-  "total": 2201,
-  "pending": 1680,
+  "total": 2207,
+  "pending": 1686,
   "scored": 0,
   "scored90": 0,
   "void": 0,

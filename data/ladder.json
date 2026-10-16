@@ -2,19 +2,15 @@
  "fails": {
   "rising-rivals-pikachu-112": {
    "since": "2026-10-10",
-   "last": "2026-10-15"
-  },
-  "call-of-legends-lugia-shiny-SL7": {
-   "since": "2026-10-11",
-   "last": "2026-10-15"
+   "last": "2026-10-16"
   },
   "jungle-vaporeon-12-12": {
    "since": "2026-10-11",
-   "last": "2026-10-15"
+   "last": "2026-10-16"
   },
   "neo-revelation-ampharos-1": {
    "since": "2026-10-14",
-   "last": "2026-10-15"
+   "last": "2026-10-16"
   }
  },
  "checked": {
@@ -53,7 +49,11 @@
   "majestic-dawn-glaceon-lv-x-98": "2026-10-14",
   "rising-rivals-surfing-pikachu-114": "2026-10-14",
   "majestic-dawn-garchomp-lv-x-97": "2026-10-14",
-  "great-encounters-dialga-lv-x-105": "2026-10-14"
+  "great-encounters-dialga-lv-x-105": "2026-10-14",
+  "platinum-giratina-lv-x-124": "2026-10-16",
+  "diamond-pearl-infernape-lv-x-121": "2026-10-16",
+  "diamond-pearl-empoleon-lv-x-120": "2026-10-16",
+  "mysterious-treasures-lucario-lv-x-122": "2026-10-16"
  },
  "history": [
   {
@@ -155,7 +155,7 @@
    "price": 1195
   }
  ],
- "updated": "2026-10-15T15:36:03.932Z",
+ "updated": "2026-10-16T15:22:14.328Z",
  "bench": 177,
  "tracked": 75
 }

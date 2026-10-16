@@ -2199,5 +2199,11 @@
 {"g":"psa10","key":"wotc-black-star-promos-mew-47-47","rule":"px50@2g","t":"2026-10-12","logged":"2026-10-15","ref":3240,"state":"pending","state90":"pending"},
 {"g":"psa10","key":"wotc-black-star-promos-mew-47-47","rule":"rsX@2g","t":"2026-10-12","logged":"2026-10-15","ref":3240,"state":"pending","state90":"pending"},
 {"g":"psa10","key":"wotc-black-star-promos-mew-47-47","rule":"hmaUp@2g","t":"2026-10-12","logged":"2026-10-15","ref":3240,"state":"pending","state90":"pending"},
-{"g":"psa10","key":"wotc-black-star-promos-mew-47-47","rule":"stUp@2g","t":"2026-10-12","logged":"2026-10-15","ref":3240,"state":"pending","state90":"pending"}
+{"g":"psa10","key":"wotc-black-star-promos-mew-47-47","rule":"stUp@2g","t":"2026-10-12","logged":"2026-10-15","ref":3240,"state":"pending","state90":"pending"},
+{"g":"psa9","key":"triumphant-gengar-prime-94","rule":"tpiUp","t":"2026-10-15","logged":"2026-10-16","ref":7149.5,"bt":"none","state":"pending","state90":"pending"},
+{"g":"psa7","key":"triumphant-gengar-prime-94","rule":"conf3","t":"2026-10-14","logged":"2026-10-16","ref":1849,"state":"pending","state90":"pending"},
+{"g":"psa8","key":"triumphant-gengar-prime-94","rule":"watchZone","t":"2026-10-15","logged":"2026-10-16","ref":2850,"state":"pending","state90":"pending"},
+{"g":"psa10","key":"triumphant-mew-prime-97","rule":"dip","t":"2026-10-12","logged":"2026-10-16","ref":34200,"state":"pending","state90":"pending"},
+{"g":"psa10","key":"undaunted-umbreon-prime-86","rule":"rsSetX","t":"2026-10-12","logged":"2026-10-16","ref":70168,"state":"pending","state90":"pending"},
+{"g":"psa10","key":"undaunted-umbreon-prime-86","rule":"rsSetX@2g","t":"2026-10-12","logged":"2026-10-16","ref":70168,"state":"pending","state90":"pending"}
 ]}
