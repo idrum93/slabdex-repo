@@ -1,16 +1,20 @@
 {
  "fails": {
-  "rising-rivals-pikachu-112": {
-   "since": "2026-10-10",
-   "last": "2026-10-16"
-  },
   "jungle-vaporeon-12-12": {
    "since": "2026-10-11",
-   "last": "2026-10-16"
+   "last": "2026-10-17"
   },
   "neo-revelation-ampharos-1": {
    "since": "2026-10-14",
-   "last": "2026-10-16"
+   "last": "2026-10-17"
+  },
+  "dragon-frontiers-dragonite-ex-delta-species-91": {
+   "since": "2026-10-17",
+   "last": "2026-10-17"
+  },
+  "legends-awakened-mewtwo-lv-x-144": {
+   "since": "2026-10-17",
+   "last": "2026-10-17"
   }
  },
  "checked": {
@@ -53,7 +57,11 @@
   "platinum-giratina-lv-x-124": "2026-10-16",
   "diamond-pearl-infernape-lv-x-121": "2026-10-16",
   "diamond-pearl-empoleon-lv-x-120": "2026-10-16",
-  "mysterious-treasures-lucario-lv-x-122": "2026-10-16"
+  "mysterious-treasures-lucario-lv-x-122": "2026-10-16",
+  "diamond-pearl-torterra-lv-x-122": "2026-10-17",
+  "stormfront-heatran-lv-x-97": "2026-10-17",
+  "arceus-arceus-lv-x-94-94": "2026-10-17",
+  "platinum-palkia-g-lv-x-125": "2026-10-17"
  },
  "history": [
   {
@@ -153,9 +161,18 @@
     "psa8"
    ],
    "price": 1195
+  },
+  {
+   "t": "2026-10-17",
+   "action": "demote",
+   "key": "rising-rivals-pikachu-112",
+   "name": "Pikachu",
+   "set": "Rising Rivals",
+   "basket": "fam:DP",
+   "reason": "no grade liquid at the minimum for 7 days"
   }
  ],
- "updated": "2026-10-16T15:22:14.328Z",
- "bench": 177,
- "tracked": 75
+ "updated": "2026-10-17T14:12:07.684Z",
+ "bench": 178,
+ "tracked": 74
 }

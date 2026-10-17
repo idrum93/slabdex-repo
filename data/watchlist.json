@@ -516,22 +516,6 @@
       "sprite": "img/sprites/charizard.png"
     },
     {
-      "key": "rising-rivals-pikachu-112",
-      "name": "Pikachu",
-      "set": "Rising Rivals",
-      "number": "112",
-      "era": "DP & Platinum",
-      "family": "DP",
-      "basket": "rising-rivals",
-      "rarity": "Secret Rare",
-      "pooled": false,
-      "query": "Pikachu Rising Rivals 112",
-      "tier": "rotate",
-      "raw": false,
-      "tcgPlayerId": "88091",
-      "sprite": "img/sprites/pikachu.png"
-    },
-    {
       "key": "arceus-gengar-lv-x-97",
       "name": "Gengar Lv.X",
       "set": "Arceus",
@@ -3919,6 +3903,22 @@
       "raw": false,
       "tcgPlayerId": "84189",
       "sprite": "img/sprites/charizard.png"
+    },
+    {
+      "key": "rising-rivals-pikachu-112",
+      "name": "Pikachu",
+      "set": "Rising Rivals",
+      "number": "112",
+      "era": "DP & Platinum",
+      "family": "DP",
+      "basket": "rising-rivals",
+      "rarity": "Secret Rare",
+      "pooled": false,
+      "query": "Pikachu Rising Rivals 112",
+      "tier": "bench",
+      "raw": false,
+      "tcgPlayerId": "88091",
+      "sprite": "img/sprites/pikachu.png"
     }
   ],
   "extra": [
