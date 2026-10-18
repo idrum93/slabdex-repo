@@ -676,22 +676,6 @@
       "sprite": "img/sprites/snorlax.png"
     },
     {
-      "key": "jungle-vaporeon-12-12",
-      "name": "Vaporeon (12)",
-      "set": "Jungle",
-      "number": "12",
-      "era": "WOTC Vintage",
-      "family": "WOTC",
-      "basket": "jungle",
-      "rarity": "Holo Rare",
-      "pooled": true,
-      "query": "Vaporeon (12) Jungle 12",
-      "tier": "rotate",
-      "raw": false,
-      "tcgPlayerId": "45123",
-      "sprite": "img/sprites/vaporeon.png"
-    },
-    {
       "key": "fossil-zapdos-15-15",
       "name": "Zapdos (15)",
       "set": "Fossil",
@@ -3919,6 +3903,22 @@
       "raw": false,
       "tcgPlayerId": "88091",
       "sprite": "img/sprites/pikachu.png"
+    },
+    {
+      "key": "jungle-vaporeon-12-12",
+      "name": "Vaporeon (12)",
+      "set": "Jungle",
+      "number": "12",
+      "era": "WOTC Vintage",
+      "family": "WOTC",
+      "basket": "jungle",
+      "rarity": "Holo Rare",
+      "pooled": true,
+      "query": "Vaporeon (12) Jungle 12",
+      "tier": "bench",
+      "raw": false,
+      "tcgPlayerId": "45123",
+      "sprite": "img/sprites/vaporeon.png"
     }
   ],
   "extra": [

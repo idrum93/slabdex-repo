@@ -1,20 +1,16 @@
 {
  "fails": {
-  "jungle-vaporeon-12-12": {
-   "since": "2026-10-11",
-   "last": "2026-10-17"
-  },
   "neo-revelation-ampharos-1": {
    "since": "2026-10-14",
-   "last": "2026-10-17"
+   "last": "2026-10-18"
   },
   "dragon-frontiers-dragonite-ex-delta-species-91": {
    "since": "2026-10-17",
-   "last": "2026-10-17"
+   "last": "2026-10-18"
   },
   "legends-awakened-mewtwo-lv-x-144": {
    "since": "2026-10-17",
-   "last": "2026-10-17"
+   "last": "2026-10-18"
   }
  },
  "checked": {
@@ -170,9 +166,18 @@
    "set": "Rising Rivals",
    "basket": "fam:DP",
    "reason": "no grade liquid at the minimum for 7 days"
+  },
+  {
+   "t": "2026-10-18",
+   "action": "demote",
+   "key": "jungle-vaporeon-12-12",
+   "name": "Vaporeon (12)",
+   "set": "Jungle",
+   "basket": "set:jungle",
+   "reason": "no grade liquid at the minimum for 7 days"
   }
  ],
- "updated": "2026-10-17T14:12:07.684Z",
- "bench": 178,
- "tracked": 74
+ "updated": "2026-10-18T14:33:56.296Z",
+ "bench": 179,
+ "tracked": 73
 }

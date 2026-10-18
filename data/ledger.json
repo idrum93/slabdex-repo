@@ -6,7 +6,7 @@
    "rule": "rsSetX",
    "label": "Beats its own set (RS vs set turns up)",
    "n": 0,
-   "pending": 96,
+   "pending": 98,
    "void": 0,
    "vsPeers": null,
    "net": null,
@@ -16,7 +16,7 @@
    "verdict": "collecting",
    "h90": {
     "n": 0,
-    "pending": 96,
+    "pending": 98,
     "void": 0,
     "vsPeers": null,
     "net": null,
@@ -31,7 +31,7 @@
    "rule": "hmaUp",
    "label": "Hull MA turns up",
    "n": 0,
-   "pending": 91,
+   "pending": 93,
    "void": 0,
    "vsPeers": null,
    "net": null,
@@ -41,7 +41,7 @@
    "verdict": "collecting",
    "h90": {
     "n": 0,
-    "pending": 91,
+    "pending": 93,
     "void": 0,
     "vsPeers": null,
     "net": null,
@@ -131,7 +131,7 @@
    "rule": "tpiUp",
    "label": "Trend gauge up through +0.5",
    "n": 0,
-   "pending": 77,
+   "pending": 78,
    "void": 0,
    "vsPeers": null,
    "net": null,
@@ -141,7 +141,7 @@
    "verdict": "collecting",
    "h90": {
     "n": 0,
-    "pending": 77,
+    "pending": 78,
     "void": 0,
     "vsPeers": null,
     "net": null,
@@ -156,7 +156,7 @@
    "rule": "macdX",
    "label": "MACD crosses signal",
    "n": 0,
-   "pending": 71,
+   "pending": 73,
    "void": 0,
    "vsPeers": null,
    "net": null,
@@ -166,7 +166,7 @@
    "verdict": "collecting",
    "h90": {
     "n": 0,
-    "pending": 71,
+    "pending": 73,
     "void": 0,
     "vsPeers": null,
     "net": null,
@@ -181,7 +181,7 @@
    "rule": "sc68",
    "label": "Score to EARLY STRENGTH",
    "n": 0,
-   "pending": 63,
+   "pending": 64,
    "void": 0,
    "vsPeers": null,
    "net": null,
@@ -191,7 +191,7 @@
    "verdict": "collecting",
    "h90": {
     "n": 0,
-    "pending": 63,
+    "pending": 64,
     "void": 0,
     "vsPeers": null,
     "net": null,
@@ -206,7 +206,7 @@
    "rule": "rsSetX@2g",
    "label": "Beats its own set (RS vs set turns up) · in 2+ grades",
    "n": 0,
-   "pending": 57,
+   "pending": 59,
    "void": 0,
    "vsPeers": null,
    "net": null,
@@ -216,7 +216,7 @@
    "verdict": "collecting",
    "h90": {
     "n": 0,
-    "pending": 57,
+    "pending": 59,
     "void": 0,
     "vsPeers": null,
     "net": null,
@@ -231,7 +231,7 @@
    "rule": "sc55",
    "label": "Score to IMPROVING",
    "n": 0,
-   "pending": 55,
+   "pending": 56,
    "void": 0,
    "vsPeers": null,
    "net": null,
@@ -241,7 +241,7 @@
    "verdict": "collecting",
    "h90": {
     "n": 0,
-    "pending": 55,
+    "pending": 56,
     "void": 0,
     "vsPeers": null,
     "net": null,
@@ -281,7 +281,7 @@
    "rule": "hmaUp@2g",
    "label": "Hull MA turns up · in 2+ grades",
    "n": 0,
-   "pending": 51,
+   "pending": 52,
    "void": 0,
    "vsPeers": null,
    "net": null,
@@ -291,7 +291,7 @@
    "verdict": "collecting",
    "h90": {
     "n": 0,
-    "pending": 51,
+    "pending": 52,
     "void": 0,
     "vsPeers": null,
     "net": null,
@@ -453,6 +453,31 @@
    "grades": {}
   },
   {
+   "rule": "gold",
+   "label": "SMA20 crosses SMA50",
+   "n": 0,
+   "pending": 33,
+   "void": 0,
+   "vsPeers": null,
+   "net": null,
+   "pays": null,
+   "beat": null,
+   "p": null,
+   "verdict": "collecting",
+   "h90": {
+    "n": 0,
+    "pending": 33,
+    "void": 0,
+    "vsPeers": null,
+    "net": null,
+    "pays": null,
+    "beat": null,
+    "p": null,
+    "verdict": "collecting"
+   },
+   "grades": {}
+  },
+  {
    "rule": "stLeader",
    "label": "ST↑ while beating the market (RS > its MA)",
    "n": 0,
@@ -478,35 +503,10 @@
    "grades": {}
   },
   {
-   "rule": "gold",
-   "label": "SMA20 crosses SMA50",
-   "n": 0,
-   "pending": 32,
-   "void": 0,
-   "vsPeers": null,
-   "net": null,
-   "pays": null,
-   "beat": null,
-   "p": null,
-   "verdict": "collecting",
-   "h90": {
-    "n": 0,
-    "pending": 32,
-    "void": 0,
-    "vsPeers": null,
-    "net": null,
-    "pays": null,
-    "beat": null,
-    "p": null,
-    "verdict": "collecting"
-   },
-   "grades": {}
-  },
-  {
    "rule": "pullback",
    "label": "Pullback in uptrend (back above SMA20, SMA20>SMA50, ST up)",
    "n": 0,
-   "pending": 32,
+   "pending": 33,
    "void": 0,
    "vsPeers": null,
    "net": null,
@@ -516,7 +516,7 @@
    "verdict": "collecting",
    "h90": {
     "n": 0,
-    "pending": 32,
+    "pending": 33,
     "void": 0,
     "vsPeers": null,
     "net": null,
@@ -531,7 +531,7 @@
    "rule": "macdX@2g",
    "label": "MACD crosses signal · in 2+ grades",
    "n": 0,
-   "pending": 27,
+   "pending": 29,
    "void": 0,
    "vsPeers": null,
    "net": null,
@@ -541,7 +541,7 @@
    "verdict": "collecting",
    "h90": {
     "n": 0,
-    "pending": 27,
+    "pending": 29,
     "void": 0,
     "vsPeers": null,
     "net": null,
@@ -603,6 +603,31 @@
    "grades": {}
   },
   {
+   "rule": "macdX0",
+   "label": "MACD cross below zero",
+   "n": 0,
+   "pending": 18,
+   "void": 0,
+   "vsPeers": null,
+   "net": null,
+   "pays": null,
+   "beat": null,
+   "p": null,
+   "verdict": "collecting",
+   "h90": {
+    "n": 0,
+    "pending": 18,
+    "void": 0,
+    "vsPeers": null,
+    "net": null,
+    "pays": null,
+    "beat": null,
+    "p": null,
+    "verdict": "collecting"
+   },
+   "grades": {}
+  },
+  {
    "rule": "gapLow",
    "label": "Cheap vs next grade up (<80% of its usual ratio)",
    "n": 0,
@@ -628,8 +653,8 @@
    "grades": {}
   },
   {
-   "rule": "macdX0",
-   "label": "MACD cross below zero",
+   "rule": "stCalm",
+   "label": "ST↑ while RSI < 70 (not stretched)",
    "n": 0,
    "pending": 17,
    "void": 0,
@@ -653,8 +678,8 @@
    "grades": {}
   },
   {
-   "rule": "stCalm",
-   "label": "ST↑ while RSI < 70 (not stretched)",
+   "rule": "watchZone",
+   "label": "Undervalued, trend not up yet (watch zone)",
    "n": 0,
    "pending": 17,
    "void": 0,
@@ -803,10 +828,10 @@
    "grades": {}
   },
   {
-   "rule": "watchZone",
-   "label": "Undervalued, trend not up yet (watch zone)",
+   "rule": "lagUp",
+   "label": "Lagging grade: the grade above jumped ≥20%, this one has not",
    "n": 0,
-   "pending": 16,
+   "pending": 14,
    "void": 0,
    "vsPeers": null,
    "net": null,
@@ -816,7 +841,7 @@
    "verdict": "collecting",
    "h90": {
     "n": 0,
-    "pending": 16,
+    "pending": 14,
     "void": 0,
     "vsPeers": null,
     "net": null,
@@ -828,8 +853,8 @@
    "grades": {}
   },
   {
-   "rule": "lagUp",
-   "label": "Lagging grade: the grade above jumped ≥20%, this one has not",
+   "rule": "dip",
+   "label": "Oversold dip (−15%, RSI<40)",
    "n": 0,
    "pending": 13,
    "void": 0,
@@ -867,31 +892,6 @@
    "h90": {
     "n": 0,
     "pending": 13,
-    "void": 0,
-    "vsPeers": null,
-    "net": null,
-    "pays": null,
-    "beat": null,
-    "p": null,
-    "verdict": "collecting"
-   },
-   "grades": {}
-  },
-  {
-   "rule": "dip",
-   "label": "Oversold dip (−15%, RSI<40)",
-   "n": 0,
-   "pending": 12,
-   "void": 0,
-   "vsPeers": null,
-   "net": null,
-   "pays": null,
-   "beat": null,
-   "p": null,
-   "verdict": "collecting",
-   "h90": {
-    "n": 0,
-    "pending": 12,
     "void": 0,
     "vsPeers": null,
     "net": null,
@@ -1003,10 +1003,10 @@
    "grades": {}
   }
  ],
- "updated": "2026-10-17",
+ "updated": "2026-10-18",
  "counts": {
-  "total": 2236,
-  "pending": 1715,
+  "total": 2256,
+  "pending": 1735,
   "scored": 0,
   "scored90": 0,
   "void": 0,
