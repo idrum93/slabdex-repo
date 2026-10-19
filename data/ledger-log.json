@@ -2254,5 +2254,15 @@
 {"g":"psa10","key":"wotc-black-star-promos-pikachu-snap-promo-26","rule":"macdX","t":"2026-10-15","logged":"2026-10-18","ref":1399.99,"state":"pending","state90":"pending"},
 {"g":"psa10","key":"wotc-black-star-promos-pikachu-snap-promo-26","rule":"macdX0","t":"2026-10-15","logged":"2026-10-18","ref":1399.99,"state":"pending","state90":"pending"},
 {"g":"psa10","key":"wotc-black-star-promos-mewtwo-14-14","rule":"gold","t":"2026-10-15","logged":"2026-10-18","ref":2397.82,"state":"pending","state90":"pending"},
-{"g":"psa10","key":"wotc-black-star-promos-pikachu-snap-promo-26","rule":"macdX@2g","t":"2026-10-15","logged":"2026-10-18","ref":1399.99,"state":"pending","state90":"pending"}
+{"g":"psa10","key":"wotc-black-star-promos-pikachu-snap-promo-26","rule":"macdX@2g","t":"2026-10-15","logged":"2026-10-18","ref":1399.99,"state":"pending","state90":"pending"},
+{"g":"psa9","key":"wotc-black-star-promos-pokemon-center-40","rule":"rsX","t":"2026-10-19","logged":"2026-10-19","ref":2275,"bt":"none","state":"pending","state90":"pending"},
+{"g":"psa9","key":"wotc-black-star-promos-pokemon-center-40","rule":"tpiUp","t":"2026-10-19","logged":"2026-10-19","ref":2275,"bt":"none","state":"pending","state90":"pending"},
+{"g":"psa9","key":"triumphant-mew-prime-97","rule":"conf3","t":"2026-10-18","logged":"2026-10-19","ref":3840,"bt":"none","state":"pending","state90":"pending"},
+{"g":"psa9","key":"wotc-black-star-promos-pokemon-center-40","rule":"rsX@2g","t":"2026-10-19","logged":"2026-10-19","ref":2275,"bt":"none","state":"pending","state90":"pending"},
+{"g":"psa9","key":"wotc-black-star-promos-pokemon-center-40","rule":"buyZone","t":"2026-10-19","logged":"2026-10-19","ref":2275,"bt":"few","state":"pending","state90":"pending"},
+{"g":"psa7","key":"aquapolis-umbreon-h29-H29","rule":"gold","t":"2026-10-18","logged":"2026-10-19","ref":2999,"state":"pending","state90":"pending"},
+{"g":"psa8","key":"crystal-guardians-celebi-star-100","rule":"rsSetX","t":"2026-10-18","logged":"2026-10-19","ref":6600,"state":"pending","state90":"pending"},
+{"g":"psa8","key":"triumphant-gengar-prime-94","rule":"conf3","t":"2026-10-18","logged":"2026-10-19","ref":2950,"state":"pending","state90":"pending"},
+{"g":"psa8","key":"crystal-guardians-celebi-star-100","rule":"rsSetX@2g","t":"2026-10-18","logged":"2026-10-19","ref":6600,"state":"pending","state90":"pending"},
+{"g":"psa8","key":"neo-revelation-suicune-14-14","rule":"gold","t":"2026-10-18","logged":"2026-10-19","ref":1830,"state":"pending","state90":"pending"}
 ]}

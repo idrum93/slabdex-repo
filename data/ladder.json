@@ -2,15 +2,15 @@
  "fails": {
   "neo-revelation-ampharos-1": {
    "since": "2026-10-14",
-   "last": "2026-10-18"
+   "last": "2026-10-19"
   },
   "dragon-frontiers-dragonite-ex-delta-species-91": {
    "since": "2026-10-17",
-   "last": "2026-10-18"
+   "last": "2026-10-19"
   },
   "legends-awakened-mewtwo-lv-x-144": {
    "since": "2026-10-17",
-   "last": "2026-10-18"
+   "last": "2026-10-19"
   }
  },
  "checked": {
@@ -57,7 +57,11 @@
   "diamond-pearl-torterra-lv-x-122": "2026-10-17",
   "stormfront-heatran-lv-x-97": "2026-10-17",
   "arceus-arceus-lv-x-94-94": "2026-10-17",
-  "platinum-palkia-g-lv-x-125": "2026-10-17"
+  "platinum-palkia-g-lv-x-125": "2026-10-17",
+  "arceus-salamence-lv-x-98": "2026-10-19",
+  "mysterious-treasures-electivire-lv-x-121": "2026-10-19",
+  "great-encounters-cresselia-lv-x-103": "2026-10-19",
+  "heartgold-soulsilver-raichu-10": "2026-10-19"
  },
  "history": [
   {
@@ -177,7 +181,7 @@
    "reason": "no grade liquid at the minimum for 7 days"
   }
  ],
- "updated": "2026-10-18T14:33:56.296Z",
+ "updated": "2026-10-19T17:27:36.059Z",
  "bench": 179,
  "tracked": 73
 }
