@@ -2,15 +2,19 @@
  "fails": {
   "neo-revelation-ampharos-1": {
    "since": "2026-10-14",
-   "last": "2026-10-19"
+   "last": "2026-10-20"
   },
   "dragon-frontiers-dragonite-ex-delta-species-91": {
    "since": "2026-10-17",
-   "last": "2026-10-19"
+   "last": "2026-10-20"
   },
   "legends-awakened-mewtwo-lv-x-144": {
    "since": "2026-10-17",
-   "last": "2026-10-19"
+   "last": "2026-10-20"
+  },
+  "sandstorm-raichu-ex-98": {
+   "since": "2026-10-20",
+   "last": "2026-10-20"
   }
  },
  "checked": {
@@ -61,7 +65,11 @@
   "arceus-salamence-lv-x-98": "2026-10-19",
   "mysterious-treasures-electivire-lv-x-121": "2026-10-19",
   "great-encounters-cresselia-lv-x-103": "2026-10-19",
-  "heartgold-soulsilver-raichu-10": "2026-10-19"
+  "heartgold-soulsilver-raichu-10": "2026-10-19",
+  "undaunted-raichu-prime-83": "2026-10-20",
+  "heartgold-soulsilver-gyarados-red-123": "2026-10-20",
+  "call-of-legends-gyarados-7": "2026-10-20",
+  "call-of-legends-lugia-15": "2026-10-20"
  },
  "history": [
   {
@@ -179,9 +187,23 @@
    "set": "Jungle",
    "basket": "set:jungle",
    "reason": "no grade liquid at the minimum for 7 days"
+  },
+  {
+   "t": "2026-10-20",
+   "action": "promote",
+   "key": "undaunted-raichu-prime-83",
+   "name": "Raichu (Prime)",
+   "set": "Undaunted",
+   "basket": "fam:HGSS",
+   "reason": "liquid at PSA9/PSA10 · open slot in HGSS",
+   "liq": [
+    "psa9",
+    "psa10"
+   ],
+   "price": 30200
   }
  ],
- "updated": "2026-10-19T17:27:36.059Z",
- "bench": 179,
- "tracked": 73
+ "updated": "2026-10-20T15:39:22.256Z",
+ "bench": 178,
+ "tracked": 74
 }

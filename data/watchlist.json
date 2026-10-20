@@ -1228,6 +1228,21 @@
       "tier": "rotate",
       "raw": false,
       "tcgPlayerId": "85750"
+    },
+    {
+      "key": "undaunted-raichu-prime-83",
+      "name": "Raichu (Prime)",
+      "set": "Undaunted",
+      "number": "83",
+      "era": "HeartGold SoulSilver",
+      "family": "HGSS",
+      "basket": "undaunted",
+      "rarity": "Ultra Rare",
+      "pooled": false,
+      "query": "Raichu (Prime) Undaunted 83",
+      "tier": "rotate",
+      "raw": false,
+      "tcgPlayerId": "88519"
     }
   ],
   "bench": [
@@ -1860,21 +1875,6 @@
       "tier": "bench",
       "raw": false,
       "tcgPlayerId": "88517"
-    },
-    {
-      "key": "undaunted-raichu-prime-83",
-      "name": "Raichu (Prime)",
-      "set": "Undaunted",
-      "number": "83",
-      "era": "HeartGold SoulSilver",
-      "family": "HGSS",
-      "basket": "undaunted",
-      "rarity": "Ultra Rare",
-      "pooled": false,
-      "query": "Raichu (Prime) Undaunted 83",
-      "tier": "bench",
-      "raw": false,
-      "tcgPlayerId": "88519"
     },
     {
       "key": "heartgold-soulsilver-gyarados-red-123",
