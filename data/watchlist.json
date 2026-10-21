@@ -852,22 +852,6 @@
       "sprite": "img/sprites/suicune.png"
     },
     {
-      "key": "neo-revelation-ampharos-1",
-      "name": "Ampharos",
-      "set": "Neo Revelation",
-      "number": "1",
-      "era": "WOTC Neo & e-Card",
-      "family": "WOTC",
-      "basket": "neo-revelation",
-      "rarity": "Holo Rare",
-      "pooled": true,
-      "query": "Ampharos Neo Revelation 1",
-      "tier": "rotate",
-      "raw": false,
-      "tcgPlayerId": "83535",
-      "sprite": "img/sprites/ampharos.png"
-    },
-    {
       "key": "neo-destiny-shining-mewtwo-109",
       "name": "Shining Mewtwo",
       "set": "Neo Destiny",
@@ -3919,6 +3903,22 @@
       "raw": false,
       "tcgPlayerId": "45123",
       "sprite": "img/sprites/vaporeon.png"
+    },
+    {
+      "key": "neo-revelation-ampharos-1",
+      "name": "Ampharos",
+      "set": "Neo Revelation",
+      "number": "1",
+      "era": "WOTC Neo & e-Card",
+      "family": "WOTC",
+      "basket": "neo-revelation",
+      "rarity": "Holo Rare",
+      "pooled": true,
+      "query": "Ampharos Neo Revelation 1",
+      "tier": "bench",
+      "raw": false,
+      "tcgPlayerId": "83535",
+      "sprite": "img/sprites/ampharos.png"
     }
   ],
   "extra": [

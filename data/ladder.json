@@ -1,20 +1,20 @@
 {
  "fails": {
-  "neo-revelation-ampharos-1": {
-   "since": "2026-10-14",
-   "last": "2026-10-20"
-  },
   "dragon-frontiers-dragonite-ex-delta-species-91": {
    "since": "2026-10-17",
-   "last": "2026-10-20"
+   "last": "2026-10-21"
   },
   "legends-awakened-mewtwo-lv-x-144": {
    "since": "2026-10-17",
-   "last": "2026-10-20"
+   "last": "2026-10-21"
   },
   "sandstorm-raichu-ex-98": {
    "since": "2026-10-20",
-   "last": "2026-10-20"
+   "last": "2026-10-21"
+  },
+  "undaunted-raichu-prime-83": {
+   "since": "2026-10-21",
+   "last": "2026-10-21"
   }
  },
  "checked": {
@@ -201,9 +201,18 @@
     "psa10"
    ],
    "price": 30200
+  },
+  {
+   "t": "2026-10-21",
+   "action": "demote",
+   "key": "neo-revelation-ampharos-1",
+   "name": "Ampharos",
+   "set": "Neo Revelation",
+   "basket": "set:neo-revelation",
+   "reason": "no grade liquid at the minimum for 7 days"
   }
  ],
- "updated": "2026-10-20T15:39:22.256Z",
- "bench": 178,
- "tracked": 74
+ "updated": "2026-10-21T15:56:58.633Z",
+ "bench": 179,
+ "tracked": 73
 }
