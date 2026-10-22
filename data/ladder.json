@@ -2,19 +2,27 @@
  "fails": {
   "dragon-frontiers-dragonite-ex-delta-species-91": {
    "since": "2026-10-17",
-   "last": "2026-10-21"
+   "last": "2026-10-22"
   },
   "legends-awakened-mewtwo-lv-x-144": {
    "since": "2026-10-17",
-   "last": "2026-10-21"
+   "last": "2026-10-22"
   },
   "sandstorm-raichu-ex-98": {
    "since": "2026-10-20",
-   "last": "2026-10-21"
+   "last": "2026-10-22"
   },
   "undaunted-raichu-prime-83": {
    "since": "2026-10-21",
-   "last": "2026-10-21"
+   "last": "2026-10-22"
+  },
+  "great-encounters-darkrai-lv-x-104": {
+   "since": "2026-10-22",
+   "last": "2026-10-22"
+  },
+  "skyridge-umbreon-h30-H30": {
+   "since": "2026-10-22",
+   "last": "2026-10-22"
   }
  },
  "checked": {
@@ -69,7 +77,11 @@
   "undaunted-raichu-prime-83": "2026-10-20",
   "heartgold-soulsilver-gyarados-red-123": "2026-10-20",
   "call-of-legends-gyarados-7": "2026-10-20",
-  "call-of-legends-lugia-15": "2026-10-20"
+  "call-of-legends-lugia-15": "2026-10-20",
+  "undaunted-umbreon-10": "2026-10-22",
+  "unleashed-magmortar-2": "2026-10-22",
+  "triumphant-celebi-3-102-non-holo-movie-exclusive-3": "2026-10-22",
+  "unleashed-manaphy-3": "2026-10-22"
  },
  "history": [
   {
@@ -212,7 +224,7 @@
    "reason": "no grade liquid at the minimum for 7 days"
   }
  ],
- "updated": "2026-10-21T15:56:58.633Z",
+ "updated": "2026-10-22T15:52:34.515Z",
  "bench": 179,
  "tracked": 73
 }
