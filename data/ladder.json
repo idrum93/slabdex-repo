@@ -2,27 +2,31 @@
  "fails": {
   "dragon-frontiers-dragonite-ex-delta-species-91": {
    "since": "2026-10-17",
-   "last": "2026-10-22"
+   "last": "2026-10-23"
   },
   "legends-awakened-mewtwo-lv-x-144": {
    "since": "2026-10-17",
-   "last": "2026-10-22"
+   "last": "2026-10-23"
   },
   "sandstorm-raichu-ex-98": {
    "since": "2026-10-20",
-   "last": "2026-10-22"
+   "last": "2026-10-23"
   },
   "undaunted-raichu-prime-83": {
    "since": "2026-10-21",
-   "last": "2026-10-22"
+   "last": "2026-10-23"
   },
   "great-encounters-darkrai-lv-x-104": {
    "since": "2026-10-22",
-   "last": "2026-10-22"
+   "last": "2026-10-23"
   },
   "skyridge-umbreon-h30-H30": {
    "since": "2026-10-22",
-   "last": "2026-10-22"
+   "last": "2026-10-23"
+  },
+  "rising-rivals-snorlax-lv-x-111": {
+   "since": "2026-10-23",
+   "last": "2026-10-23"
   }
  },
  "checked": {
@@ -81,7 +85,11 @@
   "undaunted-umbreon-10": "2026-10-22",
   "unleashed-magmortar-2": "2026-10-22",
   "triumphant-celebi-3-102-non-holo-movie-exclusive-3": "2026-10-22",
-  "unleashed-manaphy-3": "2026-10-22"
+  "unleashed-manaphy-3": "2026-10-22",
+  "heartgold-soulsilver-lugia-legend-bottom-114": "2026-10-23",
+  "base-set-blastoise-2": "2026-10-23",
+  "base-set-mewtwo-10": "2026-10-23",
+  "base-set-alakazam-1": "2026-10-23"
  },
  "history": [
   {
@@ -222,9 +230,62 @@
    "set": "Neo Revelation",
    "basket": "set:neo-revelation",
    "reason": "no grade liquid at the minimum for 7 days"
+  },
+  {
+   "t": "2026-10-23",
+   "action": "promote",
+   "key": "base-set-blastoise-2",
+   "name": "Blastoise",
+   "set": "Base Set",
+   "basket": "set:base-set",
+   "reason": "liquid at PSA9/PSA10 · open slot in base-set",
+   "liq": [
+    "psa9",
+    "psa10"
+   ],
+   "price": 7999.99
+  },
+  {
+   "t": "2026-10-23",
+   "action": "promote",
+   "key": "base-set-mewtwo-10",
+   "name": "Mewtwo",
+   "set": "Base Set",
+   "basket": "set:base-set",
+   "reason": "liquid at PSA10 · open slot in base-set",
+   "liq": [
+    "psa10"
+   ],
+   "price": 4999.99
+  },
+  {
+   "t": "2026-10-23",
+   "action": "promote",
+   "key": "base-set-alakazam-1",
+   "name": "Alakazam",
+   "set": "Base Set",
+   "basket": "set:base-set",
+   "reason": "liquid at PSA10 · open slot in base-set",
+   "liq": [
+    "psa10"
+   ],
+   "price": 3560
+  },
+  {
+   "t": "2026-10-23",
+   "action": "promote",
+   "key": "heartgold-soulsilver-lugia-legend-bottom-114",
+   "name": "Lugia Legend (Bottom)",
+   "set": "HeartGold & SoulSilver",
+   "basket": "fam:HGSS",
+   "reason": "liquid at PSA9 · open slot in HGSS",
+   "liq": [
+    "psa9"
+   ],
+   "price": 2999.99
   }
  ],
- "updated": "2026-10-22T15:52:34.515Z",
- "bench": 179,
- "tracked": 73
+ "updated": "2026-10-23T15:44:29.339Z",
+ "bench": 175,
+ "tracked": 77
 }
