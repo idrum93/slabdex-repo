@@ -1,9 +1,49 @@
 {
-  "generated": "2026-10-23T15:44:32.458Z",
+  "generated": "2026-10-24T14:30:07.754Z",
   "consensus": {
-    "grades": [],
-    "gradeLabels": [],
-    "lines": [],
+    "grades": [
+      "psa9"
+    ],
+    "gradeLabels": [
+      "PSA 9"
+    ],
+    "lines": [
+      {
+        "label": "Eras",
+        "items": [
+          {
+            "k": "idx:era:heartgold-soulsilver",
+            "text": "HeartGold SoulSilver ▲1 ▼0",
+            "tone": "good"
+          },
+          {
+            "k": "idx:era:ex-series",
+            "text": "EX Series ▲0 ▼0",
+            "tone": ""
+          },
+          {
+            "k": "idx:era:wotc-neo-e-card",
+            "text": "WOTC Neo & e-Card ▲0 ▼0",
+            "tone": ""
+          },
+          {
+            "k": "idx:era:wotc-promo",
+            "text": "WOTC Promo ▲0 ▼0",
+            "tone": ""
+          },
+          {
+            "k": "idx:era:dp-platinum",
+            "text": "DP & Platinum ▲0 ▼1",
+            "tone": "bad"
+          },
+          {
+            "k": "idx:era:wotc-vintage",
+            "text": "WOTC Vintage ▲0 ▼1",
+            "tone": "bad"
+          }
+        ]
+      }
+    ],
     "leadNote": null,
     "leadLag": []
   },
@@ -12,16 +52,245 @@
       "asOf": "2026-10-22",
       "grade": "psa9",
       "gradeLabel": "PSA 9",
-      "cards": 77,
-      "scoredCards": 23,
-      "thin": true,
+      "cards": 75,
+      "scoredCards": 24,
       "lines": [
         {
-          "label": "Data",
+          "label": "Market",
           "items": [
             {
               "k": "idx:all",
-              "text": "Too few PSA 9 sales to read momentum yet (23/77 cards scoreable). Try another grade.",
+              "text": "All tracked 210 · +25% 30D · +61% 90D",
+              "tone": "good"
+            }
+          ]
+        },
+        {
+          "label": "Era families",
+          "items": [
+            {
+              "k": "idx:fam:hgss",
+              "text": "HGSS 306 · +48% 30D",
+              "tone": "good"
+            },
+            {
+              "k": "idx:fam:wotc",
+              "text": "WOTC 166 · +25% 30D",
+              "tone": "good"
+            },
+            {
+              "k": "idx:fam:ex",
+              "text": "EX 227 · +22% 30D",
+              "tone": "good"
+            },
+            {
+              "k": "idx:fam:dp",
+              "text": "DP & Platinum 170 · +19% 30D",
+              "tone": "good"
+            }
+          ]
+        },
+        {
+          "label": "Leading set",
+          "items": [
+            {
+              "k": "idx:set:dragon",
+              "text": "Dragon 547, +86% in 30D",
+              "tone": "good"
+            }
+          ]
+        },
+        {
+          "label": "Strongest signals",
+          "items": [
+            {
+              "k": "idx:set:triumphant",
+              "text": "Triumphant 78",
+              "tone": "good"
+            },
+            {
+              "k": "idx:set:unseen-forces",
+              "text": "Unseen Forces 75",
+              "tone": "good"
+            },
+            {
+              "k": "idx:set:neo-destiny",
+              "text": "Neo Destiny 69",
+              "tone": "good"
+            }
+          ]
+        },
+        {
+          "label": "Ramping up",
+          "items": [
+            {
+              "k": "idx:set:unseen-forces",
+              "text": "Unseen Forces (30D +84%, +70 pts faster than prior 30D)",
+              "tone": "good"
+            },
+            {
+              "k": "idx:set:triumphant",
+              "text": "Triumphant (30D +73%, +64 pts faster than prior 30D)",
+              "tone": "good"
+            }
+          ]
+        },
+        {
+          "label": "Swings widening",
+          "items": [
+            {
+              "k": "idx:set:neo-destiny",
+              "text": "Neo Destiny (30D volatility 1.6× its 90D)",
+              "tone": "warn"
+            },
+            {
+              "k": "idx:set:skyridge",
+              "text": "Skyridge (30D volatility 1.5× its 90D)",
+              "tone": "warn"
+            }
+          ]
+        },
+        {
+          "label": "Lagging",
+          "items": [
+            {
+              "k": "idx:set:neo-genesis",
+              "text": "Neo Genesis 26",
+              "tone": "bad"
+            },
+            {
+              "k": "idx:set:firered-leafgreen",
+              "text": "FireRed & LeafGreen 27",
+              "tone": "bad"
+            },
+            {
+              "k": "idx:set:holon-phantoms",
+              "text": "Holon Phantoms -16% 30D",
+              "tone": "bad"
+            }
+          ]
+        },
+        {
+          "label": "Eras",
+          "items": [
+            {
+              "k": "idx:era:heartgold-soulsilver",
+              "text": "HeartGold SoulSilver +48%",
+              "tone": "good"
+            },
+            {
+              "k": "idx:era:wotc-neo-e-card",
+              "text": "WOTC Neo & e-Card +31%",
+              "tone": "good"
+            },
+            {
+              "k": "idx:era:ex-series",
+              "text": "EX Series +22%",
+              "tone": "good"
+            },
+            {
+              "k": "idx:era:dp-platinum",
+              "text": "DP & Platinum +19%",
+              "tone": "good"
+            },
+            {
+              "k": "idx:era:wotc-promo",
+              "text": "WOTC Promo +18%",
+              "tone": "good"
+            },
+            {
+              "k": "idx:era:wotc-vintage",
+              "text": "WOTC Vintage +15%",
+              "tone": "good"
+            }
+          ]
+        },
+        {
+          "label": "Leading characters",
+          "items": [
+            {
+              "k": "idx:char:lugia:all",
+              "text": "Lugia · all eras +40% 30D",
+              "tone": "good"
+            },
+            {
+              "k": "idx:char:umbreon:all",
+              "text": "Umbreon · all eras +40% 30D",
+              "tone": "good"
+            },
+            {
+              "k": "idx:char:tyranitar:all",
+              "text": "Tyranitar · all eras +39% 30D",
+              "tone": "good"
+            }
+          ]
+        },
+        {
+          "label": "Characters ramping",
+          "items": [
+            {
+              "k": "idx:char:tyranitar:all",
+              "text": "Tyranitar · all eras (+36 pts faster than prior 30D)",
+              "tone": "good"
+            },
+            {
+              "k": "idx:char:umbreon:all",
+              "text": "Umbreon · all eras (+26 pts faster than prior 30D)",
+              "tone": "good"
+            }
+          ]
+        },
+        {
+          "label": "Trailing characters",
+          "items": [
+            {
+              "k": "idx:char:mew:all",
+              "text": "Mew · all eras -17% 30D",
+              "tone": "bad"
+            },
+            {
+              "k": "idx:char:gengar:all",
+              "text": "Gengar · all eras -5% 30D",
+              "tone": "bad"
+            }
+          ]
+        },
+        {
+          "label": "Themes",
+          "items": [
+            {
+              "k": "idx:theme:eeveelutions:all",
+              "text": "Eeveelutions · all eras +33%",
+              "tone": "good"
+            },
+            {
+              "k": "idx:theme:legendary-birds:all",
+              "text": "Legendary Birds · all eras +30%",
+              "tone": "good"
+            },
+            {
+              "k": "idx:theme:dragons:all",
+              "text": "Dragons · all eras +29%",
+              "tone": "good"
+            },
+            {
+              "k": "idx:theme:legendary-beasts:all",
+              "text": "Legendary Beasts · all eras +17%",
+              "tone": "good"
+            }
+          ]
+        },
+        {
+          "label": "Cards to note",
+          "items": [
+            {
+              "k": "unleashed-tyranitar-prime-88",
+              "text": "Tyranitar (Prime) (Unleashed): improving, +98% 30D, +59% vs its set, sales picking up",
+              "tone": "good"
+            },
+            {
+              "k": "team-rocket-dark-blastoise-3-3",
+              "text": "Dark Blastoise (3) 1st Ed (Team Rocket): extended, +56% 30D, +25% vs its set",
               "tone": "warn"
             }
           ]
@@ -29,11 +298,11 @@
       ]
     },
     {
-      "asOf": "2026-10-22",
+      "asOf": "2026-10-23",
       "grade": "psa7",
       "gradeLabel": "PSA 7",
-      "cards": 77,
-      "scoredCards": 12,
+      "cards": 75,
+      "scoredCards": 11,
       "thin": true,
       "lines": [
         {
@@ -41,7 +310,7 @@
           "items": [
             {
               "k": "idx:all",
-              "text": "Too few PSA 7 sales to read momentum yet (12/77 cards scoreable). Try another grade.",
+              "text": "Too few PSA 7 sales to read momentum yet (11/75 cards scoreable). Try another grade.",
               "tone": "warn"
             }
           ]
@@ -52,8 +321,8 @@
       "asOf": "2026-10-22",
       "grade": "psa8",
       "gradeLabel": "PSA 8",
-      "cards": 77,
-      "scoredCards": 22,
+      "cards": 75,
+      "scoredCards": 20,
       "thin": true,
       "lines": [
         {
@@ -61,7 +330,7 @@
           "items": [
             {
               "k": "idx:all",
-              "text": "Too few PSA 8 sales to read momentum yet (22/77 cards scoreable). Try another grade.",
+              "text": "Too few PSA 8 sales to read momentum yet (20/75 cards scoreable). Try another grade.",
               "tone": "warn"
             }
           ]
@@ -69,10 +338,10 @@
       ]
     },
     {
-      "asOf": "2026-10-21",
+      "asOf": "2026-10-23",
       "grade": "psa10",
       "gradeLabel": "PSA 10",
-      "cards": 66,
+      "cards": 64,
       "scoredCards": 4,
       "thin": true,
       "lines": [
@@ -81,7 +350,7 @@
           "items": [
             {
               "k": "idx:all",
-              "text": "Too few PSA 10 sales to read momentum yet (4/66 cards scoreable). Try another grade.",
+              "text": "Too few PSA 10 sales to read momentum yet (4/64 cards scoreable). Try another grade.",
               "tone": "warn"
             }
           ]
@@ -93,19 +362,19 @@
     "ok": true,
     "grade": "psa9",
     "horizon": 30,
-    "tested": 75,
+    "tested": 74,
     "rules": 144,
     "counts": {
       "confirmed": 0,
-      "promising": 9,
-      "none": 66,
-      "few": 69
+      "promising": 7,
+      "none": 67,
+      "few": 70
     },
     "base": {
-      "mean": -0.02398586229712088,
-      "hit": 0.3945908460471567,
-      "boom": 0.17128987517337033,
-      "n": 1442
+      "mean": -0.02306387671414107,
+      "hit": 0.3943262411347518,
+      "boom": 0.17375886524822695,
+      "n": 1410
     },
     "picks": [
       {
@@ -119,117 +388,91 @@
             "label": "MACD× + RS↑set within 7d",
             "status": "promising",
             "ago": 3,
-            "excess": 7.3748909789021155,
-            "vsPeers": 9.651346333623412,
+            "excess": 7.16458703029188,
+            "vsPeers": 9.627180609128283,
             "beatPeers": 0.7727272727272727,
             "hit": 0.6363636363636364,
             "n": 22,
-            "p": 0.013986013986013986,
-            "q": 0.33903596403596403
+            "p": 0.00999000999000999,
+            "q": 0.30802530802530803
           },
           {
             "id": "rsX+rsSetX",
             "label": "RS↑ + RS↑set within 7d",
             "status": "promising",
             "ago": 3,
-            "excess": 5.1464811168036695,
-            "vsPeers": 7.358696279164301,
-            "beatPeers": 0.625,
-            "hit": 0.5625,
-            "n": 32,
-            "p": 0.015984015984015984,
-            "q": 0.33903596403596403
-          },
-          {
-            "id": "vzoX+sc68",
-            "label": "VZO↑0 + Score≥68 within 7d",
-            "status": "promising",
-            "ago": 3,
-            "excess": 4.033246746790686,
-            "vsPeers": 8.84841867391495,
-            "beatPeers": 0.75,
-            "hit": 0.4375,
-            "n": 16,
-            "p": 0.013986013986013986,
-            "q": 0.33903596403596403
-          },
-          {
-            "id": "macdX+vzoX",
-            "label": "MACD× + VZO↑0 within 7d",
-            "status": "promising",
-            "ago": 3,
-            "excess": 5.380645814776774,
-            "vsPeers": 8.246827719368643,
-            "beatPeers": 0.6666666666666666,
-            "hit": 0.5,
-            "n": 18,
-            "p": 0.030969030969030968,
-            "q": 0.33903596403596403
-          },
-          {
-            "id": "rsSetX+sc55",
-            "label": "RS↑set + Score≥55 within 7d",
-            "status": "promising",
-            "ago": 3,
-            "excess": 4.667839192751622,
-            "vsPeers": 7.712464878402758,
-            "beatPeers": 0.7,
-            "hit": 0.6,
-            "n": 20,
-            "p": 0.01898101898101898,
-            "q": 0.33903596403596403
+            "excess": 5.563283869733682,
+            "vsPeers": 7.889126541504021,
+            "beatPeers": 0.6451612903225806,
+            "hit": 0.5806451612903226,
+            "n": 31,
+            "p": 0.01998001998001998,
+            "q": 0.30802530802530803
           },
           {
             "id": "hmaUp+rsSetX",
             "label": "HMA↑ + RS↑set within 7d",
             "status": "promising",
             "ago": 3,
-            "excess": 4.254215799635941,
-            "vsPeers": 6.497576853402864,
-            "beatPeers": 0.5925925925925926,
-            "hit": 0.5555555555555556,
-            "n": 27,
-            "p": 0.04695304695304695,
-            "q": 0.33903596403596403
+            "excess": 4.731527864667706,
+            "vsPeers": 7.1508039885362695,
+            "beatPeers": 0.6153846153846154,
+            "hit": 0.5769230769230769,
+            "n": 26,
+            "p": 0.024975024975024976,
+            "q": 0.30802530802530803
           },
           {
-            "id": "stUp+sc68",
-            "label": "ST↑ + Score≥68 within 7d",
+            "id": "macdX+vzoX",
+            "label": "MACD× + VZO↑0 within 7d",
             "status": "promising",
             "ago": 3,
-            "excess": 2.247296758033568,
-            "vsPeers": 7.342367144163586,
-            "beatPeers": 0.7058823529411765,
-            "hit": 0.47058823529411764,
-            "n": 17,
-            "p": 0.03296703296703297,
-            "q": 0.33903596403596403
+            "excess": 5.135709668086141,
+            "vsPeers": 8.147808461634586,
+            "beatPeers": 0.6666666666666666,
+            "hit": 0.5,
+            "n": 18,
+            "p": 0.03796203796203796,
+            "q": 0.30802530802530803
+          },
+          {
+            "id": "rsSetX+sc55",
+            "label": "RS↑set + Score≥55 within 7d",
+            "status": "promising",
+            "ago": 3,
+            "excess": 3.877324991973796,
+            "vsPeers": 7.231462335861694,
+            "beatPeers": 0.6666666666666666,
+            "hit": 0.5714285714285714,
+            "n": 21,
+            "p": 0.027972027972027972,
+            "q": 0.30802530802530803
+          },
+          {
+            "id": "vzoX+sc68",
+            "label": "VZO↑0 + Score≥68 within 7d",
+            "status": "promising",
+            "ago": 3,
+            "excess": 2.7884287723555223,
+            "vsPeers": 7.295131414977085,
+            "beatPeers": 0.6875,
+            "hit": 0.375,
+            "n": 16,
+            "p": 0.03496503496503497,
+            "q": 0.30802530802530803
           },
           {
             "id": "stUp+sc55",
             "label": "ST↑ + Score≥55 within 7d",
             "status": "promising",
             "ago": 3,
-            "excess": 3.43679368921872,
-            "vsPeers": 7.377332653299962,
-            "beatPeers": 0.625,
-            "hit": 0.5,
-            "n": 16,
-            "p": 0.04195804195804196,
-            "q": 0.33903596403596403
-          },
-          {
-            "id": "rsSetX+sc68",
-            "label": "RS↑set + Score≥68 within 7d",
-            "status": "promising",
-            "ago": 3,
-            "excess": 2.5228445849216463,
-            "vsPeers": 5.655250531863376,
-            "beatPeers": 0.72,
-            "hit": 0.52,
-            "n": 25,
-            "p": 0.04195804195804196,
-            "q": 0.33903596403596403
+            "excess": 2.4788599212062667,
+            "vsPeers": 6.865553521636603,
+            "beatPeers": 0.5882352941176471,
+            "hit": 0.47058823529411764,
+            "n": 17,
+            "p": 0.04295704295704296,
+            "q": 0.30802530802530803
           }
         ]
       },
@@ -244,39 +487,86 @@
             "label": "MACD× + RS↑set within 7d",
             "status": "promising",
             "ago": 1,
-            "excess": 7.3748909789021155,
-            "vsPeers": 9.651346333623412,
+            "excess": 7.16458703029188,
+            "vsPeers": 9.627180609128283,
             "beatPeers": 0.7727272727272727,
             "hit": 0.6363636363636364,
             "n": 22,
-            "p": 0.013986013986013986,
-            "q": 0.33903596403596403
+            "p": 0.00999000999000999,
+            "q": 0.30802530802530803
           },
           {
             "id": "rsX+rsSetX",
             "label": "RS↑ + RS↑set within 7d",
             "status": "promising",
             "ago": 3,
-            "excess": 5.1464811168036695,
-            "vsPeers": 7.358696279164301,
-            "beatPeers": 0.625,
-            "hit": 0.5625,
-            "n": 32,
-            "p": 0.015984015984015984,
-            "q": 0.33903596403596403
+            "excess": 5.563283869733682,
+            "vsPeers": 7.889126541504021,
+            "beatPeers": 0.6451612903225806,
+            "hit": 0.5806451612903226,
+            "n": 31,
+            "p": 0.01998001998001998,
+            "q": 0.30802530802530803
           },
           {
             "id": "hmaUp+rsSetX",
             "label": "HMA↑ + RS↑set within 7d",
             "status": "promising",
             "ago": 3,
-            "excess": 4.254215799635941,
-            "vsPeers": 6.497576853402864,
-            "beatPeers": 0.5925925925925926,
-            "hit": 0.5555555555555556,
-            "n": 27,
-            "p": 0.04695304695304695,
-            "q": 0.33903596403596403
+            "excess": 4.731527864667706,
+            "vsPeers": 7.1508039885362695,
+            "beatPeers": 0.6153846153846154,
+            "hit": 0.5769230769230769,
+            "n": 26,
+            "p": 0.024975024975024976,
+            "q": 0.30802530802530803
+          }
+        ]
+      },
+      {
+        "key": "great-encounters-darkrai-lv-x-104",
+        "name": "Darkrai LV.X",
+        "set": "Great Encounters",
+        "status": "promising",
+        "rules": [
+          {
+            "id": "rsX+rsSetX",
+            "label": "RS↑ + RS↑set within 7d",
+            "status": "promising",
+            "ago": 0,
+            "excess": 5.563283869733682,
+            "vsPeers": 7.889126541504021,
+            "beatPeers": 0.6451612903225806,
+            "hit": 0.5806451612903226,
+            "n": 31,
+            "p": 0.01998001998001998,
+            "q": 0.30802530802530803
+          },
+          {
+            "id": "hmaUp+rsSetX",
+            "label": "HMA↑ + RS↑set within 7d",
+            "status": "promising",
+            "ago": 0,
+            "excess": 4.731527864667706,
+            "vsPeers": 7.1508039885362695,
+            "beatPeers": 0.6153846153846154,
+            "hit": 0.5769230769230769,
+            "n": 26,
+            "p": 0.024975024975024976,
+            "q": 0.30802530802530803
+          },
+          {
+            "id": "rsSetX+sc55",
+            "label": "RS↑set + Score≥55 within 7d",
+            "status": "promising",
+            "ago": 0,
+            "excess": 3.877324991973796,
+            "vsPeers": 7.231462335861694,
+            "beatPeers": 0.6666666666666666,
+            "hit": 0.5714285714285714,
+            "n": 21,
+            "p": 0.027972027972027972,
+            "q": 0.30802530802530803
           }
         ]
       },
@@ -291,52 +581,26 @@
             "label": "RS↑ + RS↑set within 7d",
             "status": "promising",
             "ago": 1,
-            "excess": 5.1464811168036695,
-            "vsPeers": 7.358696279164301,
-            "beatPeers": 0.625,
-            "hit": 0.5625,
-            "n": 32,
-            "p": 0.015984015984015984,
-            "q": 0.33903596403596403
+            "excess": 5.563283869733682,
+            "vsPeers": 7.889126541504021,
+            "beatPeers": 0.6451612903225806,
+            "hit": 0.5806451612903226,
+            "n": 31,
+            "p": 0.01998001998001998,
+            "q": 0.30802530802530803
           },
           {
             "id": "hmaUp+rsSetX",
             "label": "HMA↑ + RS↑set within 7d",
             "status": "promising",
             "ago": 0,
-            "excess": 4.254215799635941,
-            "vsPeers": 6.497576853402864,
-            "beatPeers": 0.5925925925925926,
-            "hit": 0.5555555555555556,
-            "n": 27,
-            "p": 0.04695304695304695,
-            "q": 0.33903596403596403
-          },
-          {
-            "id": "stUp+sc68",
-            "label": "ST↑ + Score≥68 within 7d",
-            "status": "promising",
-            "ago": 1,
-            "excess": 2.247296758033568,
-            "vsPeers": 7.342367144163586,
-            "beatPeers": 0.7058823529411765,
-            "hit": 0.47058823529411764,
-            "n": 17,
-            "p": 0.03296703296703297,
-            "q": 0.33903596403596403
-          },
-          {
-            "id": "rsSetX+sc68",
-            "label": "RS↑set + Score≥68 within 7d",
-            "status": "promising",
-            "ago": 4,
-            "excess": 2.5228445849216463,
-            "vsPeers": 5.655250531863376,
-            "beatPeers": 0.72,
-            "hit": 0.52,
-            "n": 25,
-            "p": 0.04195804195804196,
-            "q": 0.33903596403596403
+            "excess": 4.731527864667706,
+            "vsPeers": 7.1508039885362695,
+            "beatPeers": 0.6153846153846154,
+            "hit": 0.5769230769230769,
+            "n": 26,
+            "p": 0.024975024975024976,
+            "q": 0.30802530802530803
           }
         ]
       },
@@ -351,26 +615,26 @@
             "label": "RS↑ + RS↑set within 7d",
             "status": "promising",
             "ago": 7,
-            "excess": 5.1464811168036695,
-            "vsPeers": 7.358696279164301,
-            "beatPeers": 0.625,
-            "hit": 0.5625,
-            "n": 32,
-            "p": 0.015984015984015984,
-            "q": 0.33903596403596403
+            "excess": 5.563283869733682,
+            "vsPeers": 7.889126541504021,
+            "beatPeers": 0.6451612903225806,
+            "hit": 0.5806451612903226,
+            "n": 31,
+            "p": 0.01998001998001998,
+            "q": 0.30802530802530803
           },
           {
             "id": "rsSetX+sc55",
             "label": "RS↑set + Score≥55 within 7d",
             "status": "promising",
             "ago": 1,
-            "excess": 4.667839192751622,
-            "vsPeers": 7.712464878402758,
-            "beatPeers": 0.7,
-            "hit": 0.6,
-            "n": 20,
-            "p": 0.01898101898101898,
-            "q": 0.33903596403596403
+            "excess": 3.877324991973796,
+            "vsPeers": 7.231462335861694,
+            "beatPeers": 0.6666666666666666,
+            "hit": 0.5714285714285714,
+            "n": 21,
+            "p": 0.027972027972027972,
+            "q": 0.30802530802530803
           }
         ]
       },
@@ -385,26 +649,26 @@
             "label": "RS↑ + RS↑set within 7d",
             "status": "promising",
             "ago": 7,
-            "excess": 5.1464811168036695,
-            "vsPeers": 7.358696279164301,
-            "beatPeers": 0.625,
-            "hit": 0.5625,
-            "n": 32,
-            "p": 0.015984015984015984,
-            "q": 0.33903596403596403
+            "excess": 5.563283869733682,
+            "vsPeers": 7.889126541504021,
+            "beatPeers": 0.6451612903225806,
+            "hit": 0.5806451612903226,
+            "n": 31,
+            "p": 0.01998001998001998,
+            "q": 0.30802530802530803
           },
           {
             "id": "rsSetX+sc55",
             "label": "RS↑set + Score≥55 within 7d",
             "status": "promising",
             "ago": 4,
-            "excess": 4.667839192751622,
-            "vsPeers": 7.712464878402758,
-            "beatPeers": 0.7,
-            "hit": 0.6,
-            "n": 20,
-            "p": 0.01898101898101898,
-            "q": 0.33903596403596403
+            "excess": 3.877324991973796,
+            "vsPeers": 7.231462335861694,
+            "beatPeers": 0.6666666666666666,
+            "hit": 0.5714285714285714,
+            "n": 21,
+            "p": 0.027972027972027972,
+            "q": 0.30802530802530803
           }
         ]
       },
@@ -415,64 +679,30 @@
         "status": "promising",
         "rules": [
           {
-            "id": "vzoX+sc68",
-            "label": "VZO↑0 + Score≥68 within 7d",
-            "status": "promising",
-            "ago": 7,
-            "excess": 4.033246746790686,
-            "vsPeers": 8.84841867391495,
-            "beatPeers": 0.75,
-            "hit": 0.4375,
-            "n": 16,
-            "p": 0.013986013986013986,
-            "q": 0.33903596403596403
-          },
-          {
             "id": "hmaUp+rsSetX",
             "label": "HMA↑ + RS↑set within 7d",
             "status": "promising",
             "ago": 1,
-            "excess": 4.254215799635941,
-            "vsPeers": 6.497576853402864,
-            "beatPeers": 0.5925925925925926,
-            "hit": 0.5555555555555556,
-            "n": 27,
-            "p": 0.04695304695304695,
-            "q": 0.33903596403596403
+            "excess": 4.731527864667706,
+            "vsPeers": 7.1508039885362695,
+            "beatPeers": 0.6153846153846154,
+            "hit": 0.5769230769230769,
+            "n": 26,
+            "p": 0.024975024975024976,
+            "q": 0.30802530802530803
           },
           {
-            "id": "rsSetX+sc68",
-            "label": "RS↑set + Score≥68 within 7d",
+            "id": "vzoX+sc68",
+            "label": "VZO↑0 + Score≥68 within 7d",
             "status": "promising",
             "ago": 7,
-            "excess": 2.5228445849216463,
-            "vsPeers": 5.655250531863376,
-            "beatPeers": 0.72,
-            "hit": 0.52,
-            "n": 25,
-            "p": 0.04195804195804196,
-            "q": 0.33903596403596403
-          }
-        ]
-      },
-      {
-        "key": "triumphant-gengar-prime-94",
-        "name": "Gengar (Prime)",
-        "set": "Triumphant",
-        "status": "promising",
-        "rules": [
-          {
-            "id": "rsSetX+sc68",
-            "label": "RS↑set + Score≥68 within 7d",
-            "status": "promising",
-            "ago": 4,
-            "excess": 2.5228445849216463,
-            "vsPeers": 5.655250531863376,
-            "beatPeers": 0.72,
-            "hit": 0.52,
-            "n": 25,
-            "p": 0.04195804195804196,
-            "q": 0.33903596403596403
+            "excess": 2.7884287723555223,
+            "vsPeers": 7.295131414977085,
+            "beatPeers": 0.6875,
+            "hit": 0.375,
+            "n": 16,
+            "p": 0.03496503496503497,
+            "q": 0.30802530802530803
           }
         ]
       }
@@ -487,22 +717,103 @@
         ],
         "n": 22,
         "cards": 17,
-        "mean": 0.07115617898544807,
-        "edge": 0.09213556726484401,
-        "excess": 7.3748909789021155,
-        "vsPeers": 9.651346333623412,
+        "mean": 0.06919566320604495,
+        "edge": 0.09191515603780878,
+        "excess": 7.16458703029188,
+        "vsPeers": 9.627180609128283,
         "hit": 0.6363636363636364,
         "beatPeers": 0.7727272727272727,
         "boom": 0.3181818181818182,
-        "p": 0.013986013986013986,
+        "p": 0.00999000999000999,
         "halves": [
           8.438304301447674,
-          10.877958026273893
+          10.829091304279913
         ],
         "holds": true,
         "net": 11.433705304214904,
         "pays": 0.5909090909090909,
-        "q": 0.33903596403596403,
+        "q": 0.30802530802530803,
+        "status": "promising"
+      },
+      {
+        "id": "rsX+rsSetX",
+        "label": "RS↑ + RS↑set within 7d",
+        "parts": [
+          "rsX",
+          "rsSetX"
+        ],
+        "n": 31,
+        "cards": 24,
+        "mean": 0.05414043419814727,
+        "edge": 0.0759339077179724,
+        "excess": 5.563283869733682,
+        "vsPeers": 7.889126541504021,
+        "hit": 0.5806451612903226,
+        "beatPeers": 0.6451612903225806,
+        "boom": 0.25806451612903225,
+        "p": 0.01998001998001998,
+        "halves": [
+          4.9047373077765855,
+          11.166114249945602
+        ],
+        "holds": true,
+        "net": 9.990170952596312,
+        "pays": 0.6129032258064516,
+        "q": 0.30802530802530803,
+        "status": "promising"
+      },
+      {
+        "id": "hmaUp+rsSetX",
+        "label": "HMA↑ + RS↑set within 7d",
+        "parts": [
+          "hmaUp",
+          "rsSetX"
+        ],
+        "n": 26,
+        "cards": 20,
+        "mean": 0.04623001229618103,
+        "edge": 0.06906703929612329,
+        "excess": 4.731527864667706,
+        "vsPeers": 7.1508039885362695,
+        "hit": 0.5769230769230769,
+        "beatPeers": 0.6153846153846154,
+        "boom": 0.19230769230769232,
+        "p": 0.024975024975024976,
+        "halves": [
+          2.429401951157306,
+          12.089835307878571
+        ],
+        "holds": true,
+        "net": 8.457761656105301,
+        "pays": 0.5769230769230769,
+        "q": 0.30802530802530803,
+        "status": "promising"
+      },
+      {
+        "id": "rsSetX+sc55",
+        "label": "RS↑set + Score≥55 within 7d",
+        "parts": [
+          "rsSetX",
+          "sc55"
+        ],
+        "n": 21,
+        "cards": 17,
+        "mean": 0.03804044953124651,
+        "edge": 0.06981951152728455,
+        "excess": 3.877324991973796,
+        "vsPeers": 7.231462335861694,
+        "hit": 0.5714285714285714,
+        "beatPeers": 0.6666666666666666,
+        "boom": 0.14285714285714285,
+        "p": 0.027972027972027972,
+        "halves": [
+          0.4177797223486879,
+          13.826105659211407
+        ],
+        "holds": true,
+        "net": 4.757520269172955,
+        "pays": 0.42857142857142855,
+        "q": 0.30802530802530803,
         "status": "promising"
       },
       {
@@ -514,76 +825,22 @@
         ],
         "n": 16,
         "cards": 13,
-        "mean": 0.039540342324037955,
-        "edge": 0.08478607401610692,
-        "excess": 4.033246746790686,
-        "vsPeers": 8.84841867391495,
-        "hit": 0.4375,
-        "beatPeers": 0.75,
+        "mean": 0.02750260011735668,
+        "edge": 0.07041308904018466,
+        "excess": 2.7884287723555223,
+        "vsPeers": 7.295131414977085,
+        "hit": 0.375,
+        "beatPeers": 0.6875,
         "boom": 0.1875,
-        "p": 0.013986013986013986,
+        "p": 0.03496503496503497,
         "halves": [
-          4.429006305253469,
-          13.454859593122869
+          1.4258241527297377,
+          13.504083615054018
         ],
         "holds": true,
-        "net": 5.7498398447731525,
+        "net": 4.539209279387402,
         "pays": 0.4375,
-        "q": 0.33903596403596403,
-        "status": "promising"
-      },
-      {
-        "id": "rsX+rsSetX",
-        "label": "RS↑ + RS↑set within 7d",
-        "parts": [
-          "rsX",
-          "rsSetX"
-        ],
-        "n": 32,
-        "cards": 25,
-        "mean": 0.05018425023500641,
-        "edge": 0.071005343711141,
-        "excess": 5.1464811168036695,
-        "vsPeers": 7.358696279164301,
-        "hit": 0.5625,
-        "beatPeers": 0.625,
-        "boom": 0.25,
-        "p": 0.015984015984015984,
-        "halves": [
-          4.904737307776563,
-          9.870058898736067
-        ],
-        "holds": true,
-        "net": 9.673156935580218,
-        "pays": 0.625,
-        "q": 0.33903596403596403,
-        "status": "promising"
-      },
-      {
-        "id": "rsSetX+sc55",
-        "label": "RS↑set + Score≥55 within 7d",
-        "parts": [
-          "rsSetX",
-          "sc55"
-        ],
-        "n": 20,
-        "cards": 16,
-        "mean": 0.045621713667823596,
-        "edge": 0.07429512850976112,
-        "excess": 4.667839192751622,
-        "vsPeers": 7.712464878402758,
-        "hit": 0.6,
-        "beatPeers": 0.7,
-        "boom": 0.15,
-        "p": 0.01898101898101898,
-        "halves": [
-          0.564427580696103,
-          15.368578823474643
-        ],
-        "holds": true,
-        "net": 5.4243427231359,
-        "pays": 0.45,
-        "q": 0.33903596403596403,
+        "q": 0.30802530802530803,
         "status": "promising"
       },
       {
@@ -595,23 +852,156 @@
         ],
         "n": 18,
         "cards": 14,
-        "mean": 0.052408807212082964,
-        "edge": 0.07924387533225088,
-        "excess": 5.380645814776774,
-        "vsPeers": 8.246827719368643,
+        "mean": 0.05008180267454728,
+        "edge": 0.0783287023280338,
+        "excess": 5.135709668086141,
+        "vsPeers": 8.147808461634586,
         "hit": 0.5,
         "beatPeers": 0.6666666666666666,
         "boom": 0.2777777777777778,
-        "p": 0.030969030969030968,
+        "p": 0.03796203796203796,
         "halves": [
           11.8139313137249,
-          6.506179919431676
+          6.360072856339283
         ],
         "holds": true,
         "net": 11.20470362187036,
         "pays": 0.6111111111111112,
-        "q": 0.33903596403596403,
+        "q": 0.30802530802530803,
         "status": "promising"
+      },
+      {
+        "id": "stUp+sc55",
+        "label": "ST↑ + Score≥55 within 7d",
+        "parts": [
+          "stUp",
+          "sc55"
+        ],
+        "n": 17,
+        "cards": 12,
+        "mean": 0.02448634664785617,
+        "edge": 0.0664013492607286,
+        "excess": 2.4788599212062667,
+        "vsPeers": 6.865553521636603,
+        "hit": 0.47058823529411764,
+        "beatPeers": 0.5882352941176471,
+        "boom": 0.17647058823529413,
+        "p": 0.04295704295704296,
+        "halves": [
+          0.007307844260040497,
+          11.94428886483092
+        ],
+        "holds": true,
+        "net": 3.5855883189739535,
+        "pays": 0.29411764705882354,
+        "q": 0.30802530802530803,
+        "status": "promising"
+      },
+      {
+        "id": "rsX+hmaUp",
+        "label": "RS↑ + HMA↑ within 7d",
+        "parts": [
+          "rsX",
+          "hmaUp"
+        ],
+        "n": 29,
+        "cards": 25,
+        "mean": 0.024545844926232012,
+        "edge": 0.05436710832611962,
+        "excess": 2.4849574183349876,
+        "vsPeers": 5.58721504723767,
+        "hit": 0.6206896551724138,
+        "beatPeers": 0.6206896551724138,
+        "boom": 0.20689655172413793,
+        "p": 0.05094905094905095,
+        "halves": [
+          6.104048737986778,
+          5.272612345502448
+        ],
+        "holds": true,
+        "net": 7.943859445226997,
+        "pays": 0.6206896551724138,
+        "q": 0.30802530802530803,
+        "status": "none"
+      },
+      {
+        "id": "rsSetX",
+        "label": "Beats its own set (RS vs set turns up)",
+        "parts": [
+          "rsSetX"
+        ],
+        "n": 39,
+        "cards": 26,
+        "mean": 0.023843777042105874,
+        "edge": 0.042427622677094844,
+        "excess": 2.413031272598376,
+        "vsPeers": 4.334053944573113,
+        "hit": 0.5128205128205128,
+        "beatPeers": 0.5641025641025641,
+        "boom": 0.23076923076923078,
+        "p": 0.06593406593406594,
+        "halves": [
+          1.775445444373558,
+          7.740911228621927
+        ],
+        "holds": true,
+        "net": 5.3053128007198636,
+        "pays": 0.48717948717948717,
+        "q": 0.30802530802530803,
+        "status": "none"
+      },
+      {
+        "id": "rsi50+sc55",
+        "label": "RSI↑50 + Score≥55 within 7d",
+        "parts": [
+          "rsi50",
+          "sc55"
+        ],
+        "n": 18,
+        "cards": 13,
+        "mean": 0.015898655348383858,
+        "edge": 0.05796203296629613,
+        "excess": 1.6025711416494781,
+        "vsPeers": 5.9674762239106505,
+        "hit": 0.5,
+        "beatPeers": 0.5555555555555556,
+        "boom": 0.16666666666666666,
+        "p": 0.06593406593406594,
+        "halves": [
+          -1.1284955852800094,
+          10.746002398118204
+        ],
+        "holds": false,
+        "net": 3.7475382423202364,
+        "pays": 0.3333333333333333,
+        "q": 0.30802530802530803,
+        "status": "none"
+      },
+      {
+        "id": "volUp",
+        "label": "Sales pace surge",
+        "parts": [
+          "volUp"
+        ],
+        "n": 47,
+        "cards": 31,
+        "mean": 0.021570645881948545,
+        "edge": 0.04196733174693097,
+        "excess": 2.180497410118387,
+        "vsPeers": 4.28604097664973,
+        "hit": 0.46808510638297873,
+        "beatPeers": 0.5319148936170213,
+        "boom": 0.2127659574468085,
+        "p": 0.06993006993006994,
+        "halves": [
+          0.17505771586026064,
+          7.729291171530228
+        ],
+        "holds": true,
+        "net": 6.1536128523119515,
+        "pays": 0.5106382978723404,
+        "q": 0.30802530802530803,
+        "status": "none"
       },
       {
         "id": "stUp+sc68",
@@ -622,50 +1012,130 @@
         ],
         "n": 17,
         "cards": 13,
-        "mean": 0.022224171011097176,
-        "edge": 0.07085323328586551,
-        "excess": 2.247296758033568,
-        "vsPeers": 7.342367144163586,
-        "hit": 0.47058823529411764,
-        "beatPeers": 0.7058823529411765,
+        "mean": 0.011322750544010359,
+        "edge": 0.05732571801440927,
+        "excess": 1.1387095508624823,
+        "vsPeers": 5.900068982767781,
+        "hit": 0.4117647058823529,
+        "beatPeers": 0.6470588235294118,
         "boom": 0.17647058823529413,
-        "p": 0.03296703296703297,
+        "p": 0.07292707292707293,
         "halves": [
-          -0.4844460330115541,
-          14.814837543631377
+          -3.3463265214514593,
+          14.859115647998111
         ],
         "holds": false,
-        "net": 3.5256937427377677,
+        "net": 2.4098640171293706,
         "pays": 0.4117647058823529,
-        "q": 0.33903596403596403,
-        "status": "promising"
+        "q": 0.30802530802530803,
+        "status": "none"
       },
       {
-        "id": "stUp+sc55",
-        "label": "ST↑ + Score≥55 within 7d",
+        "id": "vzoX+sc55",
+        "label": "VZO↑0 + Score≥55 within 7d",
         "parts": [
-          "stUp",
+          "vzoX",
           "sc55"
         ],
-        "n": 16,
-        "cards": 11,
-        "mean": 0.03379055117780157,
-        "edge": 0.07117891844170753,
-        "excess": 3.43679368921872,
-        "vsPeers": 7.377332653299962,
-        "hit": 0.5,
-        "beatPeers": 0.625,
-        "boom": 0.1875,
-        "p": 0.04195804195804196,
+        "n": 15,
+        "cards": 12,
+        "mean": 0.017218168221961018,
+        "edge": 0.05757194310315826,
+        "excess": 1.7367255320171582,
+        "vsPeers": 5.926147447105934,
+        "hit": 0.4,
+        "beatPeers": 0.6,
+        "boom": 0.13333333333333333,
+        "p": 0.07392607392607392,
         "halves": [
-          0.007307844260040497,
-          13.48306840307918
+          4.679112163825971,
+          7.029483729090669
         ],
         "holds": true,
-        "net": 4.337057699576485,
-        "pays": 0.3125,
-        "q": 0.33903596403596403,
-        "status": "promising"
+        "net": 2.7875144547762964,
+        "pays": 0.3333333333333333,
+        "q": 0.30802530802530803,
+        "status": "none"
+      },
+      {
+        "id": "rsX",
+        "label": "RS turns up vs market",
+        "parts": [
+          "rsX"
+        ],
+        "n": 40,
+        "cards": 29,
+        "mean": 0.008603198440562657,
+        "edge": 0.04268785276795024,
+        "excess": 0.864031230857476,
+        "vsPeers": 4.361208337952305,
+        "hit": 0.525,
+        "beatPeers": 0.6,
+        "boom": 0.225,
+        "p": 0.07492507492507493,
+        "halves": [
+          5.759078904515591,
+          3.4395744093021596
+        ],
+        "holds": true,
+        "net": 5.7398119391020685,
+        "pays": 0.6,
+        "q": 0.30802530802530803,
+        "status": "none"
+      },
+      {
+        "id": "vzoX+rsSetX",
+        "label": "VZO↑0 + RS↑set within 7d",
+        "parts": [
+          "vzoX",
+          "rsSetX"
+        ],
+        "n": 25,
+        "cards": 19,
+        "mean": 0.03210560842006588,
+        "edge": 0.052796957584965144,
+        "excess": 3.262655360565203,
+        "vsPeers": 5.4215572911330945,
+        "hit": 0.48,
+        "beatPeers": 0.6,
+        "boom": 0.16,
+        "p": 0.07492507492507493,
+        "halves": [
+          3.2119416849719196,
+          7.503165894235497
+        ],
+        "holds": true,
+        "net": 7.208634896477273,
+        "pays": 0.6,
+        "q": 0.30802530802530803,
+        "status": "none"
+      },
+      {
+        "id": "hmaUp+stUp",
+        "label": "HMA↑ + ST↑ within 7d",
+        "parts": [
+          "hmaUp",
+          "stUp"
+        ],
+        "n": 23,
+        "cards": 17,
+        "mean": 0.014512791430258064,
+        "edge": 0.051744242737805875,
+        "excess": 1.4618613291623062,
+        "vsPeers": 5.310636846605066,
+        "hit": 0.43478260869565216,
+        "beatPeers": 0.5217391304347826,
+        "boom": 0.17391304347826086,
+        "p": 0.07692307692307693,
+        "halves": [
+          0.5806969304623433,
+          9.099871223745515
+        ],
+        "holds": true,
+        "net": 4.753714560994937,
+        "pays": 0.43478260869565216,
+        "q": 0.30802530802530803,
+        "status": "none"
       },
       {
         "id": "rsSetX+sc68",
@@ -676,316 +1146,75 @@
         ],
         "n": 25,
         "cards": 20,
-        "mean": 0.02491546175688688,
-        "edge": 0.0550112542538018,
-        "excess": 2.5228445849216463,
-        "vsPeers": 5.655250531863376,
-        "hit": 0.52,
-        "beatPeers": 0.72,
+        "mean": 0.016939489345038427,
+        "edge": 0.04627628423475071,
+        "excess": 1.7083776057716937,
+        "vsPeers": 4.736374107613028,
+        "hit": 0.48,
+        "beatPeers": 0.68,
         "boom": 0.2,
-        "p": 0.04195804195804196,
+        "p": 0.08291708291708291,
         "halves": [
-          0.636961868193775,
-          11.374503636007894
+          -1.154023949047156,
+          11.514400501561406
         ],
-        "holds": true,
-        "net": 5.119994722669707,
+        "holds": false,
+        "net": 4.34821050102383,
         "pays": 0.48,
-        "q": 0.33903596403596403,
-        "status": "promising"
-      },
-      {
-        "id": "hmaUp+rsSetX",
-        "label": "HMA↑ + RS↑set within 7d",
-        "parts": [
-          "hmaUp",
-          "rsSetX"
-        ],
-        "n": 27,
-        "cards": 21,
-        "mean": 0.041662113198217006,
-        "edge": 0.06295204635233738,
-        "excess": 4.254215799635941,
-        "vsPeers": 6.497576853402864,
-        "hit": 0.5555555555555556,
-        "beatPeers": 0.5925925925925926,
-        "boom": 0.18518518518518517,
-        "p": 0.04695304695304695,
-        "halves": [
-          2.429401951157306,
-          10.419708172419817
-        ],
-        "holds": true,
-        "net": 8.143555725293439,
-        "pays": 0.5925925925925926,
-        "q": 0.33903596403596403,
-        "status": "promising"
-      },
-      {
-        "id": "sc55",
-        "label": "Score to IMPROVING",
-        "parts": [
-          "sc55"
-        ],
-        "n": 25,
-        "cards": 17,
-        "mean": 0.012238921389836661,
-        "edge": 0.04796031181435815,
-        "excess": 1.2314123472528582,
-        "vsPeers": 4.912901647102275,
-        "hit": 0.56,
-        "beatPeers": 0.64,
-        "boom": 0.12,
-        "p": 0.06593406593406594,
-        "halves": [
-          1.9697061050003128,
-          6.922076933993426
-        ],
-        "holds": true,
-        "net": 2.874178314296838,
-        "pays": 0.4,
-        "q": 0.33903596403596403,
+        "q": 0.30802530802530803,
         "status": "none"
       },
       {
-        "id": "volUp",
-        "label": "Sales pace surge",
+        "id": "tpiUp",
+        "label": "Trend gauge up through +0.5",
         "parts": [
-          "volUp"
+          "tpiUp"
         ],
-        "n": 48,
-        "cards": 32,
-        "mean": 0.01954934195980401,
-        "edge": 0.040965067921585184,
-        "excess": 1.974168167240009,
-        "vsPeers": 4.181571212168467,
+        "n": 43,
+        "cards": 31,
+        "mean": 0.00289332300975351,
+        "edge": 0.03595485588581227,
+        "excess": 0.28975127085157926,
+        "vsPeers": 3.660904863734804,
+        "hit": 0.46511627906976744,
+        "beatPeers": 0.5581395348837209,
+        "boom": 0.18604651162790697,
+        "p": 0.0899100899100899,
+        "halves": [
+          3.389376666627153,
+          3.838827976709558
+        ],
+        "holds": true,
+        "net": 4.781449635966428,
+        "pays": 0.4883720930232558,
+        "q": 0.30802530802530803,
+        "status": "none"
+      },
+      {
+        "id": "volUp+rsSetX",
+        "label": "Pace↑ + RS↑set within 7d",
+        "parts": [
+          "volUp",
+          "rsSetX"
+        ],
+        "n": 24,
+        "cards": 19,
+        "mean": 0.0371649488942855,
+        "edge": 0.050834764441306024,
+        "excess": 3.7864201272175713,
+        "vsPeers": 5.2149026486890016,
         "hit": 0.4583333333333333,
         "beatPeers": 0.5,
         "boom": 0.20833333333333334,
-        "p": 0.06993006993006994,
+        "p": 0.0899100899100899,
         "halves": [
-          0.17505771586026064,
-          7.408208002722327
-        ],
-        "holds": true,
-        "net": 6.0279397528646195,
-        "pays": 0.5208333333333334,
-        "q": 0.33903596403596403,
-        "status": "none"
-      },
-      {
-        "id": "rsX+hmaUp",
-        "label": "RS↑ + HMA↑ within 7d",
-        "parts": [
-          "rsX",
-          "hmaUp"
-        ],
-        "n": 30,
-        "cards": 26,
-        "mean": 0.020296889768974535,
-        "edge": 0.0501650263622265,
-        "excess": 2.0504272333430107,
-        "vsPeers": 5.1444598136561215,
-        "hit": 0.6,
-        "beatPeers": 0.6,
-        "boom": 0.2,
-        "p": 0.07292707292707293,
-        "halves": [
-          6.104048737986778,
-          4.592879953278239
-        ],
-        "holds": true,
-        "net": 7.679419420729139,
-        "pays": 0.6333333333333333,
-        "q": 0.33903596403596403,
-        "status": "none"
-      },
-      {
-        "id": "rsSetX",
-        "label": "Beats its own set (RS vs set turns up)",
-        "parts": [
-          "rsSetX"
-        ],
-        "n": 40,
-        "cards": 27,
-        "mean": 0.021861854909077917,
-        "edge": 0.039338633736928134,
-        "excess": 2.2102576263722806,
-        "vsPeers": 4.012264463801429,
-        "hit": 0.5,
-        "beatPeers": 0.55,
-        "boom": 0.225,
-        "p": 0.07592407592407592,
-        "halves": [
-          1.775445444373558,
-          6.81302414356999
-        ],
-        "holds": true,
-        "net": 5.1768225889970765,
-        "pays": 0.5,
-        "q": 0.33903596403596403,
-        "status": "none"
-      },
-      {
-        "id": "rsi50+sc68",
-        "label": "RSI↑50 + Score≥68 within 7d",
-        "parts": [
-          "rsi50",
-          "sc68"
-        ],
-        "n": 16,
-        "cards": 13,
-        "mean": 0.003080030832479437,
-        "edge": 0.05511418841590392,
-        "excess": 0.3084779001027549,
-        "vsPeers": 5.6661266262997945,
-        "hit": 0.5,
-        "beatPeers": 0.6875,
-        "boom": 0.125,
-        "p": 0.07792207792207792,
-        "halves": [
-          -0.4119997902740091,
-          10.648889195372902
+          -2.019055352855792,
+          11.751552335347348
         ],
         "holds": false,
-        "net": 1.7921063865565356,
-        "pays": 0.375,
-        "q": 0.33903596403596403,
-        "status": "none"
-      },
-      {
-        "id": "rsi50+sc55",
-        "label": "RSI↑50 + Score≥55 within 7d",
-        "parts": [
-          "rsi50",
-          "sc55"
-        ],
-        "n": 17,
-        "cards": 12,
-        "mean": 0.022696481537696104,
-        "edge": 0.06108008125091133,
-        "excess": 2.2956006389264427,
-        "vsPeers": 6.2984035870115695,
-        "hit": 0.5294117647058824,
-        "beatPeers": 0.5882352941176471,
-        "boom": 0.17647058823529413,
-        "p": 0.07892107892107893,
-        "halves": [
-          -1.1284955852800094,
-          11.826739414477716
-        ],
-        "holds": false,
-        "net": 4.465357981995166,
-        "pays": 0.35294117647058826,
-        "q": 0.33903596403596403,
-        "status": "none"
-      },
-      {
-        "id": "macdX+sc68",
-        "label": "MACD× + Score≥68 within 7d",
-        "parts": [
-          "macdX",
-          "sc68"
-        ],
-        "n": 17,
-        "cards": 14,
-        "mean": 0.025727768219830426,
-        "edge": 0.05416188537282317,
-        "excess": 2.6061583877664107,
-        "vsPeers": 5.565548350463123,
-        "hit": 0.47058823529411764,
-        "beatPeers": 0.6470588235294118,
-        "boom": 0.23529411764705882,
-        "p": 0.09090909090909091,
-        "halves": [
-          2.6238689091545364,
-          7.205488794260639
-        ],
-        "holds": true,
-        "net": 7.096646735904666,
-        "pays": 0.5882352941176471,
-        "q": 0.33903596403596403,
-        "status": "none"
-      },
-      {
-        "id": "hmaUp+sc68",
-        "label": "HMA↑ + Score≥68 within 7d",
-        "parts": [
-          "hmaUp",
-          "sc68"
-        ],
-        "n": 24,
-        "cards": 18,
-        "mean": 0.013819717350064195,
-        "edge": 0.04403834155307488,
-        "excess": 1.3915651060058654,
-        "vsPeers": 4.5022421902976895,
-        "hit": 0.4583333333333333,
-        "beatPeers": 0.625,
-        "boom": 0.20833333333333334,
-        "p": 0.0939060939060939,
-        "halves": [
-          -2.661120334442124,
-          10.97377807264921
-        ],
-        "holds": false,
-        "net": 3.9902627906896138,
-        "pays": 0.4583333333333333,
-        "q": 0.33903596403596403,
-        "status": "none"
-      },
-      {
-        "id": "vzoX+rsSetX",
-        "label": "VZO↑0 + RS↑set within 7d",
-        "parts": [
-          "vzoX",
-          "rsSetX"
-        ],
-        "n": 26,
-        "cards": 20,
-        "mean": 0.028243208288208553,
-        "edge": 0.04827666751962889,
-        "excess": 2.8645829192841976,
-        "vsPeers": 4.946096692539004,
-        "hit": 0.46153846153846156,
-        "beatPeers": 0.5769230769230769,
-        "boom": 0.15384615384615385,
-        "p": 0.0939060939060939,
-        "halves": [
-          3.2119416849719196,
-          6.455687533569088
-        ],
-        "holds": true,
-        "net": 6.9337525793929045,
-        "pays": 0.6153846153846154,
-        "q": 0.33903596403596403,
-        "status": "none"
-      },
-      {
-        "id": "hmaUp+sc55",
-        "label": "HMA↑ + Score≥55 within 7d",
-        "parts": [
-          "hmaUp",
-          "sc55"
-        ],
-        "n": 21,
-        "cards": 17,
-        "mean": 0.007815486903052893,
-        "edge": 0.043101476642038096,
-        "excess": 0.7846107540567582,
-        "vsPeers": 4.404383553784008,
-        "hit": 0.5238095238095238,
-        "beatPeers": 0.6190476190476191,
-        "boom": 0.14285714285714285,
-        "p": 0.1018981018981019,
-        "halves": [
-          2.452654847904112,
-          5.6238828010740205
-        ],
-        "holds": true,
-        "net": 3.3330955013256336,
-        "pays": 0.38095238095238093,
-        "q": 0.33903596403596403,
+        "net": 8.257347051480114,
+        "pays": 0.5833333333333334,
+        "q": 0.30802530802530803,
         "status": "none"
       },
       {
@@ -997,129 +1226,126 @@
         ],
         "n": 19,
         "cards": 14,
-        "mean": 0.018579945082714454,
-        "edge": 0.052304579743998034,
-        "excess": 1.8753626257041134,
-        "vsPeers": 5.369662829252686,
+        "mean": 0.016950541522348254,
+        "edge": 0.05166194357926941,
+        "excess": 1.709501711006789,
+        "vsPeers": 5.301970226440322,
         "hit": 0.47368421052631576,
         "beatPeers": 0.5789473684210527,
         "boom": 0.2631578947368421,
-        "p": 0.1028971028971029,
+        "p": 0.09490509490509491,
         "halves": [
           2.946743638350746,
-          6.507085985663297
+          6.407097503337678
         ],
         "holds": true,
         "net": 6.931138973338613,
         "pays": 0.5263157894736842,
-        "q": 0.33903596403596403,
+        "q": 0.30802530802530803,
         "status": "none"
       },
       {
-        "id": "volUp+rsSetX",
-        "label": "Pace↑ + RS↑set within 7d",
-        "parts": [
-          "volUp",
-          "rsSetX"
-        ],
-        "n": 25,
-        "cards": 20,
-        "mean": 0.03195387535090328,
-        "edge": 0.04650131212892512,
-        "excess": 3.24698818958149,
-        "vsPeers": 4.759945365317697,
-        "hit": 0.44,
-        "beatPeers": 0.48,
-        "boom": 0.2,
-        "p": 0.1048951048951049,
-        "halves": [
-          -2.019055352855792,
-          10.413740827840968
-        ],
-        "holds": false,
-        "net": 7.926655400740912,
-        "pays": 0.6,
-        "q": 0.33903596403596403,
-        "status": "none"
-      },
-      {
-        "id": "rsX",
-        "label": "RS turns up vs market",
+        "id": "rsX@2g",
+        "label": "RS turns up vs market · in 2+ grades",
         "parts": [
           "rsX"
         ],
-        "n": 41,
-        "cards": 30,
-        "mean": 0.0030303713414204076,
-        "edge": 0.03719517982045278,
-        "excess": 0.30349675582290736,
-        "vsPeers": 3.7895577342477393,
-        "hit": 0.5121951219512195,
-        "beatPeers": 0.5853658536585366,
-        "boom": 0.21951219512195122,
-        "p": 0.10589410589410589,
+        "n": 17,
+        "cards": 16,
+        "mean": 0.02272386146337914,
+        "edge": 0.05657009765996807,
+        "excess": 2.298401523213456,
+        "vsPeers": 5.820078959958308,
+        "hit": 0.7058823529411765,
+        "beatPeers": 0.7058823529411765,
+        "boom": 0.11764705882352941,
+        "p": 0.1038961038961039,
         "halves": [
-          5.759078904515591,
-          2.5483560010276074
+          7.531962222174049,
+          4.897839028420803
         ],
         "holds": true,
-        "net": 5.244148651378655,
-        "pays": 0.6097560975609756,
-        "q": 0.33903596403596403,
+        "net": 10.04793173640901,
+        "pays": 0.7647058823529411,
+        "q": 0.30802530802530803,
         "status": "none"
       },
       {
-        "id": "hmaUp+stUp",
-        "label": "HMA↑ + ST↑ within 7d",
-        "parts": [
-          "hmaUp",
-          "stUp"
-        ],
-        "n": 24,
-        "cards": 18,
-        "mean": 0.010283177451240638,
-        "edge": 0.04670448704654906,
-        "excess": 1.0336231017624264,
-        "vsPeers": 4.781232120981782,
-        "hit": 0.4166666666666667,
-        "beatPeers": 0.5,
-        "boom": 0.16666666666666666,
+        "id": "conf3",
+        "label": "3+ setups within 10d",
+        "parts": null,
+        "n": 46,
+        "cards": 29,
+        "mean": 0.013084929141894045,
+        "edge": 0.033959694306885786,
+        "excess": 1.3170911442033084,
+        "vsPeers": 3.454290791881376,
+        "hit": 0.5217391304347826,
+        "beatPeers": 0.5869565217391305,
+        "boom": 0.21739130434782608,
         "p": 0.10789210789210789,
         "halves": [
-          0.5806969304623433,
-          7.888596673032433
+          -0.736194144491209,
+          7.1107054424840666
         ],
-        "holds": true,
-        "net": 4.563651467489849,
-        "pays": 0.4583333333333333,
-        "q": 0.33903596403596403,
+        "holds": false,
+        "net": 4.366844547800985,
+        "pays": 0.4782608695652174,
+        "q": 0.30802530802530803,
         "status": "none"
       },
       {
-        "id": "rsX+sc68",
-        "label": "RS↑ + Score≥68 within 7d",
+        "id": "rsi50+sc68",
+        "label": "RSI↑50 + Score≥68 within 7d",
         "parts": [
-          "rsX",
+          "rsi50",
           "sc68"
         ],
-        "n": 23,
-        "cards": 18,
-        "mean": 0.006886990481238948,
-        "edge": 0.04147335253858435,
-        "excess": 0.6910760336440447,
-        "vsPeers": 4.2345385622946985,
-        "hit": 0.5217391304347826,
-        "beatPeers": 0.6086956521739131,
-        "boom": 0.21739130434782608,
-        "p": 0.11288711288711288,
+        "n": 16,
+        "cards": 13,
+        "mean": -0.007917002161452524,
+        "edge": 0.04186645676106283,
+        "excess": -0.7885745241267283,
+        "vsPeers": 4.275521654317127,
+        "hit": 0.4375,
+        "beatPeers": 0.625,
+        "boom": 0.125,
+        "p": 0.11588411588411589,
         "halves": [
-          1.7396803323583399,
-          5.870588643994146
+          -3.6783219567410264,
+          10.913215312188495
         ],
-        "holds": true,
-        "net": 5.096228012874926,
-        "pays": 0.5652173913043478,
-        "q": 0.33903596403596403,
+        "holds": false,
+        "net": 0.6267841932798834,
+        "pays": 0.375,
+        "q": 0.30802530802530803,
+        "status": "none"
+      },
+      {
+        "id": "stDemand",
+        "label": "ST↑ with sales pressure (VZO > 0)",
+        "parts": [
+          "stUp",
+          "vzoX"
+        ],
+        "n": 25,
+        "cards": 19,
+        "mean": 0.011017707374299874,
+        "edge": 0.043018664257532466,
+        "excess": 1.1078625833882416,
+        "vsPeers": 4.395737935816135,
+        "hit": 0.4,
+        "beatPeers": 0.56,
+        "boom": 0.2,
+        "p": 0.11588411588411589,
+        "halves": [
+          -1.2624230908970357,
+          8.34685365019261
+        ],
+        "holds": false,
+        "net": 5.075886956572528,
+        "pays": 0.48,
+        "q": 0.30802530802530803,
         "status": "none"
       },
       {
@@ -1130,125 +1356,22 @@
         ],
         "n": 30,
         "cards": 22,
-        "mean": 0.02095293112692801,
-        "edge": 0.04168226693818889,
-        "excess": 2.117398499763201,
-        "vsPeers": 4.2563169331649275,
+        "mean": 0.019927762583981733,
+        "edge": 0.039036951245988064,
+        "excess": 2.01276459798998,
+        "vsPeers": 3.9808905174927522,
         "hit": 0.5333333333333333,
         "beatPeers": 0.5666666666666667,
         "boom": 0.3,
-        "p": 0.11888111888111888,
+        "p": 0.11988011988011989,
         "halves": [
           1.3669657491932163,
-          5.731731489753522
+          5.313022040426052
         ],
         "holds": true,
         "net": 7.231349439904955,
         "pays": 0.5,
-        "q": 0.33903596403596403,
-        "status": "none"
-      },
-      {
-        "id": "conf3",
-        "label": "3+ setups within 10d",
-        "parts": null,
-        "n": 47,
-        "cards": 30,
-        "mean": 0.011291630694943863,
-        "edge": 0.031812461667165594,
-        "excess": 1.135562178459626,
-        "vsPeers": 3.232388684955989,
-        "hit": 0.5106382978723404,
-        "beatPeers": 0.574468085106383,
-        "boom": 0.2127659574468085,
-        "p": 0.12187812187812187,
-        "halves": [
-          -0.736194144491209,
-          6.553318968129984
-        ],
-        "holds": false,
-        "net": 4.278315285472711,
-        "pays": 0.48936170212765956,
-        "q": 0.33903596403596403,
-        "status": "none"
-      },
-      {
-        "id": "macdX+sc55",
-        "label": "MACD× + Score≥55 within 7d",
-        "parts": [
-          "macdX",
-          "sc55"
-        ],
-        "n": 15,
-        "cards": 12,
-        "mean": 0.01736078856419058,
-        "edge": 0.0453523089731271,
-        "excess": 1.7512362933701286,
-        "vsPeers": 4.639644983486035,
-        "hit": 0.4666666666666667,
-        "beatPeers": 0.6,
-        "boom": 0.2,
-        "p": 0.12487512487512488,
-        "halves": [
-          5.0772700206755506,
-          4.4215164216298675
-        ],
-        "holds": true,
-        "net": 4.891320863886062,
-        "pays": 0.4666666666666667,
-        "q": 0.33903596403596403,
-        "status": "none"
-      },
-      {
-        "id": "sc68",
-        "label": "Score to EARLY STRENGTH",
-        "parts": [
-          "sc68"
-        ],
-        "n": 31,
-        "cards": 20,
-        "mean": 0.0037485461567723206,
-        "edge": 0.03103424087449156,
-        "excess": 0.37555807429943133,
-        "vsPeers": 3.152082345688423,
-        "hit": 0.41935483870967744,
-        "beatPeers": 0.5806451612903226,
-        "boom": 0.1935483870967742,
-        "p": 0.13086913086913088,
-        "halves": [
-          -2.69602901848246,
-          8.953508580991487
-        ],
-        "holds": false,
-        "net": 2.0778298217352997,
-        "pays": 0.41935483870967744,
-        "q": 0.33903596403596403,
-        "status": "none"
-      },
-      {
-        "id": "tpiUp",
-        "label": "Trend gauge up through +0.5",
-        "parts": [
-          "tpiUp"
-        ],
-        "n": 46,
-        "cards": 33,
-        "mean": -0.005737359724516256,
-        "edge": 0.0265052831124709,
-        "excess": -0.5720932507511156,
-        "vsPeers": 2.6859672262492085,
-        "hit": 0.43478260869565216,
-        "beatPeers": 0.5217391304347826,
-        "boom": 0.17391304347826086,
-        "p": 0.13786213786213786,
-        "halves": [
-          1.741040657480375,
-          3.3561715661604374
-        ],
-        "holds": true,
-        "net": 3.524870463456109,
-        "pays": 0.4782608695652174,
-        "q": 0.33903596403596403,
+        "q": 0.30802530802530803,
         "status": "none"
       },
       {
@@ -1258,77 +1381,130 @@
           "rsi50",
           "hmaUp"
         ],
-        "n": 24,
-        "cards": 20,
-        "mean": 0.0016416333129963222,
-        "edge": 0.038755012594107435,
-        "excess": 0.16429815306222562,
-        "vsPeers": 3.951578417700019,
-        "hit": 0.5416666666666666,
-        "beatPeers": 0.5416666666666666,
-        "boom": 0.125,
-        "p": 0.13886113886113885,
+        "n": 23,
+        "cards": 19,
+        "mean": 0.005955841813636236,
+        "edge": 0.044245818916569625,
+        "excess": 0.5973613102969288,
+        "vsPeers": 4.523926289388691,
+        "hit": 0.5652173913043478,
+        "beatPeers": 0.5652173913043478,
+        "boom": 0.13043478260869565,
+        "p": 0.12487512487512488,
         "halves": [
           2.323029778784713,
-          5.349809548281681
+          6.582976698787668
         ],
         "holds": true,
-        "net": 3.626377943782799,
-        "pays": 0.5,
-        "q": 0.33903596403596403,
+        "net": 3.774103754973246,
+        "pays": 0.4782608695652174,
+        "q": 0.30802530802530803,
         "status": "none"
       },
       {
-        "id": "rsX@2g",
-        "label": "RS turns up vs market · in 2+ grades",
+        "id": "sc55",
+        "label": "Score to IMPROVING",
         "parts": [
-          "rsX"
-        ],
-        "n": 18,
-        "cards": 17,
-        "mean": 0.010381290335421598,
-        "edge": 0.04811699473180567,
-        "excess": 1.0435362882218913,
-        "vsPeers": 4.929340994459053,
-        "hit": 0.6666666666666666,
-        "beatPeers": 0.6666666666666666,
-        "boom": 0.1111111111111111,
-        "p": 0.14185814185814186,
-        "halves": [
-          7.531962222174049,
-          3.6517484877974127
-        ],
-        "holds": true,
-        "net": 8.825255941331811,
-        "pays": 0.7222222222222222,
-        "q": 0.33903596403596403,
-        "status": "none"
-      },
-      {
-        "id": "stDemand",
-        "label": "ST↑ with sales pressure (VZO > 0)",
-        "parts": [
-          "stUp",
-          "vzoX"
+          "sc55"
         ],
         "n": 26,
-        "cards": 20,
-        "mean": 0.007735397995379918,
-        "edge": 0.03907617345102953,
-        "excess": 0.7765393478905924,
-        "vsPeers": 3.984968957283197,
-        "hit": 0.38461538461538464,
-        "beatPeers": 0.5384615384615384,
-        "boom": 0.19230769230769232,
-        "p": 0.14485514485514486,
+        "cards": 18,
+        "mean": 0.0022468728029559435,
+        "edge": 0.03609297120884431,
+        "excess": 0.22493989132474912,
+        "vsPeers": 3.6752230118509255,
+        "hit": 0.5,
+        "beatPeers": 0.5769230769230769,
+        "boom": 0.11538461538461539,
+        "p": 0.12887112887112886,
         "halves": [
-          -1.2624230908970357,
-          7.405279565175249
+          1.8210090022935388,
+          4.8512148819213285
+        ],
+        "holds": true,
+        "net": 1.7222215390450435,
+        "pays": 0.34615384615384615,
+        "q": 0.30802530802530803,
+        "status": "none"
+      },
+      {
+        "id": "rsi50",
+        "label": "RSI up through 50",
+        "parts": [
+          "rsi50"
+        ],
+        "n": 27,
+        "cards": 20,
+        "mean": 0.000800753934119187,
+        "edge": 0.03761158688794344,
+        "excess": 0.08010746231426058,
+        "vsPeers": 3.8327854391563054,
+        "hit": 0.48148148148148145,
+        "beatPeers": 0.5185185185185185,
+        "boom": 0.1111111111111111,
+        "p": 0.13086913086913088,
+        "halves": [
+          1.585279347799462,
+          6.3088171280385685
+        ],
+        "holds": true,
+        "net": 2.583143052087644,
+        "pays": 0.48148148148148145,
+        "q": 0.30802530802530803,
+        "status": "none"
+      },
+      {
+        "id": "rsi50+stUp",
+        "label": "RSI↑50 + ST↑ within 7d",
+        "parts": [
+          "rsi50",
+          "stUp"
+        ],
+        "n": 21,
+        "cards": 16,
+        "mean": 0.010107900454160632,
+        "edge": 0.04134738351817744,
+        "excess": 1.0159157835891497,
+        "vsPeers": 4.221409066551662,
+        "hit": 0.42857142857142855,
+        "beatPeers": 0.47619047619047616,
+        "boom": 0.14285714285714285,
+        "p": 0.13286713286713286,
+        "halves": [
+          -0.9889537225551748,
+          9.195662250280389
         ],
         "holds": false,
-        "net": 4.8875034705679665,
-        "pays": 0.5,
-        "q": 0.33903596403596403,
+        "net": 4.275915977290645,
+        "pays": 0.47619047619047616,
+        "q": 0.30802530802530803,
+        "status": "none"
+      },
+      {
+        "id": "hmaUp+sc68",
+        "label": "HMA↑ + Score≥68 within 7d",
+        "parts": [
+          "hmaUp",
+          "sc68"
+        ],
+        "n": 23,
+        "cards": 18,
+        "mean": 0.012882003356082116,
+        "edge": 0.038493199167998204,
+        "excess": 1.2965333797875012,
+        "vsPeers": 3.924366061240603,
+        "hit": 0.43478260869565216,
+        "beatPeers": 0.6086956521739131,
+        "boom": 0.21739130434782608,
+        "p": 0.13486513486513488,
+        "halves": [
+          -4.225391197249961,
+          10.66229929303777
+        ],
+        "holds": false,
+        "net": 4.282016410134215,
+        "pays": 0.4782608695652174,
+        "q": 0.30802530802530803,
         "status": "none"
       },
       {
@@ -1337,77 +1513,78 @@
         "parts": [
           "stUp"
         ],
-        "n": 29,
-        "cards": 20,
-        "mean": -0.0008375810124873781,
-        "edge": 0.03341121260800966,
-        "excess": -0.08372303394236225,
-        "vsPeers": 3.397563565056805,
-        "hit": 0.3448275862068966,
-        "beatPeers": 0.4827586206896552,
-        "boom": 0.1724137931034483,
-        "p": 0.15284715284715283,
+        "n": 28,
+        "cards": 19,
+        "mean": 0.0021120829767620536,
+        "edge": 0.0371451659622698,
+        "excess": 0.21143149951383666,
+        "vsPeers": 3.784366947833062,
+        "hit": 0.35714285714285715,
+        "beatPeers": 0.5,
+        "boom": 0.17857142857142858,
+        "p": 0.13786213786213786,
         "halves": [
           -0.9857234369965218,
-          6.607978308451634
+          7.512146333048175
         ],
         "holds": false,
-        "net": 3.2248405933357205,
-        "pays": 0.4482758620689655,
-        "q": 0.33903596403596403,
+        "net": 3.331372654990883,
+        "pays": 0.42857142857142855,
+        "q": 0.30802530802530803,
         "status": "none"
       },
       {
-        "id": "hmaUp+vzoX",
-        "label": "HMA↑ + VZO↑0 within 7d",
+        "id": "stUp+vzoX",
+        "label": "ST↑ + VZO↑0 within 7d",
         "parts": [
-          "hmaUp",
+          "stUp",
           "vzoX"
         ],
-        "n": 22,
-        "cards": 19,
-        "mean": 0.016123478319140995,
-        "edge": 0.03763570367131453,
-        "excess": 1.625416301492244,
-        "vsPeers": 3.8352895821453847,
-        "hit": 0.4090909090909091,
-        "beatPeers": 0.5454545454545454,
-        "boom": 0.13636363636363635,
-        "p": 0.15584415584415584,
+        "n": 24,
+        "cards": 18,
+        "mean": 0.006073015640997587,
+        "edge": 0.040272168391316865,
+        "excess": 0.6091493787571567,
+        "vsPeers": 4.109408853932162,
+        "hit": 0.375,
+        "beatPeers": 0.5833333333333334,
+        "boom": 0.16666666666666666,
+        "p": 0.13886113886113885,
         "halves": [
-          2.889235820547853,
-          4.63030928402528
+          4.002337242417187,
+          4.185956058479867
         ],
         "holds": true,
-        "net": 5.832340803336633,
-        "pays": 0.5454545454545454,
-        "q": 0.33903596403596403,
+        "net": 4.772013468325009,
+        "pays": 0.5,
+        "q": 0.30802530802530803,
         "status": "none"
       },
       {
-        "id": "rsSetX@2g",
-        "label": "Beats its own set (RS vs set turns up) · in 2+ grades",
+        "id": "macdX+sc68",
+        "label": "MACD× + Score≥68 within 7d",
         "parts": [
-          "rsSetX"
+          "macdX",
+          "sc68"
         ],
-        "n": 19,
+        "n": 16,
         "cards": 14,
-        "mean": 0.01824909822835986,
-        "edge": 0.041683553143183186,
-        "excess": 1.8416630574486392,
-        "vsPeers": 4.256451028246677,
-        "hit": 0.47368421052631576,
-        "beatPeers": 0.5263157894736842,
-        "boom": 0.15789473684210525,
-        "p": 0.16583416583416583,
+        "mean": 0.026250523340762395,
+        "edge": 0.04489980935308809,
+        "excess": 2.659810304688137,
+        "vsPeers": 4.592306295066995,
+        "hit": 0.4375,
+        "beatPeers": 0.625,
+        "boom": 0.25,
+        "p": 0.14385614385614387,
         "halves": [
-          6.954325521301041,
-          1.8865982782790613
+          0.4081298679253109,
+          6.551415067696542
         ],
         "holds": true,
-        "net": 5.498050809629795,
-        "pays": 0.5263157894736842,
-        "q": 0.33903596403596403,
+        "net": 7.726833131519317,
+        "pays": 0.625,
+        "q": 0.30802530802530803,
         "status": "none"
       },
       {
@@ -1417,24 +1594,104 @@
           "rsX",
           "vzoX"
         ],
-        "n": 23,
-        "cards": 19,
-        "mean": 0.00852848032672086,
-        "edge": 0.036665601764607036,
-        "excess": 0.8564951422340927,
-        "vsPeers": 3.7346076135190476,
-        "hit": 0.43478260869565216,
-        "beatPeers": 0.5217391304347826,
-        "boom": 0.17391304347826086,
-        "p": 0.16683316683316685,
+        "n": 22,
+        "cards": 18,
+        "mean": 0.012468949956282864,
+        "edge": 0.04169353640237097,
+        "excess": 1.2547011423557963,
+        "vsPeers": 4.257491852614703,
+        "hit": 0.45454545454545453,
+        "beatPeers": 0.5454545454545454,
+        "boom": 0.18181818181818182,
+        "p": 0.14585414585414586,
         "halves": [
           4.926566170911939,
-          2.975508496587742
+          3.7967874550849823
         ],
         "holds": true,
-        "net": 6.01281773191118,
-        "pays": 0.6521739130434783,
-        "q": 0.33903596403596403,
+        "net": 6.280754620584128,
+        "pays": 0.6363636363636364,
+        "q": 0.30802530802530803,
+        "status": "none"
+      },
+      {
+        "id": "macdX+sc55",
+        "label": "MACD× + Score≥55 within 7d",
+        "parts": [
+          "macdX",
+          "sc55"
+        ],
+        "n": 16,
+        "cards": 13,
+        "mean": 0.009929500570936414,
+        "edge": 0.0402133373102951,
+        "excess": 0.997896163406442,
+        "vsPeers": 4.103284165027543,
+        "hit": 0.4375,
+        "beatPeers": 0.5625,
+        "boom": 0.1875,
+        "p": 0.14885114885114886,
+        "halves": [
+          5.0772700206755506,
+          3.663552866423303
+        ],
+        "holds": true,
+        "net": 3.3202599564764013,
+        "pays": 0.375,
+        "q": 0.30802530802530803,
+        "status": "none"
+      },
+      {
+        "id": "hmaUp+vzoX",
+        "label": "HMA↑ + VZO↑0 within 7d",
+        "parts": [
+          "hmaUp",
+          "vzoX"
+        ],
+        "n": 21,
+        "cards": 18,
+        "mean": 0.019497341386787288,
+        "edge": 0.04295903872677622,
+        "excess": 1.9688655899321228,
+        "vsPeers": 4.389513470103412,
+        "hit": 0.38095238095238093,
+        "beatPeers": 0.5714285714285714,
+        "boom": 0.14285714285714285,
+        "p": 0.14985014985014986,
+        "halves": [
+          2.889235820547853,
+          5.772377430260445
+        ],
+        "holds": true,
+        "net": 6.103966374201697,
+        "pays": 0.5238095238095238,
+        "q": 0.30802530802530803,
+        "status": "none"
+      },
+      {
+        "id": "rsSetX@2g",
+        "label": "Beats its own set (RS vs set turns up) · in 2+ grades",
+        "parts": [
+          "rsSetX"
+        ],
+        "n": 17,
+        "cards": 12,
+        "mean": 0.022604896574103146,
+        "edge": 0.043613072516770844,
+        "excess": 2.286232329070903,
+        "vsPeers": 4.457810070941748,
+        "hit": 0.47058823529411764,
+        "beatPeers": 0.5294117647058824,
+        "boom": 0.17647058823529413,
+        "p": 0.15684315684315683,
+        "halves": [
+          8.434973861269746,
+          1.045183481303491
+        ],
+        "holds": true,
+        "net": 7.104722970198374,
+        "pays": 0.5294117647058824,
+        "q": 0.3094579838765885,
         "status": "none"
       },
       {
@@ -1446,182 +1703,75 @@
         ],
         "n": 26,
         "cards": 19,
-        "mean": 0.0136481598498388,
-        "edge": 0.036685318512788,
-        "excess": 1.37417211454407,
-        "vsPeers": 3.7366529428185746,
+        "mean": 0.012641444326679258,
+        "edge": 0.03481995500923858,
+        "excess": 1.2721685147474293,
+        "vsPeers": 3.5433267443139904,
         "hit": 0.5,
         "beatPeers": 0.5384615384615384,
         "boom": 0.2692307692307692,
-        "p": 0.16783216783216784,
+        "p": 0.16583416583416583,
         "halves": [
           1.3669657491932163,
-          5.245757135016538
+          4.927217569306497
         ],
         "holds": true,
         "net": 5.366293629889296,
         "pays": 0.46153846153846156,
-        "q": 0.33903596403596403,
+        "q": 0.3094579838765885,
         "status": "none"
       },
       {
-        "id": "rsi50",
-        "label": "RSI up through 50",
-        "parts": [
-          "rsi50"
-        ],
-        "n": 28,
-        "cards": 21,
-        "mean": -0.0026872250626828386,
-        "edge": 0.032778870698778384,
-        "excess": -0.2683617705397823,
-        "vsPeers": 3.3322016200287186,
-        "hit": 0.4642857142857143,
-        "beatPeers": 0.5,
-        "boom": 0.10714285714285714,
-        "p": 0.17382617382617382,
-        "halves": [
-          1.585279347799462,
-          5.109165030548923
-        ],
-        "holds": true,
-        "net": 2.5002077710959414,
-        "pays": 0.5,
-        "q": 0.33903596403596403,
-        "status": "none"
-      },
-      {
-        "id": "stUp+vzoX",
-        "label": "ST↑ + VZO↑0 within 7d",
-        "parts": [
-          "stUp",
-          "vzoX"
-        ],
-        "n": 25,
-        "cards": 19,
-        "mean": 0.002509250988641973,
-        "edge": 0.03601700709830825,
-        "excess": 0.25124017937396825,
-        "vsPeers": 3.6673477148739586,
-        "hit": 0.36,
-        "beatPeers": 0.56,
-        "boom": 0.16,
-        "p": 0.17882117882117882,
-        "halves": [
-          4.002337242417187,
-          3.4446210195101967
-        ],
-        "holds": true,
-        "net": 4.58878365645905,
-        "pays": 0.52,
-        "q": 0.33903596403596403,
-        "status": "none"
-      },
-      {
-        "id": "rsi50+stUp",
-        "label": "RSI↑50 + ST↑ within 7d",
+        "id": "rsi50+vzoX",
+        "label": "RSI↑50 + VZO↑0 within 7d",
         "parts": [
           "rsi50",
-          "stUp"
-        ],
-        "n": 22,
-        "cards": 17,
-        "mean": 0.005348287876833144,
-        "edge": 0.035742160367203686,
-        "excess": 0.5362615499802326,
-        "vsPeers": 3.638858998426886,
-        "hit": 0.4090909090909091,
-        "beatPeers": 0.45454545454545453,
-        "boom": 0.13636363636363635,
-        "p": 0.18081918081918083,
-        "halves": [
-          -0.9889537225551748,
-          7.660179770105868
-        ],
-        "holds": false,
-        "net": 4.091165043856582,
-        "pays": 0.5,
-        "q": 0.33903596403596403,
-        "status": "none"
-      },
-      {
-        "id": "stUp+rsSetX",
-        "label": "ST↑ + RS↑set within 7d",
-        "parts": [
-          "stUp",
-          "rsSetX"
-        ],
-        "n": 26,
-        "cards": 20,
-        "mean": 0.004947707308613167,
-        "edge": 0.030661359985714825,
-        "excess": 0.4959967423900036,
-        "vsPeers": 3.1136260757938183,
-        "hit": 0.38461538461538464,
-        "beatPeers": 0.46153846153846156,
-        "boom": 0.15384615384615385,
-        "p": 0.1928071928071928,
-        "halves": [
-          -2.000151589302701,
-          7.03255027084988
-        ],
-        "holds": false,
-        "net": 4.200392447208379,
-        "pays": 0.5384615384615384,
-        "q": 0.3513153513153513,
-        "status": "none"
-      },
-      {
-        "id": "rsi30+vzoX",
-        "label": "RSI↑30 + VZO↑0 within 7d",
-        "parts": [
-          "rsi30",
           "vzoX"
         ],
-        "n": 16,
-        "cards": 14,
-        "mean": 0.016672932546576334,
-        "edge": 0.03571072465713764,
-        "excess": 1.6812701592579193,
-        "vsPeers": 3.635601088511442,
-        "hit": 0.375,
-        "beatPeers": 0.5,
-        "boom": 0.125,
-        "p": 0.2017982017982018,
+        "n": 19,
+        "cards": 16,
+        "mean": 0.008081267146373668,
+        "edge": 0.03820355473646893,
+        "excess": 0.8114008724103616,
+        "vsPeers": 3.8942693061999156,
+        "hit": 0.42105263157894735,
+        "beatPeers": 0.5263157894736842,
+        "boom": 0.10526315789473684,
+        "p": 0.17782217782217782,
         "halves": [
-          4.926566170911939,
-          1.999100308332702
+          3.4897407158553495,
+          4.345600341002753
         ],
         "holds": true,
-        "net": 5.333897951342936,
-        "pays": 0.5625,
-        "q": 0.3513153513153513,
+        "net": 4.2403220498448135,
+        "pays": 0.5263157894736842,
+        "q": 0.3094579838765885,
         "status": "none"
       },
       {
-        "id": "vzoX",
-        "label": "VZO (sales pressure) crosses 0",
+        "id": "hmaUp@2g",
+        "label": "Hull MA turns up · in 2+ grades",
         "parts": [
-          "vzoX"
+          "hmaUp"
         ],
-        "n": 29,
-        "cards": 21,
-        "mean": -0.0005380511187084848,
-        "edge": 0.026783900809085836,
-        "excess": -0.05379063951627128,
-        "vsPeers": 2.7145813399265917,
-        "hit": 0.41379310344827586,
-        "beatPeers": 0.5517241379310345,
-        "boom": 0.13793103448275862,
-        "p": 0.2057942057942058,
+        "n": 18,
+        "cards": 14,
+        "mean": -0.0033422306870878695,
+        "edge": 0.04019577511216975,
+        "excess": -0.3336651651310585,
+        "vsPeers": 4.1014558985797755,
+        "hit": 0.5,
+        "beatPeers": 0.6111111111111112,
+        "boom": 0.1111111111111111,
+        "p": 0.17782217782217782,
         "halves": [
-          -1.106346701332317,
-          5.5002578776566
+          -4.299862037589175,
+          13.240308226729613
         ],
         "holds": false,
-        "net": 3.919967230983601,
-        "pays": 0.5172413793103449,
-        "q": 0.3513153513153513,
+        "net": 2.8412946341535683,
+        "pays": 0.5,
+        "q": 0.3094579838765885,
         "status": "none"
       },
       {
@@ -1633,49 +1783,155 @@
         ],
         "n": 27,
         "cards": 19,
-        "mean": 0.0064858770826487465,
-        "edge": 0.02809687046208176,
-        "excess": 0.6506955930377867,
-        "vsPeers": 2.8495310411907893,
-        "hit": 0.48148148148148145,
-        "beatPeers": 0.5925925925925926,
+        "mean": 0.010352768946050103,
+        "edge": 0.03383414616976899,
+        "excess": 1.0406544272774765,
+        "vsPeers": 3.4413031137021877,
+        "hit": 0.5185185185185185,
+        "beatPeers": 0.6296296296296297,
         "boom": 0.18518518518518517,
-        "p": 0.20679320679320679,
+        "p": 0.17882117882117882,
         "halves": [
-          -1.671400687213831,
-          6.615484852786913
+          -0.4135263801869682,
+          6.632326818204581
         ],
         "holds": false,
-        "net": 3.4989221464379883,
-        "pays": 0.4444444444444444,
-        "q": 0.3513153513153513,
+        "net": 4.025286400491845,
+        "pays": 0.48148148148148145,
+        "q": 0.3094579838765885,
         "status": "none"
       },
       {
-        "id": "rsi50+vzoX",
-        "label": "RSI↑50 + VZO↑0 within 7d",
+        "id": "stUp+rsSetX",
+        "label": "ST↑ + RS↑set within 7d",
         "parts": [
-          "rsi50",
-          "vzoX"
+          "stUp",
+          "rsSetX"
         ],
-        "n": 20,
-        "cards": 17,
-        "mean": 0.003059520702516627,
-        "edge": 0.032446631578352,
-        "excess": 0.3064205812826737,
-        "vsPeers": 3.2978763226698016,
+        "n": 25,
+        "cards": 19,
+        "mean": 0.008500572331193876,
+        "edge": 0.034678342444789526,
+        "excess": 0.8536804788948027,
+        "vsPeers": 3.528664746468202,
         "hit": 0.4,
-        "beatPeers": 0.5,
-        "boom": 0.1,
-        "p": 0.21078921078921078,
+        "beatPeers": 0.48,
+        "boom": 0.16,
+        "p": 0.17882117882117882,
         "halves": [
-          3.4897407158553495,
-          3.106367635712881
+          -2.000151589302701,
+          8.090686934138258
+        ],
+        "holds": false,
+        "net": 4.360102031901625,
+        "pays": 0.52,
+        "q": 0.3094579838765885,
+        "status": "none"
+      },
+      {
+        "id": "sc68",
+        "label": "Score to EARLY STRENGTH",
+        "parts": [
+          "sc68"
+        ],
+        "n": 31,
+        "cards": 20,
+        "mean": 0.004829683714363069,
+        "edge": 0.029716707249986495,
+        "excess": 0.4841365435521494,
+        "vsPeers": 3.016265500037707,
+        "hit": 0.41935483870967744,
+        "beatPeers": 0.5806451612903226,
+        "boom": 0.1935483870967742,
+        "p": 0.1798201798201798,
+        "halves": [
+          -2.6083728408612727,
+          8.584033701944183
+        ],
+        "holds": false,
+        "net": 2.293453026553638,
+        "pays": 0.45161290322580644,
+        "q": 0.3094579838765885,
+        "status": "none"
+      },
+      {
+        "id": "hmaUp+sc55",
+        "label": "HMA↑ + Score≥55 within 7d",
+        "parts": [
+          "hmaUp",
+          "sc55"
+        ],
+        "n": 21,
+        "cards": 17,
+        "mean": 0.003146922095120445,
+        "edge": 0.033673408665604566,
+        "excess": 0.31518788526028185,
+        "vsPeers": 3.424677553023514,
+        "hit": 0.47619047619047616,
+        "beatPeers": 0.5714285714285714,
+        "boom": 0.14285714285714285,
+        "p": 0.1918081918081918,
+        "halves": [
+          2.452654847904112,
+          4.027423577633971
         ],
         "holds": true,
-        "net": 4.038959339868775,
-        "pays": 0.55,
-        "q": 0.3513153513153513,
+        "net": 2.4315555295476576,
+        "pays": 0.3333333333333333,
+        "q": 0.30986035241354387,
+        "status": "none"
+      },
+      {
+        "id": "vzoX",
+        "label": "VZO (sales pressure) crosses 0",
+        "parts": [
+          "vzoX"
+        ],
+        "n": 28,
+        "cards": 20,
+        "mean": 0.001041867273488,
+        "edge": 0.0304577515505638,
+        "excess": 0.10424102057338125,
+        "vsPeers": 3.0926334089603325,
+        "hit": 0.39285714285714285,
+        "beatPeers": 0.5714285714285714,
+        "boom": 0.14285714285714285,
+        "p": 0.1928071928071928,
+        "halves": [
+          -1.106346701332317,
+          6.358460617896311
+        ],
+        "holds": false,
+        "net": 4.0521547411283665,
+        "pays": 0.5,
+        "q": 0.30986035241354387,
+        "status": "none"
+      },
+      {
+        "id": "rsi30+vzoX",
+        "label": "RSI↑30 + VZO↑0 within 7d",
+        "parts": [
+          "rsi30",
+          "vzoX"
+        ],
+        "n": 15,
+        "cards": 13,
+        "mean": 0.02293989561128328,
+        "edge": 0.04256846374152065,
+        "excess": 2.3205038585621063,
+        "vsPeers": 4.348749498630955,
+        "hit": 0.4,
+        "beatPeers": 0.5333333333333333,
+        "boom": 0.13333333333333333,
+        "p": 0.1958041958041958,
+        "halves": [
+          4.926566170911939,
+          3.4879851850809107
+        ],
+        "holds": true,
+        "net": 5.679311838100953,
+        "pays": 0.5333333333333333,
+        "q": 0.30986035241354387,
         "status": "none"
       },
       {
@@ -1685,50 +1941,51 @@
           "rsi50",
           "rsSetX"
         ],
-        "n": 22,
-        "cards": 18,
-        "mean": -0.00019690887154979263,
-        "edge": 0.02777896991211023,
-        "excess": -0.01968894862703907,
-        "vsPeers": 2.8168403151836774,
-        "hit": 0.4090909090909091,
-        "beatPeers": 0.45454545454545453,
-        "boom": 0.09090909090909091,
-        "p": 0.24675324675324675,
+        "n": 21,
+        "cards": 17,
+        "mean": 0.00423631515497519,
+        "edge": 0.033514703035321176,
+        "excess": 0.4245301022529402,
+        "vsPeers": 3.408264776820058,
+        "hit": 0.42857142857142855,
+        "beatPeers": 0.47619047619047616,
+        "boom": 0.09523809523809523,
+        "p": 0.1968031968031968,
         "halves": [
           -1.2116425616735649,
-          7.0096003873497015
+          8.740089308476096
         ],
         "holds": false,
-        "net": 2.4252211208169117,
-        "pays": 0.5,
-        "q": 0.4023150762281197,
+        "net": 2.528213363769405,
+        "pays": 0.47619047619047616,
+        "q": 0.30986035241354387,
         "status": "none"
       },
       {
-        "id": "hmaUp@2g",
-        "label": "Hull MA turns up · in 2+ grades",
+        "id": "rsX+sc68",
+        "label": "RS↑ + Score≥68 within 7d",
         "parts": [
-          "hmaUp"
+          "rsX",
+          "sc68"
         ],
-        "n": 20,
-        "cards": 16,
-        "mean": -0.017230056993858045,
-        "edge": 0.027679719279008187,
-        "excess": -1.70824684306633,
-        "vsPeers": 2.806636185080391,
-        "hit": 0.45,
-        "beatPeers": 0.55,
-        "boom": 0.1,
-        "p": 0.25374625374625376,
+        "n": 22,
+        "cards": 18,
+        "mean": 0.0064457209929130255,
+        "edge": 0.03375372558306779,
+        "excess": 0.6466539358227053,
+        "vsPeers": 3.432984637909464,
+        "hit": 0.5,
+        "beatPeers": 0.5909090909090909,
+        "boom": 0.22727272727272727,
+        "p": 0.2127872127872128,
         "halves": [
-          -4.299862037589175,
-          9.011829521826531
+          0.2526649816771087,
+          5.295404455322905
         ],
-        "holds": false,
-        "net": 1.714495097832902,
-        "pays": 0.5,
-        "q": 0.40491423470146876,
+        "holds": true,
+        "net": 5.4552046769012374,
+        "pays": 0.5909090909090909,
+        "q": 0.328046953046953,
         "status": "none"
       },
       {
@@ -1740,103 +1997,22 @@
         ],
         "n": 26,
         "cards": 20,
-        "mean": 0.006353246115882667,
-        "edge": 0.02663011247190656,
-        "excess": 0.637347079208328,
-        "vsPeers": 2.698786249839702,
+        "mean": 0.010275141483999025,
+        "edge": 0.029630633881957715,
+        "excess": 1.0328112021390945,
+        "vsPeers": 3.007398924697835,
         "hit": 0.5,
         "beatPeers": 0.5384615384615384,
         "boom": 0.2692307692307692,
-        "p": 0.2647352647352647,
+        "p": 0.21978021978021978,
         "halves": [
           5.720069994567778,
-          1.6075792659171917
+          2.02563529232056
         ],
         "holds": true,
-        "net": 7.940139107348765,
+        "net": 8.521621857182037,
         "pays": 0.6538461538461539,
-        "q": 0.41364885114885114,
-        "status": "none"
-      },
-      {
-        "id": "rsX+volUp",
-        "label": "RS↑ + Pace↑ within 7d",
-        "parts": [
-          "rsX",
-          "volUp"
-        ],
-        "n": 31,
-        "cards": 25,
-        "mean": -0.00713221019717594,
-        "edge": 0.018590396389015496,
-        "excess": -0.7106836345744716,
-        "vsPeers": 1.8764273618873784,
-        "hit": 0.45161290322580644,
-        "beatPeers": 0.4838709677419355,
-        "boom": 0.1935483870967742,
-        "p": 0.2827172827172827,
-        "halves": [
-          -0.6133217896069021,
-          3.7132796638392973
-        ],
-        "holds": false,
-        "net": 3.987756614075555,
-        "pays": 0.5806451612903226,
-        "q": 0.43192102015631423,
-        "status": "none"
-      },
-      {
-        "id": "volUp+hmaUp",
-        "label": "Pace↑ + HMA↑ within 7d",
-        "parts": [
-          "volUp",
-          "hmaUp"
-        ],
-        "n": 29,
-        "cards": 25,
-        "mean": -0.009999410144736506,
-        "edge": 0.017648267637147746,
-        "excess": -0.9949582264554113,
-        "vsPeers": 1.7804918494305655,
-        "hit": 0.41379310344827586,
-        "beatPeers": 0.4827586206896552,
-        "boom": 0.13793103448275862,
-        "p": 0.2917082917082917,
-        "halves": [
-          -0.07535380381804568,
-          3.3137166097756854
-        ],
-        "holds": false,
-        "net": 3.1351946948175557,
-        "pays": 0.4827586206896552,
-        "q": 0.43192102015631423,
-        "status": "none"
-      },
-      {
-        "id": "rsX+sc55",
-        "label": "RS↑ + Score≥55 within 7d",
-        "parts": [
-          "rsX",
-          "sc55"
-        ],
-        "n": 19,
-        "cards": 16,
-        "mean": -0.017520439850513717,
-        "edge": 0.01962999588307382,
-        "excess": -1.7367849394462342,
-        "vsPeers": 1.982393115657577,
-        "hit": 0.5789473684210527,
-        "beatPeers": 0.631578947368421,
-        "boom": 0.10526315789473684,
-        "p": 0.2937062937062937,
-        "halves": [
-          1.8092660129169325,
-          2.083519850622495
-        ],
-        "holds": true,
-        "net": 1.872906319151113,
-        "pays": 0.42105263157894735,
-        "q": 0.43192102015631423,
+        "q": 0.33191298497420946,
         "status": "none"
       },
       {
@@ -1846,50 +2022,78 @@
           "rsX",
           "stUp"
         ],
-        "n": 25,
-        "cards": 20,
-        "mean": -0.011977395413509853,
-        "edge": 0.01818910201193293,
-        "excess": -1.190595193313948,
-        "vsPeers": 1.8355531262787883,
-        "hit": 0.4,
-        "beatPeers": 0.44,
-        "boom": 0.16,
-        "p": 0.3146853146853147,
+        "n": 24,
+        "cards": 19,
+        "mean": -0.009002792837291669,
+        "edge": 0.022237880330912427,
+        "excess": -0.8962389037778684,
+        "vsPeers": 2.2486985085335753,
+        "hit": 0.4166666666666667,
+        "beatPeers": 0.4583333333333333,
+        "boom": 0.16666666666666666,
+        "p": 0.26973026973026976,
         "halves": [
           -0.9889537225551748,
-          3.763181158645912
+          4.625926410789871
         ],
         "holds": false,
-        "net": 2.7825724266197227,
-        "pays": 0.56,
-        "q": 0.45387305002689615,
+        "net": 2.8879291590412803,
+        "pays": 0.5416666666666666,
+        "q": 0.3942723942723943,
         "status": "none"
       },
       {
-        "id": "volUp@2g",
-        "label": "Sales pace surge · in 2+ grades",
+        "id": "volUp+hmaUp",
+        "label": "Pace↑ + HMA↑ within 7d",
         "parts": [
-          "volUp"
+          "volUp",
+          "hmaUp"
         ],
-        "n": 25,
-        "cards": 18,
-        "mean": -0.006338995667800916,
-        "edge": 0.014029149001741702,
-        "excess": -0.6318946620739285,
-        "vsPeers": 1.412801932706409,
-        "hit": 0.44,
-        "beatPeers": 0.48,
-        "boom": 0.16,
-        "p": 0.36363636363636365,
+        "n": 28,
+        "cards": 24,
+        "mean": -0.006222320196719089,
+        "edge": 0.02051258463035816,
+        "excess": -0.6203001651895801,
+        "vsPeers": 2.072441360180899,
+        "hit": 0.4642857142857143,
+        "beatPeers": 0.5357142857142857,
+        "boom": 0.14285714285714285,
+        "p": 0.27172827172827174,
         "halves": [
-          -1.4837982250246906,
-          3.0794074534501004
+          -0.07535380381804568,
+          3.9711707559383136
         ],
         "holds": false,
-        "net": 4.512123334842744,
-        "pays": 0.48,
-        "q": 0.5040414131323222,
+        "net": 3.2384307367356424,
+        "pays": 0.4642857142857143,
+        "q": 0.3942723942723943,
+        "status": "none"
+      },
+      {
+        "id": "rsX+volUp",
+        "label": "RS↑ + Pace↑ within 7d",
+        "parts": [
+          "rsX",
+          "volUp"
+        ],
+        "n": 30,
+        "cards": 24,
+        "mean": -0.003432969163687737,
+        "edge": 0.020333082831307372,
+        "excess": -0.3427083262347308,
+        "vsPeers": 2.054120817657612,
+        "hit": 0.4666666666666667,
+        "beatPeers": 0.5,
+        "boom": 0.2,
+        "p": 0.27972027972027974,
+        "halves": [
+          -0.6133217896069021,
+          4.142134760836247
+        ],
+        "holds": false,
+        "net": 4.113469962687755,
+        "pays": 0.5666666666666667,
+        "q": 0.3980634749865519,
         "status": "none"
       },
       {
@@ -1898,51 +2102,24 @@
         "parts": [
           "hmaUp"
         ],
-        "n": 47,
-        "cards": 34,
-        "mean": -0.026596758786538544,
-        "edge": 0.009762561962682069,
-        "excess": -2.6246179960895843,
-        "vsPeers": 0.9810371224358683,
-        "hit": 0.425531914893617,
-        "beatPeers": 0.48936170212765956,
-        "boom": 0.1276595744680851,
-        "p": 0.36663336663336665,
+        "n": 45,
+        "cards": 32,
+        "mean": -0.021612369913955837,
+        "edge": 0.013922818146572724,
+        "excess": -2.13804960990458,
+        "vsPeers": 1.4020191960307793,
+        "hit": 0.4666666666666667,
+        "beatPeers": 0.5111111111111111,
+        "boom": 0.13333333333333333,
+        "p": 0.3006993006993007,
         "halves": [
           -5.57824524009638,
-          7.12909971054001
+          8.561146203716664
         ],
         "holds": false,
-        "net": -0.05782970297596446,
-        "pays": 0.3829787234042553,
-        "q": 0.5040414131323222,
-        "status": "none"
-      },
-      {
-        "id": "stLeader",
-        "label": "ST↑ while beating the market (RS > its MA)",
-        "parts": [
-          "stUp",
-          "rsX"
-        ],
-        "n": 24,
-        "cards": 19,
-        "mean": -0.029149839998211222,
-        "edge": 0.009535587356528924,
-        "excess": -2.872908167010446,
-        "vsPeers": 0.9581195922531371,
-        "hit": 0.3333333333333333,
-        "beatPeers": 0.4583333333333333,
-        "boom": 0.125,
-        "p": 0.3696303696303696,
-        "halves": [
-          -1.262604312607174,
-          2.8761606424577257
-        ],
-        "holds": false,
-        "net": -0.512319539528372,
-        "pays": 0.4583333333333333,
-        "q": 0.5040414131323222,
+        "net": 0.3051794203842384,
+        "pays": 0.37777777777777777,
+        "q": 0.4198443066367594,
         "status": "none"
       },
       {
@@ -1952,51 +2129,77 @@
           "rsi50",
           "rsX"
         ],
-        "n": 25,
-        "cards": 20,
-        "mean": -0.030480288924355736,
-        "edge": 0.009221305155233046,
-        "excess": -3.0020448780912146,
-        "vsPeers": 0.9263952376501239,
-        "hit": 0.44,
-        "beatPeers": 0.48,
-        "boom": 0.04,
-        "p": 0.4075924075924076,
+        "n": 24,
+        "cards": 19,
+        "mean": -0.027256383209249096,
+        "edge": 0.014018566208369004,
+        "excess": -2.6888279966596818,
+        "vsPeers": 1.4117287076570673,
+        "hit": 0.4583333333333333,
+        "beatPeers": 0.5,
+        "boom": 0.041666666666666664,
+        "p": 0.32367632367632365,
         "halves": [
           2.413198030696595,
-          -0.6599596407209085
+          0.24079234661991133
         ],
-        "holds": false,
-        "net": -0.9948302363377404,
-        "pays": 0.52,
-        "q": 0.5458826887398317,
+        "holds": true,
+        "net": -1.0478467859138418,
+        "pays": 0.5,
+        "q": 0.4435564435564436,
         "status": "none"
       },
       {
-        "id": "volUp+sc55",
-        "label": "Pace↑ + Score≥55 within 7d",
+        "id": "stLeader",
+        "label": "ST↑ while beating the market (RS > its MA)",
         "parts": [
-          "volUp",
-          "sc55"
+          "stUp",
+          "rsX"
         ],
-        "n": 18,
-        "cards": 14,
-        "mean": -0.015897232409587972,
-        "edge": 0.010317181104972825,
-        "excess": -1.5771538354424353,
-        "vsPeers": 1.0370586725083397,
-        "hit": 0.4444444444444444,
-        "beatPeers": 0.4444444444444444,
-        "boom": 0.1111111111111111,
-        "p": 0.4155844155844156,
+        "n": 23,
+        "cards": 18,
+        "mean": -0.025872419146416338,
+        "edge": 0.013800414659409012,
+        "excess": -2.554059595893976,
+        "vsPeers": 1.3896079948783946,
+        "hit": 0.34782608695652173,
+        "beatPeers": 0.4782608695652174,
+        "boom": 0.13043478260869565,
+        "p": 0.3596403596403596,
         "halves": [
-          -0.46679717814750443,
-          2.0058666999398733
+          -1.262604312607174,
+          3.8833401945243207
         ],
         "holds": false,
-        "net": 2.576197151525328,
+        "net": -0.5468898893983609,
+        "pays": 0.43478260869565216,
+        "q": 0.4838797566070293,
+        "status": "none"
+      },
+      {
+        "id": "volUp@2g",
+        "label": "Sales pace surge · in 2+ grades",
+        "parts": [
+          "volUp"
+        ],
+        "n": 26,
+        "cards": 19,
+        "mean": -0.006679478560257377,
+        "edge": 0.011859840586007512,
+        "excess": -0.6657220428482824,
+        "vsPeers": 1.1930447347596518,
+        "hit": 0.4230769230769231,
+        "beatPeers": 0.46153846153846156,
+        "boom": 0.15384615384615385,
+        "p": 0.37462537462537465,
+        "halves": [
+          -1.4837982250246906,
+          2.6395186111253244
+        ],
+        "holds": false,
+        "net": 4.958414509393694,
         "pays": 0.5,
-        "q": 0.5468215994531784,
+        "q": 0.4950406736121022,
         "status": "none"
       },
       {
@@ -2006,24 +2209,158 @@
           "px50",
           "rsSetX"
         ],
-        "n": 18,
-        "cards": 17,
-        "mean": -0.012234348826046144,
-        "edge": 0.006639408808585581,
-        "excess": -1.2159813454008295,
-        "vsPeers": 0.6661498543782729,
-        "hit": 0.3333333333333333,
-        "beatPeers": 0.3888888888888889,
-        "boom": 0.1111111111111111,
-        "p": 0.4325674325674326,
+        "n": 17,
+        "cards": 16,
+        "mean": -0.007045419610770202,
+        "edge": 0.01082809402602547,
+        "excess": -0.7020658826188297,
+        "vsPeers": 1.0886930004887718,
+        "hit": 0.35294117647058826,
+        "beatPeers": 0.4117647058823529,
+        "boom": 0.11764705882352941,
+        "p": 0.38461538461538464,
         "halves": [
           -1.7200331295016413,
-          4.533458646836874
+          6.448156586610576
         ],
         "holds": false,
-        "net": -0.26515322683977605,
-        "pays": 0.3888888888888889,
-        "q": 0.5593544386647835,
+        "net": -0.29748674124595587,
+        "pays": 0.35294117647058826,
+        "q": 0.4993252361673415,
+        "status": "none"
+      },
+      {
+        "id": "rsi30",
+        "label": "RSI up through 30",
+        "parts": [
+          "rsi30"
+        ],
+        "n": 16,
+        "cards": 14,
+        "mean": -0.01889322244688045,
+        "edge": 0.005322378146564343,
+        "excess": -1.8715864232091484,
+        "vsPeers": 0.5336567163066519,
+        "hit": 0.3125,
+        "beatPeers": 0.375,
+        "boom": 0.0625,
+        "p": 0.42357642357642356,
+        "halves": [
+          -0.356681494740374,
+          2.0352674709916085
+        ],
+        "holds": false,
+        "net": 0.15764620406786278,
+        "pays": 0.375,
+        "q": 0.5387832506476574,
+        "status": "none"
+      },
+      {
+        "id": "rsX+sc55",
+        "label": "RS↑ + Score≥55 within 7d",
+        "parts": [
+          "rsX",
+          "sc55"
+        ],
+        "n": 20,
+        "cards": 17,
+        "mean": -0.02817024086379154,
+        "edge": 0.0036548215233989712,
+        "excess": -2.777715934420144,
+        "vsPeers": 0.36615085277036385,
+        "hit": 0.5,
+        "beatPeers": 0.55,
+        "boom": 0.1,
+        "p": 0.42957042957042957,
+        "halves": [
+          1.8092660129169325,
+          -0.40241980188341353
+        ],
+        "holds": false,
+        "net": 0.4415426700671965,
+        "pays": 0.35,
+        "q": 0.5387832506476574,
+        "status": "none"
+      },
+      {
+        "id": "volUp+sc55",
+        "label": "Pace↑ + Score≥55 within 7d",
+        "parts": [
+          "volUp",
+          "sc55"
+        ],
+        "n": 20,
+        "cards": 16,
+        "mean": -0.023161674490517294,
+        "edge": 0.006724317906710376,
+        "excess": -2.2895501869420354,
+        "vsPeers": 0.6746976892634482,
+        "hit": 0.4,
+        "beatPeers": 0.45,
+        "boom": 0.1,
+        "p": 0.4565434565434565,
+        "halves": [
+          -0.46679717814750443,
+          1.2947616410414309
+        ],
+        "holds": false,
+        "net": 1.4673770074124626,
+        "pays": 0.45,
+        "q": 0.563070263070263,
+        "status": "none"
+      },
+      {
+        "id": "rsi30+stUp",
+        "label": "RSI↑30 + ST↑ within 7d",
+        "parts": [
+          "rsi30",
+          "stUp"
+        ],
+        "n": 16,
+        "cards": 14,
+        "mean": -0.01889322244688045,
+        "edge": 0.005322378146564343,
+        "excess": -1.8715864232091484,
+        "vsPeers": 0.5336567163066519,
+        "hit": 0.3125,
+        "beatPeers": 0.375,
+        "boom": 0.0625,
+        "p": 0.47352647352647353,
+        "halves": [
+          -0.356681494740374,
+          2.0352674709916085
+        ],
+        "holds": false,
+        "net": 0.15764620406786278,
+        "pays": 0.375,
+        "q": 0.5663691147562114,
+        "status": "none"
+      },
+      {
+        "id": "rsi30+rsi50",
+        "label": "RSI↑30 + RSI↑50 within 7d",
+        "parts": [
+          "rsi30",
+          "rsi50"
+        ],
+        "n": 15,
+        "cards": 13,
+        "mean": -0.017045904023574546,
+        "edge": 0.004284066285500742,
+        "excess": -1.6901444580152858,
+        "vsPeers": 0.4293256015921676,
+        "hit": 0.3333333333333333,
+        "beatPeers": 0.4,
+        "boom": 0.06666666666666667,
+        "p": 0.4745254745254745,
+        "halves": [
+          -0.6272353704670386,
+          2.0352674709916085
+        ],
+        "holds": false,
+        "net": 0.9930605568017503,
+        "pays": 0.4,
+        "q": 0.5663691147562114,
         "status": "none"
       },
       {
@@ -2035,76 +2372,22 @@
         ],
         "n": 18,
         "cards": 17,
-        "mean": -0.02505155062472849,
-        "edge": 0.003775952233267833,
-        "excess": -2.4740364511031676,
-        "vsPeers": 0.37830901221833635,
+        "mean": -0.024220933466583567,
+        "edge": 0.0017835232971887488,
+        "excess": -2.3929960603045974,
+        "vsPeers": 0.1785114720837644,
         "hit": 0.3888888888888889,
-        "beatPeers": 0.4444444444444444,
+        "beatPeers": 0.5,
         "boom": 0.2222222222222222,
-        "p": 0.45454545454545453,
+        "p": 0.5074925074925075,
         "halves": [
           0.5854381659350372,
-          0.2987575736032033
+          0.02243992165080755
         ],
         "holds": true,
         "net": 3.715306100364879,
         "pays": 0.4444444444444444,
-        "q": 0.5778120184899845,
-        "status": "none"
-      },
-      {
-        "id": "rsi30+stUp",
-        "label": "RSI↑30 + ST↑ within 7d",
-        "parts": [
-          "rsi30",
-          "stUp"
-        ],
-        "n": 17,
-        "cards": 15,
-        "mean": -0.022808013035411717,
-        "edge": 0.0007629453740615547,
-        "excess": -2.2549876557248383,
-        "vsPeers": 0.07632364909142542,
-        "hit": 0.29411764705882354,
-        "beatPeers": 0.35294117647058826,
-        "boom": 0.058823529411764705,
-        "p": 0.47652347652347654,
-        "halves": [
-          -0.356681494740374,
-          0.6981685309020769
-        ],
-        "holds": false,
-        "net": 0.1651991406529385,
-        "pays": 0.4117647058823529,
-        "q": 0.5920309198997724,
-        "status": "none"
-      },
-      {
-        "id": "rsi30+rsi50",
-        "label": "RSI↑30 + RSI↑50 within 7d",
-        "parts": [
-          "rsi30",
-          "rsi50"
-        ],
-        "n": 16,
-        "cards": 14,
-        "mean": -0.021259442248657882,
-        "edge": -0.0004954365439669914,
-        "excess": -2.1035053247735025,
-        "vsPeers": -0.04953138355480169,
-        "hit": 0.3125,
-        "beatPeers": 0.375,
-        "boom": 0.0625,
-        "p": 0.48151848151848153,
-        "halves": [
-          -0.6272353704670386,
-          0.6981685309020769
-        ],
-        "holds": false,
-        "net": 0.9487313649426232,
-        "pays": 0.4375,
-        "q": 0.5920309198997724,
+        "q": 0.5948738761238761,
         "status": "none"
       },
       {
@@ -2113,50 +2396,24 @@
         "parts": [
           "px50"
         ],
-        "n": 24,
-        "cards": 22,
-        "mean": -0.025559300425784397,
-        "edge": -0.0036455662657388296,
-        "excess": -2.52354267024284,
-        "vsPeers": -0.36389292567081677,
-        "hit": 0.375,
-        "beatPeers": 0.4583333333333333,
-        "boom": 0.08333333333333333,
-        "p": 0.4915084915084915,
+        "n": 23,
+        "cards": 21,
+        "mean": -0.023057501311270778,
+        "edge": -0.0015055765354636487,
+        "excess": -2.2793708485415842,
+        "vsPeers": -0.15044437236945152,
+        "hit": 0.391304347826087,
+        "beatPeers": 0.4782608695652174,
+        "boom": 0.08695652173913043,
+        "p": 0.5144855144855145,
         "halves": [
           1.5530946153032188,
-          -2.9870357713863593
+          -2.7437702277383402
         ],
         "holds": false,
-        "net": -0.9063434039262686,
-        "pays": 0.4166666666666667,
-        "q": 0.5945667235989817,
-        "status": "none"
-      },
-      {
-        "id": "rsi30",
-        "label": "RSI up through 30",
-        "parts": [
-          "rsi30"
-        ],
-        "n": 17,
-        "cards": 15,
-        "mean": -0.022808013035411717,
-        "edge": 0.0007629453740615547,
-        "excess": -2.2549876557248383,
-        "vsPeers": 0.07632364909142542,
-        "hit": 0.29411764705882354,
-        "beatPeers": 0.35294117647058826,
-        "boom": 0.058823529411764705,
-        "p": 0.4995004995004995,
-        "halves": [
-          -0.356681494740374,
-          0.6981685309020769
-        ],
-        "holds": false,
-        "net": 0.1651991406529385,
-        "pays": 0.4117647058823529,
-        "q": 0.594643451786309,
+        "net": -0.95786692405887,
+        "pays": 0.391304347826087,
+        "q": 0.5948738761238761,
         "status": "none"
       },
       {
@@ -2166,51 +2423,24 @@
           "px50",
           "rsX"
         ],
-        "n": 23,
-        "cards": 20,
-        "mean": -0.025467289264861845,
-        "edge": -0.003910851188468596,
-        "excess": -2.5145733356081945,
-        "vsPeers": -0.3903213769473113,
-        "hit": 0.391304347826087,
-        "beatPeers": 0.43478260869565216,
-        "boom": 0.08695652173913043,
-        "p": 0.5364635364635365,
-        "halves": [
-          1.8331706196564657,
-          -3.208439040654909
-        ],
-        "holds": false,
-        "net": -0.597580924565555,
-        "pays": 0.43478260869565216,
-        "q": 0.6286682067932069,
-        "status": "none"
-      },
-      {
-        "id": "px50+hmaUp",
-        "label": "Px>SMA50 + HMA↑ within 7d",
-        "parts": [
-          "px50",
-          "hmaUp"
-        ],
         "n": 22,
-        "cards": 20,
-        "mean": -0.03130981954582193,
-        "edge": -0.007522096429467256,
-        "excess": -3.082474288143089,
-        "vsPeers": -0.7493876264718979,
-        "hit": 0.45454545454545453,
+        "cards": 19,
+        "mean": -0.02291655472300301,
+        "edge": -0.001400395542942665,
+        "excess": -2.2655964885575863,
+        "vsPeers": -0.13994154466652198,
+        "hit": 0.4090909090909091,
         "beatPeers": 0.45454545454545453,
         "boom": 0.09090909090909091,
-        "p": 0.5624375624375625,
+        "p": 0.5284715284715285,
         "halves": [
-          3.2001666753632474,
-          -5.289844291900836
+          1.8331706196564657,
+          -2.922692694594775
         ],
         "holds": false,
-        "net": -0.08285942066050822,
-        "pays": 0.45454545454545453,
-        "q": 0.6489664181971875,
+        "net": -0.6375637687663471,
+        "pays": 0.4090909090909091,
+        "q": 0.601644509336817,
         "status": "none"
       },
       {
@@ -2220,24 +2450,51 @@
           "volUp",
           "vzoX"
         ],
-        "n": 21,
-        "cards": 20,
-        "mean": -0.030567850725074397,
-        "edge": -0.008316104028972347,
-        "excess": -3.01053782187356,
-        "vsPeers": -0.8281620890524422,
-        "hit": 0.42857142857142855,
-        "beatPeers": 0.42857142857142855,
-        "boom": 0.09523809523809523,
-        "p": 0.5774225774225774,
+        "n": 20,
+        "cards": 19,
+        "mean": -0.027897638275785574,
+        "edge": -0.005757604394843782,
+        "excess": -2.751209275444244,
+        "vsPeers": -0.5741061155696503,
+        "hit": 0.4,
+        "beatPeers": 0.45,
+        "boom": 0.1,
+        "p": 0.5584415584415584,
         "halves": [
           -6.628303996472473,
-          2.9188426748713914
+          3.6785724340970605
         ],
         "holds": false,
-        "net": 2.172089068507943,
-        "pays": 0.5238095238095238,
-        "q": 0.6561620197983834,
+        "net": 2.267312860400872,
+        "pays": 0.5,
+        "q": 0.6261314443132624,
+        "status": "none"
+      },
+      {
+        "id": "px50+hmaUp",
+        "label": "Px>SMA50 + HMA↑ within 7d",
+        "parts": [
+          "px50",
+          "hmaUp"
+        ],
+        "n": 21,
+        "cards": 19,
+        "mean": -0.02911898777518182,
+        "edge": -0.005016489246785953,
+        "excess": -2.869911534084857,
+        "vsPeers": -0.5003927678373321,
+        "hit": 0.47619047619047616,
+        "beatPeers": 0.47619047619047616,
+        "boom": 0.09523809523809523,
+        "p": 0.5744255744255744,
+        "halves": [
+          3.2001666753632474,
+          -5.228885047363752
+        ],
+        "holds": false,
+        "net": -0.10039613882047993,
+        "pays": 0.42857142857142855,
+        "q": 0.6283716283716284,
         "status": "none"
       },
       {
@@ -2247,24 +2504,24 @@
           "px50",
           "vzoX"
         ],
-        "n": 18,
-        "cards": 18,
-        "mean": -0.034210758481043047,
-        "edge": -0.012162391284553807,
-        "excess": -3.363218703900206,
-        "vsPeers": -1.208872834527297,
-        "hit": 0.2777777777777778,
-        "beatPeers": 0.3888888888888889,
-        "boom": 0.05555555555555555,
-        "p": 0.6083916083916084,
+        "n": 17,
+        "cards": 17,
+        "mean": -0.03155230008848505,
+        "edge": -0.010445468843600106,
+        "excess": -3.105972053380701,
+        "vsPeers": -1.0391104385986338,
+        "hit": 0.29411764705882354,
+        "beatPeers": 0.4117647058823529,
+        "boom": 0.058823529411764705,
+        "p": 0.5774225774225774,
         "halves": [
           3.6666632907870422,
-          -6.982113799293977
+          -7.3935139309117215
         ],
         "holds": false,
-        "net": -1.1798023699409854,
-        "pays": 0.4444444444444444,
-        "q": 0.68103538252792,
+        "net": -1.2653629178242753,
+        "pays": 0.4117647058823529,
+        "q": 0.6283716283716284,
         "status": "none"
       },
       {
@@ -2274,104 +2531,24 @@
           "volUp",
           "stUp"
         ],
-        "n": 19,
-        "cards": 16,
-        "mean": -0.050694161943250965,
-        "edge": -0.015252514145046551,
-        "excess": -4.94306536380077,
-        "vsPeers": -1.5136783691744649,
-        "hit": 0.3157894736842105,
-        "beatPeers": 0.3157894736842105,
-        "boom": 0.10526315789473684,
-        "p": 0.6303696303696303,
+        "n": 18,
+        "cards": 15,
+        "mean": -0.046691090907164896,
+        "edge": -0.012712734501709198,
+        "excess": -4.561783061065339,
+        "vsPeers": -1.2632269032095467,
+        "hit": 0.3333333333333333,
+        "beatPeers": 0.3333333333333333,
+        "boom": 0.1111111111111111,
+        "p": 0.6343656343656343,
         "halves": [
           -6.581848536793178,
-          2.3441289242058128
+          3.2088782266159965
         ],
         "holds": false,
-        "net": -1.185650447840647,
-        "pays": 0.3684210526315789,
-        "q": 0.69526062173121,
-        "status": "none"
-      },
-      {
-        "id": "rsi30+rsX",
-        "label": "RSI↑30 + RS↑ within 7d",
-        "parts": [
-          "rsi30",
-          "rsX"
-        ],
-        "n": 15,
-        "cards": 14,
-        "mean": -0.04444466270862609,
-        "edge": -0.02325403182587545,
-        "excess": -4.347146967291038,
-        "vsPeers": -2.2985740470071625,
-        "hit": 0.26666666666666666,
-        "beatPeers": 0.3333333333333333,
-        "boom": 0,
-        "p": 0.6903096903096904,
-        "halves": [
-          -0.6272353704670386,
-          -4.753023781601207
-        ],
-        "holds": false,
-        "net": -2.5022042190412708,
-        "pays": 0.4666666666666667,
-        "q": 0.7503366199018373,
-        "status": "none"
-      },
-      {
-        "id": "gold",
-        "label": "SMA20 crosses SMA50",
-        "parts": [
-          "gold"
-        ],
-        "n": 15,
-        "cards": 13,
-        "mean": -0.05142094790635075,
-        "edge": -0.027896373524051388,
-        "excess": -5.012126310286469,
-        "vsPeers": -2.7510862797897495,
-        "hit": 0.4,
-        "beatPeers": 0.4,
-        "boom": 0.13333333333333333,
-        "p": 0.7282717282717283,
-        "halves": [
-          -1.591994567910937,
-          -3.7540868776703373
-        ],
-        "holds": false,
-        "net": -1.905233005237017,
-        "pays": 0.4,
-        "q": 0.7802911374339945,
-        "status": "none"
-      },
-      {
-        "id": "rsi30+px50",
-        "label": "RSI↑30 + Px>SMA50 within 7d",
-        "parts": [
-          "rsi30",
-          "px50"
-        ],
-        "n": 16,
-        "cards": 16,
-        "mean": -0.056955054679615987,
-        "edge": -0.03796244804345375,
-        "excess": -5.53634745963032,
-        "vsPeers": -3.7250906675484585,
-        "hit": 0.25,
-        "beatPeers": 0.3125,
-        "boom": 0,
-        "p": 0.7812187812187812,
-        "halves": [
-          -0.6272353704670386,
-          -7.566568243713778
-        ],
-        "holds": false,
-        "net": -3.319050797045986,
-        "pays": 0.375,
-        "q": 0.8252311069212477,
+        "net": -1.266779411201746,
+        "pays": 0.3333333333333333,
+        "q": 0.6803341585950281,
         "status": "none"
       },
       {
@@ -2381,24 +2558,51 @@
           "rsi50",
           "volUp"
         ],
-        "n": 20,
-        "cards": 17,
-        "mean": -0.06280600236038278,
-        "edge": -0.03189325488863344,
-        "excess": -6.08743558234861,
-        "vsPeers": -3.1390029059809588,
-        "hit": 0.3,
-        "beatPeers": 0.3,
-        "boom": 0.05,
-        "p": 0.8001998001998002,
+        "n": 19,
+        "cards": 16,
+        "mean": -0.06028309903312336,
+        "edge": -0.03010996609796455,
+        "excess": -5.850204130931114,
+        "vsPeers": -2.9661176692741376,
+        "hit": 0.3157894736842105,
+        "beatPeers": 0.3157894736842105,
+        "boom": 0.05263157894736842,
+        "p": 0.7712287712287712,
         "halves": [
           -3.6277657525447538,
-          -2.647761242545832
+          -2.225624067196852
         ],
         "holds": false,
-        "net": -3.2550531307351527,
-        "pays": 0.35,
-        "q": 0.8335414585414586,
+        "net": -3.4379277977169553,
+        "pays": 0.3157894736842105,
+        "q": 0.8131868131868132,
+        "status": "none"
+      },
+      {
+        "id": "rsi30+px50",
+        "label": "RSI↑30 + Px>SMA50 within 7d",
+        "parts": [
+          "rsi30",
+          "px50"
+        ],
+        "n": 15,
+        "cards": 15,
+        "mean": -0.05513035501660107,
+        "edge": -0.03673596150124796,
+        "excess": -5.363822309249821,
+        "vsPeers": -3.60693834559479,
+        "hit": 0.26666666666666666,
+        "beatPeers": 0.3333333333333333,
+        "boom": 0,
+        "p": 0.7802197802197802,
+        "halves": [
+          -0.6272353704670386,
+          -7.909808098734894
+        ],
+        "holds": false,
+        "net": -3.554735234797468,
+        "pays": 0.3333333333333333,
+        "q": 0.8131868131868132,
         "status": "none"
       },
       {
@@ -2408,51 +2612,24 @@
           "px50",
           "stUp"
         ],
-        "n": 18,
-        "cards": 18,
-        "mean": -0.06693844276283689,
-        "edge": -0.04268163287759489,
-        "excess": -6.474722885852002,
-        "vsPeers": -4.178359388923081,
-        "hit": 0.2222222222222222,
-        "beatPeers": 0.2777777777777778,
+        "n": 17,
+        "cards": 17,
+        "mean": -0.0657685864182147,
+        "edge": -0.042463923625797984,
+        "excess": -6.365247724416689,
+        "vsPeers": -4.157495860230487,
+        "hit": 0.23529411764705882,
+        "beatPeers": 0.29411764705882354,
         "boom": 0,
-        "p": 0.8441558441558441,
+        "p": 0.8381618381618382,
         "halves": [
           -0.9889537225551748,
-          -8.021029774806854
+          -8.50889559641348
         ],
         "holds": false,
-        "net": -4.8661603939641696,
-        "pays": 0.3333333333333333,
-        "q": 0.8672834015299768,
-        "status": "none"
-      },
-      {
-        "id": "rsi50+px50",
-        "label": "RSI↑50 + Px>SMA50 within 7d",
-        "parts": [
-          "rsi50",
-          "px50"
-        ],
-        "n": 22,
-        "cards": 21,
-        "mean": -0.07343148511517446,
-        "edge": -0.043629683532187255,
-        "excess": -7.080019237159774,
-        "vsPeers": -4.269160109386316,
-        "hit": 0.2727272727272727,
-        "beatPeers": 0.3181818181818182,
-        "boom": 0,
-        "p": 0.8581418581418582,
-        "halves": [
-          0.2402406598776441,
-          -10.427006090988467
-        ],
-        "holds": false,
-        "net": -6.228999879496411,
-        "pays": 0.3181818181818182,
-        "q": 0.8697383697383698,
+        "net": -5.160856298487526,
+        "pays": 0.29411764705882354,
+        "q": 0.8614441114441115,
         "status": "none"
       },
       {
@@ -2462,24 +2639,51 @@
           "px50",
           "volUp"
         ],
-        "n": 17,
-        "cards": 16,
-        "mean": -0.07753766444933774,
-        "edge": -0.0527750133281338,
-        "excess": -7.460783064623722,
-        "vsPeers": -5.14065906502037,
-        "hit": 0.23529411764705882,
-        "beatPeers": 0.23529411764705882,
-        "boom": 0.11764705882352941,
-        "p": 0.9050949050949051,
+        "n": 16,
+        "cards": 15,
+        "mean": -0.07536709164858603,
+        "edge": -0.052359054971448694,
+        "excess": -7.259701805532681,
+        "vsPeers": -5.101193321965036,
+        "hit": 0.25,
+        "beatPeers": 0.25,
+        "boom": 0.125,
+        "p": 0.8791208791208791,
         "halves": [
           -3.5846019979170918,
-          -7.320134431716907
+          -7.576018585669297
         ],
         "holds": false,
-        "net": -5.860390099886104,
-        "pays": 0.23529411764705882,
-        "q": 0.9050949050949051,
+        "net": -6.231792028274974,
+        "pays": 0.1875,
+        "q": 0.8911088911088911,
+        "status": "none"
+      },
+      {
+        "id": "rsi50+px50",
+        "label": "RSI↑50 + Px>SMA50 within 7d",
+        "parts": [
+          "rsi50",
+          "px50"
+        ],
+        "n": 21,
+        "cards": 20,
+        "mean": -0.07291844658875564,
+        "edge": -0.04318331334893439,
+        "excess": -7.032335476397056,
+        "vsPeers": -4.226419178412466,
+        "hit": 0.2857142857142857,
+        "beatPeers": 0.3333333333333333,
+        "boom": 0,
+        "p": 0.8911088911088911,
+        "halves": [
+          0.2402406598776441,
+          -11.064200133681833
+        ],
+        "holds": false,
+        "net": -6.528461500363902,
+        "pays": 0.2857142857142857,
+        "q": 0.8911088911088911,
         "status": "none"
       },
       {
@@ -2490,21 +2694,46 @@
         ],
         "n": 12,
         "cards": 12,
-        "mean": -0.057082358283149205,
-        "edge": -0.025638276533573492,
-        "excess": -5.548372257585321,
-        "vsPeers": -2.531240677460489,
+        "mean": -0.056937577650982805,
+        "edge": -0.02691631300564404,
+        "excess": -5.534696501243197,
+        "vsPeers": -2.6557297390368273,
         "hit": 0.4166666666666667,
         "beatPeers": 0.4166666666666667,
         "boom": 0.16666666666666666,
         "p": null,
         "halves": [
           -3.655474166284134,
-          -1.720193881240606
+          -1.9352813355727028
         ],
         "holds": false,
         "net": -4.410619490337986,
         "pays": 0.25,
+        "status": "few"
+      },
+      {
+        "id": "gold",
+        "label": "SMA20 crosses SMA50",
+        "parts": [
+          "gold"
+        ],
+        "n": 14,
+        "cards": 12,
+        "mean": -0.04541238488407088,
+        "edge": -0.018044499686188067,
+        "excess": -4.439667579970708,
+        "vsPeers": -1.7882672526991272,
+        "hit": 0.42857142857142855,
+        "beatPeers": 0.42857142857142855,
+        "boom": 0.14285714285714285,
+        "p": null,
+        "halves": [
+          -1.591994567910937,
+          -1.9841484757701089
+        ],
+        "holds": false,
+        "net": -1.9184785906465995,
+        "pays": 0.42857142857142855,
         "status": "few"
       },
       {
@@ -2515,17 +2744,17 @@
         ],
         "n": 11,
         "cards": 10,
-        "mean": -0.10634894794787321,
-        "edge": -0.06819613907618426,
-        "excess": -10.088914955658456,
-        "vsPeers": -6.592275343941312,
+        "mean": -0.10760681280093488,
+        "edge": -0.06727255596157705,
+        "excess": -10.201939849513064,
+        "vsPeers": -6.505965695743465,
         "hit": 0.09090909090909091,
         "beatPeers": 0.2727272727272727,
         "boom": 0,
         "p": null,
         "halves": [
           -6.583849859068436,
-          -6.602384922700466
+          -6.412418981282042
         ],
         "holds": false,
         "net": -9.967771822604998,
@@ -2540,9 +2769,9 @@
         ],
         "n": 1,
         "cards": 1,
-        "mean": 0.25993101858643414,
+        "mean": 0.2535026493915205,
         "edge": 0.2911687041126867,
-        "excess": 29.684062568070544,
+        "excess": 28.853079330332697,
         "vsPeers": 33.79902893753357,
         "hit": 1,
         "beatPeers": 1,
@@ -2565,10 +2794,10 @@
         ],
         "n": 3,
         "cards": 3,
-        "mean": 0.08689866047009898,
-        "edge": 0.11523817442044963,
-        "excess": 9.078613436298632,
-        "vsPeers": 12.214067095056414,
+        "mean": 0.08632100715299519,
+        "edge": 0.11010558840616554,
+        "excess": 9.015622008777191,
+        "vsPeers": 11.639594270403041,
         "hit": 0.6666666666666666,
         "beatPeers": 0.6666666666666666,
         "boom": 0.6666666666666666,
@@ -2588,14 +2817,14 @@
         "parts": [
           "lagDown"
         ],
-        "n": 7,
-        "cards": 7,
-        "mean": -0.1497763791230598,
-        "edge": -0.11505687990966026,
-        "excess": -13.909952978045116,
-        "vsPeers": -10.86845554770064,
-        "hit": 0.2857142857142857,
-        "beatPeers": 0.2857142857142857,
+        "n": 6,
+        "cards": 6,
+        "mean": -0.17750624787176397,
+        "edge": -0.15230288664488303,
+        "excess": -16.26442323720466,
+        "vsPeers": -14.127185593927216,
+        "hit": 0.16666666666666666,
+        "beatPeers": 0.16666666666666666,
         "boom": 0,
         "p": null,
         "halves": [
@@ -2603,8 +2832,8 @@
           null
         ],
         "holds": false,
-        "net": -13.103717539492887,
-        "pays": 0.2857142857142857,
+        "net": -16.936930301112707,
+        "pays": 0.16666666666666666,
         "status": "few"
       },
       {
@@ -2615,9 +2844,9 @@
         ],
         "n": 2,
         "cards": 1,
-        "mean": 0.09238893155774877,
-        "edge": 0.08157158758041115,
-        "excess": 9.679131589200484,
+        "mean": 0.09100631590848356,
+        "edge": 0.08157158758041116,
+        "excess": 9.527592289911313,
         "vsPeers": 8.499088667624054,
         "hit": 1,
         "beatPeers": 1,
@@ -2640,12 +2869,12 @@
         ],
         "n": 6,
         "cards": 6,
-        "mean": -0.13763952669364662,
-        "edge": -0.11824217243264656,
-        "excess": -12.858724382610731,
-        "vsPeers": -11.151913901253607,
-        "hit": 0.16666666666666666,
-        "beatPeers": 0.16666666666666666,
+        "mean": -0.10819234684621894,
+        "edge": -0.08218897595826014,
+        "excess": -10.254504280297926,
+        "vsPeers": -7.890212310570844,
+        "hit": 0.3333333333333333,
+        "beatPeers": 0.3333333333333333,
         "boom": 0,
         "p": null,
         "halves": [
@@ -2653,7 +2882,7 @@
           null
         ],
         "holds": false,
-        "net": -10.468197747967379,
+        "net": -8.079635370330806,
         "pays": 0.16666666666666666,
         "status": "few"
       },
@@ -2663,23 +2892,23 @@
         "parts": [
           "watchZone"
         ],
-        "n": 12,
-        "cards": 11,
-        "mean": -0.038507007854105636,
-        "edge": -0.020671889479013668,
-        "excess": -3.777503841595753,
-        "vsPeers": -2.0459690670500463,
-        "hit": 0.3333333333333333,
-        "beatPeers": 0.4166666666666667,
-        "boom": 0.16666666666666666,
+        "n": 11,
+        "cards": 10,
+        "mean": -0.04685724527705923,
+        "edge": -0.03558341849863778,
+        "excess": -4.5776392205430945,
+        "vsPeers": -3.4957771501609836,
+        "hit": 0.2727272727272727,
+        "beatPeers": 0.36363636363636365,
+        "boom": 0.18181818181818182,
         "p": null,
         "halves": [
           -1.81707684609681,
-          -2.3655219859036403
+          null
         ],
         "holds": false,
-        "net": -4.079815373649643,
-        "pays": 0.4166666666666667,
+        "net": -5.567041530676775,
+        "pays": 0.36363636363636365,
         "status": "few"
       },
       {
@@ -2690,12 +2919,12 @@
         ],
         "n": 5,
         "cards": 5,
-        "mean": -0.04020509024655617,
-        "edge": 0.0014308602173443764,
-        "excess": -3.9407589185655234,
-        "vsPeers": 0.14318843862477504,
+        "mean": -0.036950079417806564,
+        "edge": -0.0030942874531101894,
+        "excess": -3.6275756176432417,
+        "vsPeers": -0.3089505079640009,
         "hit": 0.2,
-        "beatPeers": 0.2,
+        "beatPeers": 0.4,
         "boom": 0.2,
         "p": null,
         "halves": [
@@ -2716,10 +2945,10 @@
         ],
         "n": 8,
         "cards": 8,
-        "mean": -0.04813126025937566,
-        "edge": -0.006888565174225935,
-        "excess": -4.699131330007312,
-        "vsPeers": -0.6864893395198246,
+        "mean": -0.04876246847399934,
+        "edge": -0.005630357910384208,
+        "excess": -4.759267040098858,
+        "vsPeers": -0.5614537151389487,
         "hit": 0.375,
         "beatPeers": 0.5,
         "boom": 0,
@@ -2742,10 +2971,10 @@
         ],
         "n": 7,
         "cards": 7,
-        "mean": -0.0639381716106584,
-        "edge": -0.026040154608523908,
-        "excess": -6.193700333803909,
-        "vsPeers": -2.570403364985019,
+        "mean": -0.06485146538672201,
+        "edge": -0.02460220344984765,
+        "excess": -6.279333933175646,
+        "vsPeers": -2.430203587555768,
         "hit": 0.2857142857142857,
         "beatPeers": 0.42857142857142855,
         "boom": 0,
@@ -2766,14 +2995,14 @@
           "rsi30",
           "gold"
         ],
-        "n": 6,
-        "cards": 6,
-        "mean": -0.06922089783568668,
-        "edge": -0.05209185081981633,
-        "excess": -6.687946699585645,
-        "vsPeers": -5.07583257873867,
-        "hit": 0.3333333333333333,
-        "beatPeers": 0.3333333333333333,
+        "n": 5,
+        "cards": 5,
+        "mean": -0.054483270706931784,
+        "edge": -0.027657496465542098,
+        "excess": -5.302564906324381,
+        "vsPeers": -2.727852970495226,
+        "hit": 0.4,
+        "beatPeers": 0.4,
         "boom": 0,
         "p": null,
         "halves": [
@@ -2781,8 +3010,34 @@
           null
         ],
         "holds": false,
-        "net": -5.120655342114078,
-        "pays": 0.3333333333333333,
+        "net": -5.7866092077843545,
+        "pays": 0.4,
+        "status": "few"
+      },
+      {
+        "id": "rsi30+rsX",
+        "label": "RSI↑30 + RS↑ within 7d",
+        "parts": [
+          "rsi30",
+          "rsX"
+        ],
+        "n": 14,
+        "cards": 13,
+        "mean": -0.041415866192581176,
+        "edge": -0.019172428906485496,
+        "excess": -4.056994755082954,
+        "vsPeers": -1.898980685645113,
+        "hit": 0.2857142857142857,
+        "beatPeers": 0.35714285714285715,
+        "boom": 0,
+        "p": null,
+        "halves": [
+          -0.6272353704670386,
+          -4.147248186807106
+        ],
+        "holds": false,
+        "net": -2.698378062875084,
+        "pays": 0.42857142857142855,
         "status": "few"
       },
       {
@@ -2792,23 +3047,23 @@
           "rsi30",
           "volUp"
         ],
-        "n": 14,
-        "cards": 13,
-        "mean": -0.0669555016531357,
-        "edge": -0.04601868591717893,
-        "excess": -6.476318309686347,
-        "vsPeers": -4.4975883477561425,
-        "hit": 0.21428571428571427,
-        "beatPeers": 0.21428571428571427,
-        "boom": 0.07142857142857142,
+        "n": 13,
+        "cards": 12,
+        "mean": -0.0643036222902563,
+        "edge": -0.04549630946367421,
+        "excess": -6.227975646417871,
+        "vsPeers": -4.447687104173514,
+        "hit": 0.23076923076923078,
+        "beatPeers": 0.23076923076923078,
+        "boom": 0.07692307692307693,
         "p": null,
         "halves": [
           -6.581848536793178,
-          -1.6460594959259
+          -0.9311551517219963
         ],
         "holds": false,
-        "net": -4.899797577843246,
-        "pays": 0.21428571428571427,
+        "net": -5.287425672557211,
+        "pays": 0.15384615384615385,
         "status": "few"
       },
       {
@@ -2820,9 +3075,9 @@
         ],
         "n": 3,
         "cards": 2,
-        "mean": 0.15977410855462662,
+        "mean": 0.15403225365959333,
         "edge": 0.16873828208728295,
-        "excess": 17.324581486308354,
+        "excess": 16.65285109851764,
         "vsPeers": 18.381027402317017,
         "hit": 0.3333333333333333,
         "beatPeers": 0.3333333333333333,
@@ -2844,23 +3099,23 @@
           "rsi30",
           "hmaUp"
         ],
-        "n": 14,
-        "cards": 13,
-        "mean": -0.008890820183026909,
-        "edge": 0.01726096928700498,
-        "excess": -0.8851413713018119,
-        "vsPeers": 1.7410800654126923,
-        "hit": 0.42857142857142855,
-        "beatPeers": 0.42857142857142855,
-        "boom": 0.07142857142857142,
+        "n": 13,
+        "cards": 12,
+        "mean": -0.002912908017177183,
+        "edge": 0.02363236782936135,
+        "excess": -0.29086696169743353,
+        "vsPeers": 2.3913825027375823,
+        "hit": 0.46153846153846156,
+        "beatPeers": 0.46153846153846156,
+        "boom": 0.07692307692307693,
         "p": null,
         "halves": [
           2.36063457042619,
-          0.9208367286246855
+          2.4405984071307785
         ],
         "holds": true,
-        "net": 2.094732117976994,
-        "pays": 0.42857142857142855,
+        "net": 2.235199429593937,
+        "pays": 0.38461538461538464,
         "status": "few"
       },
       {
@@ -2870,23 +3125,23 @@
           "rsi30",
           "rsSetX"
         ],
-        "n": 14,
-        "cards": 13,
-        "mean": -0.0075379972133048844,
-        "edge": 0.00781426628264901,
-        "excess": -0.7509657764580568,
-        "vsPeers": 0.7844877343795575,
-        "hit": 0.2857142857142857,
-        "beatPeers": 0.35714285714285715,
-        "boom": 0.07142857142857142,
+        "n": 13,
+        "cards": 12,
+        "mean": -0.0017952314745219512,
+        "edge": 0.014090417956312752,
+        "excess": -0.17936210103611794,
+        "vsPeers": 1.4190155794108206,
+        "hit": 0.3076923076923077,
+        "beatPeers": 0.38461538461538464,
+        "boom": 0.07692307692307693,
         "p": null,
         "halves": [
           -2.0534302097991453,
-          6.101548854183925
+          null
         ],
         "holds": false,
-        "net": 0.26608525960594154,
-        "pays": 0.35714285714285715,
+        "net": 0.2645440133639765,
+        "pays": 0.3076923076923077,
         "status": "few"
       },
       {
@@ -2896,23 +3151,23 @@
           "rsi30",
           "sc55"
         ],
-        "n": 7,
-        "cards": 6,
-        "mean": 0.05474767867117601,
-        "edge": 0.06840581740259707,
-        "excess": 5.627406057369955,
-        "vsPeers": 7.079976949804978,
-        "hit": 0.5714285714285714,
-        "beatPeers": 0.5714285714285714,
-        "boom": 0.14285714285714285,
+        "n": 8,
+        "cards": 7,
+        "mean": 0.03247712263330156,
+        "edge": 0.05843586401380117,
+        "excess": 3.301026031911669,
+        "vsPeers": 6.017698801739968,
+        "hit": 0.5,
+        "beatPeers": 0.5,
+        "boom": 0.125,
         "p": null,
         "halves": [
           0.7231172784333273,
           null
         ],
         "holds": false,
-        "net": 4.593811812199067,
-        "pays": 0.14285714285714285,
+        "net": 2.967854116884361,
+        "pays": 0.125,
         "status": "few"
       },
       {
@@ -2924,20 +3179,20 @@
         ],
         "n": 7,
         "cards": 6,
-        "mean": 0.05019327058236157,
-        "edge": 0.07904082738685526,
-        "excess": 5.147429578864249,
-        "vsPeers": 8.224850654679061,
-        "hit": 0.5714285714285714,
-        "beatPeers": 0.7142857142857143,
+        "mean": 0.020970729827260202,
+        "edge": 0.04663837671973577,
+        "excess": 2.119216072912966,
+        "vsPeers": 4.774305228454456,
+        "hit": 0.42857142857142855,
+        "beatPeers": 0.5714285714285714,
         "boom": 0.14285714285714285,
         "p": null,
         "halves": [
-          0.4131746635390954,
+          -4.167120489184384,
           null
         ],
         "holds": false,
-        "net": 3.7547605129103045,
+        "net": 1.05976892606503,
         "pays": 0.2857142857142857,
         "status": "few"
       },
@@ -2950,17 +3205,17 @@
         ],
         "n": 13,
         "cards": 11,
-        "mean": -0.00005341012351106622,
-        "edge": 0.037775091465243334,
-        "excess": -0.005340869721581765,
-        "vsPeers": 3.8497639628447544,
+        "mean": -0.001247652982801687,
+        "edge": 0.038405231490494525,
+        "excess": -0.12468749874087193,
+        "vsPeers": 3.9152244782099554,
         "hit": 0.46153846153846156,
         "beatPeers": 0.5384615384615384,
         "boom": 0.15384615384615385,
         "p": null,
         "halves": [
           3.396513140134716,
-          4.134054136742127
+          4.240739681914074
         ],
         "holds": true,
         "net": 3.4176248562890033,
@@ -2976,17 +3231,17 @@
         ],
         "n": 9,
         "cards": 9,
-        "mean": -0.05173857450593841,
-        "edge": -0.007435186907155753,
-        "excess": -5.042292194611353,
-        "vsPeers": -0.740761428317438,
+        "mean": -0.0517966206970606,
+        "edge": -0.007425342230229627,
+        "excess": -5.04780396789688,
+        "vsPeers": -0.7397842483717665,
         "hit": 0.3333333333333333,
         "beatPeers": 0.4444444444444444,
         "boom": 0.1111111111111111,
         "p": null,
         "halves": [
           null,
-          -3.199703371948648
+          -3.198273909924254
         ],
         "holds": false,
         "net": -1.048722338212149,
@@ -3000,23 +3255,23 @@
           "rsi50",
           "gold"
         ],
-        "n": 10,
-        "cards": 10,
-        "mean": -0.022999406124054593,
-        "edge": 0.0011551804264626007,
-        "excess": -2.2736935853869156,
-        "vsPeers": 0.11558479043658476,
-        "hit": 0.4,
-        "beatPeers": 0.4,
-        "boom": 0.1,
+        "n": 9,
+        "cards": 9,
+        "mean": -0.010051406900421443,
+        "edge": 0.019964309203557833,
+        "excess": -1.0001060335882994,
+        "vsPeers": 2.0164928878174226,
+        "hit": 0.4444444444444444,
+        "beatPeers": 0.4444444444444444,
+        "boom": 0.1111111111111111,
         "p": null,
         "halves": [
           -1.139874229366189,
-          1.3869873196989957
+          null
         ],
         "holds": false,
-        "net": 0.10865198245026964,
-        "pays": 0.4,
+        "net": 0.31387977662213906,
+        "pays": 0.4444444444444444,
         "status": "few"
       },
       {
@@ -3028,9 +3283,9 @@
         ],
         "n": 3,
         "cards": 2,
-        "mean": 0.1775217006213625,
-        "edge": 0.17854303832105914,
-        "excess": 19.425397367455766,
+        "mean": 0.17144044121977955,
+        "edge": 0.1785430383210591,
+        "excess": 18.701344355412708,
         "vsPeers": 19.54743333744855,
         "hit": 0.6666666666666666,
         "beatPeers": 0.6666666666666666,
@@ -3054,17 +3309,17 @@
         ],
         "n": 11,
         "cards": 11,
-        "mean": -0.027390660379868238,
-        "edge": -0.010241823344000018,
-        "excess": -2.7018937882675287,
-        "vsPeers": -1.018955446635983,
+        "mean": -0.030302423246988567,
+        "edge": -0.010765693771155334,
+        "excess": -2.9847907366859383,
+        "vsPeers": -1.0707951089078516,
         "hit": 0.36363636363636365,
         "beatPeers": 0.45454545454545453,
         "boom": 0.09090909090909091,
         "p": null,
         "halves": [
           5.114052233151023,
-          -7.908077950867032
+          -8.014154127927108
         ],
         "holds": false,
         "net": -1.497556008794354,
@@ -3080,10 +3335,10 @@
         ],
         "n": 2,
         "cards": 2,
-        "mean": 0.3211405473529403,
-        "edge": 0.2885158833727382,
-        "excess": 37.869933981999495,
-        "vsPeers": 33.44455448505599,
+        "mean": 0.3176840338966851,
+        "edge": 0.28249181751263397,
+        "excess": 37.394207351372486,
+        "vsPeers": 32.64309215480874,
         "hit": 1,
         "beatPeers": 1,
         "boom": 1,
@@ -3106,9 +3361,9 @@
         ],
         "n": 1,
         "cards": 1,
-        "mean": 0.06251711919960351,
+        "mean": 0.06386050991505933,
         "edge": 0.12717256086585987,
-        "excess": 6.45126823669635,
+        "excess": 6.594369981350301,
         "vsPeers": 13.561296323095885,
         "hit": 1,
         "beatPeers": 1,
@@ -3132,17 +3387,17 @@
         ],
         "n": 9,
         "cards": 9,
-        "mean": -0.0745155758827802,
-        "edge": -0.044646916574087314,
-        "excess": -7.180698347923354,
-        "vsPeers": -4.366491170273445,
+        "mean": -0.0768446800664538,
+        "edge": -0.04639576443154367,
+        "excess": -7.39663260741793,
+        "vsPeers": -4.533593466455255,
         "hit": 0.2222222222222222,
         "beatPeers": 0.3333333333333333,
         "boom": 0,
         "p": null,
         "halves": [
           null,
-          -8.454834353544427
+          -8.694667492457619
         ],
         "holds": false,
         "net": -3.178004974842785,
@@ -3184,20 +3439,20 @@
         ],
         "n": 11,
         "cards": 10,
-        "mean": -0.08875329013013322,
-        "edge": -0.06269138151079258,
-        "excess": -8.492869714946805,
-        "vsPeers": -6.076670627495517,
+        "mean": -0.0783380943649017,
+        "edge": -0.050790570286111496,
+        "excess": -7.534824585744282,
+        "vsPeers": -4.952229203604041,
         "hit": 0.2727272727272727,
         "beatPeers": 0.36363636363636365,
         "boom": 0.09090909090909091,
         "p": null,
         "halves": [
           null,
-          -9.32494710513102
+          -7.613252476021604
         ],
         "holds": false,
-        "net": -4.895187967425119,
+        "net": -3.679756991992833,
         "pays": 0.45454545454545453,
         "status": "few"
       },
@@ -3210,10 +3465,10 @@
         ],
         "n": 6,
         "cards": 6,
-        "mean": -0.15483410723599436,
-        "edge": -0.14001031041895964,
-        "excess": -14.344273765035764,
-        "vsPeers": -13.06507280026189,
+        "mean": -0.15546181933053727,
+        "edge": -0.14156243392937778,
+        "excess": -14.3980240287501,
+        "vsPeers": -13.199901881883436,
         "hit": 0,
         "beatPeers": 0,
         "boom": 0,
@@ -3262,17 +3517,17 @@
         ],
         "n": 12,
         "cards": 12,
-        "mean": -0.057082358283149205,
-        "edge": -0.025638276533573492,
-        "excess": -5.548372257585321,
-        "vsPeers": -2.531240677460489,
+        "mean": -0.056937577650982805,
+        "edge": -0.02691631300564404,
+        "excess": -5.534696501243197,
+        "vsPeers": -2.6557297390368273,
         "hit": 0.4166666666666667,
         "beatPeers": 0.4166666666666667,
         "boom": 0.16666666666666666,
         "p": null,
         "halves": [
           -3.655474166284134,
-          -1.720193881240606
+          -1.9352813355727028
         ],
         "holds": false,
         "net": -4.410619490337986,
@@ -3288,17 +3543,17 @@
         ],
         "n": 9,
         "cards": 9,
-        "mean": -0.05173857450593841,
-        "edge": -0.007435186907155753,
-        "excess": -5.042292194611353,
-        "vsPeers": -0.740761428317438,
+        "mean": -0.0517966206970606,
+        "edge": -0.007425342230229627,
+        "excess": -5.04780396789688,
+        "vsPeers": -0.7397842483717665,
         "hit": 0.3333333333333333,
         "beatPeers": 0.4444444444444444,
         "boom": 0.1111111111111111,
         "p": null,
         "halves": [
           null,
-          -3.199703371948648
+          -3.198273909924254
         ],
         "holds": false,
         "net": -1.048722338212149,
@@ -3314,17 +3569,17 @@
         ],
         "n": 10,
         "cards": 10,
-        "mean": -0.020096730608712993,
-        "edge": 0.017546064539610117,
-        "excess": -1.98961373219545,
-        "vsPeers": 1.7700900994492397,
+        "mean": -0.020855896465501178,
+        "edge": 0.01712862205423724,
+        "excess": -2.0639916349062704,
+        "vsPeers": 1.7276158060056224,
         "hit": 0.4,
         "beatPeers": 0.6,
         "boom": 0.1,
         "p": null,
         "halves": [
           null,
-          -0.41228485937588877
+          -0.48154766775111435
         ],
         "holds": false,
         "net": 1.0723100517561202,
@@ -3340,10 +3595,10 @@
         ],
         "n": 10,
         "cards": 10,
-        "mean": 0.002297603760981701,
-        "edge": 0.03823064425517592,
-        "excess": 0.23002452751665903,
-        "vsPeers": 3.8970837900731636,
+        "mean": 0.001418361367573645,
+        "edge": 0.03839827711330911,
+        "excess": 0.14193677177913866,
+        "vsPeers": 3.9145018150564814,
         "hit": 0.5,
         "beatPeers": 0.6,
         "boom": 0.2,
@@ -3364,23 +3619,23 @@
           "macdX0",
           "sc55"
         ],
-        "n": 5,
-        "cards": 5,
-        "mean": -0.042169265782560084,
-        "edge": 0.033254373422555994,
-        "excess": -4.129250953582875,
-        "vsPeers": 3.38134804705692,
-        "hit": 0.4,
-        "beatPeers": 0.6,
-        "boom": 0.2,
+        "n": 6,
+        "cards": 6,
+        "mean": -0.049556661002125475,
+        "edge": 0.02249399089470208,
+        "excess": -4.834876490384465,
+        "vsPeers": 2.2748888340217155,
+        "hit": 0.3333333333333333,
+        "beatPeers": 0.5,
+        "boom": 0.16666666666666666,
         "p": null,
         "halves": [
           null,
-          null
+          1.3212528318363281
         ],
         "holds": false,
-        "net": -3.6922835646143515,
-        "pays": 0.2,
+        "net": -4.376904614775345,
+        "pays": 0.16666666666666666,
         "status": "few"
       },
       {
@@ -3392,12 +3647,12 @@
         ],
         "n": 5,
         "cards": 5,
-        "mean": -0.024561398931407595,
-        "edge": 0.05122530620519492,
-        "excess": -2.4262222177704795,
-        "vsPeers": 5.256001487240902,
-        "hit": 0.4,
-        "beatPeers": 0.8,
+        "mean": -0.05760620993451491,
+        "edge": 0.0018710528638681777,
+        "excess": -5.597837941281125,
+        "vsPeers": 0.18728043754978607,
+        "hit": 0.2,
+        "beatPeers": 0.6,
         "boom": 0.2,
         "p": null,
         "halves": [
@@ -3405,7 +3660,7 @@
           null
         ],
         "holds": false,
-        "net": -1.2786687242787642,
+        "net": -4.849871464799527,
         "pays": 0.4,
         "status": "few"
       },
@@ -3416,23 +3671,23 @@
           "px50",
           "gold"
         ],
-        "n": 12,
-        "cards": 11,
-        "mean": -0.029175509768964283,
-        "edge": -0.010228617940678463,
-        "excess": -2.8754013651916654,
-        "vsPeers": -1.017648353391143,
-        "hit": 0.4166666666666667,
-        "beatPeers": 0.4166666666666667,
-        "boom": 0.16666666666666666,
+        "n": 11,
+        "cards": 10,
+        "mean": -0.01989076743774847,
+        "edge": 0.004350712003029386,
+        "excess": -1.9694251232686866,
+        "vsPeers": 0.4360190090987981,
+        "hit": 0.45454545454545453,
+        "beatPeers": 0.45454545454545453,
+        "boom": 0.18181818181818182,
         "p": null,
         "halves": [
           0.9572994833532356,
-          -2.9539618469248685
+          -0.1859659158555127
         ],
         "holds": false,
-        "net": 0.48436393271729106,
-        "pays": 0.4166666666666667,
+        "net": 0.6871592526579873,
+        "pays": 0.45454545454545453,
         "status": "few"
       },
       {
@@ -3444,9 +3699,9 @@
         ],
         "n": 1,
         "cards": 1,
-        "mean": -0.03265890994129708,
-        "edge": -0.012724782853447969,
-        "excess": -3.2131366337588063,
+        "mean": -0.03128666213750355,
+        "edge": -0.012724782853447983,
+        "excess": -3.0802299034400127,
         "vsPeers": -1.2644165114149453,
         "hit": 0,
         "beatPeers": 0,
@@ -3468,23 +3723,23 @@
           "px50",
           "sc55"
         ],
-        "n": 12,
-        "cards": 11,
-        "mean": -0.03610649257079732,
-        "edge": -0.010257426950898369,
-        "excess": -3.5462428071986407,
-        "vsPeers": -1.0204998958960654,
-        "hit": 0.4166666666666667,
-        "beatPeers": 0.5833333333333334,
-        "boom": 0.08333333333333333,
+        "n": 13,
+        "cards": 12,
+        "mean": -0.04041704184338712,
+        "edge": -0.011263260161941811,
+        "excess": -3.961116670597864,
+        "vsPeers": -1.120006712293664,
+        "hit": 0.38461538461538464,
+        "beatPeers": 0.46153846153846156,
+        "boom": 0.07692307692307693,
         "p": null,
         "halves": [
           1.6263579924254756,
-          null
+          -5.36065314762425
         ],
         "holds": false,
-        "net": -5.214645012108365,
-        "pays": 0.25,
+        "net": -5.4103632043805305,
+        "pays": 0.23076923076923078,
         "status": "few"
       },
       {
@@ -3496,20 +3751,20 @@
         ],
         "n": 12,
         "cards": 10,
-        "mean": -0.0568151645012774,
-        "edge": -0.02524338007293034,
-        "excess": -5.5231319980948435,
-        "vsPeers": -2.4927430085844415,
-        "hit": 0.3333333333333333,
-        "beatPeers": 0.5833333333333334,
+        "mean": -0.07241614000259129,
+        "edge": -0.04620427328865162,
+        "excess": -6.985625475818191,
+        "vsPeers": -4.515310744726586,
+        "hit": 0.25,
+        "beatPeers": 0.4166666666666667,
         "boom": 0.08333333333333333,
         "p": null,
         "halves": [
-          1.378461680077736,
+          -1.5369925365215198,
           null
         ],
         "holds": false,
-        "net": -6.696915828014949,
+        "net": -8.118377325356763,
         "pays": 0.25,
         "status": "few"
       },
@@ -3520,23 +3775,23 @@
           "gold",
           "rsX"
         ],
-        "n": 13,
-        "cards": 12,
-        "mean": -0.044481295878978096,
-        "edge": -0.01985046422188974,
-        "excess": -4.350650970369085,
-        "vsPeers": -1.965474096229658,
-        "hit": 0.38461538461538464,
-        "beatPeers": 0.38461538461538464,
-        "boom": 0.15384615384615385,
+        "n": 12,
+        "cards": 11,
+        "mean": -0.03693746820389744,
+        "edge": -0.007686118969202388,
+        "excess": -3.626360236720716,
+        "vsPeers": -0.7656656289675157,
+        "hit": 0.4166666666666667,
+        "beatPeers": 0.4166666666666667,
+        "boom": 0.16666666666666666,
         "p": null,
         "halves": [
           1.3608820861142679,
-          -4.729616305598039
+          -2.847598448327726
         ],
         "holds": false,
-        "net": -0.36348683761556755,
-        "pays": 0.38461538461538464,
+        "net": -0.2496357153681461,
+        "pays": 0.4166666666666667,
         "status": "few"
       },
       {
@@ -3546,23 +3801,23 @@
           "gold",
           "volUp"
         ],
-        "n": 10,
-        "cards": 10,
-        "mean": -0.01577059317779527,
-        "edge": 0.0045544586587526695,
-        "excess": -1.564688852552043,
-        "vsPeers": 0.4564845969128095,
-        "hit": 0.5,
-        "beatPeers": 0.5,
-        "boom": 0.3,
+        "n": 9,
+        "cards": 9,
+        "mean": 3.741391660372351e-8,
+        "edge": 0.02356485702396206,
+        "excess": 0.0000037413917297612898,
+        "vsPeers": 2.3844702113686944,
+        "hit": 0.5555555555555556,
+        "beatPeers": 0.5555555555555556,
+        "boom": 0.3333333333333333,
         "p": null,
         "halves": [
           null,
-          5.603746162133949
+          10.377510397510425
         ],
         "holds": false,
-        "net": 2.9607955661541174,
-        "pays": 0.5,
+        "net": 3.49440931111904,
+        "pays": 0.5555555555555556,
         "status": "few"
       },
       {
@@ -3598,23 +3853,23 @@
           "gold",
           "hmaUp"
         ],
-        "n": 13,
-        "cards": 12,
-        "mean": 0.010189116482159106,
-        "edge": 0.020969315496138067,
-        "excess": 1.0241202281954243,
-        "vsPeers": 2.119071642629655,
-        "hit": 0.46153846153846156,
-        "beatPeers": 0.46153846153846156,
-        "boom": 0.23076923076923078,
+        "n": 12,
+        "cards": 11,
+        "mean": 0.021843541768123833,
+        "edge": 0.03564308317572549,
+        "excess": 2.2083858526565026,
+        "vsPeers": 3.6285912600070525,
+        "hit": 0.5,
+        "beatPeers": 0.5,
+        "boom": 0.25,
         "p": null,
         "halves": [
           -3.7758976484300377,
-          7.4585185862295456
+          11.602858993658337
         ],
         "holds": false,
-        "net": 4.977850891159141,
-        "pays": 0.5384615384615384,
+        "net": 5.556158608435524,
+        "pays": 0.5833333333333334,
         "status": "few"
       },
       {
@@ -3624,14 +3879,14 @@
           "gold",
           "stUp"
         ],
-        "n": 8,
-        "cards": 8,
-        "mean": -0.10592464597543833,
-        "edge": -0.08016278050409201,
-        "excess": -10.050757410341971,
-        "vsPeers": -7.703390672809396,
-        "hit": 0.25,
-        "beatPeers": 0.25,
+        "n": 7,
+        "cards": 7,
+        "mean": -0.10108635317774206,
+        "edge": -0.06740246592983935,
+        "excess": -9.61450212338325,
+        "vsPeers": -6.518110713876101,
+        "hit": 0.2857142857142857,
+        "beatPeers": 0.2857142857142857,
         "boom": 0,
         "p": null,
         "halves": [
@@ -3639,8 +3894,8 @@
           null
         ],
         "holds": false,
-        "net": -8.72881958606535,
-        "pays": 0.25,
+        "net": -9.688468384516469,
+        "pays": 0.2857142857142857,
         "status": "few"
       },
       {
@@ -3650,14 +3905,14 @@
           "gold",
           "vzoX"
         ],
-        "n": 7,
-        "cards": 7,
-        "mean": -0.08856908477442567,
-        "edge": -0.06886458483755391,
-        "excess": -8.47601205887527,
-        "vsPeers": -6.654692478008384,
-        "hit": 0.2857142857142857,
-        "beatPeers": 0.2857142857142857,
+        "n": 6,
+        "cards": 6,
+        "mean": -0.0806010557117925,
+        "edge": -0.05129807854528163,
+        "excess": -7.743833125322819,
+        "vsPeers": -5.000454493897266,
+        "hit": 0.3333333333333333,
+        "beatPeers": 0.3333333333333333,
         "boom": 0,
         "p": null,
         "halves": [
@@ -3665,8 +3920,8 @@
           null
         ],
         "holds": false,
-        "net": -8.690535394430675,
-        "pays": 0.2857142857142857,
+        "net": -9.80330697445746,
+        "pays": 0.3333333333333333,
         "status": "few"
       },
       {
@@ -3676,23 +3931,23 @@
           "gold",
           "rsSetX"
         ],
-        "n": 7,
-        "cards": 7,
-        "mean": 0.016933200506919776,
-        "edge": 0.021852366825517194,
-        "excess": 1.7077379802608705,
-        "vsPeers": 2.209287851507824,
-        "hit": 0.42857142857142855,
-        "beatPeers": 0.42857142857142855,
-        "boom": 0.2857142857142857,
+        "n": 6,
+        "cards": 6,
+        "mean": 0.04230966936524724,
+        "edge": 0.05453836506163464,
+        "excess": 4.321748123142322,
+        "vsPeers": 5.605299117464013,
+        "hit": 0.5,
+        "beatPeers": 0.5,
+        "boom": 0.3333333333333333,
         "p": null,
         "halves": [
           null,
           null
         ],
         "holds": false,
-        "net": 5.790979126648188,
-        "pays": 0.42857142857142855,
+        "net": 7.097400249876062,
+        "pays": 0.5,
         "status": "few"
       },
       {
@@ -3702,23 +3957,23 @@
           "gold",
           "sc55"
         ],
-        "n": 7,
-        "cards": 6,
-        "mean": -0.10696001249433833,
-        "edge": -0.07758701030127735,
-        "excess": -10.143839649087749,
-        "vsPeers": -7.465349378455965,
-        "hit": 0.2857142857142857,
-        "beatPeers": 0.2857142857142857,
-        "boom": 0.14285714285714285,
+        "n": 8,
+        "cards": 7,
+        "mean": -0.10094646113301448,
+        "edge": -0.07123865333973114,
+        "excess": -9.601857026817983,
+        "vsPeers": -6.876037784000644,
+        "hit": 0.25,
+        "beatPeers": 0.25,
+        "boom": 0.125,
         "p": null,
         "halves": [
           null,
           null
         ],
         "holds": false,
-        "net": -6.874601586860396,
-        "pays": 0.2857142857142857,
+        "net": -7.658139865610492,
+        "pays": 0.25,
         "status": "few"
       },
       {
@@ -3730,10 +3985,10 @@
         ],
         "n": 8,
         "cards": 6,
-        "mean": -0.13042288741173727,
-        "edge": -0.10403746322982792,
-        "excess": -12.227582607799059,
-        "vsPeers": -9.880846475681516,
+        "mean": -0.13105062658611555,
+        "edge": -0.10411513250704259,
+        "excess": -12.282663502599567,
+        "vsPeers": -9.887845693383346,
         "hit": 0.125,
         "beatPeers": 0.125,
         "boom": 0.125,
@@ -3754,23 +4009,23 @@
           "rsX",
           "dip"
         ],
-        "n": 4,
+        "n": 3,
         "cards": 3,
-        "mean": 0.04774182341614912,
-        "edge": 0.054219543259035226,
-        "excess": 4.889981899210616,
-        "vsPeers": 5.571635212313941,
-        "hit": 0.5,
-        "beatPeers": 0.5,
-        "boom": 0.25,
+        "mean": -0.02184945470457983,
+        "edge": -0.0016344088587228166,
+        "excess": -2.1612484397693366,
+        "vsPeers": -0.16330739399308403,
+        "hit": 0.3333333333333333,
+        "beatPeers": 0.3333333333333333,
+        "boom": 0,
         "p": null,
         "halves": [
           null,
           null
         ],
         "holds": false,
-        "net": 5.45586145351844,
-        "pays": 0.25,
+        "net": -7.708599657369941,
+        "pays": 0,
         "status": "few"
       },
       {
@@ -3782,10 +4037,10 @@
         ],
         "n": 10,
         "cards": 9,
-        "mean": -0.11754960580033402,
-        "edge": -0.08004688546018736,
-        "excess": -11.090359368629487,
-        "vsPeers": -7.692693333346834,
+        "mean": -0.11892965046943735,
+        "edge": -0.07903094403411945,
+        "excess": -11.21297401790795,
+        "vsPeers": -7.598866863546805,
         "hit": 0,
         "beatPeers": 0.2,
         "boom": 0,
@@ -3808,9 +4063,9 @@
         ],
         "n": 2,
         "cards": 1,
-        "mean": 0.3110417502141266,
-        "edge": 0.31260756695931924,
-        "excess": 36.48462026178687,
+        "mean": 0.30192346591390595,
+        "edge": 0.3126075669593192,
+        "excess": 35.24577136332998,
         "vsPeers": 36.698497568289625,
         "hit": 1,
         "beatPeers": 1,
@@ -3834,9 +4089,9 @@
         ],
         "n": 3,
         "cards": 2,
-        "mean": 0.15977410855462662,
+        "mean": 0.15403225365959333,
         "edge": 0.16873828208728295,
-        "excess": 17.324581486308354,
+        "excess": 16.65285109851764,
         "vsPeers": 18.381027402317017,
         "hit": 0.3333333333333333,
         "beatPeers": 0.3333333333333333,
@@ -3860,10 +4115,10 @@
         ],
         "n": 4,
         "cards": 3,
-        "mean": 0.24152860719057134,
-        "edge": 0.25436176042606995,
-        "excess": 27.319387689642973,
-        "vsPeers": 28.963825997651437,
+        "mean": 0.23580909836920066,
+        "edge": 0.25640674267182306,
+        "excess": 26.593261849659378,
+        "vsPeers": 29.227824576361773,
         "hit": 0.5,
         "beatPeers": 1,
         "boom": 0.5,
@@ -3886,9 +4141,9 @@
         ],
         "n": 6,
         "cards": 4,
-        "mean": 0.08002778689940333,
-        "edge": 0.08656477753301778,
-        "excess": 8.33171692819461,
+        "mean": 0.07574161349807057,
+        "edge": 0.08656477753301776,
+        "excess": 7.868382080663716,
         "vsPeers": 9.04220002771794,
         "hit": 0.5,
         "beatPeers": 0.5,
@@ -3912,10 +4167,10 @@
         ],
         "n": 3,
         "cards": 2,
-        "mean": 0.18429378854660375,
-        "edge": 0.21992452736879972,
-        "excess": 20.23690134570646,
-        "vsPeers": 24.59826894466568,
+        "mean": 0.180190179644772,
+        "edge": 0.22265117036313722,
+        "excess": 19.744507114667286,
+        "vsPeers": 24.938467531066877,
         "hit": 0.6666666666666666,
         "beatPeers": 1,
         "boom": 0.3333333333333333,
@@ -3938,10 +4193,10 @@
         ],
         "n": 6,
         "cards": 4,
-        "mean": -0.037189876606065576,
-        "edge": -0.010859092921287464,
-        "excess": -3.6506826834204142,
-        "vsPeers": -1.0800345810817902,
+        "mean": -0.04171843307291039,
+        "edge": -0.008916862154665734,
+        "excess": -4.08601953967862,
+        "vsPeers": -0.8877224840304287,
         "hit": 0.3333333333333333,
         "beatPeers": 0.5,
         "boom": 0.16666666666666666,
@@ -3956,32 +4211,6 @@
         "status": "few"
       },
       {
-        "id": "vzoX+sc55",
-        "label": "VZO↑0 + Score≥55 within 7d",
-        "parts": [
-          "vzoX",
-          "sc55"
-        ],
-        "n": 14,
-        "cards": 11,
-        "mean": 0.02749911126097868,
-        "edge": 0.0627608229685488,
-        "excess": 2.788070158915801,
-        "vsPeers": 6.477213973383122,
-        "hit": 0.42857142857142855,
-        "beatPeers": 0.6428571428571429,
-        "boom": 0.14285714285714285,
-        "p": null,
-        "halves": [
-          4.679112163825971,
-          8.30620227070944
-        ],
-        "holds": true,
-        "net": 3.5829201619379303,
-        "pays": 0.35714285714285715,
-        "status": "few"
-      },
-      {
         "id": "trend3",
         "label": "ST↑ + Px>SMA50 + Score≥55 within 7d",
         "parts": [
@@ -3989,14 +4218,14 @@
           "px50",
           "sc55"
         ],
-        "n": 9,
-        "cards": 9,
-        "mean": -0.05462932329828926,
-        "edge": -0.02257648694660329,
-        "excess": -5.316394702151383,
-        "vsPeers": -2.232354515336099,
-        "hit": 0.3333333333333333,
-        "beatPeers": 0.4444444444444444,
+        "n": 10,
+        "cards": 10,
+        "mean": -0.058811989654042975,
+        "edge": -0.024311946445464645,
+        "excess": -5.711597555470305,
+        "vsPeers": -2.401879160247977,
+        "hit": 0.3,
+        "beatPeers": 0.3,
         "boom": 0,
         "p": null,
         "halves": [
@@ -4004,8 +4233,8 @@
           null
         ],
         "holds": false,
-        "net": -7.692717717744646,
-        "pays": 0.1111111111111111,
+        "net": -7.696216222440844,
+        "pays": 0.1,
         "status": "few"
       },
       {
@@ -4016,17 +4245,17 @@
         ],
         "n": 12,
         "cards": 8,
-        "mean": 0.018460047252582507,
-        "edge": 0.05400104900521361,
-        "excess": 1.863148723006236,
-        "vsPeers": 5.548570936451136,
+        "mean": 0.018264824087945733,
+        "edge": 0.0532799643252265,
+        "excess": 1.8432646177348078,
+        "vsPeers": 5.472488913041729,
         "hit": 0.5,
         "beatPeers": 0.4166666666666667,
         "boom": 0.16666666666666666,
         "p": null,
         "halves": [
           1.1753181576883653,
-          8.787586659966774
+          8.653192493093043
         ],
         "holds": true,
         "net": 3.9664891135058777,
@@ -4043,17 +4272,17 @@
         ],
         "n": 13,
         "cards": 13,
-        "mean": 0.07090123781538195,
-        "edge": 0.09890058154435244,
-        "excess": 7.347520187679235,
-        "vsPeers": 10.395654044857828,
+        "mean": 0.07001395721409226,
+        "edge": 0.09891389723737026,
+        "excess": 7.252315058498282,
+        "vsPeers": 10.397124049284635,
         "hit": 0.6153846153846154,
         "beatPeers": 0.6153846153846154,
         "boom": 0.3076923076923077,
         "p": null,
         "halves": [
           null,
-          13.254553287898062
+          13.256513786590318
         ],
         "holds": false,
         "net": 14.653311469762587,
@@ -4068,9 +4297,9 @@
         ],
         "n": 3,
         "cards": 2,
-        "mean": 0.1703134176528496,
+        "mean": 0.16211450093564242,
         "edge": 0.15916351592256447,
-        "excess": 18.56764050074784,
+        "excess": 17.599488612714676,
         "vsPeers": 17.252965827514856,
         "hit": 0.3333333333333333,
         "beatPeers": 0.3333333333333333,
@@ -4093,10 +4322,10 @@
         ],
         "n": 5,
         "cards": 4,
-        "mean": 0.11141908580458945,
-        "edge": 0.13539914342808662,
-        "excess": 11.78632893374112,
-        "vsPeers": 14.499370987033444,
+        "mean": 0.10898239297922548,
+        "edge": 0.13588832723061522,
+        "excess": 11.514271582763147,
+        "vsPeers": 14.555395926849336,
         "hit": 0.4,
         "beatPeers": 0.6,
         "boom": 0.2,
@@ -4118,17 +4347,17 @@
         ],
         "n": 12,
         "cards": 10,
-        "mean": 0.05956434678482022,
-        "edge": 0.06683208439318968,
-        "excess": 6.137405479018665,
-        "vsPeers": 6.911594184942027,
+        "mean": 0.057116720850730385,
+        "edge": 0.06321814026413215,
+        "excess": 5.877938481403544,
+        "vsPeers": 6.52591898089101,
         "hit": 0.5833333333333334,
         "beatPeers": 0.6666666666666666,
         "boom": 0.4166666666666667,
         "p": null,
         "halves": [
           null,
-          9.457506073057576
+          8.865751481025907
         ],
         "holds": false,
         "net": 14.872518447055572,
@@ -4143,9 +4372,9 @@
         ],
         "n": 6,
         "cards": 6,
-        "mean": 0.00712879885173368,
+        "mean": 0.003976155120965829,
         "edge": 0.040786313491210084,
-        "excess": 0.7154269226688603,
+        "excess": 0.3984070513204152,
         "vsPeers": 4.162949959116169,
         "hit": 0.5,
         "beatPeers": 0.5,
@@ -4168,10 +4397,10 @@
         ],
         "n": 5,
         "cards": 5,
-        "mean": -0.0940646692169018,
-        "edge": -0.051641787604304566,
-        "excess": -8.977610312921714,
-        "vsPeers": -5.033101087504399,
+        "mean": -0.09511643566432947,
+        "edge": -0.051415218078486834,
+        "excess": -9.073294280945143,
+        "vsPeers": -5.011582044561791,
         "hit": 0.4,
         "beatPeers": 0.4,
         "boom": 0,
@@ -4193,10 +4422,10 @@
         ],
         "n": 7,
         "cards": 5,
-        "mean": 0.03880258516820091,
-        "edge": 0.06785086671616783,
-        "excess": 3.9565237794972896,
-        "vsPeers": 7.0205693287685556,
+        "mean": 0.03598471969148271,
+        "edge": 0.06883297307793976,
+        "excess": 3.664000619078567,
+        "vsPeers": 7.125726540077593,
         "hit": 0.2857142857142857,
         "beatPeers": 0.5714285714285714,
         "boom": 0.14285714285714285,
@@ -4218,17 +4447,17 @@
         ],
         "n": 7,
         "cards": 5,
-        "mean": 0.13456689728833024,
-        "edge": 0.1623193496323347,
-        "excess": 14.404118969584756,
-        "vsPeers": 17.623581182270144,
+        "mean": 0.13354264485462933,
+        "edge": 0.16122374044316543,
+        "excess": 14.287000262104366,
+        "vsPeers": 17.494782275380572,
         "hit": 0.42857142857142855,
         "beatPeers": 0.8571428571428571,
         "boom": 0.2857142857142857,
         "p": null,
         "halves": [
           null,
-          25.934099322542046
+          25.741083010669506
         ],
         "holds": false,
         "net": 18.854323969690334,
@@ -4243,10 +4472,10 @@
         ],
         "n": 3,
         "cards": 2,
-        "mean": -0.14214048248900077,
-        "edge": -0.08929009020229435,
-        "excess": -13.250062054671218,
-        "vsPeers": -8.541977567358494,
+        "mean": -0.14080912794851094,
+        "edge": -0.08540562866905088,
+        "excess": -13.134490214424332,
+        "vsPeers": -8.186021496065365,
         "hit": 0,
         "beatPeers": 0.3333333333333333,
         "boom": 0,
@@ -4261,73 +4490,60 @@
         "status": "few"
       }
     ],
-    "cards": 90,
-    "events": 2294,
+    "cards": 88,
+    "events": 2236,
     "asOf": "2026-10-22"
   },
   "prospects": {
     "psa9": {
-      "buy": [
-        {
-          "key": "legendary-collection-charizard-3",
-          "name": "Charizard",
-          "set": "Legendary Collection",
-          "line": "Holo",
-          "price": 1600,
-          "trend": 0.65,
-          "value": 0.75,
-          "roc": -0.33,
-          "zone": "buy",
-          "spread": 1.5,
-          "score": 0.8270349112294892
-        }
-      ],
+      "buy": [],
       "watch": [
-        {
-          "key": "neo-destiny-shining-tyranitar-113",
-          "name": "Shining Tyranitar",
-          "set": "Neo Destiny",
-          "line": "1st Ed",
-          "price": 5302,
-          "trend": -0.13,
-          "value": 1.47,
-          "roc": -0.17,
-          "zone": "watch",
-          "spread": 1.08,
-          "score": 0.336397381313459
-        },
         {
           "key": "holon-phantoms-mew-111",
           "name": "Mew",
           "set": "Holon Phantoms",
           "line": null,
           "price": 1199,
-          "trend": -0.53,
+          "trend": -0.47,
           "value": 1.22,
-          "roc": -0.81,
+          "roc": -0.75,
           "zone": "watch",
           "spread": 2.09,
-          "score": -0.5101051024150272
+          "score": -0.4267717690816939
         }
       ],
       "counts": {
-        "buy": 1,
-        "watch": 2,
-        "up": 1,
-        "late": 20,
-        "neutral": 11,
+        "buy": 0,
+        "watch": 1,
+        "up": 4,
+        "late": 18,
+        "neutral": 13,
         "avoid": 0
       }
     },
     "psa7": {
-      "buy": [],
+      "buy": [
+        {
+          "key": "aquapolis-umbreon-h29-H29",
+          "name": "Umbreon (H29)",
+          "set": "Aquapolis",
+          "line": null,
+          "price": 2999,
+          "trend": 0.6,
+          "value": 0.9,
+          "roc": -0.4,
+          "zone": "buy",
+          "spread": 1.18,
+          "score": 0.8143164503989848
+        }
+      ],
       "watch": [],
       "counts": {
-        "buy": 0,
+        "buy": 1,
         "watch": 0,
-        "up": 4,
-        "late": 9,
-        "neutral": 3,
+        "up": 3,
+        "late": 13,
+        "neutral": 0,
         "avoid": 0
       }
     },
@@ -4355,32 +4571,46 @@
           "line": null,
           "price": 1926,
           "trend": -0.13,
-          "value": 1.13,
+          "value": 1.12,
           "roc": -0.33,
           "zone": "watch",
           "spread": 1.3,
-          "score": 0.18568880403159363
+          "score": 0.18341590719225628
         }
       ],
       "counts": {
         "buy": 1,
         "watch": 1,
         "up": 5,
-        "late": 20,
+        "late": 18,
         "neutral": 6,
         "avoid": 0
       }
     },
     "psa10": {
       "buy": [],
-      "watch": [],
+      "watch": [
+        {
+          "key": "skyridge-kabutops-150-150",
+          "name": "Kabutops (150)",
+          "set": "Skyridge",
+          "line": "holo/rev · one price level",
+          "price": 27012,
+          "trend": -0.56,
+          "value": 2,
+          "roc": -1.56,
+          "zone": "watch",
+          "spread": 1.55,
+          "score": -0.10555555555555562
+        }
+      ],
       "counts": {
         "buy": 0,
-        "watch": 0,
+        "watch": 1,
         "up": 0,
-        "late": 6,
-        "neutral": 1,
-        "avoid": 1
+        "late": 5,
+        "neutral": 2,
+        "avoid": 0
       }
     }
   }

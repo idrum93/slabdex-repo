@@ -468,22 +468,6 @@
       "sprite": "img/sprites/rayquaza.png"
     },
     {
-      "key": "dragon-frontiers-dragonite-ex-delta-species-91",
-      "name": "Dragonite ex (Delta Species)",
-      "set": "Dragon Frontiers",
-      "number": "91",
-      "era": "EX Series",
-      "family": "EX",
-      "basket": "dragon-frontiers",
-      "rarity": "Ultra Rare",
-      "pooled": false,
-      "query": "Dragonite ex (Delta Species) Dragon Frontiers 91",
-      "tier": "rotate",
-      "raw": false,
-      "tcgPlayerId": "84919",
-      "sprite": "img/sprites/dragonite.png"
-    },
-    {
       "key": "sandstorm-raichu-ex-98",
       "name": "Raichu ex",
       "set": "Sandstorm",
@@ -1152,21 +1136,6 @@
       "tier": "rotate",
       "raw": false,
       "tcgPlayerId": "86556"
-    },
-    {
-      "key": "legends-awakened-mewtwo-lv-x-144",
-      "name": "Mewtwo LV.X",
-      "set": "Legends Awakened",
-      "number": "144",
-      "era": "DP & Platinum",
-      "family": "DP",
-      "basket": "legends-awakened",
-      "rarity": "Ultra Rare",
-      "pooled": false,
-      "query": "Mewtwo LV.X Legends Awakened 144",
-      "tier": "rotate",
-      "raw": false,
-      "tcgPlayerId": "87433"
     },
     {
       "key": "rising-rivals-snorlax-lv-x-111",
@@ -3919,6 +3888,37 @@
       "raw": false,
       "tcgPlayerId": "83535",
       "sprite": "img/sprites/ampharos.png"
+    },
+    {
+      "key": "dragon-frontiers-dragonite-ex-delta-species-91",
+      "name": "Dragonite ex (Delta Species)",
+      "set": "Dragon Frontiers",
+      "number": "91",
+      "era": "EX Series",
+      "family": "EX",
+      "basket": "dragon-frontiers",
+      "rarity": "Ultra Rare",
+      "pooled": false,
+      "query": "Dragonite ex (Delta Species) Dragon Frontiers 91",
+      "tier": "bench",
+      "raw": false,
+      "tcgPlayerId": "84919",
+      "sprite": "img/sprites/dragonite.png"
+    },
+    {
+      "key": "legends-awakened-mewtwo-lv-x-144",
+      "name": "Mewtwo LV.X",
+      "set": "Legends Awakened",
+      "number": "144",
+      "era": "DP & Platinum",
+      "family": "DP",
+      "basket": "legends-awakened",
+      "rarity": "Ultra Rare",
+      "pooled": false,
+      "query": "Mewtwo LV.X Legends Awakened 144",
+      "tier": "bench",
+      "raw": false,
+      "tcgPlayerId": "87433"
     }
   ],
   "extra": [

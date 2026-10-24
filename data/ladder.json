@@ -1,32 +1,44 @@
 {
  "fails": {
-  "dragon-frontiers-dragonite-ex-delta-species-91": {
-   "since": "2026-10-17",
-   "last": "2026-10-23"
-  },
-  "legends-awakened-mewtwo-lv-x-144": {
-   "since": "2026-10-17",
-   "last": "2026-10-23"
-  },
   "sandstorm-raichu-ex-98": {
    "since": "2026-10-20",
-   "last": "2026-10-23"
+   "last": "2026-10-24"
   },
   "undaunted-raichu-prime-83": {
    "since": "2026-10-21",
-   "last": "2026-10-23"
-  },
-  "great-encounters-darkrai-lv-x-104": {
-   "since": "2026-10-22",
-   "last": "2026-10-23"
+   "last": "2026-10-24"
   },
   "skyridge-umbreon-h30-H30": {
    "since": "2026-10-22",
-   "last": "2026-10-23"
+   "last": "2026-10-24"
   },
   "rising-rivals-snorlax-lv-x-111": {
    "since": "2026-10-23",
-   "last": "2026-10-23"
+   "last": "2026-10-24"
+  },
+  "arceus-gengar-lv-x-97": {
+   "since": "2026-10-24",
+   "last": "2026-10-24"
+  },
+  "fossil-zapdos-15-15": {
+   "since": "2026-10-24",
+   "last": "2026-10-24"
+  },
+  "base-set-blastoise-2": {
+   "since": "2026-10-24",
+   "last": "2026-10-24"
+  },
+  "base-set-mewtwo-10": {
+   "since": "2026-10-24",
+   "last": "2026-10-24"
+  },
+  "base-set-alakazam-1": {
+   "since": "2026-10-24",
+   "last": "2026-10-24"
+  },
+  "heartgold-soulsilver-lugia-legend-bottom-114": {
+   "since": "2026-10-24",
+   "last": "2026-10-24"
   }
  },
  "checked": {
@@ -283,9 +295,27 @@
     "psa9"
    ],
    "price": 2999.99
+  },
+  {
+   "t": "2026-10-24",
+   "action": "demote",
+   "key": "dragon-frontiers-dragonite-ex-delta-species-91",
+   "name": "Dragonite ex (Delta Species)",
+   "set": "Dragon Frontiers",
+   "basket": "fam:EX",
+   "reason": "no grade liquid at the minimum for 7 days"
+  },
+  {
+   "t": "2026-10-24",
+   "action": "demote",
+   "key": "legends-awakened-mewtwo-lv-x-144",
+   "name": "Mewtwo LV.X",
+   "set": "Legends Awakened",
+   "basket": "fam:DP",
+   "reason": "no grade liquid at the minimum for 7 days"
   }
  ],
- "updated": "2026-10-23T15:44:29.339Z",
- "bench": 175,
- "tracked": 77
+ "updated": "2026-10-24T14:30:04.724Z",
+ "bench": 177,
+ "tracked": 75
 }
