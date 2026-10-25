@@ -2,43 +2,31 @@
  "fails": {
   "sandstorm-raichu-ex-98": {
    "since": "2026-10-20",
-   "last": "2026-10-24"
+   "last": "2026-10-25"
   },
   "undaunted-raichu-prime-83": {
    "since": "2026-10-21",
-   "last": "2026-10-24"
+   "last": "2026-10-25"
   },
   "skyridge-umbreon-h30-H30": {
    "since": "2026-10-22",
-   "last": "2026-10-24"
+   "last": "2026-10-25"
   },
   "rising-rivals-snorlax-lv-x-111": {
    "since": "2026-10-23",
-   "last": "2026-10-24"
+   "last": "2026-10-25"
   },
   "arceus-gengar-lv-x-97": {
    "since": "2026-10-24",
-   "last": "2026-10-24"
+   "last": "2026-10-25"
   },
   "fossil-zapdos-15-15": {
    "since": "2026-10-24",
-   "last": "2026-10-24"
-  },
-  "base-set-blastoise-2": {
-   "since": "2026-10-24",
-   "last": "2026-10-24"
-  },
-  "base-set-mewtwo-10": {
-   "since": "2026-10-24",
-   "last": "2026-10-24"
-  },
-  "base-set-alakazam-1": {
-   "since": "2026-10-24",
-   "last": "2026-10-24"
+   "last": "2026-10-25"
   },
   "heartgold-soulsilver-lugia-legend-bottom-114": {
    "since": "2026-10-24",
-   "last": "2026-10-24"
+   "last": "2026-10-25"
   }
  },
  "checked": {
@@ -101,7 +89,11 @@
   "heartgold-soulsilver-lugia-legend-bottom-114": "2026-10-23",
   "base-set-blastoise-2": "2026-10-23",
   "base-set-mewtwo-10": "2026-10-23",
-  "base-set-alakazam-1": "2026-10-23"
+  "base-set-alakazam-1": "2026-10-23",
+  "base-set-ninetales-12": "2026-10-25",
+  "base-set-gyarados-6": "2026-10-25",
+  "base-set-zapdos-16": "2026-10-25",
+  "base-set-nidoking-11": "2026-10-25"
  },
  "history": [
   {
@@ -313,9 +305,97 @@
    "set": "Legends Awakened",
    "basket": "fam:DP",
    "reason": "no grade liquid at the minimum for 7 days"
+  },
+  {
+   "t": "2026-10-25",
+   "action": "demote",
+   "key": "base-set-blastoise-2",
+   "name": "Blastoise",
+   "set": "Base Set",
+   "basket": "set:base-set",
+   "reason": "replaced by Gyarados (no grade liquid at the minimum)"
+  },
+  {
+   "t": "2026-10-25",
+   "action": "promote",
+   "key": "base-set-gyarados-6",
+   "name": "Gyarados",
+   "set": "Base Set",
+   "basket": "set:base-set",
+   "reason": "liquid at PSA10 · beat Blastoise in base-set",
+   "liq": [
+    "psa10"
+   ],
+   "price": 2650
+  },
+  {
+   "t": "2026-10-25",
+   "action": "demote",
+   "key": "base-set-mewtwo-10",
+   "name": "Mewtwo",
+   "set": "Base Set",
+   "basket": "set:base-set",
+   "reason": "replaced by Nidoking (no grade liquid at the minimum)"
+  },
+  {
+   "t": "2026-10-25",
+   "action": "promote",
+   "key": "base-set-nidoking-11",
+   "name": "Nidoking",
+   "set": "Base Set",
+   "basket": "set:base-set",
+   "reason": "liquid at PSA10 · beat Mewtwo in base-set",
+   "liq": [
+    "psa10"
+   ],
+   "price": 2499.99
+  },
+  {
+   "t": "2026-10-25",
+   "action": "demote",
+   "key": "base-set-alakazam-1",
+   "name": "Alakazam",
+   "set": "Base Set",
+   "basket": "set:base-set",
+   "reason": "replaced by Zapdos (no grade liquid at the minimum)"
+  },
+  {
+   "t": "2026-10-25",
+   "action": "promote",
+   "key": "base-set-zapdos-16",
+   "name": "Zapdos",
+   "set": "Base Set",
+   "basket": "set:base-set",
+   "reason": "liquid at PSA10 · beat Alakazam in base-set",
+   "liq": [
+    "psa10"
+   ],
+   "price": 1999.99
+  },
+  {
+   "t": "2026-10-25",
+   "action": "demote",
+   "key": "base-set-gyarados-6",
+   "name": "Gyarados",
+   "set": "Base Set",
+   "basket": "set:base-set",
+   "reason": "replaced by Ninetales (no grade liquid at the minimum)"
+  },
+  {
+   "t": "2026-10-25",
+   "action": "promote",
+   "key": "base-set-ninetales-12",
+   "name": "Ninetales",
+   "set": "Base Set",
+   "basket": "set:base-set",
+   "reason": "liquid at PSA10 · beat Gyarados in base-set",
+   "liq": [
+    "psa10"
+   ],
+   "price": 1776
   }
  ],
- "updated": "2026-10-24T14:30:04.724Z",
+ "updated": "2026-10-25T14:57:10.648Z",
  "bench": 177,
  "tracked": 75
 }
