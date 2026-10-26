@@ -2,31 +2,35 @@
  "fails": {
   "sandstorm-raichu-ex-98": {
    "since": "2026-10-20",
-   "last": "2026-10-25"
+   "last": "2026-10-26"
   },
   "undaunted-raichu-prime-83": {
    "since": "2026-10-21",
-   "last": "2026-10-25"
+   "last": "2026-10-26"
   },
   "skyridge-umbreon-h30-H30": {
    "since": "2026-10-22",
-   "last": "2026-10-25"
+   "last": "2026-10-26"
   },
   "rising-rivals-snorlax-lv-x-111": {
    "since": "2026-10-23",
-   "last": "2026-10-25"
+   "last": "2026-10-26"
   },
   "arceus-gengar-lv-x-97": {
    "since": "2026-10-24",
-   "last": "2026-10-25"
-  },
-  "fossil-zapdos-15-15": {
-   "since": "2026-10-24",
-   "last": "2026-10-25"
+   "last": "2026-10-26"
   },
   "heartgold-soulsilver-lugia-legend-bottom-114": {
    "since": "2026-10-24",
-   "last": "2026-10-25"
+   "last": "2026-10-26"
+  },
+  "base-set-zapdos-16": {
+   "since": "2026-10-26",
+   "last": "2026-10-26"
+  },
+  "base-set-ninetales-12": {
+   "since": "2026-10-26",
+   "last": "2026-10-26"
   }
  },
  "checked": {
@@ -93,7 +97,11 @@
   "base-set-ninetales-12": "2026-10-25",
   "base-set-gyarados-6": "2026-10-25",
   "base-set-zapdos-16": "2026-10-25",
-  "base-set-nidoking-11": "2026-10-25"
+  "base-set-nidoking-11": "2026-10-25",
+  "base-set-poliwrath-13": "2026-10-26",
+  "base-set-clefairy-5": "2026-10-26",
+  "jungle-jolteon-4-4": "2026-10-26",
+  "jungle-flareon-3-3": "2026-10-26"
  },
  "history": [
   {
@@ -393,9 +401,44 @@
     "psa10"
    ],
    "price": 1776
+  },
+  {
+   "t": "2026-10-26",
+   "action": "demote",
+   "key": "base-set-nidoking-11",
+   "name": "Nidoking",
+   "set": "Base Set",
+   "basket": "set:base-set",
+   "reason": "replaced by Poliwrath (no grade liquid at the minimum)"
+  },
+  {
+   "t": "2026-10-26",
+   "action": "promote",
+   "key": "base-set-poliwrath-13",
+   "name": "Poliwrath",
+   "set": "Base Set",
+   "basket": "set:base-set",
+   "reason": "liquid at PSA10 · beat Nidoking in base-set",
+   "liq": [
+    "psa10"
+   ],
+   "price": 1274.63
+  },
+  {
+   "t": "2026-10-26",
+   "action": "promote",
+   "key": "jungle-flareon-3-3",
+   "name": "Flareon (3)",
+   "set": "Jungle",
+   "basket": "set:jungle",
+   "reason": "liquid at PSA9 · open slot in jungle",
+   "liq": [
+    "psa9"
+   ],
+   "price": 1200
   }
  ],
- "updated": "2026-10-25T14:57:10.648Z",
- "bench": 177,
- "tracked": 75
+ "updated": "2026-10-26T17:21:10.369Z",
+ "bench": 176,
+ "tracked": 76
 }

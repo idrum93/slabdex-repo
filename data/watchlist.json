@@ -1213,21 +1213,6 @@
       "tcgPlayerId": "86917"
     },
     {
-      "key": "base-set-nidoking-11",
-      "name": "Nidoking",
-      "set": "Base Set",
-      "number": "11",
-      "era": "WOTC Vintage",
-      "family": "WOTC",
-      "basket": "base-set",
-      "rarity": "Holo Rare",
-      "pooled": false,
-      "query": "Nidoking Base Set 11",
-      "tier": "rotate",
-      "raw": false,
-      "tcgPlayerId": "42351"
-    },
-    {
       "key": "base-set-zapdos-16",
       "name": "Zapdos",
       "set": "Base Set",
@@ -1256,6 +1241,36 @@
       "tier": "rotate",
       "raw": false,
       "tcgPlayerId": "42352"
+    },
+    {
+      "key": "base-set-poliwrath-13",
+      "name": "Poliwrath",
+      "set": "Base Set",
+      "number": "13",
+      "era": "WOTC Vintage",
+      "family": "WOTC",
+      "basket": "base-set",
+      "rarity": "Holo Rare",
+      "pooled": false,
+      "query": "Poliwrath Base Set 13",
+      "tier": "rotate",
+      "raw": false,
+      "tcgPlayerId": "42353"
+    },
+    {
+      "key": "jungle-flareon-3-3",
+      "name": "Flareon (3)",
+      "set": "Jungle",
+      "number": "3",
+      "era": "WOTC Vintage",
+      "family": "WOTC",
+      "basket": "jungle",
+      "rarity": "Holo Rare",
+      "pooled": true,
+      "query": "Flareon (3) Jungle 3",
+      "tier": "rotate",
+      "raw": false,
+      "tcgPlayerId": "45129"
     }
   ],
   "bench": [
@@ -1995,21 +2010,6 @@
       "tcgPlayerId": "87148"
     },
     {
-      "key": "base-set-poliwrath-13",
-      "name": "Poliwrath",
-      "set": "Base Set",
-      "number": "13",
-      "era": "WOTC Vintage",
-      "family": "WOTC",
-      "basket": "base-set",
-      "rarity": "Holo Rare",
-      "pooled": false,
-      "query": "Poliwrath Base Set 13",
-      "tier": "bench",
-      "raw": false,
-      "tcgPlayerId": "42353"
-    },
-    {
       "key": "base-set-clefairy-5",
       "name": "Clefairy",
       "set": "Base Set",
@@ -2038,21 +2038,6 @@
       "tier": "bench",
       "raw": false,
       "tcgPlayerId": "45130"
-    },
-    {
-      "key": "jungle-flareon-3-3",
-      "name": "Flareon (3)",
-      "set": "Jungle",
-      "number": "3",
-      "era": "WOTC Vintage",
-      "family": "WOTC",
-      "basket": "jungle",
-      "rarity": "Holo Rare",
-      "pooled": true,
-      "query": "Flareon (3) Jungle 3",
-      "tier": "bench",
-      "raw": false,
-      "tcgPlayerId": "45129"
     },
     {
       "key": "jungle-scyther-10-10",
@@ -3919,6 +3904,21 @@
       "tier": "bench",
       "raw": false,
       "tcgPlayerId": "42404"
+    },
+    {
+      "key": "base-set-nidoking-11",
+      "name": "Nidoking",
+      "set": "Base Set",
+      "number": "11",
+      "era": "WOTC Vintage",
+      "family": "WOTC",
+      "basket": "base-set",
+      "rarity": "Holo Rare",
+      "pooled": false,
+      "query": "Nidoking Base Set 11",
+      "tier": "bench",
+      "raw": false,
+      "tcgPlayerId": "42351"
     }
   ],
   "extra": [
