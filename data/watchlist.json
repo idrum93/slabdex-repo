@@ -468,22 +468,6 @@
       "sprite": "img/sprites/rayquaza.png"
     },
     {
-      "key": "sandstorm-raichu-ex-98",
-      "name": "Raichu ex",
-      "set": "Sandstorm",
-      "number": "98",
-      "era": "EX Series",
-      "family": "EX",
-      "basket": "sandstorm",
-      "rarity": "Ultra Rare",
-      "pooled": false,
-      "query": "Raichu ex Sandstorm 98",
-      "tier": "rotate",
-      "raw": false,
-      "tcgPlayerId": "88525",
-      "sprite": "img/sprites/raichu.png"
-    },
-    {
       "key": "stormfront-charizard-103",
       "name": "Charizard",
       "set": "Stormfront",
@@ -3919,6 +3903,22 @@
       "tier": "bench",
       "raw": false,
       "tcgPlayerId": "42351"
+    },
+    {
+      "key": "sandstorm-raichu-ex-98",
+      "name": "Raichu ex",
+      "set": "Sandstorm",
+      "number": "98",
+      "era": "EX Series",
+      "family": "EX",
+      "basket": "sandstorm",
+      "rarity": "Ultra Rare",
+      "pooled": false,
+      "query": "Raichu ex Sandstorm 98",
+      "tier": "bench",
+      "raw": false,
+      "tcgPlayerId": "88525",
+      "sprite": "img/sprites/raichu.png"
     }
   ],
   "extra": [

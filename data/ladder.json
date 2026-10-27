@@ -1,36 +1,48 @@
 {
  "fails": {
-  "sandstorm-raichu-ex-98": {
-   "since": "2026-10-20",
-   "last": "2026-10-26"
-  },
   "undaunted-raichu-prime-83": {
    "since": "2026-10-21",
-   "last": "2026-10-26"
+   "last": "2026-10-27"
   },
   "skyridge-umbreon-h30-H30": {
    "since": "2026-10-22",
-   "last": "2026-10-26"
+   "last": "2026-10-27"
   },
   "rising-rivals-snorlax-lv-x-111": {
    "since": "2026-10-23",
-   "last": "2026-10-26"
+   "last": "2026-10-27"
   },
   "arceus-gengar-lv-x-97": {
    "since": "2026-10-24",
-   "last": "2026-10-26"
+   "last": "2026-10-27"
   },
   "heartgold-soulsilver-lugia-legend-bottom-114": {
    "since": "2026-10-24",
-   "last": "2026-10-26"
+   "last": "2026-10-27"
   },
   "base-set-zapdos-16": {
    "since": "2026-10-26",
-   "last": "2026-10-26"
+   "last": "2026-10-27"
   },
   "base-set-ninetales-12": {
    "since": "2026-10-26",
-   "last": "2026-10-26"
+   "last": "2026-10-27"
+  },
+  "unseen-forces-ho-oh-ex-104": {
+   "since": "2026-10-27",
+   "last": "2026-10-27"
+  },
+  "majestic-dawn-leafeon-lv-x-99": {
+   "since": "2026-10-27",
+   "last": "2026-10-27"
+  },
+  "base-set-poliwrath-13": {
+   "since": "2026-10-27",
+   "last": "2026-10-27"
+  },
+  "jungle-flareon-3-3": {
+   "since": "2026-10-27",
+   "last": "2026-10-27"
   }
  },
  "checked": {
@@ -436,9 +448,18 @@
     "psa9"
    ],
    "price": 1200
+  },
+  {
+   "t": "2026-10-27",
+   "action": "demote",
+   "key": "sandstorm-raichu-ex-98",
+   "name": "Raichu ex",
+   "set": "Sandstorm",
+   "basket": "fam:EX",
+   "reason": "no grade liquid at the minimum for 7 days"
   }
  ],
- "updated": "2026-10-26T17:21:10.369Z",
- "bench": 176,
- "tracked": 76
+ "updated": "2026-10-27T16:36:01.556Z",
+ "bench": 177,
+ "tracked": 75
 }
