@@ -2468,5 +2468,10 @@
 {"g":"psa8","key":"skyridge-houndoom-h11-H11","rule":"pullback","t":"2026-10-26","logged":"2026-10-27","ref":2005.53,"state":"pending","state90":"pending"},
 {"g":"psa8","key":"skyridge-houndoom-h11-H11","rule":"rsSetX@2g","t":"2026-10-26","logged":"2026-10-27","ref":2005.53,"state":"pending","state90":"pending"},
 {"g":"psa8","key":"skyridge-vaporeon-h31-H31","rule":"volUp@2g","t":"2026-10-25","logged":"2026-10-27","ref":1739,"state":"pending","state90":"pending"},
-{"g":"psa8","key":"skyridge-vaporeon-h31-H31","rule":"lagUp","t":"2026-10-25","logged":"2026-10-27","ref":1739,"state":"pending","state90":"pending"}
+{"g":"psa8","key":"skyridge-vaporeon-h31-H31","rule":"lagUp","t":"2026-10-25","logged":"2026-10-27","ref":1739,"state":"pending","state90":"pending"},
+{"g":"psa7","key":"rising-rivals-snorlax-lv-x-111","rule":"macdX","t":"2026-10-26","logged":"2026-10-28","ref":2280,"state":"pending","state90":"pending"},
+{"g":"psa7","key":"rising-rivals-snorlax-lv-x-111","rule":"pullback","t":"2026-10-26","logged":"2026-10-28","ref":2280,"state":"pending","state90":"pending"},
+{"g":"psa7","key":"rising-rivals-snorlax-lv-x-111","rule":"rsSetX@2g","t":"2026-10-26","logged":"2026-10-28","ref":2280,"state":"pending","state90":"pending"},
+{"g":"psa8","key":"team-magma-vs-team-aqua-suicune-ex-94","rule":"conf3","t":"2026-10-26","logged":"2026-10-28","ref":3240,"state":"pending","state90":"pending"},
+{"g":"psa8","key":"team-magma-vs-team-aqua-suicune-ex-94","rule":"pullback","t":"2026-10-26","logged":"2026-10-28","ref":3240,"state":"pending","state90":"pending"}
 ]}

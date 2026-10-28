@@ -1,48 +1,44 @@
 {
  "fails": {
-  "undaunted-raichu-prime-83": {
-   "since": "2026-10-21",
-   "last": "2026-10-27"
-  },
   "skyridge-umbreon-h30-H30": {
    "since": "2026-10-22",
-   "last": "2026-10-27"
-  },
-  "rising-rivals-snorlax-lv-x-111": {
-   "since": "2026-10-23",
-   "last": "2026-10-27"
+   "last": "2026-10-28"
   },
   "arceus-gengar-lv-x-97": {
    "since": "2026-10-24",
-   "last": "2026-10-27"
+   "last": "2026-10-28"
   },
   "heartgold-soulsilver-lugia-legend-bottom-114": {
    "since": "2026-10-24",
-   "last": "2026-10-27"
+   "last": "2026-10-28"
   },
   "base-set-zapdos-16": {
    "since": "2026-10-26",
-   "last": "2026-10-27"
+   "last": "2026-10-28"
   },
   "base-set-ninetales-12": {
    "since": "2026-10-26",
-   "last": "2026-10-27"
+   "last": "2026-10-28"
   },
   "unseen-forces-ho-oh-ex-104": {
    "since": "2026-10-27",
-   "last": "2026-10-27"
+   "last": "2026-10-28"
   },
   "majestic-dawn-leafeon-lv-x-99": {
    "since": "2026-10-27",
-   "last": "2026-10-27"
+   "last": "2026-10-28"
   },
   "base-set-poliwrath-13": {
    "since": "2026-10-27",
-   "last": "2026-10-27"
+   "last": "2026-10-28"
   },
   "jungle-flareon-3-3": {
    "since": "2026-10-27",
-   "last": "2026-10-27"
+   "last": "2026-10-28"
+  },
+  "deoxys-rocket-s-raikou-ex-108": {
+   "since": "2026-10-28",
+   "last": "2026-10-28"
   }
  },
  "checked": {
@@ -113,7 +109,11 @@
   "base-set-poliwrath-13": "2026-10-26",
   "base-set-clefairy-5": "2026-10-26",
   "jungle-jolteon-4-4": "2026-10-26",
-  "jungle-flareon-3-3": "2026-10-26"
+  "jungle-flareon-3-3": "2026-10-26",
+  "jungle-scyther-10-10": "2026-10-28",
+  "jungle-wigglytuff-16-16": "2026-10-28",
+  "jungle-vileplume-15-15": "2026-10-28",
+  "jungle-victreebel-14-14": "2026-10-28"
  },
  "history": [
   {
@@ -457,9 +457,18 @@
    "set": "Sandstorm",
    "basket": "fam:EX",
    "reason": "no grade liquid at the minimum for 7 days"
+  },
+  {
+   "t": "2026-10-28",
+   "action": "demote",
+   "key": "undaunted-raichu-prime-83",
+   "name": "Raichu (Prime)",
+   "set": "Undaunted",
+   "basket": "fam:HGSS",
+   "reason": "no grade liquid at the minimum for 7 days"
   }
  ],
- "updated": "2026-10-27T16:36:01.556Z",
- "bench": 177,
- "tracked": 75
+ "updated": "2026-10-28T17:09:36.890Z",
+ "bench": 178,
+ "tracked": 74
 }
