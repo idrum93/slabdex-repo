@@ -1,44 +1,48 @@
 {
  "fails": {
-  "skyridge-umbreon-h30-H30": {
-   "since": "2026-10-22",
-   "last": "2026-10-28"
-  },
   "arceus-gengar-lv-x-97": {
    "since": "2026-10-24",
-   "last": "2026-10-28"
+   "last": "2026-10-29"
   },
   "heartgold-soulsilver-lugia-legend-bottom-114": {
    "since": "2026-10-24",
-   "last": "2026-10-28"
+   "last": "2026-10-29"
   },
   "base-set-zapdos-16": {
    "since": "2026-10-26",
-   "last": "2026-10-28"
+   "last": "2026-10-29"
   },
   "base-set-ninetales-12": {
    "since": "2026-10-26",
-   "last": "2026-10-28"
+   "last": "2026-10-29"
   },
   "unseen-forces-ho-oh-ex-104": {
    "since": "2026-10-27",
-   "last": "2026-10-28"
+   "last": "2026-10-29"
   },
   "majestic-dawn-leafeon-lv-x-99": {
    "since": "2026-10-27",
-   "last": "2026-10-28"
+   "last": "2026-10-29"
   },
   "base-set-poliwrath-13": {
    "since": "2026-10-27",
-   "last": "2026-10-28"
+   "last": "2026-10-29"
   },
   "jungle-flareon-3-3": {
    "since": "2026-10-27",
-   "last": "2026-10-28"
+   "last": "2026-10-29"
   },
   "deoxys-rocket-s-raikou-ex-108": {
    "since": "2026-10-28",
-   "last": "2026-10-28"
+   "last": "2026-10-29"
+  },
+  "neo-genesis-pichu-12": {
+   "since": "2026-10-29",
+   "last": "2026-10-29"
+  },
+  "neo-destiny-dark-gengar-6": {
+   "since": "2026-10-29",
+   "last": "2026-10-29"
   }
  },
  "checked": {
@@ -113,7 +117,10 @@
   "jungle-scyther-10-10": "2026-10-28",
   "jungle-wigglytuff-16-16": "2026-10-28",
   "jungle-vileplume-15-15": "2026-10-28",
-  "jungle-victreebel-14-14": "2026-10-28"
+  "jungle-victreebel-14-14": "2026-10-28",
+  "jungle-venomoth-13-13": "2026-10-29",
+  "jungle-kangaskhan-5-5": "2026-10-29",
+  "fossil-gengar-5-5": "2026-10-29"
  },
  "history": [
   {
@@ -466,9 +473,18 @@
    "set": "Undaunted",
    "basket": "fam:HGSS",
    "reason": "no grade liquid at the minimum for 7 days"
+  },
+  {
+   "t": "2026-10-29",
+   "action": "demote",
+   "key": "skyridge-umbreon-h30-H30",
+   "name": "Umbreon (H30)",
+   "set": "Skyridge",
+   "basket": "set:skyridge",
+   "reason": "no grade liquid at the minimum for 7 days"
   }
  ],
- "updated": "2026-10-28T17:09:36.890Z",
- "bench": 178,
- "tracked": 74
+ "updated": "2026-10-29T17:25:31.853Z",
+ "bench": 179,
+ "tracked": 73
 }

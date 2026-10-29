@@ -964,22 +964,6 @@
       "sprite": "img/sprites/tyranitar.png"
     },
     {
-      "key": "skyridge-umbreon-h30-H30",
-      "name": "Umbreon (H30)",
-      "set": "Skyridge",
-      "number": "H30",
-      "era": "WOTC Neo & e-Card",
-      "family": "WOTC",
-      "basket": "skyridge",
-      "rarity": "Holo Rare",
-      "pooled": false,
-      "query": "Umbreon (H30) Skyridge H30",
-      "tier": "rotate",
-      "raw": false,
-      "tcgPlayerId": "90140",
-      "sprite": "img/sprites/umbreon.png"
-    },
-    {
       "key": "skyridge-ho-oh-149",
       "name": "Ho-oh",
       "set": "Skyridge",
@@ -3919,6 +3903,22 @@
       "tier": "bench",
       "raw": false,
       "tcgPlayerId": "88519"
+    },
+    {
+      "key": "skyridge-umbreon-h30-H30",
+      "name": "Umbreon (H30)",
+      "set": "Skyridge",
+      "number": "H30",
+      "era": "WOTC Neo & e-Card",
+      "family": "WOTC",
+      "basket": "skyridge",
+      "rarity": "Holo Rare",
+      "pooled": false,
+      "query": "Umbreon (H30) Skyridge H30",
+      "tier": "bench",
+      "raw": false,
+      "tcgPlayerId": "90140",
+      "sprite": "img/sprites/umbreon.png"
     }
   ],
   "extra": [
