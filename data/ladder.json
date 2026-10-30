@@ -2,47 +2,51 @@
  "fails": {
   "arceus-gengar-lv-x-97": {
    "since": "2026-10-24",
-   "last": "2026-10-29"
+   "last": "2026-10-30"
   },
   "heartgold-soulsilver-lugia-legend-bottom-114": {
    "since": "2026-10-24",
-   "last": "2026-10-29"
+   "last": "2026-10-30"
   },
   "base-set-zapdos-16": {
    "since": "2026-10-26",
-   "last": "2026-10-29"
+   "last": "2026-10-30"
   },
   "base-set-ninetales-12": {
    "since": "2026-10-26",
-   "last": "2026-10-29"
+   "last": "2026-10-30"
   },
   "unseen-forces-ho-oh-ex-104": {
    "since": "2026-10-27",
-   "last": "2026-10-29"
+   "last": "2026-10-30"
   },
   "majestic-dawn-leafeon-lv-x-99": {
    "since": "2026-10-27",
-   "last": "2026-10-29"
+   "last": "2026-10-30"
   },
   "base-set-poliwrath-13": {
    "since": "2026-10-27",
-   "last": "2026-10-29"
+   "last": "2026-10-30"
   },
   "jungle-flareon-3-3": {
    "since": "2026-10-27",
-   "last": "2026-10-29"
+   "last": "2026-10-30"
   },
   "deoxys-rocket-s-raikou-ex-108": {
    "since": "2026-10-28",
-   "last": "2026-10-29"
+   "last": "2026-10-30"
   },
   "neo-genesis-pichu-12": {
    "since": "2026-10-29",
-   "last": "2026-10-29"
+   "last": "2026-10-30"
   },
   "neo-destiny-dark-gengar-6": {
    "since": "2026-10-29",
-   "last": "2026-10-29"
+   "last": "2026-10-30"
+  },
+  "ruby-sapphire-mewtwo-ex-101": {
+   "since": "2026-10-30",
+   "last": "2026-10-30"
   }
  },
  "checked": {
@@ -484,7 +488,7 @@
    "reason": "no grade liquid at the minimum for 7 days"
   }
  ],
- "updated": "2026-10-29T17:25:31.853Z",
+ "updated": "2026-10-30T17:00:43.908Z",
  "bench": 179,
  "tracked": 73
 }
