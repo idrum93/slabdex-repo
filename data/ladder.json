@@ -1,52 +1,44 @@
 {
  "fails": {
-  "arceus-gengar-lv-x-97": {
-   "since": "2026-10-24",
-   "last": "2026-10-30"
-  },
-  "heartgold-soulsilver-lugia-legend-bottom-114": {
-   "since": "2026-10-24",
-   "last": "2026-10-30"
-  },
   "base-set-zapdos-16": {
    "since": "2026-10-26",
-   "last": "2026-10-30"
+   "last": "2026-10-31"
   },
   "base-set-ninetales-12": {
    "since": "2026-10-26",
-   "last": "2026-10-30"
+   "last": "2026-10-31"
   },
   "unseen-forces-ho-oh-ex-104": {
    "since": "2026-10-27",
-   "last": "2026-10-30"
+   "last": "2026-10-31"
   },
   "majestic-dawn-leafeon-lv-x-99": {
    "since": "2026-10-27",
-   "last": "2026-10-30"
+   "last": "2026-10-31"
   },
   "base-set-poliwrath-13": {
    "since": "2026-10-27",
-   "last": "2026-10-30"
+   "last": "2026-10-31"
   },
   "jungle-flareon-3-3": {
    "since": "2026-10-27",
-   "last": "2026-10-30"
+   "last": "2026-10-31"
   },
   "deoxys-rocket-s-raikou-ex-108": {
    "since": "2026-10-28",
-   "last": "2026-10-30"
+   "last": "2026-10-31"
   },
   "neo-genesis-pichu-12": {
    "since": "2026-10-29",
-   "last": "2026-10-30"
+   "last": "2026-10-31"
   },
   "neo-destiny-dark-gengar-6": {
    "since": "2026-10-29",
-   "last": "2026-10-30"
+   "last": "2026-10-31"
   },
   "ruby-sapphire-mewtwo-ex-101": {
    "since": "2026-10-30",
-   "last": "2026-10-30"
+   "last": "2026-10-31"
   }
  },
  "checked": {
@@ -124,7 +116,11 @@
   "jungle-victreebel-14-14": "2026-10-28",
   "jungle-venomoth-13-13": "2026-10-29",
   "jungle-kangaskhan-5-5": "2026-10-29",
-  "fossil-gengar-5-5": "2026-10-29"
+  "fossil-gengar-5-5": "2026-10-29",
+  "fossil-dragonite-4-4": "2026-10-31",
+  "fossil-articuno-2-2": "2026-10-31",
+  "fossil-hitmonlee-7-7": "2026-10-31",
+  "fossil-moltres-12-12": "2026-10-31"
  },
  "history": [
   {
@@ -486,9 +482,27 @@
    "set": "Skyridge",
    "basket": "set:skyridge",
    "reason": "no grade liquid at the minimum for 7 days"
+  },
+  {
+   "t": "2026-10-31",
+   "action": "demote",
+   "key": "arceus-gengar-lv-x-97",
+   "name": "Gengar Lv.X",
+   "set": "Arceus",
+   "basket": "fam:DP",
+   "reason": "no grade liquid at the minimum for 7 days"
+  },
+  {
+   "t": "2026-10-31",
+   "action": "demote",
+   "key": "heartgold-soulsilver-lugia-legend-bottom-114",
+   "name": "Lugia Legend (Bottom)",
+   "set": "HeartGold & SoulSilver",
+   "basket": "fam:HGSS",
+   "reason": "no grade liquid at the minimum for 7 days"
   }
  ],
- "updated": "2026-10-30T17:00:43.908Z",
- "bench": 179,
- "tracked": 73
+ "updated": "2026-10-31T16:04:02.900Z",
+ "bench": 181,
+ "tracked": 71
 }

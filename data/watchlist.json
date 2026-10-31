@@ -484,22 +484,6 @@
       "sprite": "img/sprites/charizard.png"
     },
     {
-      "key": "arceus-gengar-lv-x-97",
-      "name": "Gengar Lv.X",
-      "set": "Arceus",
-      "number": "97",
-      "era": "DP & Platinum",
-      "family": "DP",
-      "basket": "arceus",
-      "rarity": "Ultra Rare",
-      "pooled": false,
-      "query": "Gengar Lv.X Arceus 97",
-      "tier": "rotate",
-      "raw": false,
-      "tcgPlayerId": "85682",
-      "sprite": "img/sprites/gengar.png"
-    },
-    {
       "key": "majestic-dawn-leafeon-lv-x-99",
       "name": "Leafeon LV.X",
       "set": "Majestic Dawn",
@@ -1149,21 +1133,6 @@
       "tier": "rotate",
       "raw": false,
       "tcgPlayerId": "85750"
-    },
-    {
-      "key": "heartgold-soulsilver-lugia-legend-bottom-114",
-      "name": "Lugia Legend (Bottom)",
-      "set": "HeartGold & SoulSilver",
-      "number": "114",
-      "era": "HeartGold SoulSilver",
-      "family": "HGSS",
-      "basket": "heartgold-soulsilver",
-      "rarity": "Ultra Rare",
-      "pooled": false,
-      "query": "Lugia Legend (Bottom) HeartGold & SoulSilver 114",
-      "tier": "rotate",
-      "raw": false,
-      "tcgPlayerId": "86917"
     },
     {
       "key": "base-set-zapdos-16",
@@ -3919,6 +3888,37 @@
       "raw": false,
       "tcgPlayerId": "90140",
       "sprite": "img/sprites/umbreon.png"
+    },
+    {
+      "key": "arceus-gengar-lv-x-97",
+      "name": "Gengar Lv.X",
+      "set": "Arceus",
+      "number": "97",
+      "era": "DP & Platinum",
+      "family": "DP",
+      "basket": "arceus",
+      "rarity": "Ultra Rare",
+      "pooled": false,
+      "query": "Gengar Lv.X Arceus 97",
+      "tier": "bench",
+      "raw": false,
+      "tcgPlayerId": "85682",
+      "sprite": "img/sprites/gengar.png"
+    },
+    {
+      "key": "heartgold-soulsilver-lugia-legend-bottom-114",
+      "name": "Lugia Legend (Bottom)",
+      "set": "HeartGold & SoulSilver",
+      "number": "114",
+      "era": "HeartGold SoulSilver",
+      "family": "HGSS",
+      "basket": "heartgold-soulsilver",
+      "rarity": "Ultra Rare",
+      "pooled": false,
+      "query": "Lugia Legend (Bottom) HeartGold & SoulSilver 114",
+      "tier": "bench",
+      "raw": false,
+      "tcgPlayerId": "86917"
     }
   ],
   "extra": [
